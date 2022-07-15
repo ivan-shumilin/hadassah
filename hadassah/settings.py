@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'nutritionist',
     'rest_framework',
     'djoser',
+    'django_extensions',
+
 ]
 
 MIDDLEWARE = [
