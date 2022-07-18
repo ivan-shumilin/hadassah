@@ -27,8 +27,9 @@ urlpatterns = [
     path('api/v1/auth/', include('djoser.urls')),
     # re_path('auth/', include('djoser.urls.authtoken')),
     path('api/v1/baselist/', BaseAPIView.as_view()),
-
+    path('accounts/login/', views.user_login, name='login'),
 ]
+
 
 urlpatterns += [
     path('accounts/', include('django.contrib.auth.urls')),
