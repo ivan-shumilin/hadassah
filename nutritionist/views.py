@@ -13,6 +13,7 @@ from datetime import datetime
 from datetime import date
 from django.template import RequestContext
 from django.core.paginator import Paginator
+from django.urls import reverse
 
 import json
 
@@ -124,6 +125,11 @@ def load_timetable(dict_tests):
                 item=Product.objects.get(iditem=menu_item['product']['id'])
             ))
     Timetable.objects.bulk_create(to_create)
+
+@login_required
+def redirect(request):
+    return HttpResponseRedirect(reverse('index'))
+
 
 
 @login_required

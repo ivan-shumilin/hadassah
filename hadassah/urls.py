@@ -16,11 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from nutritionist.views import *
+from nutritionist import views
+
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('nutritionist.urls')),
+    path('nutritionist/', include('nutritionist.urls')),
+    path('', views.redirect, name='redirect'),
     path('api/v1/auth/', include('djoser.urls')),
     # re_path('auth/', include('djoser.urls.authtoken')),
     path('api/v1/baselist/', BaseAPIView.as_view()),
