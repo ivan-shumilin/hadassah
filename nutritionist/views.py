@@ -126,7 +126,7 @@ def load_timetable(dict_tests):
             ))
     Timetable.objects.bulk_create(to_create)
 
-@login_required
+
 def redirect(request):
     return HttpResponseRedirect(reverse('index'))
 
