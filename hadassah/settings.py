@@ -38,6 +38,7 @@ ALLOWED_HOSTS = [
         'lk-doctor.petrushkagroup.com',
         '158.160.6.40',
         '127.0.0.1',
+	    'loclhost',
 ]
 
 
@@ -54,8 +55,6 @@ INSTALLED_APPS = [
     'nutritionist',
     'rest_framework',
     'djoser',
-    'django_extensions',
-
 ]
 
 MIDDLEWARE = [
