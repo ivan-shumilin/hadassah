@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 import uuid
+from django.contrib.auth.models import User
 
 
 class Base(models.Model):
@@ -34,8 +35,10 @@ class Product(models.Model):
     nbd = models.BooleanField(null=True)
     nkd = models.BooleanField(null=True)
     vkd = models.BooleanField(null=True)
+    not_suitable = models.BooleanField(null=True)
     category = models.CharField(max_length=2000, null=True)
     cooking_method = models.CharField(max_length=7000, null=True)
+    comment = models.CharField(max_length=5000, null=True)
 
     def __str__(self):
         return f'{self.name}, {self.category}'
