@@ -153,8 +153,9 @@
     </div>
     </div>
 {% endfor %}
-
-    <input name="save" class="btn btn-primary btn-lg btn-block" type="submit" value="Сохранить">
+    {% if user.is_staff %}
+        <input name="save" class="btn btn-primary btn-lg btn-block" type="submit" value="Сохранить">
+    {% endif %}
     </div>
 </form>
 
