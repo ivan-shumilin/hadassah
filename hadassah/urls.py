@@ -28,6 +28,8 @@ urlpatterns = [
     # re_path('auth/', include('djoser.urls.authtoken')),
     path('api/v1/baselist/', BaseAPIView.as_view()),
     path('accounts/login/', views.user_login, name='login'),
+    path('register/', views.register, name='register'),
+    path('password_reset/', views.password_reset, name='reset_password'),
 ]
 
 

@@ -1,13 +1,3 @@
-# from django import forms
-#
-#
-# class CreateUsersForms(forms.Form):
-#     email = forms.EmailField(max_length=100, label="Email")
-#     username = forms.CharField(max_length=100, label="Имя пользователя",
-#                                widget=forms.TextInput(attrs={'class': 'form-input'}))
-#     password = forms.CharField(max_length=100, label="Пароль",
-#                                widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-# нужно использовать поле passwordInput
 from django import forms
 from django.contrib.auth.models import User
 from .models import *
@@ -25,58 +15,50 @@ class TimetableForm(ModelForm):
             })
         }
 
-# class ProductForm(forms.ModelForm):
-#     ovd = forms.CheckboxInput(attrs={'class': 'form-check-input', 'type': 'checkbox'})
-#     shd = forms.CheckboxInput(
-#         attrs={'class': 'form-check-input', 'type': 'checkbox'})
-#     bd = forms.CheckboxInput(
-#         attrs={'class': 'form-check-input', 'type': 'checkbox'})
-#     vbd = forms.CheckboxInput(
-#         attrs={'class': 'form-check-input', 'type': 'checkbox'})
-#     nbd = forms.CheckboxInput(
-#         attrs={'class': 'form-check-input', 'type': 'checkbox'})
-#     nkd = forms.CheckboxInput(
-#         attrs={'class': 'form-check-input', 'type': 'checkbox'})
-#     vkd = forms.CheckboxInput(
-#         attrs={'class': 'form-check-input', 'type': 'checkbox'})
-#     name = forms.CharField(widget=forms.TextInput(attrs={'style': "display: none;"}), required=False)
-#     description = forms.CharField(widget=forms.TextInput(attrs={'style': "display: none;"}), required=False)
-#     carbohydrate = forms.CharField(widget=forms.TextInput(attrs={'style': "display: none;"}), required=False)
-#     iditem = forms.CharField(widget=forms.TextInput(attrs={'style': "display: none;"}), required=False)
-#     fat = forms.CharField(widget=forms.TextInput(attrs={'style': "display: none;"}), required=False)
-#     fiber = forms.CharField(widget=forms.TextInput(attrs={'style': "display: none;"}), required=False)
-#     energy = forms.CharField(widget=forms.TextInput(attrs={'style': "display: none;"}), required=False)
-#
-#     class Meta:
-#         model = Product
-#         fields = ('iditem', 'name', 'description', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd',
-#                      'vkd', 'carbohydrate', 'fat', 'fiber', 'energy')
+
+class UserPasswordResetForm(forms.ModelForm):
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(
+        attrs={'class': 'form-control', 'placeholder': 'Email'}))
+    class Meta:
+        model = User
+        fields = ('email',)
 
 
 class UserRegistrationForm(forms.ModelForm):
-    username = forms.CharField(label='Username', widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': 'Имя пользователя'}))
+    name = forms.CharField(label='Имя', widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Виктор'}))
+    lastname = forms.CharField(label='Фамилия', widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Иванов'}))
     email = forms.EmailField(label='Email', widget=forms.EmailInput(
-        attrs={'class': 'form-control', 'placeholder': 'Email'}))
-    password = forms.CharField(label='Password',
-                               widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Введите пароль'}))
-    password2 = forms.CharField(label='Repeat password',
-                                widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Введите пароль еще раз'}))
+        attrs={'class': 'form-control', 'placeholder': 'mail@example.com'}))
+    # password = forms.CharField(label='Password',
+    #                            widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Введите пароль'}))
+    # password_repeat = forms.CharField(label='Repeat password',
+    #                             widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Введите пароль еще раз'}))
 
     class Meta:
         model = User
-        fields = ('username', 'email')
+        fields = ('lastname', 'name', 'email',)
 
-    def clean_password2(self):
+    def clean_password_repeat(self):
         cd = self.cleaned_data
-        if cd['password'] != cd['password2']:
+        if cd['password'] != cd['password_repeat']:
             raise forms.ValidationError('Пароли не совпадают.')
-        return cd['password2']
+        return cd['password_repeat']
+
+    def clean_name(self):
+        valid_symbols = set("qwertyuiopasdfghjklzxcvbnmйцукенгшщзхъфывапролджэячсмитьбю() -,\'")
+        cd = self.cleaned_data
+        name = set(cd['name'].lower())
+        if (name - valid_symbols) != set():
+            raise forms.ValidationError(f'Недопустимые значения: {", ".join(name - valid_symbols)}.')
+        return cd['name']
+
 
 class UserloginForm(forms.ModelForm):
-    username = forms.CharField(label='Username', widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': 'Имя пользователя'}))
-    password = forms.CharField(label='Password',
+    username = forms.CharField(label='Email', widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'mail@example.com'}))
+    password = forms.CharField(label='Пароль',
                                widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Пароль', 'style': 'margin-top: 10px;'}))
 
     # attrs = {'class': 'form-control'}

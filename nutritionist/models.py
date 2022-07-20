@@ -47,22 +47,57 @@ class Timetable(models.Model):
     date_create = models.DateField(default=date.today, null=True)
     def __str__(self):
         return f'{self.item}'
-#
+
+
+
 # class Patient(models.Model):
-#     name = models.CharField(max_length=200, null=True)
-#     LOAN_STATUS = (
-#         ('ОВД', 'ОВД'),
-#         ('ЩД', 'ЩД'),
-#         ('БД', 'БД'),
-#         ('ВКД', 'ВКД'),
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     full_name = models.CharField(max_length=200, null=True)
+#     receipt_date = models.DateField()
+#     receipt_time = models.TimeField(null=True)
+#     TYPE_DEPARTMENT = (
+#         ('Хирургия', 'Хирургия'),
+#         ('Онкология', 'Онкология'),
 #     )
-#
-#     type_of_diet = models.CharField(
-#         max_length=1,
-#         choices=LOAN_STATUS,
+#     department = models.CharField(
+#         max_length=100,
+#         choices=TYPE_DEPARTMENT,
 #         blank=True,
 #         default='ОВД',
-#         help_text='Book availability')
+#         help_text='Выбор отделения')
+#     ROOM_NUMBERS = (
+#         ('200', '200'),
+#         ('201', '201'),
+#         ('202', '202'),
+#         ('203', '203'),
+#         ('300', '300'),
+#         ('301', '301'),
+#         ('302', '302'),
+#         ('303', '303'),
+#     )
+#     room_number = models.CharField(
+#         max_length=100,
+#         choices=ROOM_NUMBERS,
+#         blank=True,
+#         default='200',
+#         help_text='Выбор номера палаты')
+#     TYPE_DIET = (
+#         ('ОВД', 'ОВД'),
+#         ('ОВД без сахара', 'ОВД без сахара'),
+#         ('ЩД', 'ЩД'),
+#         ('БД', 'БД'),
+#         ('ВБД', 'ВБД'),
+#         ('НБД', 'НБД'),
+#         ('НКД', 'НКД'),
+#         ('ВКД', 'ВКД'),
+#     )
+#     type_of_diet = models.CharField(
+#         max_length=100,
+#         choices=TYPE_DIET,
+#         blank=True,
+#         default='ОВД',
+#         help_text='Выбор диеты')
+#     comment = models.CharField(max_length=1000, null=True)
 #
 #     def __str__(self):
-#         return f'{self.item}'
+#         return f'{self.full_name}'
