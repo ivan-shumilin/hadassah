@@ -33,6 +33,7 @@ import requests
 from rest_framework.renderers import JSONRenderer
 import random
 from django.core.mail import send_mail
+from django.db.models.functions import Lower
 
 URL = 'https://cloud-api.yandex.net/v1/disk/resources'
 TOKEN = 'AQAAAAAnzmiwAAgF_TNw9en0lUKImDw8u7S2eQk'
@@ -372,6 +373,7 @@ def catalog_salad(request, page):
     page_start, page_finish = page_func(page)
     q = Product.objects.filter(category='Салаты')[page_start:page_finish]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
+    queryset = queryset.order_by(Lower('name'))
 
     if request.method == 'POST' and 'save' in request.POST:
         formset = \
@@ -458,6 +460,7 @@ def catalog_soup(request, page):
     page_start, page_finish = page_func(page)
     q = Product.objects.filter(category='Первые блюда')[page_start:page_finish]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
+    queryset = queryset.order_by(Lower('name'))
 
     if request.method == 'POST' and 'save' in request.POST:
         formset = \
@@ -546,6 +549,7 @@ def catalog_main_dishes(request, page):
     page_start, page_finish = page_func(page)
     q = Product.objects.filter(category='Вторые блюда')[page_start:page_finish]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
+    queryset = queryset.order_by(Lower('name'))
 
     if request.method == 'POST' and 'save' in request.POST:
         formset = \
@@ -634,6 +638,7 @@ def catalog_side_dishes(request, page):
     page_start, page_finish = page_func(page)
     q = Product.objects.filter(category='Гарниры')[page_start:page_finish]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
+    queryset = queryset.order_by(Lower('name'))
 
     if request.method == 'POST' and 'save' in request.POST:
         formset = \
