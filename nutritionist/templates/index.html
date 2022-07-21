@@ -45,7 +45,11 @@
 
 
 
-    <div class="row"  >
+    {% if form.not_suitable.value == True %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px; background: #fadada;" >
+    {% else %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px;" >
+    {% endif %}
 
 
         <div class="col-3">{{ form.name.value }}</div>
@@ -76,12 +80,12 @@
             <label class="form-check-label">НКД</label></div>
         <div class=" col form-check form-switch" style="margin-left: 1px;">{{ form.vkd }}
             <label class="form-check-label">ВКД</label></div>
-        <hr style="opacity: 0.11">
+
 
 
         <div id="modal-start{{ form.iditem.value }}" class="modal" tabindex="-1">
             <div class="modal-dialog">
-                <div class="modal-content">
+                    <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">{{ form.name.value }}</h5>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -89,20 +93,29 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>Состав:</strong> {{ form.description.value|cut:"Состав:"|cut:"Состав"|cut:" :" }}</p>
-                        <hr>
+
                         <p><strong>БЖУ:</strong> Белки - {{ form.fiber.value|floatformat  }} г, жиры - {{ form.fat.value|floatformat  }} г, углеводы - {{ form.carbohydrate.value|floatformat  }} г, ккал - {{ form.energy.value|floatformat  }}.</p>
                         <hr>
                         <p><strong>Способ приготовления:</strong> {{ form.cooking_method.value|cut:"ТРЕБОВАНИЯ К ОФОРМЛЕНИЮ, ПОДАЧЕ И РЕАЛИЗАЦИИ"}}</p>
                     </div>
+                    <hr>
+                    <div class="modal-body">{{ form.comment }}</div>
                     <div class="modal-footer">
+                        <div class="col form-check form-switch" style="margin-left: 1px;">
+                            {{ form.not_suitable }}
+                            <label class="form-check-label">не походит</label>
+                        </div>
+                        {% if user.is_staff %}
+                            <input name="save" class="btn btn-primary" type="submit" value="Сохранить">
+                        {% endif %}
                         <button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal"
                                 aria-label="Close">Закрыть
                         </button>
                     </div>
+
+                    </div>
                 </div>
             </div>
-        </div>
 
     </div>
 
@@ -126,7 +139,11 @@
 
 
 
-    <div class="row" >
+    {% if form.not_suitable.value == True %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px; background: #fadada;" >
+    {% else %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px;" >
+    {% endif %}
 
 
         <div class="col-3">{{ form.name.value }}</div>
@@ -157,12 +174,12 @@
             <label class="form-check-label">НКД</label></div>
         <div class=" col form-check form-switch" style="margin-left: 1px;">{{ form.vkd }}
             <label class="form-check-label">ВКД</label></div>
-        <hr style="opacity: 0.11">
+
 
 
         <div id="modal-start{{ form.iditem.value }}" class="modal" tabindex="-1">
             <div class="modal-dialog">
-                <div class="modal-content">
+                    <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">{{ form.name.value }}</h5>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -170,20 +187,29 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>Состав:</strong> {{ form.description.value|cut:"Состав:"|cut:"Состав"|cut:" :" }}</p>
-                        <hr>
+
                         <p><strong>БЖУ:</strong> Белки - {{ form.fiber.value|floatformat  }} г, жиры - {{ form.fat.value|floatformat  }} г, углеводы - {{ form.carbohydrate.value|floatformat  }} г, ккал - {{ form.energy.value|floatformat  }}.</p>
                         <hr>
                         <p><strong>Способ приготовления:</strong> {{ form.cooking_method.value|cut:"ТРЕБОВАНИЯ К ОФОРМЛЕНИЮ, ПОДАЧЕ И РЕАЛИЗАЦИИ"}}</p>
                     </div>
+                    <hr>
+                    <div class="modal-body">{{ form.comment }}</div>
                     <div class="modal-footer">
+                        <div class="col form-check form-switch" style="margin-left: 1px;">
+                            {{ form.not_suitable }}
+                            <label class="form-check-label">не походит</label>
+                        </div>
+                        {% if user.is_staff %}
+                            <input name="save" class="btn btn-primary" type="submit" value="Сохранить">
+                        {% endif %}
                         <button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal"
                                 aria-label="Close">Закрыть
                         </button>
                     </div>
+
+                    </div>
                 </div>
             </div>
-        </div>
 
     </div>
 
@@ -207,7 +233,11 @@
 
 
 
-    <div class="row" >
+    {% if form.not_suitable.value == True %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px; background: #fadada;" >
+    {% else %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px;" >
+    {% endif %}
 
 
         <div class="col-3">{{ form.name.value }}</div>
@@ -238,12 +268,12 @@
             <label class="form-check-label">НКД</label></div>
         <div class="col form-check form-switch" style="margin-left: 1px;">{{ form.vkd }}
             <label class="form-check-label">ВКД</label></div>
-        <hr style="opacity: 0.11">
+
 
 
         <div id="modal-start{{ form.iditem.value }}" class="modal" tabindex="-1">
             <div class="modal-dialog">
-                <div class="modal-content">
+                    <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">{{ form.name.value }}</h5>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -251,20 +281,29 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>Состав:</strong> {{ form.description.value|cut:"Состав:"|cut:"Состав"|cut:" :" }}</p>
-                        <hr>
+
                         <p><strong>БЖУ:</strong> Белки - {{ form.fiber.value|floatformat  }} г, жиры - {{ form.fat.value|floatformat  }} г, углеводы - {{ form.carbohydrate.value|floatformat  }} г, ккал - {{ form.energy.value|floatformat  }}.</p>
                         <hr>
-                        <p><strong>Способ приготовления:</strong> {{ form.cooking_method.value|cut:"ТРЕБОВАНИЯ К ОФОРМЛЕНИЮ, ПОДАЧЕ И РЕАЛИЗАЦИИ" }}</p>
+                        <p><strong>Способ приготовления:</strong> {{ form.cooking_method.value|cut:"ТРЕБОВАНИЯ К ОФОРМЛЕНИЮ, ПОДАЧЕ И РЕАЛИЗАЦИИ"}}</p>
                     </div>
+                    <hr>
+                    <div class="modal-body">{{ form.comment }}</div>
                     <div class="modal-footer">
+                        <div class="col form-check form-switch" style="margin-left: 1px;">
+                            {{ form.not_suitable }}
+                            <label class="form-check-label">не походит</label>
+                        </div>
+                        {% if user.is_staff %}
+                            <input name="save" class="btn btn-primary" type="submit" value="Сохранить">
+                        {% endif %}
                         <button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal"
                                 aria-label="Close">Закрыть
                         </button>
                     </div>
+
+                    </div>
                 </div>
             </div>
-        </div>
 
     </div>
 
@@ -288,7 +327,11 @@
 
 
 
-    <div class="row" >
+    {% if form.not_suitable.value == True %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px; background: #fadada;" >
+    {% else %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px;" >
+    {% endif %}
 
 
         <div class="col-3">{{ form.name.value }}</div>
@@ -319,12 +362,12 @@
             <label class="form-check-label">НКД</label></div>
         <div class="col form-check form-switch" style="margin-left: 1px;">{{ form.vkd }}
             <label class="form-check-label">ВКД</label></div>
-        <hr style="opacity: 0.11">
+
 
 
         <div id="modal-start{{ form.iditem.value }}" class="modal" tabindex="-1">
             <div class="modal-dialog">
-                <div class="modal-content">
+                    <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">{{ form.name.value }}</h5>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -332,20 +375,29 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>Состав:</strong> {{ form.description.value|cut:"Состав:"|cut:"Состав"|cut:" :" }}</p>
-                        <hr>
+
                         <p><strong>БЖУ:</strong> Белки - {{ form.fiber.value|floatformat  }} г, жиры - {{ form.fat.value|floatformat  }} г, углеводы - {{ form.carbohydrate.value|floatformat  }} г, ккал - {{ form.energy.value|floatformat  }}.</p>
                         <hr>
-                        <p><strong>Способ приготовления:</strong> {{ form.cooking_method.value|cut:"ТРЕБОВАНИЯ К ОФОРМЛЕНИЮ, ПОДАЧЕ И РЕАЛИЗАЦИИ" }}</p>
+                        <p><strong>Способ приготовления:</strong> {{ form.cooking_method.value|cut:"ТРЕБОВАНИЯ К ОФОРМЛЕНИЮ, ПОДАЧЕ И РЕАЛИЗАЦИИ"}}</p>
                     </div>
+                    <hr>
+                    <div class="modal-body">{{ form.comment }}</div>
                     <div class="modal-footer">
+                        <div class="col form-check form-switch" style="margin-left: 1px;">
+                            {{ form.not_suitable }}
+                            <label class="form-check-label">не походит</label>
+                        </div>
+                        {% if user.is_staff %}
+                            <input name="save" class="btn btn-primary" type="submit" value="Сохранить">
+                        {% endif %}
                         <button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal"
                                 aria-label="Close">Закрыть
                         </button>
                     </div>
+
+                    </div>
                 </div>
             </div>
-        </div>
 
     </div>
 

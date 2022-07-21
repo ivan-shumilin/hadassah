@@ -148,8 +148,8 @@ def index(request):
                                           fields=(
                                               'iditem', 'name', 'description', 'ovd', 'ovd_sugarless', 'shd', 'bd',
                                               'vbd', 'nbd', 'nkd',
-                                              'vkd', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
-                                              'cooking_method'),
+                                              'vkd', 'not_suitable', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
+                                              'cooking_method', 'comment'),
                                           widgets={'ovd': CheckboxInput(
                                               attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'ovd_sugarless': CheckboxInput(
@@ -166,6 +166,8 @@ def index(request):
                                                   attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'vkd': CheckboxInput(
                                                   attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'not_suitable': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'name': Textarea(attrs={'style': "display: none;"}),
                                               'description': Textarea(attrs={'style': "display: none;"}),
                                               'carbohydrate': Textarea(attrs={'style': "display: none;"}),
@@ -175,6 +177,7 @@ def index(request):
                                               'energy': Textarea(attrs={'style': "display: none;"}),
                                               'category': Textarea(attrs={'style': "display: none;"}),
                                               'cooking_method': Textarea(attrs={'style': "display: none;"}),
+                                              'comment': Textarea(attrs={'class': "form-control", 'rows': "3"}),
                                           },
                                           extra=0, )
     if request.method == 'GET':
@@ -326,14 +329,13 @@ def get_stat(category):
 
 @login_required
 def catalog_salad(request, page):
-    # 213
     error = ''
     ProductFormSet = modelformset_factory(Product,
                                           fields=(
                                               'iditem', 'name', 'description', 'ovd', 'ovd_sugarless', 'shd', 'bd',
                                               'vbd', 'nbd', 'nkd',
-                                              'vkd', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
-                                              'cooking_method'),
+                                              'vkd', 'not_suitable', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
+                                              'cooking_method', 'comment'),
                                           widgets={'ovd': CheckboxInput(
                                               attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'ovd_sugarless': CheckboxInput(
@@ -350,6 +352,8 @@ def catalog_salad(request, page):
                                                   attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'vkd': CheckboxInput(
                                                   attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'not_suitable': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'name': Textarea(attrs={'style': "display: none;"}),
                                               'description': Textarea(attrs={'style': "display: none;"}),
                                               'carbohydrate': Textarea(attrs={'style': "display: none;"}),
@@ -359,6 +363,8 @@ def catalog_salad(request, page):
                                               'energy': Textarea(attrs={'style': "display: none;"}),
                                               'category': Textarea(attrs={'style': "display: none;"}),
                                               'cooking_method': Textarea(attrs={'style': "display: none;"}),
+                                              'comment': Textarea(attrs={'class': "form-control", 'rows': "3"}),
+
                                           },
                                           extra=0, )
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Салаты')
@@ -410,14 +416,13 @@ def catalog_salad(request, page):
 
 @login_required
 def catalog_soup(request, page):
-    # 134
     error = ''
     ProductFormSet = modelformset_factory(Product,
                                           fields=(
                                               'iditem', 'name', 'description', 'ovd', 'ovd_sugarless', 'shd', 'bd',
                                               'vbd', 'nbd', 'nkd',
-                                              'vkd', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
-                                              'cooking_method'),
+                                              'vkd', 'not_suitable', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
+                                              'cooking_method', 'comment'),
                                           widgets={'ovd': CheckboxInput(
                                               attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'ovd_sugarless': CheckboxInput(
@@ -434,6 +439,8 @@ def catalog_soup(request, page):
                                                   attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'vkd': CheckboxInput(
                                                   attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'not_suitable': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'name': Textarea(attrs={'style': "display: none;"}),
                                               'description': Textarea(attrs={'style': "display: none;"}),
                                               'carbohydrate': Textarea(attrs={'style': "display: none;"}),
@@ -443,6 +450,7 @@ def catalog_soup(request, page):
                                               'energy': Textarea(attrs={'style': "display: none;"}),
                                               'category': Textarea(attrs={'style': "display: none;"}),
                                               'cooking_method': Textarea(attrs={'style': "display: none;"}),
+                                              'comment': Textarea(attrs={'class': "form-control", 'rows': "3"}),
                                           },
                                           extra=0, )
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Первые блюда')
@@ -501,8 +509,8 @@ def catalog_main_dishes(request, page):
                                           fields=(
                                               'iditem', 'name', 'description', 'ovd', 'ovd_sugarless', 'shd', 'bd',
                                               'vbd', 'nbd', 'nkd',
-                                              'vkd', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
-                                              'cooking_method'),
+                                              'vkd', 'not_suitable', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
+                                              'cooking_method', 'comment'),
                                           widgets={'ovd': CheckboxInput(
                                               attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'ovd_sugarless': CheckboxInput(
@@ -519,6 +527,8 @@ def catalog_main_dishes(request, page):
                                                   attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'vkd': CheckboxInput(
                                                   attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'not_suitable': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'name': Textarea(attrs={'style': "display: none;"}),
                                               'description': Textarea(attrs={'style': "display: none;"}),
                                               'carbohydrate': Textarea(attrs={'style': "display: none;"}),
@@ -528,6 +538,7 @@ def catalog_main_dishes(request, page):
                                               'energy': Textarea(attrs={'style': "display: none;"}),
                                               'category': Textarea(attrs={'style': "display: none;"}),
                                               'cooking_method': Textarea(attrs={'style': "display: none;"}),
+                                              'comment': Textarea(attrs={'class': "form-control", 'rows': "3"}),
                                           },
                                           extra=0, )
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Вторые блюда')
@@ -586,8 +597,8 @@ def catalog_side_dishes(request, page):
                                           fields=(
                                               'iditem', 'name', 'description', 'ovd', 'ovd_sugarless', 'shd', 'bd',
                                               'vbd', 'nbd', 'nkd',
-                                              'vkd', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
-                                              'cooking_method'),
+                                              'vkd', 'not_suitable', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
+                                              'cooking_method', 'comment'),
                                           widgets={'ovd': CheckboxInput(
                                               attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'ovd_sugarless': CheckboxInput(
@@ -604,6 +615,8 @@ def catalog_side_dishes(request, page):
                                                   attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'vkd': CheckboxInput(
                                                   attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'not_suitable': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
                                               'name': Textarea(attrs={'style': "display: none;"}),
                                               'description': Textarea(attrs={'style': "display: none;"}),
                                               'carbohydrate': Textarea(attrs={'style': "display: none;"}),
@@ -613,6 +626,7 @@ def catalog_side_dishes(request, page):
                                               'energy': Textarea(attrs={'style': "display: none;"}),
                                               'category': Textarea(attrs={'style': "display: none;"}),
                                               'cooking_method': Textarea(attrs={'style': "display: none;"}),
+                                              'comment': Textarea(attrs={'class': "form-control", 'rows': "3"}),
                                           },
                                           extra=0, )
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Гарниры')
