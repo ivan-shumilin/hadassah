@@ -5,40 +5,48 @@
         <div class="col-6" style="margin-top: 12px;">
     <div class="row" style="margin-bottom: 50px">
         <div class="col" style="margin-top: 1px">
-        <button type="button" onclick="location.href='{% url 'salad' page='50' %}'" class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Салаты</button>
+        <button type="button" onclick="location.href='{% url 'salad' page='25' %}'" class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Салаты</button>
     </div>
         <div class="col" style="">
-        <button type="submit" onclick="location.href='{% url 'soup' page='50' %}'" class="btn btn-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Cупы</button>
+        <button type="submit" onclick="location.href='{% url 'soup' page='25' %}'" class="btn btn-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Cупы</button>
     </div>
         <div class="col" style="">
-        <button type="submit" onclick="location.href='{% url 'main_dishes' page='50' %}'" class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Горячие блюда</button>
+        <button type="submit" onclick="location.href='{% url 'main_dishes' page='25' %}'" class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Горячие блюда</button>
     </div>
         <div class="col"  style="">
-        <button type="submit" onclick="location.href='{% url 'side_dishes' page='50' %}'"  class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Гарниры</button>
+        <button type="submit" onclick="location.href='{% url 'side_dishes' page='25' %}'"  class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Гарниры</button>
     </div>
     </div>
     <div class="row" style="margin-bottom: 50px">
-        <div class="col" style="">
-        {% if page == '50' %}
-            <a  class="page btn btn-primary" style="margin-bottom: 10px;padding-left: 21px;padding-right: 21px;" href="{% url 'soup' page='50' %}">1   -  50</a>
+          <nav aria-label="Page navigation example">
+        <ul class="pagination">
+        {% if page_prev == '0' %}
+            <li class="page-item disabled">
         {% else %}
-            <a  class="page btn btn-outline-primary" style="margin-bottom: 10px;padding-left: 21px;padding-right: 21px;" href="{% url 'soup' page='50' %}">1   -   50</a>
+            <li class="page-item">
         {% endif %}
-    </div>
-        <div class="col" style="">
-        {% if page == '100' %}
-            <a  class="page btn btn-primary" style="margin-bottom: 10px;" href="{% url 'soup' page='100' %}">51 - 100</a>
-        {% else %}
-            <a  class="page btn btn-outline-primary" style="margin-bottom: 10px;" href="{% url 'soup' page='100' %}">51 - 100</a>
-        {% endif %}
-    </div>
-        <div class="col" style="">
-        {% if page == '150' %}
-            <a  class="page btn btn-primary" style="margin-bottom: 10px;" href="{% url 'soup' page='150' %}">101 - 134</a>
-        {% else %}
-            <a  class="page btn btn-outline-primary" style="margin-bottom: 10px;" href="{% url 'soup' page='150' %}">101 - 134</a>
-        {% endif %}
-    </div>
+                <a class="page-link" href="{% url 'soup' page=page_prev %}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% for key, value in page_dict.items %}
+            {% if page == value %}
+                <li class="page-item active"><a class="page-link" href="{% url 'soup' page=value %}">{{ key }}</a></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="{% url 'soup' page=value %}">{{ key }}</a></li>
+            {% endif %}
+        {% endfor %}
+{% if page_next == '0' %}
+    <li class="page-item disabled">
+{% else %}
+    <li class="page-item">
+{% endif %}
+      <a class="page-link" href="{% url 'soup' page=page_next %}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
     </div>
 </div>
         <div class="col-4" style="margin-top: 1px">
@@ -159,6 +167,35 @@
 
 
     {% endfor %}
+        <nav style="margin-top: 10px;" aria-label="Page navigation example">
+        <ul class="pagination">
+        {% if page_prev == '0' %}
+            <li class="page-item disabled">
+        {% else %}
+            <li class="page-item">
+        {% endif %}
+                <a class="page-link" href="{% url 'soup' page=page_prev %}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% for key, value in page_dict.items %}
+            {% if page == value %}
+                <li class="page-item active"><a class="page-link" href="{% url 'soup' page=value %}">{{ key }}</a></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="{% url 'soup' page=value %}">{{ key }}</a></li>
+            {% endif %}
+        {% endfor %}
+{% if page_next == '0' %}
+    <li class="page-item disabled">
+{% else %}
+    <li class="page-item">
+{% endif %}
+      <a class="page-link" href="{% url 'soup' page=page_next %}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
     {% if user.is_staff %}
     <input name="save" class="btn btn-primary btn-lg btn-block" type="submit" value="Сохранить">
     {% endif %}
