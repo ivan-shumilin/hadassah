@@ -140,7 +140,8 @@
                         </button>
                     </div>
                     <div class="modal-body">
-
+                        <p><strong>Состав:</strong> {{ form.description.value|cut:"Состав:"|cut:"Состав"|cut:" :" }}</p>
+                        <hr>
                         <p><strong>БЖУ:</strong> Белки - {{ form.fiber.value|floatformat  }} г, жиры - {{ form.fat.value|floatformat  }} г, углеводы - {{ form.carbohydrate.value|floatformat  }} г, ккал - {{ form.energy.value|floatformat  }}.</p>
                         <hr>
                         <p><strong>Способ приготовления:</strong> {{ form.cooking_method.value|cut:"ТРЕБОВАНИЯ К ОФОРМЛЕНИЮ, ПОДАЧЕ И РЕАЛИЗАЦИИ"}}</p>
