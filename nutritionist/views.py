@@ -189,7 +189,7 @@ def index(request):
     count_prosucts = len(Product.objects.all())
     count_prosucts_labeled = len(Product.objects.filter(
         Q(ovd='True') | Q(ovd_sugarless='True') | Q(shd='True') | Q(bd='True') | Q(vbd='True') | Q(nbd='True') | Q(
-            nkd='True') | Q(vkd='True')))
+            nkd='True') | Q(vkd='True') | Q(not_suitable='True')))
     count_prosucts_not_labeled = count_prosucts - count_prosucts_labeled
     progress = int(count_prosucts_labeled * 100 / count_prosucts)
     queryset_salad = Product.objects.filter(timetable__datetime=date_default).filter(category='Салаты')
@@ -311,7 +311,7 @@ def get_stat(category):
     count_prosucts = len(Product.objects.filter(category=category))
     count_prosucts_labeled = len(Product.objects.filter(category=category).filter(
         Q(ovd='True') | Q(ovd_sugarless='True') | Q(shd='True') | Q(bd='True') | Q(vbd='True') | Q(nbd='True') | Q(
-            nkd='True') | Q(vkd='True')))
+            nkd='True') | Q(vkd='True') | Q(not_suitable='True')))
     count_prosucts_not_labeled = count_prosucts - count_prosucts_labeled
     progress = int(count_prosucts_labeled * 100 / count_prosucts)
     return count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress
