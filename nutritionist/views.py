@@ -12,8 +12,8 @@ from django.utils.dateparse import parse_date
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import CheckboxInput, Textarea
-from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
 from .models import Base, Product, Timetable, CustomUser
@@ -28,6 +28,17 @@ from datetime import datetime, date
 from django.core import management
 from django.core.management.commands import dumpdata
 
+def group_nutritionists_check(user):
+    return user.groups.filter(name='nutritionists').exists()
+
+"""
+if user.groups.filter(name='nutritionists').exists():
+    return HttpResponseRedirect('/')
+if user.groups.filter(name='doctors').exists():
+    return render(request, 'doctor.html', {})
+if user.groups.filter(name='patients').exists():
+    return render(request, 'patient.html', {})
+"""
 def backup(request):
     answer = []
     management.call_command('backup_db_ydisk', stdout=answer)
@@ -92,7 +103,7 @@ def load_timetable(dict_tests):
 def redirect(request):
     return HttpResponseRedirect(reverse('index'))
 
-
+@user_passes_test(group_nutritionists_check, login_url='login')
 @login_required
 def index(request):
     # js = open("nutritionist/descriptions_from_tk.json").read()
@@ -279,6 +290,7 @@ def get_stat(category):
 
 
 @login_required
+@user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_salad(request, page):
     error = ''
     ProductFormSet = modelformset_factory(Product,
@@ -373,6 +385,7 @@ def catalog_salad(request, page):
 
 
 @login_required
+@user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_soup(request, page):
     error = ''
     ProductFormSet = modelformset_factory(Product,
@@ -468,6 +481,7 @@ def catalog_soup(request, page):
 
 
 @login_required
+@user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_main_dishes(request, page):
     # 335
     error = ''
@@ -563,6 +577,7 @@ def catalog_main_dishes(request, page):
 
 
 @login_required
+@user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_side_dishes(request, page):
     # 157
     error = ''
@@ -684,11 +699,11 @@ def user_login(request):
         if user is not None:
             login(request, user)
             if user.groups.filter(name='nutritionists').exists():
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect(reverse('index'))
             if user.groups.filter(name='doctors').exists():
-                return render(request, 'doctor.html', {})
+                return HttpResponseRedirect(reverse('doctor'))
             if user.groups.filter(name='patients').exists():
-                return render(request, 'patient.html', {})
+                return HttpResponseRedirect(reverse('patient'))
         else:
             errors = 'Пользователя с таким именем или паролем не существует'
     else:

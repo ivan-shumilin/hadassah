@@ -23,6 +23,8 @@ from nutritionist import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('nutritionist/', include('nutritionist.urls')),
+    path('doctor/', include('doctor.urls')),
+    path('patient/', include('patient.urls')),
     path('', views.redirect, name='redirect'),
     path('api/v1/auth/', include('djoser.urls')),
     # re_path('auth/', include('djoser.urls.authtoken')),
