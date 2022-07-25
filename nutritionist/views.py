@@ -1,79 +1,37 @@
+import json, os, requests, random, math, calendar, datetime
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Base, Product, Timetable
-from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from django.contrib.auth.models import User
 from django.forms import modelformset_factory
-from .serializers import ProductSerializer
-from django.db.models import Q
-from rest_framework import generics
-from rest_framework.response import Response
-from rest_framework.views import APIView
-import calendar, datetime
-from datetime import datetime
-from datetime import date
-from django.template import RequestContext
 from django.core.paginator import Paginator
+from django.template import RequestContext
 from django.urls import reverse
-
-import json
-
 from django.db import transaction
+from django.db.models import Q
 from django.utils.dateparse import parse_date
-import requests
-
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
-from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
 from django.forms import CheckboxInput, Textarea
 from django.contrib.auth.decorators import login_required
-import os
-import requests
-from rest_framework.renderers import JSONRenderer
-import random
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
-import math
-
-URL = 'https://cloud-api.yandex.net/v1/disk/resources'
-TOKEN = 'AQAAAAAnzmiwAAgF_TNw9en0lUKImDw8u7S2eQk'
-headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'OAuth {TOKEN}'}
-
-
-def create_backup():
-    queryset = Product.objects.all()
-    serializer_for_queryset = ProductSerializer(queryset, many=True).data
-    data = JSONRenderer().render(serializer_for_queryset).decode()
-    name = str(date.today()) + '.json'
-    with open(name, 'w', encoding='utf-8') as outfile:
-        json.dump(data, outfile, ensure_ascii=False)
-
-
-def create_folder(path):
-    """Создание папки. \n path: Путь к создаваемой папке."""
-    requests.put(f'{URL}?path={path}', headers=headers)
-
-
-def upload_file(loadfile, savefile, replace=False):
-    """Загрузка файла.
-    loadfile: Путь к загружаемому файлу
-    savefile: Путь к файлу на Диске
-    replace: true or false Замена файла на Диске"""
-
-    res = requests.get(f'{URL}/upload?path={savefile}&overwrite={replace}', headers=headers).json()
-    with open(loadfile, 'rb') as f:
-        try:
-            requests.put(res['href'], files={'file': f})
-        except KeyError:
-            print(res)
-
+from .models import Base, Product, Timetable
+from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
+from .serializers import ProductSerializer
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from rest_framework.renderers import JSONRenderer
+from rest_framework.views import APIView
+from datetime import datetime, date
+from django.core import management
+from django.core.management.commands import dumpdata
 
 def backup(request):
-    create_backup()
-    create_folder('backup' + '/' + str(date.today()))
-    upload_file(str(date.today()) + '.json', 'backup' + '/' + str(date.today()) + '/' + str(date.today()) + '.json')
-    return render(request, 'backup.html', {})
+    answer = []
+    management.call_command('backup_db_ydisk', stdout=answer)
+    return render(request, 'backup.html', {'answer': answer})
 
 
 @transaction.atomic
@@ -191,7 +149,10 @@ def index(request):
         Q(ovd='True') | Q(ovd_sugarless='True') | Q(shd='True') | Q(bd='True') | Q(vbd='True') | Q(nbd='True') | Q(
             nkd='True') | Q(vkd='True') | Q(not_suitable='True')))
     count_prosucts_not_labeled = count_prosucts - count_prosucts_labeled
-    progress = int(count_prosucts_labeled * 100 / count_prosucts)
+    if count_prosucts != 0:
+        progress = int(count_prosucts_labeled * 100 / count_prosucts)
+    else:
+        progress = 0
     queryset_salad = Product.objects.filter(timetable__datetime=date_default).filter(category='Салаты')
     queryset_soup = Product.objects.filter(timetable__datetime=date_default).filter(category='Первые блюда')
     queryset_main_dishes = Product.objects.filter(timetable__datetime=date_default).filter(category='Вторые блюда')
@@ -731,9 +692,6 @@ def user_login(request):
                                                        'errors': errors})
 
 
-import random
-
-
 def register(request):
     """ Регистрация нового пользователя"""
     errors = []
@@ -796,6 +754,3 @@ def password_reset(request):
     else:
         user_form = UserPasswordResetForm()
     return render(request, 'registration/password_reset_email.html', {'user_form': user_form, 'errors': errors})
-
-
-
