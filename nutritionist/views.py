@@ -16,7 +16,7 @@ from django.forms import CheckboxInput, Textarea
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
-from .models import Base, Product, Timetable
+from .models import Base, Product, Timetable, CustomUser
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import ProductSerializer
 from rest_framework import generics
@@ -699,7 +699,7 @@ def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
-            user = User.objects.create_user(user_form.data['email'], user_form.data['email'], password)
+            user = CustomUser.objects.create_user(user_form.data['email'], user_form.data['email'], password)
             user.first_name = user_form.data['name']
             user.last_name = user_form.data['lastname']
             user.save()
@@ -732,7 +732,7 @@ def password_reset(request):
         user_form = UserPasswordResetForm(request.POST)
         if user_form.is_valid():
             try:
-                user = User.objects.get(email=user_form.data['email'])
+                user = CustomUser.objects.get(email=user_form.data['email'])
                 user.set_password(password)
                 user.save()
                 text_email = f"<p>Сброс пароля прошел успешно!</p>\

@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'nutritionist',
+    'doctor',
+    'patient',
     'rest_framework',
     'djoser',
 ]
@@ -172,3 +174,5 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'info@petrushkagroup.com'
 EMAIL_HOST_PASSWORD = 'dhacsfxtrzjhdxce'
+
+AUTH_USER_MODEL = 'nutritionist.CustomUser'

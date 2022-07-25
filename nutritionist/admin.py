@@ -1,5 +1,9 @@
+# users/admin.py
 from django.contrib import admin
-from .models import Base, Product, Timetable
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import Base, Product, Timetable, CustomUser
 
 
 admin.site.register(Base)
@@ -17,3 +21,12 @@ class TimetableAdmin(admin.ModelAdmin):
 
 admin.site.register(Timetable, TimetableAdmin)
 admin.site.register(Product, ProductAdmin)
+
+class CustomUserAdmin(UserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
+    # fields = ['full_name', 'comment', 'email', 'username']
+    list_display = ['email', 'username', 'full_name', 'comment']
+
+admin.site.register(CustomUser, CustomUserAdmin)
