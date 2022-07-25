@@ -683,9 +683,14 @@ def user_login(request):
                             password=user_form.data['password'])
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect('/')
+            if user.groups.filter(name='nutritionists').exists():
+                return HttpResponseRedirect('/')
+            if user.groups.filter(name='doctors').exists():
+                return render(request, 'doctor.html', {})
+            if user.groups.filter(name='patients').exists():
+                return render(request, 'patient.html', {})
         else:
-            errors = 'Пользователя с таким именем и паролем не существует'
+            errors = 'Пользователя с таким именем или паролем не существует'
     else:
         user_form = UserloginForm()
     return render(request, 'registration/login.html', {'user_form': user_form,
