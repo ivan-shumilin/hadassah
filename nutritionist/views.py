@@ -730,7 +730,7 @@ def register(request):
                             <p>логин: {user_form.data['email']}</p> \
                             <p>пароль: {password}</p> \
                             <p>Для авторизации пройдите по ссылке \
-                            <a href='https://sk.petrushkagroup.com/accounts/login/'>sk.petrushkagroup.com/accounts/login/</a></p>"
+                            <a href='https://sk.petrushkagroup.com/login/'>sk.petrushkagroup.com/login/</a></p>"
 
                 send_mail(
                     'Регистрация в личном кабинете врача.',
@@ -765,7 +765,7 @@ def password_reset(request):
                             <p>логин: {user_form.data['email']}</p> \
                             <p>пароль: {password}</p> \
                             <p>Для авторизации пройдите по ссылке \
-                            <a href='https://sk.petrushkagroup.com/accounts/login/'>sk.petrushkagroup.com/accounts/login/</a></p>"
+                            <a href='https://sk.petrushkagroup.com/login/'>sk.petrushkagroup.com/login/</a></p>"
                 send_mail(
                     'Сброс пароля',
                     text_email,
