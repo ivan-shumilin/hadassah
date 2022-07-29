@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
 <div class="row" style="margin-bottom: 50px">
-<div class="col-6" style="margin-top: 12px;">
+    <div class="col-6" style="margin-top: 12px;">
     <div class="row" style="margin-bottom: 50px">
     <div class="col" style="margin-top: 1px">
         <button type="button" onclick="location.href='{% url 'salad' page=25 %}'" class="btn btn-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Салаты</button>
@@ -55,7 +55,7 @@
 
 </div>
 
-<div class="col-4" style="margin-top: 1px">
+    <div class="col-4" style="margin-top: 1px">
         <ul style="line-height: 1.8;">
             <li><progress id="progressBar" max="100" value="{{progress}}"></progress><i style="color:#0d6efd;">{{progress}}%</i></li>
             <li>категория: <i style="color:#0d6efd;"> салаты</i></li>
@@ -64,7 +64,6 @@
             <li>число блюд без признака: <i style="color:#0d6efd;"> {{count_prosucts_not_labeled}}</i></li>
         </ul>
 </div>
-
 
 </div>
 </div>

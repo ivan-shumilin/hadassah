@@ -1,0 +1,100 @@
+{% extends "base_generic_doctor.html" %}
+{% block content %}
+<form action="{% url 'menu' %}" method="get">
+    <label>
+        <select name="diet" class="form-control" id="id_form-2-type_of_diet">
+            {% if diet == 'ovd' %}
+                <option value="ovd" selected>ОВД</option>
+            {% else %}
+                <option value="ovd">ОВД</option>
+            {% endif %}
+
+            {% if diet == 'ovd_sugarless' %}
+                <option value="ovd_sugarless" selected>ОВД без сахара</option>
+            {% else %}
+                <option value="ovd_sugarless">ОВД без сахара</option>
+            {% endif %}
+            {% if diet == 'shd' %}
+                <option value="shd" selected>ЩД</option>
+            {% else %}
+                <option value="shd">ЩД</option>
+            {% endif %}
+            {% if diet == 'bd' %}
+                <option value="bd" selected>БД</option>
+            {% else %}
+                <option value="bd">БД</option>
+            {% endif %}
+            {% if diet == 'vbd' %}
+                <option value="vbd" selected>ВБД</option>
+            {% else %}
+                <option value="vbd">ВБД</option>
+            {% endif %}
+            {% if diet == 'nbd' %}
+                <option value="nbd" selected>НБД</option>
+            {% else %}
+                <option value="nbd">НБД</option>
+            {% endif %}
+            {% if diet == 'nkd' %}
+                <option value="nkd" selected>НКД</option>
+            {% else %}
+                <option value="nkd">НКД</option>
+            {% endif %}
+            {% if diet == 'vkd' %}
+                <option value="vkd" selected>ВКД</option>
+            {% else %}
+                <option value="vkd">ВКД</option>
+            {% endif %}
+        </select>
+    </label>
+    <button type="submit" class="btn btn-outline-primary" >Показать</button>
+  <div class="row">
+      {% if date_menu == today %}
+        <input type="radio" class="btn-check" id="option1" value="{{ today }}" name="date" checked>
+        <label class="btn btn-secondary" for="option1" value="{{ today }}">Сегодня</label>
+      {% else %}
+        <input type="radio" class="btn-check" id="option1" value="{{ today }}" name="date">
+        <label class="btn btn-secondary" for="option1" value="{{ today }}">Сегодня</label>
+      {% endif %}
+
+      {% if date_menu == tomorrow %}
+        <input type="radio" class="btn-check" id="option2" value="{{ tomorrow }}" name="date" checked>
+        <label class="btn btn-secondary" for="option2" value="{{ tomorrow }}">Завтра</label>
+      {% else %}
+        <input type="radio" class="btn-check" id="option2" value="{{ tomorrow }}" name="date">
+        <label class="btn btn-secondary" for="option2" value="{{ tomorrow }}">Завтра</label>
+      {% endif %}
+
+      {% if date_menu == day_after_tomorrow %}
+        <input type="radio" class="btn-check" id="option3" value="{{ day_after_tomorrow }}" name="date" checked>
+        <label class="btn btn-secondary" for="option3" value="{{ day_after_tomorrow }}">Послезавтра</label>
+      {% else %}
+        <input type="radio" class="btn-check" id="option3" value="{{ day_after_tomorrow }}" name="date">
+        <label class="btn btn-secondary" for="option3" value="{{ day_after_tomorrow }}">Послезавтра</label>
+      {% endif %}
+
+  </div>
+  <p>{{ formatted_date }}</p>
+    {% for product in products %}
+        <div>
+            <div>{{ product.name }}</div>
+            <p><strong>БЖУ:</strong> Белки - {{ product.fiber|floatformat  }} г, жиры - {{ product.fat|floatformat  }} г, углеводы - {{ product.carbohydrate|floatformat  }} г, ккал - {{ product.energy|floatformat  }}.</p>
+            <p><strong>Состав:</strong> {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</p>
+
+        </div>
+    {% endfor %}
+</form>
+<script>
+var form = document.querySelector('form'),
+  radio = [].slice.call(form.querySelectorAll('input[name^=date]'));
+radio.forEach(function(el) {
+  el.addEventListener('change', function() {
+    if (radio.filter(function(ch) {
+      return ch.checked;
+    }).length === 1) {
+      form.submit();
+      // или же, если используете, ajax-ом
+    }
+  }, false);
+});
+</script>
+{% endblock %}
