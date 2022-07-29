@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'hadassah.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hadassah1',
+        'NAME': 'hadassah',
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
         'HOST': 'localhost',
@@ -128,15 +128,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
+USE_L10N = False
 
-USE_L10N = True
-
-USE_TZ = True
+LANGUAGE_CODE = 'ru-RU'
+DATE_FORMAT = 'd E Y'
 
 
 # Static files (CSS, JavaScript, Images)

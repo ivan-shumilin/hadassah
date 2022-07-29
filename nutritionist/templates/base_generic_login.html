@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'nutritionist/css/all.css' %}">
+    <title>{% block title %}Nutritionist tool{% endblock %}</title>
+
+
+</head>
+<body>
+    <div class="auth-layout">
+        <div class="left">
+            <a href="#" class="hadassah">
+                {% load static %}
+                <img src="{% static 'nutritionist/css/img/logo.svg' %}" alt="">
+            </a>
+            <div class="pertushka">
+                <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
+            </div>
+        </div>
+    {% block content %}
+
+    {% endblock %}
+</body>
+        <script src="./js/all.js"></script>
+</html>

@@ -27,14 +27,12 @@ urlpatterns = [
     path('patient/', include('patient.urls')),
     path('', views.redirect, name='redirect'),
     path('api/v1/auth/', include('djoser.urls')),
-    # re_path('auth/', include('djoser.urls.authtoken')),
     path('api/v1/baselist/', BaseAPIView.as_view()),
-    path('accounts/login/', views.user_login, name='login'),
+    path('login/', views.user_login, name='login'),
     path('register/', views.register, name='register'),
     path('password_reset/', views.password_reset, name='reset_password'),
+    path('logout/', views.user_logout, name='logout'),
 ]
 
 
-urlpatterns += [
-    path('accounts/', include('django.contrib.auth.urls')),
-]
+

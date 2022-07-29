@@ -1,18 +1,50 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from datetime import date
 import uuid
 from django.contrib.auth.models import AbstractUser
+from doctor.choices import *
 
 
 class CustomUser(AbstractUser):
     full_name = models.CharField(max_length=200, null=True)
-    comment = models.CharField(max_length=1000, null=True)
+    receipt_date = models.DateField(null=True)
+    receipt_time = models.TimeField(null=True)
+
+    department = models.CharField(
+        max_length=100,
+        choices=TYPE_DEPARTMENT,
+        blank=True,
+        default='Не выбрано',
+        help_text='Выбор отделения')
+
+    room_number = models.CharField(
+        max_length=100,
+        choices=ROOM_NUMBERS,
+        blank=True,
+        default='200',
+        help_text='Выбор номера палаты')
+
+    type_of_diet = models.CharField(
+        max_length=100,
+        choices=TYPE_DIET,
+        blank=True,
+        default='ОВД',
+        help_text='Выбор диеты')
+    comment = models.CharField(
+        max_length=1000,
+        null=True,
+        blank=True)
+    status = models.CharField(
+        max_length=100,
+        choices=STATUS_PATIENT,
+        blank=True,
+        default='',
+        help_text='Выбор диеты')
+
 
     def __str__(self):
-        return f'{self.full_name}'
+        return f'{self.full_name, self.comment}'
+
 
 
 class Base(models.Model):

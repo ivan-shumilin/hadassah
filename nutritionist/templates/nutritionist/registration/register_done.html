@@ -1,0 +1,22 @@
+{% extends "base_generic_login.html" %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="right">
+    <div class="content small">
+        <div class="segment">
+            <div class="title align-center">Спасибо!</div>
+            <p class="align-center">
+                Мы получили вашу заявку на регистрацию.
+                На указанный адрес придёт письмо
+                со ссылкой и данными для входа.
+            </p>
+            <div class="actions flex flex-center">
+                <a href="{% url 'login' %}" class="button">Войти</a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

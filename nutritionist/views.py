@@ -27,6 +27,7 @@ from rest_framework.views import APIView
 from datetime import datetime, date
 from django.core import management
 from django.core.management.commands import dumpdata
+from django.contrib.auth.models import Group
 
 def group_nutritionists_check(user):
     return user.groups.filter(name='nutritionists').exists()
@@ -104,16 +105,8 @@ def redirect(request):
     return HttpResponseRedirect(reverse('index'))
 
 @user_passes_test(group_nutritionists_check, login_url='login')
-@login_required
+@login_required(login_url='login')
 def index(request):
-    # js = open("nutritionist/descriptions_from_tk.json").read()
-    # dict_tk_descriptions = json.loads(js)
-    # all = Product.objects.all()
-    # for item in all:
-    #     value = dict_tk_descriptions.get(item.name)
-    #     if value == None:
-    #         continue
-    #     item.description = value
     error = ''
     ProductFormSet = modelformset_factory(Product,
                                           fields=(
@@ -289,7 +282,7 @@ def get_stat(category):
     return count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress
 
 
-@login_required
+@login_required(login_url='login')
 @user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_salad(request, page):
     error = ''
@@ -384,7 +377,7 @@ def catalog_salad(request, page):
     return render(request, 'salad.html', context=data)
 
 
-@login_required
+@login_required(login_url='login')
 @user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_soup(request, page):
     error = ''
@@ -576,7 +569,7 @@ def catalog_main_dishes(request, page):
     return render(request, 'main_dishes.html', context=data)
 
 
-@login_required
+@login_required(login_url='login')
 @user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_side_dishes(request, page):
     # 157
@@ -708,20 +701,29 @@ def user_login(request):
             errors = 'Пользователя с таким именем или паролем не существует'
     else:
         user_form = UserloginForm()
-    return render(request, 'registration/login.html', {'user_form': user_form,
+    return render(request, 'nutritionist/registration/login.html', {'user_form': user_form,
                                                        'errors': errors})
+
+
+def user_logout(request):
+    from django.contrib.auth import logout
+    logout(request)
+    return HttpResponseRedirect(reverse('login'))
+
 
 
 def register(request):
     """ Регистрация нового пользователя"""
     errors = []
-    password = ''.join([random.choice("123456789qwertyuiopasdfghjklzxcvbnm") for i in range(5)])
     if request.method == 'POST':
+        password = ''.join([random.choice("123456789qwertyuiopasdfghjklzxcvbnm") for i in range(5)])
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
             user = CustomUser.objects.create_user(user_form.data['email'], user_form.data['email'], password)
             user.first_name = user_form.data['name']
             user.last_name = user_form.data['lastname']
+            group_nutritionists = Group.objects.get(name='doctors')
+            group_nutritionists.user_set.add(user)
             user.save()
             text_email = f"<p>Регистрация прошла успешно!</p>\
                            <p>логин: {user_form.data['email']}</p> \
@@ -738,10 +740,10 @@ def register(request):
                 html_message=text_email,
             )
 
-            return render(request, 'registration/register_done.html', {'user_form': user_form, 'errors': errors})
+            return render(request, 'nutritionist/registration/register_done.html', {'user_form': user_form, 'errors': errors})
     else:
         user_form = UserRegistrationForm()
-    return render(request, 'registration/register.html', {'user_form': user_form, 'errors': errors})
+    return render(request, 'nutritionist/registration/register.html', {'user_form': user_form, 'errors': errors})
 
 
 def password_reset(request):
@@ -768,9 +770,9 @@ def password_reset(request):
                     fail_silently=False,
                     html_message=text_email,
                 )
-                return render(request, 'registration/password_reset_done.html', {'user_form': user_form, 'errors': errors})
+                return render(request, 'nutritionist/registration/password_reset_done.html', {'user_form': user_form, 'errors': errors})
             except Exception:
                 errors.append('Пользователь с такой почтой не зарегистророван')
     else:
         user_form = UserPasswordResetForm()
-    return render(request, 'registration/password_reset_email.html', {'user_form': user_form, 'errors': errors})
+    return render(request, 'nutritionist/registration/password_reset_email.html', {'user_form': user_form, 'errors': errors})
