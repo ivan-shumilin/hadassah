@@ -719,30 +719,34 @@ def register(request):
         password = ''.join([random.choice("123456789qwertyuiopasdfghjklzxcvbnm") for i in range(5)])
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
-            user = CustomUser.objects.create_user(user_form.data['email'], user_form.data['email'], password)
-            user.first_name = user_form.data['name']
-            user.last_name = user_form.data['lastname']
-            group_nutritionists = Group.objects.get(name='doctors')
-            group_nutritionists.user_set.add(user)
-            user.save()
-            text_email = f"<p>Регистрация прошла успешно!</p>\
-                           <p>логин: {user_form.data['email']}</p> \
-                           <p>пароль: {password}</p> \
-                           <p>Для авторизации пройдите по ссылке \
-                           <a href='https://sk.petrushkagroup.com/accounts/login/'>sk.petrushkagroup.com/accounts/login/</a></p>"
+            try:
+                user = CustomUser.objects.create_user(user_form.data['email'], user_form.data['email'], password)
+                user.first_name = user_form.data['name']
+                user.last_name = user_form.data['lastname']
+                group_nutritionists = Group.objects.get(name='doctors')
+                group_nutritionists.user_set.add(user)
+                user.save()
+                text_email = f"<p>Регистрация прошла успешно!</p>\
+                            <p>логин: {user_form.data['email']}</p> \
+                            <p>пароль: {password}</p> \
+                            <p>Для авторизации пройдите по ссылке \
+                            <a href='https://sk.petrushkagroup.com/accounts/login/'>sk.petrushkagroup.com/accounts/login/</a></p>"
 
-            send_mail(
-                'Регистрация в личном кабинете врача.',
-                text_email,
-                'info@petrushkagroup.com',
-                [user_form.data['email']],
-                fail_silently=False,
-                html_message=text_email,
-            )
+                send_mail(
+                    'Регистрация в личном кабинете врача.',
+                    text_email,
+                    'info@petrushkagroup.com',
+                    [user_form.data['email']],
+                    fail_silently=False,
+                    html_message=text_email,
+                )
 
-            return render(request, 'nutritionist/registration/register_done.html', {'user_form': user_form, 'errors': errors})
-    else:
-        user_form = UserRegistrationForm()
+                return render(request, 'nutritionist/registration/register_done.html', {'user_form': user_form, 'errors': errors})
+            except Exception:
+                errors.append('Пользователь с такой почтой уже существует')
+
+
+    user_form = UserRegistrationForm()
     return render(request, 'nutritionist/registration/register.html', {'user_form': user_form, 'errors': errors})
 
 
