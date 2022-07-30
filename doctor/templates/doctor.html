@@ -1,50 +1,70 @@
 {% extends "base_generic_doctor.html" %}
 {% block content %}
-<form style='padding-left: 0px; padding-right: 0px;' action="" method="post" novalidate>
-    {% csrf_token %}
-    {{ formset.management_form }}
-    <div class="row">
-        <p>ЛК доктора</p>
-        <div class="col" style="margin-right: 20px;">
-            <button type="button" class="btn btn-outline-primary" style="margin-bottom: 10px;" data-bs-toggle="modal"
-                    data-bs-target="#modal-start_add">Добавить</button>
-        </div>
-    </div>
- <div class="row">
-      {% if filter_by == 'full_name' %}
-        <input type="radio" class="btn-check" id="option1" value="full_name" name="filter_by" checked>
-        <label class="btn btn-secondary" for="option1" value="full_name">ФИО</label>
-      {% else %}
-        <input type="radio" class="btn-check" id="option1" value="full_name" name="filter_by">
-        <label class="btn btn-secondary" for="option1" value="{{ today }}">ФИО</label>
-      {% endif %}
+           <div id="center" data-simplebar>
+                <div class="header-block">
+                    <div class="title">Ваши пациенты</div>
+                    <a href="#" data-bs-toggle="modal"
+                    data-bs-target="#modal-start_add" class="button">
+                        <span class="i i-plus"></span>
+                        Добавить
+                    </a>
+                </div>
 
-      {% if filter_by == 'room_number' %}
-        <input type="radio" class="btn-check" id="option2" value="room_number" name="filter_by" checked>
-        <label class="btn btn-secondary" for="option2" value="room_number">Палата</label>
-      {% else %}
-        <input type="radio" class="btn-check" id="option2" value="room_number" name="filter_by">
-        <label class="btn btn-secondary" for="option2" value="room_number">Палата</label>
-      {% endif %}
+                <div class="table" data-columns="30% 20% 30% 20%">
+                    <div class="tr">
+                        <div class="th">
+                            {% if filter_by == 'full_name' %}
+                              <label class="sort active" for="option1" value="full_name">фио пациента</label>
+                              <input type="radio" class="btn-check" id="option1" value="full_name" name="filter_by" checked>
+                            {% else %}
+                              <label class="sort" for="option1" value="full_name">фио пациента</label>
+                              <input type="radio" class="btn-check" id="option1" value="full_name" name="filter_by">
+                            {% endif %}
+                        </div>
+                        <div class="th">
+                            {% if filter_by == 'room_number' %}
+                              <label class="sort active" for="option2" value="room_number">палата</label>
+                              <input type="radio" class="btn-check" id="option2" value="room_number" name="filter_by" checked>
+                            {% else %}
+                              <label class="sort" for="option2" value="room_number">палата</label>
+                              <input type="radio" class="btn-check" id="option2" value="room_number" name="filter_by">
+                            {% endif %}
+                        </div>
 
-      {% if filter_by == 'department' %}
-        <input type="radio" class="btn-check" id="option3" value="department" name="filter_by" checked>
-        <label class="btn btn-secondary" for="option3" value="department">Отделение</label>
-      {% else %}
-        <input type="radio" class="btn-check" id="option3" value="department" name="filter_by">
-        <label class="btn btn-secondary" for="option3" value="department">Отделение</label>
-      {% endif %}
-
-      {% if filter_by == 'type_of_diet' %}
-        <input type="radio" class="btn-check" id="option4" value="type_of_diet" name="filter_by" checked>
-        <label class="btn btn-secondary" for="option4" value="type_of_diet">Диета</label>
-      {% else %}
-        <input type="radio" class="btn-check" id="option4" value="type_of_diet" name="filter_by">
-        <label class="btn btn-secondary" for="option4" value="type_of_diet">Диета</label>
-      {% endif %}
-
- </div>
-    <div id="modal-start_add" class="modal" tabindex="-1">
+                        <div class="th">
+                            {% if filter_by == 'department' %}
+                              <label class="sort active" for="option3" value="department">отделение</label>
+                              <input type="radio" class="btn-check" id="option3" value="department" name="filter_by" checked>
+                            {% else %}
+                              <label class="sort" for="option3" value="department">отделение</label>
+                              <input type="radio" class="btn-check" id="option3" value="department" name="filter_by">
+                            {% endif %}
+                        </div>
+                        <div class="th">
+                            {% if filter_by == 'type_of_diet' %}
+                              <label class="sort active" for="option4" value="type_of_diet">диета</label>
+                              <input type="radio" class="btn-check" id="option4" value="type_of_diet" name="filter_by" checked>
+                            {% else %}
+                              <label class="sort" for="option4" value="type_of_diet">диета</label>
+                              <input type="radio" class="btn-check" id="option4" value="type_of_diet" name="filter_by">
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% for form in formset %}
+                    <div id="{{ form.id.value }}" class="tr product" onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
+                        <div class="td">
+                            <div class="name">{{ form.full_name.value }}</div>
+                        </div>
+                        <div class="td">{{ form.room_number.value }}</div>
+                        <div class="td">{{ form.department.value }}</div>
+                        <div class="td">
+                            <span class="tag">{{ form.type_of_diet.value }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div id="modal-start_add" class="modal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -81,116 +101,222 @@
         </div>
     </div>
 
-<div class="container">
-    <div class="row" style="margin-bottom: 50px">
-        <div class="col-8" style="background-color: #eeeded">
-            {% for form in formset %}
-                <div id="{{ form.id.value }}" class="row row-patient" style="margin-bottom: 50px" onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value }}', '{{ form.receipt_time.value }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value }}', {{ form.id.value }})">
-                    <div style="display: none;">
-                        {{ form.full_name }}
-                        {{ form.room_number }}
-                        {{ form.department }}
-                        {{ form.type_of_diet }}
-                        {{ form.receipt_date }}
-                        {{ form.receipt_time }}
-                        {{ form.comment }}
-                        {{ form.id }}
+            <div id="right" data-simplebar>
+                <div class="patient-card-block">
+                    <div class="block-title">Карточка пациента</div>
+                    <div class="tabs">
+                        <a href="#" class="active" data-tab="profile">Профиль</a>
+                        <a href="#" data-tab="eat">Выбранные блюда</a>
                     </div>
-                    <div class="col">{{ form.full_name.value }}</div>
-                    <div class="col">{{ form.room_number.value }}</div>
-                    <div class="col">{{ form.department.value }}</div>
-                    <div class="col">{{ form.type_of_diet.value }}</div>
-                    <div class="col">{{ form.id.value }}</div>
-
-
-                    <div id="modal-start{{ form.id.value }}" class="modal" tabindex="1">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Редактировать профиль пациента</h5>
-                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                    <div class="profile active" data-tab-content="profile">
+                        <div id="full_name" class="name"></div>
+                        <div class="fields">
+                            <div class="field">
+                                <div class="label">Дата госпитализации</div>
+                                <div  id="receipt_datetime" class="value"></div>
+                            </div>
+                            <div class="field">
+                                <div class="label">Отделение</div>
+                                <div id="department" class="value"></div>
+                            </div>
+                            <div class="field">
+                                <div class="label">Диета</div>
+                                <div id="type_of_diet" class="value"></div>
+                            </div>
+                            <div class="field">
+                                <div class="label">Номер палаты</div>
+                                <div id="room_number" class="value"></div>
+                            </div>
+                        </div>
+                        <div id="comment" class="help"></div>
+                        <div class="actions">
+                            <a href="#" class="button">Редактировать</a>
+                            <a href="#" class="button white">Архивировать</a>
+                        </div>
+                    </div>
+                    <div class="eat" data-tab-content="eat">
+                        <div class="switch">
+                            <a href="#" class="active">Сегодня</a>
+                            <a href="#">Завтра</a>
+                            <a href="#">Послезавтра</a>
+                        </div>
+                        <div class="date">12 июля, вторник</div>
+                        <div class="boxes">
+                            <div class="box">
+                                <div class="title">Завтрак</div>
+                                <div class="products-list">
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <label>ФИО пациента</label>
-                                    {{ form.full_name }}
-                                    <label>Дата госпитализации</label>
-                                    {{ form.receipt_date }}
-                                    <label>Время госпитализации</label>
-                                    {{ form.receipt_time }}
-                                    <label>Отделение</label>
-                                    {{ form.department }}
-                                    <label>Диета</label>
-                                    {{ form.type_of_diet }}
-                                    <label>Номер палаты</label>
-                                    {{ form.room_number }}
-                                    <label>Комментарий</label>
-                                    {{ form.comment }}
-                                </div>
-                                <div class="modal-footer">
-                                    <input name="update" class="btn btn-primary" type="submit" value="Сохранить">
-
-
-                                    <button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Отменить
-                                    </button>
+                            </div>
+                            <div class="box">
+                                <div class="title">Обед</div>
+                                <div class="products-list">
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="img">
+                                            <img src="./img/eat.jpg" alt="">
+                                        </div>
+                                        <div class="info">
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="text">
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
-
-                    <div id="modal-archive{{ form.id.value }}" class="modal" tabindex="1">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Перенести учетную запись пациента в архив</h5>
-                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" name="archive" class="btn btn-primary"  value={{ form.id.value }}>Архивировать
-                                    </button>
-
-                                    <button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Отменить
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
                 </div>
-             {% endfor %}
+            </div>
         </div>
-        <div class="col-4" style="background-color: #e3e3ec">
-            <p id="full_name"></p>
-            <p id="receipt_datetime"></p>
-            <p id="department"></p>
-            <p id="type_of_diet"></p>
-            <p id="room_number"></p>
-            <p id="comment"></p>
-            <div id="modal"></div>
-            <div id="archive"></div>
-        </div>
-    </div>
-</div>
-
-
-</form>
-
 <script>
 function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, comment, id) {
-
     document.getElementById("full_name").innerHTML = full_name;
-    document.getElementById("receipt_datetime").innerHTML = receipt_date + receipt_time;
+    document.getElementById("receipt_datetime").innerHTML = receipt_date + ' ' + receipt_time;
     document.getElementById("department").innerHTML = department;
     document.getElementById("type_of_diet").innerHTML = type_of_diet;
     document.getElementById("room_number").innerHTML = room_number;
@@ -200,12 +326,45 @@ function displayInfoPatient(full_name, receipt_date, receipt_time, department, t
 
 }
 
-const list = document.querySelectorAll('.row-patient')
+const list = document.querySelectorAll('.product')
  list.forEach(item =>{
         item.addEventListener('click', (e) =>{
         list.forEach(el=>{ el.classList.remove('active'); });
         item.classList.add('active')
     })
+})
+
+const list1 = document.querySelectorAll('.tag')
+ list1.forEach(item1 =>{
+        if (item1.innerHTML == 'ОВД') {
+            item1.classList.add('mint')
+        }
+        if (item1.innerHTML == 'ОВД б/с') {
+
+            item1.classList.add('mint')
+        }
+        if (item1.innerHTML == 'ОВД без сахара') {
+            item1.innerHTML = 'ОВД б/с'
+            item1.classList.add('mint')
+        }
+        if (item1.innerHTML == 'ЩД') {
+            item1.classList.add('blue')
+        }
+        if (item1.innerHTML == 'БД') {
+            item1.classList.add('yellow')
+        }
+        if (item1.innerHTML == 'ВБД') {
+            item1.classList.add('yellow')
+        }
+        if (item1.innerHTML == 'НБД') {
+            item1.classList.add('yellow')
+        }
+        if (item1.innerHTML == 'НКД') {
+            item1.classList.add('blue')
+        }
+        if (item1.innerHTML == 'ВКД') {
+            item1.classList.add('yellow')
+        }
 })
 
 var form = document.querySelector('form'),
@@ -220,5 +379,7 @@ radio.forEach(function(el) {
     }
   }, false);
 });
+
+
 </script>
 {% endblock %}
