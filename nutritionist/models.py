@@ -93,3 +93,14 @@ class Timetable(models.Model):
     date_create = models.DateField(default=date.today, null=True)
     def __str__(self):
         return f'{self.item}'
+
+
+class Barcodes(models.Model):
+    number = models.CharField(max_length=15)
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_BARCODES,
+        default='active',
+       )
+    def __str__(self):
+        return f'{self.number}'

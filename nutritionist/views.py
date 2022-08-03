@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import CheckboxInput, Textarea
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
-from .models import Base, Product, Timetable, CustomUser
+from .models import Base, Product, Timetable, CustomUser, Barcodes
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import ProductSerializer
 from rest_framework import generics
@@ -681,6 +681,33 @@ class BaseAPIView(APIView):
             load_timetable(data_dict)
             Base.objects.create(base=data_str)
         return Response(data)
+
+
+class VerifyAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        try:
+            if Barcodes.objects.get(number=data['barcode']).status == 'active':
+                return Response('Yes')
+        except Exception:
+            pass
+        return Response('No')
+
+
+class DeactivateAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        try:
+            barcode = Barcodes.objects.get(number=data['barcode'])
+            if barcode.status == 'active':
+                barcode.status = 'no_active'
+                barcode.save()
+                return Response('Ok')
+        except Exception:
+            return Response('Barcode does not exist')
+        return Response('Barcode already deactivated')
+
+
 
 
 def user_login(request):

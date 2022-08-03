@@ -28,6 +28,8 @@ urlpatterns = [
     path('', views.redirect, name='redirect'),
     path('api/v1/auth/', include('djoser.urls')),
     path('api/v1/baselist/', BaseAPIView.as_view()),
+    path('api/v1/barcode/verify', VerifyAPIView.as_view()),
+    path('api/v1/barcode/deactivate', DeactivateAPIView.as_view()),
     path('login/', views.user_login, name='login'),
     path('register/', views.register, name='register'),
     path('password_reset/', views.password_reset, name='reset_password'),

@@ -32,3 +32,8 @@ STATUS_PATIENT = (
     ('patient', 'patient'),
     ('patient_archive', 'patient_archive'),
 )
+
+STATUS_BARCODES = (
+    ('active', 'active'),
+    ('no_active', 'no_active'),
+)
