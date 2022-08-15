@@ -6,7 +6,7 @@ from django.core.management.commands import dumpdata
 
 
 URL = 'https://cloud-api.yandex.net/v1/disk/resources'
-TOKEN = 'AQAAAAAnzmiwAAgF_TNw9en0lUKImDw8u7S2eQk'
+TOKEN = 'y0_AQAEA7qkHGTtAADLWwAAAADLdv2Vzl_VDfyET4ekZCPJK_nQZ3UUrqY'
 headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'OAuth {TOKEN}'}
 
 
