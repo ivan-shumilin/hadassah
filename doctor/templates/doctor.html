@@ -78,7 +78,7 @@
                 <div class="form-group">
                     {% load widget_tweaks %}
                     <label>Дата госпитализации</label>
-                    <input type="text" value="{{ form.receipt_date.value }}" data-datepicker id="{{ form.receipt_date.id_for_label }}">
+                    <input type="text" value="{{ form.receipt_date.value|date:'d.m.Y' }}" data-datepicker id="{{ form.receipt_date.id_for_label }}">
                     <p id ='error_receipt_date' class="error-field"></p>
                 </div>
                 <div class="form-group">
