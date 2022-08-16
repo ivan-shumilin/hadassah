@@ -83,7 +83,7 @@
                 </div>
                 <div class="form-group">
                     <label>Время госпитализации</label>
-                    <input type="text" value="{{ form.receipt_time.value }}" data-timemask id="{{ form.receipt_time.id_for_label }}">
+                    <input type="text" value="{{ form.receipt_time.value|date:'H:i' }}" data-timemask id="{{ form.receipt_time.id_for_label }}">
                     <p id ='error_receipt_time' class="error-field"></p>
                 </div>
                 <div class="form-group">

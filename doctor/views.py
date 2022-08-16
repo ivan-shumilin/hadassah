@@ -95,7 +95,7 @@ def doctor(request):
         user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
         user.full_name = user_form.data['full_name1']
         user.receipt_date = parse(user_form.data['receipt_date1']).strftime('%Y-%m-%d')
-        user.receipt_time = parse(user_form.data['receipt_time1']).strftime('%h:%m')
+        user.receipt_time = user_form.data['receipt_time1']
         user.receipt_time = user_form.data['receipt_time1']
         user.department = user_form.data['department1']
         user.room_number = user_form.data['room_number1']

@@ -30,10 +30,12 @@ class CustomUser(AbstractUser):
         blank=True,
         default='ОВД',
         help_text='Выбор диеты')
+
     comment = models.CharField(
         max_length=1000,
         null=True,
         blank=True)
+
     status = models.CharField(
         max_length=100,
         choices=STATUS_PATIENT,

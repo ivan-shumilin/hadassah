@@ -4,7 +4,7 @@ from django.forms import ModelForm, DateInput
 from doctor.choices import *
 
 class DietChoiceForm(forms.Form):
-    type_of_diet = forms.ChoiceField(label='Диета', choices=TYPE_DIET,
+    type_of_diet = forms.ChoiceField(label='Диета', choices=TYPE_DIET_FOR_MENU,
                                    widget=forms.Select(
                                        attrs={'class': 'field',
                                               'placeholder': 'Не выбрано'})
