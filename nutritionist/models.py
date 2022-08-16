@@ -43,7 +43,7 @@ class CustomUser(AbstractUser):
 
 
     def __str__(self):
-        return f'{self.full_name, self.comment}'
+        return f'{self.last_name, self.comment}'
 
 
 

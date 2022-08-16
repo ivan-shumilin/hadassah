@@ -3,51 +3,57 @@
            <div id="center" data-simplebar>
                 <div class="header-block">
                     <div class="title">Ваши пациенты</div>
-                    <a href="#" data-bs-toggle="modal"
-                    data-bs-target="#modal-start_add" class="button">
+                    <a class="button" data-modal-link="patient-add">
                         <span class="i i-plus"></span>
                         Добавить
                     </a>
                 </div>
 
+                <div>
+                    {# какая форма сработала  #}
+                    <input style="display: none;" type="checkbox" id="add_patient_flag"  name="add_patient">
+                    <input style="display: none;" type="checkbox" id="filter_by_flag"  name="filter_by_flag">
+                    <input style="display: none;" type="checkbox" id="edit_patient_flag"  name="edit_patient_flag">
+                    <input style="display: none;" type="checkbox" id="archive"  name="archive">
+                    <input style="display: none;" type="text" id="id_edit_user" name="id_edit_user">
+                </div>
+
+               <div style="display: none;" id="filter_by">{{ filter_by }}</div>
+               <div style="display: none;" id="sorting">{{ sorting }}</div>
+               <div style="display: none;" id="status">{{ modal }}</div>
+                
+               <a style="display: none;"  id="archived" data-modal-link="patient-archived">a</a>
+               <a style="display: none;" id="edited" data-modal-link="patient-edited">Редактировать</a>
+               <a style="display: none;" id="patient-added" data-modal-link="patient-added">a</a>
+               <a style="display: none;" id="modal-close" data-modal-close>a</a>
+               
+               <div id="123" class='test' data-modal="patient-archived" data-modal-width="400">
+                <div class="message-block">
+                    <div class="icon">
+                        <div class="i i-ok"></div>
+                    </div>
+                    <div class="title">Учётная запись архивирована</div>
+                </div>
+              </div>
+
+
                 <div class="table" data-columns="30% 20% 30% 20%">
                     <div class="tr">
                         <div class="th">
-                            {% if filter_by == 'full_name' %}
-                              <label class="sort active" for="option1" value="full_name">фио пациента</label>
-                              <input type="radio" class="btn-check" id="option1" value="full_name" name="filter_by" checked>
-                            {% else %}
-                              <label class="sort" for="option1" value="full_name">фио пациента</label>
-                              <input type="radio" class="btn-check" id="option1" value="full_name" name="filter_by">
-                            {% endif %}
+                              <label id="full_name" onclick="check_function('input_full_name')" class="sort" for="input_full_name">фио пациента</label>
+                              <input type="radio" class="btn-check" id="input_full_name" value="full_name" name="filter_by">
                         </div>
                         <div class="th">
-                            {% if filter_by == 'room_number' %}
-                              <label class="sort active" for="option2" value="room_number">палата</label>
-                              <input type="radio" class="btn-check" id="option2" value="room_number" name="filter_by" checked>
-                            {% else %}
-                              <label class="sort" for="option2" value="room_number">палата</label>
-                              <input type="radio" class="btn-check" id="option2" value="room_number" name="filter_by">
-                            {% endif %}
-                        </div>
-
-                        <div class="th">
-                            {% if filter_by == 'department' %}
-                              <label class="sort active" for="option3" value="department">отделение</label>
-                              <input type="radio" class="btn-check" id="option3" value="department" name="filter_by" checked>
-                            {% else %}
-                              <label class="sort" for="option3" value="department">отделение</label>
-                              <input type="radio" class="btn-check" id="option3" value="department" name="filter_by">
-                            {% endif %}
+                              <label id="room_number" onclick="check_function('input_room_number')" class="sort" for="input_room_number">палата</label>
+                              <input type="radio" class="btn-check" id="input_room_number" value="room_number" name="filter_by">
                         </div>
                         <div class="th">
-                            {% if filter_by == 'type_of_diet' %}
-                              <label class="sort active" for="option4" value="type_of_diet">диета</label>
-                              <input type="radio" class="btn-check" id="option4" value="type_of_diet" name="filter_by" checked>
-                            {% else %}
-                              <label class="sort" for="option4" value="type_of_diet">диета</label>
-                              <input type="radio" class="btn-check" id="option4" value="type_of_diet" name="filter_by">
-                            {% endif %}
+                              <label id="department" onclick="check_function('input_department')" class="sort" for="input_department">отделение</label>
+                              <input type="radio" class="btn-check" id="input_department" value="department" name="filter_by">
+                        </div>
+                        <div class="th">
+                              <label id="type_of_diet" onclick="check_function('input_type_of_diet')" class="sort" for="input_type_of_diet">диета</label>
+                              <input type="radio" class="btn-check" id="input_type_of_diet" value="type_of_diet" name="filter_by">
                         </div>
                     </div>
                     {% for form in formset %}
@@ -61,84 +67,107 @@
                             <span class="tag">{{ form.type_of_diet.value }}</span>
                         </div>
                     </div>
-                    {% endfor %}
+
+    <div data-modal="modal-start{{ form.id.value }}" data-modal-width="480">
+            <div class="title">Редактировать профиль пациента</div>
+                <div class="form-group">
+                    <label>ФИО пациента</label>
+                    <input id="{{ form.full_name.id_for_label }}" type="text" value="{{ form.full_name.value }}">
+                    <p id ='error_full_name' class="error-field"></p>
                 </div>
-            </div>
-            <div id="modal-start_add" class="modal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Добавить нового пациента</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="form-group">
+                    {% load widget_tweaks %}
+                    <label>Дата госпитализации</label>
+                    <input type="text" value="{{ form.receipt_date.value }}" data-datepicker id="{{ form.receipt_date.id_for_label }}">
+                    <p id ='error_receipt_date' class="error-field"></p>
                 </div>
-                <div class="modal-body">
-                    {{ user_form.full_name.label }}
-                    {{ user_form.full_name }}
-                    {{ user_form.receipt_date.label }}
-                    {{ user_form.receipt_date }}
-                    {{ user_form.receipt_time.label }}
-                    {{ user_form.receipt_time }}
-                    {{ user_form.department.label }}
-                    {{ user_form.department }}
-                    {{ user_form.type_of_diet.label }}
-                    {{ user_form.type_of_diet }}
-                    {{ user_form.room_number.label }}
-                    {{ user_form.room_number }}
-                    {{ user_form.comment.label }}
-                    {{ user_form.comment }}
+                <div class="form-group">
+                    <label>Время госпитализации</label>
+                    <input type="text" value="{{ form.receipt_time.value }}" data-timemask id="{{ form.receipt_time.id_for_label }}">
+                    <p id ='error_receipt_time' class="error-field"></p>
                 </div>
-                <div class="modal-footer">
-                    <input name="add_patient" class="btn btn-primary" type="submit" value="Сохранить">
+                <div class="form-group">
+                    <label>Отделение</label>
+                    {{ form.department }}
+                    <p id ='error_department' class="error-field"></p>
+                </div>
+                <div class="form-group">
+                    <label>Диета</label>
+                    {{ form.type_of_diet }}
+                    <p id ='error_type_of_diet' class="error-field"></p>
+                </div>
+                <div class="form-group">
+                    <label>Номер палаты</label>
+                    {{ form.room_number }}
+                    <p id ='error_room_number' class="error-field"></p>
+                </div>
+                <div class="form-group">
+                    <label>Комментарий</label>
+                    {{ form.comment|attr:"rows='4'" }}
+                    <p id ='error_comment' class="error-field"></p>
+                </div>
 
 
-                    <button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal"
-                        aria-label="Close">Отменить
-                    </button>
+
+                <div class="form-group item-actions flex flex-center">
+                    <button name="add_patient" onclick="validationEditForm('{{ form.full_name.id_for_label }}', '{{ form.receipt_date.id_for_label }}', '{{ form.receipt_time.id_for_label }}', '{{ form.department.id_for_label }}', '{{ form.type_of_diet.id_for_label }}', '{{ form.room_number.id_for_label }}', '{{ form.comment.id_for_label }}', '{{ form.id.value }}')">Сохранить</button>
+                    <a class="button white" data-modal-close>Отменить</a>
                 </div>
+
+    </div>
+    <div id="patient-archived{{ form.id.value }}" data-modal="patient-archive{{ form.id.value }}" data-modal-width="400">
+        <div class="title align-center">Перенести учётную запись пациента в архив?</div>
+        <div class="confirm-block">
+            <div class="buttons">
+                <a class="button" onclick="patientArchive('{{ form.id.value }}')">Архивировать</a>
+                <a id='close{{ form.id.value }}' class="button white" data-modal-close>Отменить</a>
             </div>
         </div>
     </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
 
             <div id="right" data-simplebar>
                 <div class="patient-card-block">
                     <div class="block-title">Карточка пациента</div>
                     <div class="tabs">
-                        <a href="#" class="active" data-tab="profile">Профиль</a>
-                        <a href="#" data-tab="eat">Выбранные блюда</a>
+                        <a class="active" data-tab="profile">Профиль</a>
+                        <a data-tab="eat">Выбранные блюда</a>
                     </div>
                     <div class="profile active" data-tab-content="profile">
-                        <div id="full_name" class="name"></div>
+                        <div id="full_name_field" class="name"></div>
                         <div class="fields">
                             <div class="field">
                                 <div class="label">Дата госпитализации</div>
-                                <div  id="receipt_datetime" class="value"></div>
+                                <div  id="receipt_datetime_field" class="value"></div>
                             </div>
                             <div class="field">
                                 <div class="label">Отделение</div>
-                                <div id="department" class="value"></div>
+                                <div id="department_field" class="value"></div>
                             </div>
                             <div class="field">
                                 <div class="label">Диета</div>
-                                <div id="type_of_diet" class="value"></div>
+                                <div id="type_of_diet_field" class="value"></div>
                             </div>
                             <div class="field">
                                 <div class="label">Номер палаты</div>
-                                <div id="room_number" class="value"></div>
+                                <div id="room_number_field" class="value"></div>
                             </div>
                         </div>
-                        <div id="comment" class="help"></div>
+                        <div id="comment_field" class="help"></div>
                         <div class="actions">
-                            <a href="#" class="button">Редактировать</a>
-                            <a href="#" class="button white">Архивировать</a>
+                            <a id="modal_field" class="button">Редактировать</a>
+                            <a id="archive_field" class="button white">Архивировать</a>
                         </div>
                     </div>
                     <div class="eat" data-tab-content="eat">
                         <div class="switch">
-                            <a href="#" class="active">Сегодня</a>
-                            <a href="#">Завтра</a>
-                            <a href="#">Послезавтра</a>
+                            <a class="active">Сегодня</a>
+                            <a>Завтра</a>
+                            <a>Послезавтра</a>
                         </div>
                         <div class="date">12 июля, вторник</div>
                         <div class="boxes">
@@ -314,33 +343,41 @@
             </div>
         </div>
 <script>
+
+
+
 function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, comment, id) {
-    document.getElementById("full_name").innerHTML = full_name;
-    document.getElementById("receipt_datetime").innerHTML = receipt_date + ' ' + receipt_time;
-    document.getElementById("department").innerHTML = department;
-    document.getElementById("type_of_diet").innerHTML = type_of_diet;
-    document.getElementById("room_number").innerHTML = room_number;
-    document.getElementById("comment").innerHTML = comment;
-    document.getElementById("modal").innerHTML = '<button type="button" class="btn btn-outline-primary" style="margin-bottom: 10px;" data-bs-toggle="modal" data-bs-target="#modal-start'+id+'">Редактировать</button>';
-    document.getElementById("archive").innerHTML = '<button type="button" class="btn btn-outline-primary" style="margin-bottom: 10px;" data-bs-toggle="modal" data-bs-target="#modal-archive'+id+'">Архивировать</button>';
+    document.getElementById("full_name_field").innerHTML = full_name;
+    document.getElementById("receipt_datetime_field").innerHTML = receipt_date + ' ' + receipt_time;
+    document.getElementById("department_field").innerHTML = department;
+    document.getElementById("type_of_diet_field").innerHTML = type_of_diet;
+    document.getElementById("room_number_field").innerHTML = room_number;
+    document.getElementById("comment_field").innerHTML = comment;
+    document.getElementById("modal_field").setAttribute('data-modal-link', 'modal-start'+id);
+    document.getElementById("archive_field").setAttribute('data-modal-link', 'patient-archive'+id);
 
 }
 
+
 const list = document.querySelectorAll('.product')
- list.forEach(item =>{
+    list.forEach(item =>{
         item.addEventListener('click', (e) =>{
         list.forEach(el=>{ el.classList.remove('active'); });
         item.classList.add('active')
     })
 })
 
+const list2 = document.querySelectorAll('.product')
+  if (list2.length > 0) {
+    list2[0].click()
+  }
+
 const list1 = document.querySelectorAll('.tag')
  list1.forEach(item1 =>{
         if (item1.innerHTML == 'ОВД') {
-            item1.classList.add('mint')
+            item1.classList.add('green')
         }
         if (item1.innerHTML == 'ОВД б/с') {
-
             item1.classList.add('mint')
         }
         if (item1.innerHTML == 'ОВД без сахара') {
@@ -348,13 +385,13 @@ const list1 = document.querySelectorAll('.tag')
             item1.classList.add('mint')
         }
         if (item1.innerHTML == 'ЩД') {
-            item1.classList.add('blue')
+            item1.classList.add('yellow')
         }
         if (item1.innerHTML == 'БД') {
             item1.classList.add('yellow')
         }
         if (item1.innerHTML == 'ВБД') {
-            item1.classList.add('yellow')
+            item1.classList.add('orange')
         }
         if (item1.innerHTML == 'НБД') {
             item1.classList.add('yellow')
@@ -363,23 +400,174 @@ const list1 = document.querySelectorAll('.tag')
             item1.classList.add('blue')
         }
         if (item1.innerHTML == 'ВКД') {
-            item1.classList.add('yellow')
+            item1.classList.add('purple')
         }
 })
 
-var form = document.querySelector('form'),
-  radio = [].slice.call(form.querySelectorAll('input[name^=filter_by]'));
-radio.forEach(function(el) {
-  el.addEventListener('change', function() {
-    if (radio.filter(function(ch) {
-      return ch.checked;
-    }).length === 1) {
-      form.submit();
-      // или же, если используете, ajax-ом
+// фильтрация/сортировка страницы
+function check_function(value) {    
+    var form = document.querySelector('form');
+    document.getElementById(value).setAttribute('checked', 'true');
+    document.getElementById('filter_by_flag').setAttribute('checked', 'true');
+    form.submit();
+}
+
+
+var list4 = document.getElementById('sorting').innerHTML
+
+var list3 = document.getElementById('filter_by').innerHTML
+document.getElementById(list3).classList.add('active');
+
+document.getElementById('input_' + list3).setAttribute('checked', 'true');
+
+if (list4 == 'down') {
+    document.getElementById(list3).classList.add('desc');
+}
+
+
+function validationForm() {
+    
+    var form = document.querySelector('form');
+    var div_form = document.querySelector('.form-group');
+    var fields = form.querySelectorAll('.field')
+    var full_name = document.getElementById('id_full_name')
+    var receipt_date = document.getElementById('id_receipt_date')
+    var receipt_time = document.getElementById('id_receipt_time')
+    var department = document.getElementById('id_department')
+    var type_of_diet = document.getElementById('id_type_of_diet')
+    var room_number = document.getElementById('id_room_number')
+    var comment = document.getElementById('id_comment')
+    var errors = document.querySelectorAll('.error-field')
+    for (var i = 0; i < errors.length; i++) {
+    errors[i].innerHTML = '';
     }
-  }, false);
-});
+    var error = 0
+    if (!full_name.value) {
+        document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
+        error = error + 1
+    }   
+    if (!receipt_date.value) {
+        document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (!receipt_time.value) {
+        document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (department.value == 'Не выбрано') {
+        document.getElementById('error_department').innerHTML = 'Обязательное поле'
+        error = error + 1
+    }   
+    
+    if (type_of_diet.value == 'Не выбрано') {
+        document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (room_number.value == 'Не выбрано') {
+        document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    
+    if (error == 0) {    
+        document.getElementById('add_patient_flag').setAttribute('checked', 'true');
+        document.getElementById('test_full_name').value = full_name.value
+        document.getElementById('test_receipt_date').value = receipt_date.value
+        document.getElementById('test_receipt_time').value = receipt_time.value
+        document.getElementById('test_department').value = department.value
+        document.getElementById('test_type_of_diet').value = type_of_diet.value
+        document.getElementById('test_room_number').value = room_number.value
+        document.getElementById('test_comment').value = id_comment.value
+        form.submit();
+
+        
+    }
+}
+
+
+function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_department, id_type_of_diet, id_room_number, id_comment, id) {
+    var form = document.querySelector('form');
+    var full_name = document.getElementById(id_full_name)
+    var receipt_date = document.getElementById(id_receipt_date)
+    var receipt_time = document.getElementById(id_receipt_time)
+    var department = document.getElementById(id_department)
+    var type_of_diet = document.getElementById(id_type_of_diet)
+    var room_number = document.getElementById(id_room_number)
+    var comment = document.getElementById(id_comment)
+
+
+    var errors = document.querySelectorAll('.error-field')
+    for (var i = 0; i < errors.length; i++) {
+    errors[i].innerHTML = '';
+    }
+    var error = 0
+    if (!full_name.value) {
+        document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
+        error = error + 1
+    }   
+    if (!receipt_date.value) {
+        document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (!receipt_time.value) {
+        document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (department.value == 'Не выбрано') {
+        document.getElementById('error_department').innerHTML = 'Обязательное поле'
+        error = error + 1
+    }   
+    if (type_of_diet.value == 'Не выбрано') {
+        document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (room_number.value == 'Не выбрано') {
+        document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (error == 0) {     
+        document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
+        document.getElementById('id_edit_user').value = id
+        document.getElementById('test1_full_name').value = full_name.value
+        document.getElementById('test1_receipt_date').value = receipt_date.value
+        document.getElementById('test1_receipt_time').value = receipt_time.value
+        document.getElementById('test1_department').value = department.value
+        document.getElementById('test1_type_of_diet').value = type_of_diet.value
+        document.getElementById('test1_room_number').value = room_number.value
+        document.getElementById('test1_comment').value = comment.value
+        document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
+        form.submit()
+        //form.submit();            
+    }
+ }
+
+function patientArchive(id) {
+    var form = document.querySelector('form');
+    document.getElementById('id_edit_user').value = id;
+    document.getElementById('archive').setAttribute('checked', 'true');
+    form.submit()
+    // document.getElementById('close'+id).click()
+    // document.getElementById('archived').click()
+    //setTimeout(() => { form.submit();}, 500);
+} 
+
+
+
+
+//131311393
+
+
+
+// $('.test').magnificPopup();
+
+
 
 
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+
+
+
 {% endblock %}
+
+

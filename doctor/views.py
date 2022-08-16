@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput
-from .forms import PatientRegistrationForm
+from .forms import PatientRegistrationForm, DietChoiceForm
 from nutritionist.models import CustomUser, Product, Timetable
 from nutritionist.forms import TimetableForm
 import random, calendar, datetime
@@ -11,12 +11,15 @@ from datetime import datetime, date, timedelta
 from django.views.generic.list import ListView
 from django.conf import settings
 from django.utils import dateformat
+from dateutil.parser import parse
+from django.db.models.functions import Lower
 
 
 def group_doctors_check(user):
     return user.groups.filter(name='doctors').exists()
 
-
+filter_by = 'full_name' # дефолтная фильтрация
+sorting = 'top'
 @login_required(login_url='login')
 @user_passes_test(group_doctors_check, login_url='login')
 def doctor(request):
@@ -25,32 +28,50 @@ def doctor(request):
                                               'full_name', 'receipt_date', 'receipt_time', 'department',
                                               'room_number', 'type_of_diet', 'comment', 'id'),
                                           widgets={
-                                              'full_name': TextInput(attrs={'class': 'form-control'}),
-                                              'room_number': Select(attrs={'class': 'form-control'}),
-                                              'department': Select(attrs={'class': 'form-control'}),
-                                              'type_of_diet': Select(attrs={'class': 'form-control'}),
-                                              'receipt_date': DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'}),
-                                              'receipt_time': TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
-                                              'comment': TextInput(attrs={'class': 'form-control', 'placeholder': 'Комментарий'}),
+                                              'full_name': TextInput(attrs={'required': "True"}),
+                                              'room_number': Select(attrs={}),
+                                              'department': Select(attrs={}),
+                                              'type_of_diet': Select(attrs={}),
+                                              'receipt_date': TextInput(),
+                                              'receipt_time': TextInput(),
+                                              'comment': Textarea(),
                                               'id': Textarea(attrs={'style': "display: none;"}),
                                           },
                                           extra=0, )
-
-    filter_by = 'full_name' # дефолтная фильтрация
-    if request.method == 'POST':
-        filter_by = request.POST.getlist('filter_by')[0]
-
+    global filter_by
+    global sorting
+    page = 'menu-doctor'
     queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
+    if request.method == 'POST' and 'filter_by_flag' in request.POST:
+
+        if filter_by == request.POST.getlist('filter_by')[0]:
+            if sorting == 'top':
+                queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
+                sorting = 'down'
+            else:
+                queryset = CustomUser.objects.filter(status='patient').order_by(f'-{filter_by}')
+                sorting = 'top'
+
+        else:
+            filter_by = request.POST.getlist('filter_by')[0]
+            queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
     if request.method == 'POST' and 'add_patient' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
         formset = \
             CustomUserFormSet(request.POST, request.FILES, queryset=queryset)
 
         if user_form.is_valid():
-            login = str(len(CustomUser.objects.all()) + 1)
+            while True:
+                login = ''.join([random.choice("123456789qwertyuiopasdfghjklzxcvbnm") for i in range(10)])
+                try:
+                    CustomUser.objects.get(id=login)
+                    continue
+                except Exception:
+                    break
             user = CustomUser.objects.create_user(login)
             user.full_name = user_form.data['full_name']
-            user.receipt_date = user_form.data['receipt_date']
+            user.receipt_date = parse(user_form.data['receipt_date']).strftime('%Y-%m-%d')
+            user.receipt_time = parse(user_form.data['receipt_time']).strftime('%h:%m')
             user.receipt_time = user_form.data['receipt_time']
             user.department = user_form.data['department']
             user.room_number = user_form.data['room_number']
@@ -58,43 +79,53 @@ def doctor(request):
             user.comment = user_form.data['comment']
             user.status = 'patient'
             user.save()
+            queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
             formset = CustomUserFormSet(queryset=queryset)
             return render(request,
-                          'doctor.html',
+                           'doctor.html',
                           {'formset': formset,
+                           'modal': 'patient-added',
+                           'page': page,
+                           'sorting': sorting,
                            'user_form': user_form,
                            'filter_by': filter_by})
 
-    if request.method == 'POST' and 'update' in request.POST:
+    if request.method == 'POST' and 'edit_patient_flag' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        formset = \
-            CustomUserFormSet(request.POST, request.FILES, queryset=queryset)
-        if not formset.is_valid():
-            data = {
+        user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
+        user.full_name = user_form.data['full_name1']
+        user.receipt_date = parse(user_form.data['receipt_date1']).strftime('%Y-%m-%d')
+        user.receipt_time = parse(user_form.data['receipt_time1']).strftime('%h:%m')
+        user.receipt_time = user_form.data['receipt_time1']
+        user.department = user_form.data['department1']
+        user.room_number = user_form.data['room_number1']
+        user.type_of_diet = user_form.data['type_of_diet1']
+        user.comment = user_form.data['comment1']
+        user.save()
+        formset = CustomUserFormSet(queryset=queryset)
+        data = {
                 'formset': formset,
-                'user_form': user_form,
-                'filter_by': filter_by}
-            return render(request, 'doctor.html', context=data)
-        else:
-            formset.save()
-            data = {
-                'formset': formset,
+                'page': page,
+                'sorting': sorting,
+                'modal': 'edited',                 
                 'user_form': user_form,
                 'filter_by': filter_by
             }
         return render(request, 'doctor.html', context=data)
 
     if request.method == 'POST' and 'archive' in request.POST:
-        id_user = request.POST.getlist('archive')[0]
+        id_user = request.POST.getlist('id_edit_user')[0]
         user = CustomUser.objects.get(id=id_user)
         user.status = 'patient_archive'
         user.save()
         user_form = PatientRegistrationForm(request.POST)
-        formset = \
-            CustomUserFormSet(request.POST, request.FILES, queryset=queryset)
+        formset = CustomUserFormSet(queryset=queryset)
         if not formset.is_valid():
             data = {
+                'modal': 'archived',
                 'formset': formset,
+                'page': page,
+                'sorting': sorting,
                 'user_form': user_form,
                 'filter_by': filter_by
             }
@@ -104,7 +135,10 @@ def doctor(request):
             queryset = CustomUser.objects.filter(status='patient')
             formset = CustomUserFormSet(queryset=queryset)
             data = {
+                'modal': 'archive',
+                'page': page,
                 'formset': formset,
+                'sorting': sorting,
                 'user_form': user_form,
                 'filter_by': filter_by
             }
@@ -113,6 +147,8 @@ def doctor(request):
     formset = CustomUserFormSet(queryset=queryset)
     data = {
             'formset': formset,
+            'page': page,
+            'sorting': sorting,
             'user_form': user_form,
             'filter_by': filter_by
     }
@@ -122,8 +158,6 @@ def doctor(request):
 @login_required(login_url='login')
 @user_passes_test(group_doctors_check, login_url='login')
 def archive(request):
-
-
     CustomUserFormSet = modelformset_factory(CustomUser,
                                           fields=(
                                               'full_name', 'receipt_date', 'receipt_time', 'department',
@@ -139,32 +173,54 @@ def archive(request):
                                               'id': Textarea(attrs={'style': "display: none;"}),
                                           },
                                           extra=0, )
-    filter_by = 'full_name' # дефолтная фильтрация
-    if request.method == 'POST':
-        filter_by = request.POST.getlist('filter_by')[0]
+
+
+    page = 'menu-archive'
+    global filter_by
+    global sorting
+
     queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
+    if request.method == 'POST' and 'filter_by_flag' in request.POST:
+
+        if filter_by == request.POST.getlist('filter_by')[0]:
+            if sorting == 'top':
+                queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
+                sorting = 'down'
+            else:
+                queryset = CustomUser.objects.filter(status='patient_archive').order_by(f'-{filter_by}')
+                sorting = 'top'
+
+        else:
+            filter_by = request.POST.getlist('filter_by')[0]
+            queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
     if request.method == 'POST' and 'archive' in request.POST:
-        id_user = request.POST.getlist('archive')[0]
+        id_user = request.POST.getlist('id_edit_user')[0]
         user = CustomUser.objects.get(id=id_user)
         user.status = 'patient'
         user.save()
         user_form = PatientRegistrationForm(request.POST)
         formset = \
-            CustomUserFormSet(request.POST, request.FILES, queryset=queryset)
+            CustomUserFormSet(queryset=queryset)
         if not formset.is_valid():
             data = {
+                'sorting': sorting,
                 'formset': formset,
+                'page': page,
+                'modal': 'patient-restored',
                 'user_form': user_form,
                 'filter_by': filter_by,
             }
-            return render(request, 'doctor.html', context=data)
+            return render(request, 'archive.html', context=data)
         else:
             formset.save()
             queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
             formset = CustomUserFormSet(queryset=queryset)
             data = {
+                'sorting': sorting,
                 'formset': formset,
                 'user_form': user_form,
+                'page': page,
+                'modal': 'patient-restored',
                 'filter_by': filter_by,
             }
         return render(request, 'archive.html', context=data)
@@ -172,37 +228,119 @@ def archive(request):
     user_form = PatientRegistrationForm()
     formset = CustomUserFormSet(queryset=queryset)
     data = {
+            'sorting': sorting,
             'formset': formset,
             'user_form': user_form,
+            'page': page,
             'filter_by': filter_by,
     }
     return render(request, 'archive.html', context=data)
+
+
+def sorting_dishes(meal, queryset_main_dishes, queryset_side_dishes, queryset_salad):
+    """Сортировка блюд по приемам пищи"""
+
+    if meal == 'breakfast':
+        return [], [], []
+    if meal == 'afternoon':
+        return [], [], []
+    if meal == 'lunch':
+        if len(queryset_main_dishes) == 0:
+            queryset_main_dishes = []
+        if len(queryset_side_dishes) == 0:
+            queryset_side_dishes = []
+        if len(queryset_salad) == 0:
+            queryset_salad = []
+
+        if len(queryset_main_dishes) == 1 or len(queryset_main_dishes) == 2:
+            queryset_main_dishes = queryset_main_dishes[0:1]
+        if len(queryset_side_dishes) == 1 or len(queryset_side_dishes) == 2:
+            queryset_side_dishes = queryset_side_dishes[0:1]
+        if len(queryset_salad) == 1 or len(queryset_salad) == 2:
+            queryset_salad = queryset_salad[0:1]
+
+        if len(queryset_main_dishes) >= 3:
+            queryset_main_dishes = queryset_main_dishes[0:2]
+        if len(queryset_side_dishes) >= 3:
+            queryset_side_dishes = queryset_side_dishes[0:2]
+        if len(queryset_salad) >= 3:
+            queryset_salad = queryset_salad[0:2]
+
+    if meal == 'dinner':
+        if len(queryset_main_dishes) <= 1:
+            queryset_main_dishes = []
+        if len(queryset_side_dishes) <= 1:
+            queryset_side_dishes = []
+        if len(queryset_salad) <= 1:
+            queryset_salad = []
+
+        if len(queryset_main_dishes) == 2:
+            queryset_main_dishes = queryset_main_dishes[1:2]
+        if len(queryset_side_dishes) == 2:
+            queryset_side_dishes = queryset_side_dishes[1:2]
+        if len(queryset_salad) == 2:
+            queryset_salad = queryset_salad[1:2]
+
+        if len(queryset_main_dishes) == 3:
+            queryset_main_dishes = queryset_main_dishes[2:3]
+        if len(queryset_side_dishes) == 3:
+            queryset_side_dishes = queryset_side_dishes[2:3]
+        if len(queryset_salad) == 3:
+            queryset_salad = queryset_salad[2:3]
+
+        if len(queryset_main_dishes) >= 4:
+            queryset_main_dishes = queryset_main_dishes[2:4]
+        if len(queryset_side_dishes) >= 3:
+            queryset_side_dishes = queryset_side_dishes[2:4]
+        if len(queryset_salad) >= 3:
+            queryset_salad = queryset_salad[2:4]
+    return queryset_main_dishes, queryset_side_dishes, queryset_salad
 
 
 @login_required(login_url='login')
 @user_passes_test(group_doctors_check, login_url='login')
 def menu(request):
     import datetime
+    page = 'menu-menu'
+    date_menu = {
+        'today': str(date.today()),
+        'tomorrow': str(date.today() + datetime.timedelta(days=1)),
+        'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
+    }
+    
     if request.GET == {}:
+        diet_form = DietChoiceForm({'type_of_diet': 'ОВД'})
         diet = 'ovd'
-        date_menu = str(date.today() - datetime.timedelta(days=16))
+        date_get = str(date.today())
+        meal = 'lunch'
+
     else:
-        diet = request.GET['diet']
-        date_menu = request.GET['date']
-    today = str(date.today() - datetime.timedelta(days=16))
-    tomorrow = str(date.today() - datetime.timedelta(days=15))
-    day_after_tomorrow = str(date.today() - datetime.timedelta(days=14))
-    queryset = Product.objects.filter(timetable__datetime=date_menu).filter(**{diet: 'True'})
-    formatted_date = dateformat.format(date.fromisoformat(date_menu), settings.DATE_FORMAT)
-    data = {'diet': diet,
-            'products': queryset,
-            'today': today,
-            'tomorrow': tomorrow,
-            'day_after_tomorrow': day_after_tomorrow,
+        diet = request.GET['type_of_diet']
+        date_get = request.GET['date']
+        diet_form = DietChoiceForm(request.GET)
+        meal = request.GET['meal']
+
+    queryset_main_dishes = Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Вторые блюда').order_by(Lower('name'))
+    queryset_side_dishes = Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Гарниры').order_by(Lower('name'))
+    queryset_salad = Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Салаты').order_by(Lower('name'))
+
+    queryset_main_dishes, queryset_side_dishes, queryset_salad = \
+        sorting_dishes(meal, queryset_main_dishes, queryset_side_dishes, queryset_salad)
+
+    queryset = Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'})
+    formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
+    data = {'diet_form': diet_form,
             'date_menu': date_menu,
-            'formatted_date': formatted_date
+            'products': queryset,
+            'products_main_dishes': queryset_main_dishes,
+            'products_side_dishes': queryset_side_dishes,
+            'products_salad': queryset_salad,
+            'page': page,
+            'date_get': date_get,
+            'formatted_date': formatted_date,
+            'meal': meal,
             }
     return render(request, 'menu.html', context=data)
-
-
-

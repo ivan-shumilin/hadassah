@@ -1,135 +1,424 @@
 {% extends "base_generic_doctor.html" %}
 {% block content %}
-<form style='padding-left: 0px; padding-right: 0px;' action="" method="post" novalidate>
-    {% csrf_token %}
-    {{ formset.management_form }}
-    <div class="container">
-        <div class="row">
-      {% if filter_by == 'full_name' %}
-        <input type="radio" class="btn-check" id="option1" value="full_name" name="filter_by" checked>
-        <label class="btn btn-secondary" for="option1" value="full_name">ФИО</label>
-      {% else %}
-        <input type="radio" class="btn-check" id="option1" value="full_name" name="filter_by">
-        <label class="btn btn-secondary" for="option1" value="{{ today }}">ФИО</label>
-      {% endif %}
+<div id="center" data-simplebar>
+    <div class="header-block">
+        <div class="title">Архив учётных записей</div>
+    </div>
+    <div>
+        {# какая форма сработала  #}
+        <input style="display: none;" type="checkbox" id="filter_by_flag"  name="filter_by_flag">
+        <input style="display: none;" type="checkbox" id="add_patient_flag"  name="add_patient">
+        <input style="display: none;" type="checkbox" id="edit_patient_flag"  name="edit_patient_flag">
+        <input style="display: none;" type="checkbox" id="archive"  name="archive">
+        <input style="display: none;" type="text" id="id_edit_user" name="id_edit_user">
+    </div>
 
-      {% if filter_by == 'room_number' %}
-        <input type="radio" class="btn-check" id="option2" value="room_number" name="filter_by" checked>
-        <label class="btn btn-secondary" for="option2" value="room_number">Палата</label>
-      {% else %}
-        <input type="radio" class="btn-check" id="option2" value="room_number" name="filter_by">
-        <label class="btn btn-secondary" for="option2" value="room_number">Палата</label>
-      {% endif %}
+    <div style="display: none;" id="filter_by">{{ filter_by }}</div>
+    <div style="display: none;" id="sorting">{{ sorting }}</div>
+    <div style="display: none;" id="status">{{ modal }}</div>
+                  
+    <a style="display: none;" id="patient-restored" data-modal-link="patient-restored">a</a>
+    <a style="display: none;" id="edited" data-modal-link="patient-edited">Редактировать</a>
+    <a style="display: none;" id="patient-added" data-modal-link="patient-added">a</a>
+    <a style="display: none;" id="modal-close" data-modal-close>a</a>
+               
+    <div class="table" data-columns="30% 20% 30% 20%">
+        <div class="tr">
+          <div class="th">
+              <label id="full_name" onclick="check_function('input_full_name')" class="sort" for="input_full_name">фио пациента</label>
+              <input type="radio" class="btn-check" id="input_full_name" value="full_name" name="filter_by">
+          </div>
+          <div class="th">
+              <label id="room_number" onclick="check_function('input_room_number')" class="sort" for="input_room_number">палата</label>
+              <input type="radio" class="btn-check" id="input_room_number" value="room_number" name="filter_by">
+          </div>
+          <div class="th">
+              <label id="department" onclick="check_function('input_department')" class="sort" for="input_department">отделение</label>
+              <input type="radio" class="btn-check" id="input_department" value="department" name="filter_by">
+          </div>
+          <div class="th">
+              <label id="type_of_diet" onclick="check_function('input_type_of_diet')" class="sort" for="input_type_of_diet">диета</label>
+              <input type="radio" class="btn-check" id="input_type_of_diet" value="type_of_diet" name="filter_by">
+        </div>
+    </div>
 
-      {% if filter_by == 'department' %}
-        <input type="radio" class="btn-check" id="option3" value="department" name="filter_by" checked>
-        <label class="btn btn-secondary" for="option3" value="department">Отделение</label>
-      {% else %}
-        <input type="radio" class="btn-check" id="option3" value="department" name="filter_by">
-        <label class="btn btn-secondary" for="option3" value="department">Отделение</label>
-      {% endif %}
+    {% for form in formset %}
+      <div id="{{ form.id.value }}" class="tr product" onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
+        <div class="td">
+          <div class="name">{{ form.full_name.value }}</div>
+        </div>
+        <div class="td">{{ form.room_number.value }}</div>
+        <div class="td">{{ form.department.value }}</div>
+        <div class="td">
+          <span class="tag">{{ form.type_of_diet.value }}</span>
+        </div>
+      </div>
 
-      {% if filter_by == 'type_of_diet' %}
-        <input type="radio" class="btn-check" id="option4" value="type_of_diet" name="filter_by" checked>
-        <label class="btn btn-secondary" for="option4" value="type_of_diet">Диета</label>
-      {% else %}
-        <input type="radio" class="btn-check" id="option4" value="type_of_diet" name="filter_by">
-        <label class="btn btn-secondary" for="option4" value="type_of_diet">Диета</label>
-      {% endif %}
+    <div id="patient-restore{{ form.id.value }}" data-modal="patient-restore{{ form.id.value }}" data-modal-width="400">
+      <div class="title align-center">Восстановить учётную запись пациента?</div>
+      <div class="confirm-block">
+          <div class="text">Данные пациента вновь появятся в списке активных учётных записей, для него активируется личный кабинет</div>
+          <div class="buttons">
+              <a class="button" onclick="patientRestore('{{ form.id.value }}')">Восстановить</a>
+              <a class="button white" data-modal-close>Отменить</a>
+          </div>
+      </div>
+    </div>
+                    {% endfor %}
+  </div>
+            </div>
 
- </div>
-    <div class="row" style="margin-bottom: 50px">
-        <div class="col-8" style="background-color: #eeeded">
-            {% for form in formset %}
-                <div id="{{ form.id.value }}" class="row row-patient" style="margin-bottom: 50px" onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value }}', '{{ form.receipt_time.value }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value }}', {{ form.id.value }})">
-                    <div style="display: none;">
-                        {{ form.full_name }}
-                        {{ form.room_number }}
-                        {{ form.department }}
-                        {{ form.type_of_diet }}
-                        {{ form.receipt_date }}
-                        {{ form.receipt_time }}
-                        {{ form.comment }}
-                        {{ form.id }}
+
+
+            <div id="right" data-simplebar>
+                <div class="patient-card-block">
+                    <div class="block-title">Карточка пациента</div>
+                    <div class="profile active" data-tab-content="profile">
+                        <div id="full_name_field" class="name"></div>
+                        <div class="fields">
+                            <div class="field">
+                                <div class="label">Дата госпитализации</div>
+                                <div  id="receipt_datetime_field" class="value"></div>
+                            </div>
+                            <div class="field">
+                                <div class="label">Отделение</div>
+                                <div id="department_field" class="value"></div>
+                            </div>
+                            <div class="field">
+                                <div class="label">Диета</div>
+                                <div id="type_of_diet_field" class="value"></div>
+                            </div>
+                            <div class="field">
+                                <div class="label">Номер палаты</div>
+                                <div id="room_number_field" class="value"></div>
+                            </div>
+                        </div>
+                        <div id="comment_field" class="help"></div>
+                        <div class="actions">
+                          <a id="recovery" class="button" data-modal-link="patient-restore">Восстановить учётную запись</a>
+                      </div>
                     </div>
-                    <div class="col">{{ form.full_name.value }}</div>
-                    <div class="col">{{ form.room_number.value }}</div>
-                    <div class="col">{{ form.department.value }}</div>
-                    <div class="col">{{ form.type_of_diet.value }}</div>
-                    <div class="col">{{ form.id.value }}</div>
-                </div>
-                <div id="modal-archive{{ form.id.value }}" class="modal" tabindex="1">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Восстановить учетную запись пациента в архив</h5>
-                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                    <div data-modal="profile-form" data-modal-width="480">
+                      <div class="title">Редактировать профиль</div>
+                      
+                          <div class="form-group">
+                              <label for="#">E-mail</label>
+                              <input type="text" value="mail@example.com">
+                          </div>
+                          <div class="form-group item-actions flex flex-center">
+                              <button type="submit" data-modal-link="profile-edited">Сохранить</button>
+                              <a href="#" class="button white" data-modal-link="password-form">Изменить пароль</a>
+                          </div>
+                          <div data-modal="profile-edited" data-modal-width="400">
+                            <div class="message-block">
+                                <div class="icon">
+                                    <div class="i i-ok"></div>
                                 </div>
-                                <div class="modal-body">
-
+                                <div class="title">Email успешно изменён</div>
+                            </div>
+                        </div>
+                
+                
+                        <div data-modal="password-form" data-modal-width="480">
+                            <div class="title">Изменение пароля</div>
+                            <form action="#" class="password-form">
+                                <div class="form-group">
+                                    <label for="#">Введите старый пароль</label>
+                                    <input type="password" name="old_password">
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="submit" name="archive" class="btn btn-primary"  value={{ form.id.value }}>Восстановить
-                                    </button>
+                                <div class="form-group">
+                                    <label for="#">Введите новый пароль</label>
+                                    <input type="password" name="new_password">
+                                </div>
+                                <div class="form-group item-actions flex flex-center">
+                                    <button type="submit">Сохранить</button>
+                                </div>
+                            </form>
+                        </div>
+                
+                
 
-                                    <button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Отменить
-                                    </button>
+                
+                
+                        <div data-modal="patient-restore" data-modal-width="400">
+                            <div class="title align-center">Восстановить учётную запись пациента?</div>
+                            <div class="confirm-block">
+                                <div class="text">Данные пациента вновь появятся в списке активных учётных записей, для него активируется личный кабинет</div>
+                                <div class="buttons">
+                                    <a href="#" class="button" data-modal-link="patient-restored">Восстановить</a>
+                                    <a href="#" class="button white" data-modal-close>Отменить</a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-             {% endfor %}
+                
+                
+                        <div data-modal="patient-restored" data-modal-width="400">
+                            <div class="message-block">
+                                <div class="icon">
+                                    <div class="i i-ok"></div>
+                                </div>
+                                <div class="title">Учётная запись восстановлена</div>
+                            </div>
+                        </div>
+                
+
+
+
+                  </div>
+                </div>
+            </div>
         </div>
-        <div class="col-4" style="background-color: #e3e3ec">
-            <p id="full_name"></p>
-            <p id="receipt_datetime"></p>
-            <p id="department"></p>
-            <p id="type_of_diet"></p>
-            <p id="room_number"></p>
-            <p id="comment"></p>
-            <div id="archive"></div>
-        </div>
-    </div>
-</div>
-
-
-</form>
-
 <script>
-function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, comment, id) {
 
-    document.getElementById("full_name").innerHTML = full_name;
-    document.getElementById("receipt_datetime").innerHTML = receipt_date + receipt_time;
-    document.getElementById("department").innerHTML = department;
-    document.getElementById("type_of_diet").innerHTML = type_of_diet;
-    document.getElementById("room_number").innerHTML = room_number;
-    document.getElementById("comment").innerHTML = comment;
-    document.getElementById("archive").innerHTML = '<button type="button" class="btn btn-outline-primary" style="margin-bottom: 10px;" data-bs-toggle="modal" data-bs-target="#modal-archive'+id+'">Восстановить учетную запись</button>';
+
+
+function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, comment, id) {
+    document.getElementById("full_name_field").innerHTML = full_name;
+    document.getElementById("receipt_datetime_field").innerHTML = receipt_date + ' ' + receipt_time;
+    document.getElementById("department_field").innerHTML = department;
+    document.getElementById("type_of_diet_field").innerHTML = type_of_diet;
+    document.getElementById("room_number_field").innerHTML = room_number;
+    document.getElementById("comment_field").innerHTML = comment;
+    document.getElementById("recovery").setAttribute('data-modal-link', 'patient-restore'+id);
 
 }
 
-const list = document.querySelectorAll('.row-patient')
- list.forEach(item =>{
+
+const list = document.querySelectorAll('.product')
+    list.forEach(item =>{
         item.addEventListener('click', (e) =>{
         list.forEach(el=>{ el.classList.remove('active'); });
         item.classList.add('active')
     })
 })
 
-var form = document.querySelector('form'),
-  radio = [].slice.call(form.querySelectorAll('input[name^=filter_by]'));
-radio.forEach(function(el) {
-  el.addEventListener('change', function() {
-    if (radio.filter(function(ch) {
-      return ch.checked;
-    }).length === 1) {
-      form.submit();
-      // или же, если используете, ajax-ом
+const list2 = document.querySelectorAll('.product')
+  if (list2.length > 0) {
+    list2[0].click()
+  }
+
+const list1 = document.querySelectorAll('.tag')
+ list1.forEach(item1 =>{
+        if (item1.innerHTML == 'ОВД') {
+            item1.classList.add('green')
+        }
+        if (item1.innerHTML == 'ОВД б/с') {
+            item1.classList.add('mint')
+        }
+        if (item1.innerHTML == 'ОВД без сахара') {
+            item1.innerHTML = 'ОВД б/с'
+            item1.classList.add('mint')
+        }
+        if (item1.innerHTML == 'ЩД') {
+            item1.classList.add('yellow')
+        }
+        if (item1.innerHTML == 'БД') {
+            item1.classList.add('yellow')
+        }
+        if (item1.innerHTML == 'ВБД') {
+            item1.classList.add('orange')
+        }
+        if (item1.innerHTML == 'НБД') {
+            item1.classList.add('yellow')
+        }
+        if (item1.innerHTML == 'НКД') {
+            item1.classList.add('blue')
+        }
+        if (item1.innerHTML == 'ВКД') {
+            item1.classList.add('purple')
+        }
+})
+
+// фильтрация/сортировка страницы
+function check_function(value) {    
+    var form = document.querySelector('form');
+    document.getElementById(value).setAttribute('checked', 'true');
+    document.getElementById('filter_by_flag').setAttribute('checked', 'true');
+    form.submit();
+}
+
+
+var list4 = document.getElementById('sorting').innerHTML
+
+var list3 = document.getElementById('filter_by').innerHTML
+document.getElementById(list3).classList.add('active');
+
+document.getElementById('input_' + list3).setAttribute('checked', 'true');
+
+if (list4 == 'down') {
+    document.getElementById(list3).classList.add('desc');
+}
+
+
+function validationForm() {
+    
+    var form = document.querySelector('form');
+    var div_form = document.querySelector('.form-group');
+    var fields = form.querySelectorAll('.field')
+    var full_name = document.getElementById('id_full_name')
+    var receipt_date = document.getElementById('id_receipt_date')
+    var receipt_time = document.getElementById('id_receipt_time')
+    var department = document.getElementById('id_department')
+    var type_of_diet = document.getElementById('id_type_of_diet')
+    var room_number = document.getElementById('id_room_number')
+    var comment = document.getElementById('id_comment')
+    var errors = document.querySelectorAll('.error-field')
+    for (var i = 0; i < errors.length; i++) {
+    errors[i].innerHTML = '';
     }
-  }, false);
-});
+    var error = 0
+    if (!full_name.value) {
+        document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
+        error = error + 1
+    }   
+    if (!receipt_date.value) {
+        document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (!receipt_time.value) {
+        document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (department.value == 'Не выбрано') {
+        document.getElementById('error_department').innerHTML = 'Обязательное поле'
+        error = error + 1
+    }   
+    
+    if (type_of_diet.value == 'Не выбрано') {
+        document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (room_number.value == 'Не выбрано') {
+        document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    
+    if (error == 0) {    
+        document.getElementById('add_patient_flag').setAttribute('checked', 'true');
+        document.getElementById('test_full_name').value = full_name.value
+        document.getElementById('test_receipt_date').value = receipt_date.value
+        document.getElementById('test_receipt_time').value = receipt_time.value
+        document.getElementById('test_department').value = department.value
+        document.getElementById('test_type_of_diet').value = type_of_diet.value
+        document.getElementById('test_room_number').value = room_number.value
+        document.getElementById('test_comment').value = id_comment.value
+        form.submit();
+
+        
+    }
+}
+
+
+function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_department, id_type_of_diet, id_room_number, id_comment, id) {
+    var form = document.querySelector('form');
+    var full_name = document.getElementById(id_full_name)
+    var receipt_date = document.getElementById(id_receipt_date)
+    var receipt_time = document.getElementById(id_receipt_time)
+    var department = document.getElementById(id_department)
+    var type_of_diet = document.getElementById(id_type_of_diet)
+    var room_number = document.getElementById(id_room_number)
+    var comment = document.getElementById(id_comment)
+
+
+    var errors = document.querySelectorAll('.error-field')
+    for (var i = 0; i < errors.length; i++) {
+    errors[i].innerHTML = '';
+    }
+    var error = 0
+    if (!full_name.value) {
+        document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
+        error = error + 1
+    }   
+    if (!receipt_date.value) {
+        document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (!receipt_time.value) {
+        document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (department.value == 'Не выбрано') {
+        document.getElementById('error_department').innerHTML = 'Обязательное поле'
+        error = error + 1
+    }   
+    if (type_of_diet.value == 'Не выбрано') {
+        document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (room_number.value == 'Не выбрано') {
+        document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
+        error = error + 1
+    } 
+    if (error == 0) {     
+        document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
+        document.getElementById('id_edit_user').value = id
+        document.getElementById('test1_full_name').value = full_name.value
+        document.getElementById('test1_receipt_date').value = receipt_date.value
+        document.getElementById('test1_receipt_time').value = receipt_time.value
+        document.getElementById('test1_department').value = department.value
+        document.getElementById('test1_type_of_diet').value = type_of_diet.value
+        document.getElementById('test1_room_number').value = room_number.value
+        document.getElementById('test1_comment').value = comment.value
+        document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
+        form.submit()
+        //form.submit();            
+    }
+ }
+
+function patientArchive(id) {
+    var form = document.querySelector('form');
+    document.getElementById('id_edit_user').value = id;
+    document.getElementById('archive').setAttribute('checked', 'true');
+    form.submit()
+    // document.getElementById('close'+id).click()
+    // document.getElementById('archived').click()
+    //setTimeout(() => { form.submit();}, 500);
+} 
+
+function patientRestore(id) {
+    
+    var form = document.querySelector('form');
+    document.getElementById('id_edit_user').value = id;
+    document.getElementById('archive').setAttribute('checked', 'true');
+    form.submit()
+    // document.getElementById('close'+id).click()
+    // document.getElementById('archived').click()
+    //setTimeout(() => { form.submit();}, 500);
+} 
+
+// data-modal-link="patient-restored"
+
+
+function funonload() {
+    var list6 = document.getElementById('status').innerHTML   
+    document.getElementById(list6).click();
+    if (list6) {
+        setTimeout(() => {
+            document.getElementById('modal-close').click();
+                        
+        }, 1500);
+
+       }
+
+    // document.getElementById('archived').click()
+} 
+window.onload = funonload;
+
+//131311393
+
+
+
+// $('.test').magnificPopup();
+
+
+
+
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+
+
+
 {% endblock %}
+
+

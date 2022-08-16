@@ -1,100 +1,211 @@
 {% extends "base_generic_doctor.html" %}
 {% block content %}
-<form action="{% url 'menu' %}" method="get">
-    <label>
-        <select name="diet" class="form-control" id="id_form-2-type_of_diet">
-            {% if diet == 'ovd' %}
-                <option value="ovd" selected>ОВД</option>
-            {% else %}
-                <option value="ovd">ОВД</option>
-            {% endif %}
+<input style='display: none;' type="radio" id='input_{{ date_menu.today }}' name='date' value='{{ date_menu.today }}'>
+<input style='display: none;' type="radio" id='input_{{ date_menu.tomorrow }}' name='date' value='{{ date_menu.tomorrow }}'>
+<input style='display: none;' type="radio" id='input_{{ date_menu.day_after_tomorrow }}' name='date' value='{{ date_menu.day_after_tomorrow }}'>
+<input style='display: none;' type="text" id='input_type_of_diet' name='type_of_diet' value=''>
+<input style='display: none;' type="text" id='meal' name='meal' value=''>
 
-            {% if diet == 'ovd_sugarless' %}
-                <option value="ovd_sugarless" selected>ОВД без сахара</option>
-            {% else %}
-                <option value="ovd_sugarless">ОВД без сахара</option>
-            {% endif %}
-            {% if diet == 'shd' %}
-                <option value="shd" selected>ЩД</option>
-            {% else %}
-                <option value="shd">ЩД</option>
-            {% endif %}
-            {% if diet == 'bd' %}
-                <option value="bd" selected>БД</option>
-            {% else %}
-                <option value="bd">БД</option>
-            {% endif %}
-            {% if diet == 'vbd' %}
-                <option value="vbd" selected>ВБД</option>
-            {% else %}
-                <option value="vbd">ВБД</option>
-            {% endif %}
-            {% if diet == 'nbd' %}
-                <option value="nbd" selected>НБД</option>
-            {% else %}
-                <option value="nbd">НБД</option>
-            {% endif %}
-            {% if diet == 'nkd' %}
-                <option value="nkd" selected>НКД</option>
-            {% else %}
-                <option value="nkd">НКД</option>
-            {% endif %}
-            {% if diet == 'vkd' %}
-                <option value="vkd" selected>ВКД</option>
-            {% else %}
-                <option value="vkd">ВКД</option>
-            {% endif %}
-        </select>
-    </label>
-    <button type="submit" class="btn btn-outline-primary" >Показать</button>
-  <div class="row">
-      {% if date_menu == today %}
-        <input type="radio" class="btn-check" id="option1" value="{{ today }}" name="date" checked>
-        <label class="btn btn-secondary" for="option1" value="{{ today }}">Сегодня</label>
-      {% else %}
-        <input type="radio" class="btn-check" id="option1" value="{{ today }}" name="date">
-        <label class="btn btn-secondary" for="option1" value="{{ today }}">Сегодня</label>
-      {% endif %}
 
-      {% if date_menu == tomorrow %}
-        <input type="radio" class="btn-check" id="option2" value="{{ tomorrow }}" name="date" checked>
-        <label class="btn btn-secondary" for="option2" value="{{ tomorrow }}">Завтра</label>
-      {% else %}
-        <input type="radio" class="btn-check" id="option2" value="{{ tomorrow }}" name="date">
-        <label class="btn btn-secondary" for="option2" value="{{ tomorrow }}">Завтра</label>
-      {% endif %}
 
-      {% if date_menu == day_after_tomorrow %}
-        <input type="radio" class="btn-check" id="option3" value="{{ day_after_tomorrow }}" name="date" checked>
-        <label class="btn btn-secondary" for="option3" value="{{ day_after_tomorrow }}">Послезавтра</label>
-      {% else %}
-        <input type="radio" class="btn-check" id="option3" value="{{ day_after_tomorrow }}" name="date">
-        <label class="btn btn-secondary" for="option3" value="{{ day_after_tomorrow }}">Послезавтра</label>
-      {% endif %}
+            <div id="center" data-simplebar>
+                <div class="header-block">
+                    <div class="title">Архив учётных записей</div>
+                    <div class="menu">
+                        <div class="switch">
+                            <a id='{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
+                            <a id='{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
+                            <a id='{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+                        </div>
+                    </div>
+                    <div id='diet-menu' class="green-menu">
+                        <a data-modal-link="diet">Диета</a>
+                        <a id='diet_name' class="active" data-modal-link="diet">{{ diet_form.type_of_diet.value }}</a>
+                    </div>
+                </div>
 
-  </div>
-  <p>{{ formatted_date }}</p>
-    {% for product in products %}
-        <div>
-            <div>{{ product.name }}</div>
-            <p><strong>БЖУ:</strong> Белки - {{ product.fiber|floatformat  }} г, жиры - {{ product.fat|floatformat  }} г, углеводы - {{ product.carbohydrate|floatformat  }} г, ккал - {{ product.energy|floatformat  }}.</p>
-            <p><strong>Состав:</strong> {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</p>
+                <div class="eat-menu-block">
+                    <div class="menu">
+                        <a id='breakfast' onclick="submitMeals('breakfast')" >Завтрак</a>
+                        <a id='lunch' onclick="submitMeals('lunch')" >Обед</a>
+                        <a id='afternoon' onclick="submitMeals('afternoon')">Полдник</a>
+                        <a id='dinner' onclick="submitMeals('dinner')">Ужин</a>
+                    </div>
+                    <div class="date">{{ formatted_date|lower  }}</div>
+                </div>
+                <h3 class="dish-category">Основное блюдо</h3>
+                <div class="eat-grid">         
+                    {% for product in products_main_dishes %}                
+                            <div class="item">
+                                <div class="info">
+                                    <div class="name">{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
+                                </div>
+                                <div class="img">
+                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                </div>
+                            </div>               
+                    {% endfor %}            
+                        </div>
+                <h3 class="dish-category">Гарнир</h3>
+                <div class="eat-grid">         
+                    {% for product in products_side_dishes %}                
+                            <div class="item">
+                                <div class="info">
+                                    <div class="name">{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
+                                </div>
+                                <div class="img">
+                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                </div>
+                            </div>               
+                    {% endfor %}            
+                </div>
+                <h3 class="dish-category">Салат</h3>
+                <div class="eat-grid">         
+                    {% for product in products_salad %}                
+                            <div class="item">
+                                <div class="info">
+                                    <div class="name">{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
+                                </div>
+                                <div class="img">
+                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                </div>
+                            </div>               
+                    {% endfor %}            
+                </div>                
+                <h3 class="dish-category">Десерт</h3>
+                <h3 class="dish-category">Напиток</h3> 
+                
+            </div>
+        </div>
+
+
+
+
+
+        <div data-modal="profile-edited" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Email успешно изменён</div>
+            </div>
+        </div>
+
+        {% comment %}
+        <div data-modal="password-form" data-modal-width="480">
+            <div class="title">Изменение пароля</div>
+
+                <div class="form-group">
+                    <label for="#">Введите старый пароль</label>
+                    <input type="password" name="old_password">
+                </div>
+                <div class="form-group">
+                    <label for="#">Введите новый пароль</label>
+                    <input type="password" name="new_password">
+                </div>
+                <div class="form-group item-actions flex flex-center">
+                    <button type="submit">Сохранить</button>
+                </div>
 
         </div>
-    {% endfor %}
-</form>
+        {% endcomment %}
+
+
+        <div data-modal="logout" data-modal-width="400">
+            <div class="title align-center">Вы уверены, что хотите выйти?</div>
+            <div class="confirm-block">
+                <div class="buttons">
+                    <a href="#" class="button">Выйти</a>
+                    <a href="#" class="button white" data-modal-close>Отменить</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div data-modal="diet" data-modal-width="480">
+            <div class="title">Выберите диету из списка</div>
+            <form action="#">
+                <div class="form-group">
+                    <label for="#">Диета</label>                    
+                    {{ diet_form.type_of_diet }}
+                </div>
+                <div class="form-group item-actions flex flex-center">
+                    <button onclick="submitDietForm('{{ diet_form.type_of_diet.id_for_label }}')">Показать</button>
+                    <a  class="button white" data-modal-close>Отменить</a>
+                </div>
+            </form>
+        </div>
 <script>
-var form = document.querySelector('form'),
-  radio = [].slice.call(form.querySelectorAll('input[name^=date]'));
-radio.forEach(function(el) {
-  el.addEventListener('change', function() {
-    if (radio.filter(function(ch) {
-      return ch.checked;
-    }).length === 1) {
-      form.submit();
-      // или же, если используете, ajax-ом
-    }
-  }, false);
-});
-</script>
-{% endblock %}
+document.getElementById('{{ date_get }}').classList.add('active');
+document.getElementById('input_{{ date_get }}').setAttribute('checked', 'true');
+document.getElementById('{{ meal }}').classList.add('active');
+document.getElementById('meal').value = '{{ meal }}'
+
+
+function data_function(value) {
+    document.getElementById(value).setAttribute('checked', 'true');
+    submitForm();
+}
+
+
+
+function submitDietForm(id_type_of_diet) {
+    var type_of_diet = document.getElementById(id_type_of_diet)
+    document.getElementById('input_type_of_diet').value = type_of_diet.value
+    submitForm();
+}
+
+function submitForm() {
+    var form = document.querySelector('form');
+    form.submit();
+}
+
+function submitMeals(meal) {
+    document.getElementById('meal').value = meal
+    submitForm()
+}
+
+var diet_name = document.getElementById('diet_name')
+var diet_menu = document.getElementById('diet-menu')
+        if (diet_name.innerHTML == 'ovd') {
+            diet_menu.classList.add('green-menu')
+            diet_name.innerHTML = 'ОВД'
+        }
+        if (diet_name.innerHTML == 'ovd_sugarless') {
+            diet_menu.classList.add('mint-menu')
+            diet_name.innerHTML = 'ОВД б/с'
+        }
+        if (diet_name.innerHTML == 'shd') {
+            diet_menu.classList.add('yellow-menu')
+            (diet_name.innerHTML = 'ЩД')
+        }
+        if (diet_name.innerHTML == 'bd') {
+            diet_menu.classList.add('yellow-menu')
+            diet_name.innerHTML = 'БД'
+        }
+        if (diet_name.innerHTML == 'vbd') {
+            diet_menu.classList.add('orange-menu')
+            diet_name.innerHTML = 'ВБД'
+        }
+        if (diet_name.innerHTML == 'nbd') {
+            diet_menu.classList.add('yellow-menu')
+            diet_name.innerHTML = 'НБД'
+        }
+        if (diet_name.innerHTML == 'nkd') {
+            diet_menu.classList.add('blue-menu')
+            diet_name.innerHTML = 'НКД'
+        }
+        if (diet_name.innerHTML == 'vkd') {
+            diet_menu.classList.add('purple-menu')
+            diet_name.innerHTML = 'ВКД'
+        }
+
+
+</script>    
+    {% endblock %}

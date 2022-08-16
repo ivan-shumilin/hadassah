@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'patient',
     'rest_framework',
     'djoser',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

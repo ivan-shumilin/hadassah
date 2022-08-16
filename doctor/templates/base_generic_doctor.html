@@ -3,80 +3,267 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"-->
-<!--          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">-->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Add additional CSS in static file -->
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
     <title>{% block title %}Личный кабинет врача{% endblock %}</title>
     <style>
-    body {
-        font-size: 1rem;
-        color: #434343
-    }
-    hr {
-        margin: 1rem 0;
-        color: #000;
-        background-color: currentColor;
-        border: 0;
-        opacity: 0.1 !important;
-    }
-    .page {
-        font-size: 0.8rem !important;;
-    }
+        .table input[type="radio"] {
+            display: none;
+        }
+    </style>
 
-    .active {
-        background-color: #e3e3ec;
-
-
-</style>
 
 </head>
+{% if page == 'menu-menu' %}
 <body>
+    <form action="{% url 'menu' %}" style='padding-left: 0px; padding-right: 0px;' method="get" novalidate>
+{% else %}
+<body  class="has-right">
+    <form style='padding-left: 0px; padding-right: 0px;' method="post" novalidate>
+        {% csrf_token %}
+{% endif %}        
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-md">
-      <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
-        <li class="nav-item px-2">
-          <a class="nav-link text-white" aria-current="page" href="{% url 'doctor'  %}">Пациенты</a>
-        </li>
-        <li class="nav-item px-2">
-          <a class="nav-link text-white" aria-current="page" href="{% url 'menu'  %}">Меню</a>
-        </li>
-        <li class="nav-item px-2">
-          <a class="nav-link text-white" aria-current="page" href="{% url 'archive'  %}">Архив</a>
-        </li>
-      {% if user.is_authenticated %}
-        <li class="nav-item px-2 text-white nav-link mr-2">{{ user.username }}</li>
+    
+    {{ formset.management_form }}
+       <div id="wrapper">
+            <div id="left">
+                <div class="sidebar-header-block">
+                    <a  class="logo">
+                        {% load static %}
+                        <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
+                    </a>
+                    <div class="profile">
+                        <a  class="label" data-fade-toggle-link="profile-info">
+                            <span class="i i-user"></span>
+                            Профиль
+                        </a>
+                        <div class="info" data-fade-toggle="profile-info">
+                            <div class="segment">
+                                <div class="name">{{ user.first_name }} {{ user.last_name }}</div>
+                                <div class="email">{{ user.email }}</div>
+                                <div class="links">
+                                    <a  data-modal-link="logout">Выйти</a>
+                                    <a  data-modal-link="profile-form">Изменить</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <li class="nav-item px-2">
-          <a class="nav-link text-white" href="{% url 'logout' %}">Выйти</a>
-        </li>
-        {% if user.is_staff %}
-        <li class="nav-item px-2">
-          <a class="nav-link text-white" href="{% url 'backup' %}">Backup</a>
-        </li>
-        {% endif %}
-      {% else %}
-        <li class="nav-item px-2">
-          <a class="nav-link text-white" href="{% url 'login' %}">Войти</a>
-        </li>
+                <div class="sidebar-menu-block">
+                    <p style="display: none;" id="page">{{ page }}</p>
+                    <ul>
+                        <li id='menu-doctor'>
+                            <a href="{% url 'doctor'  %}">
+                                <span class="i i-list icon-default"></span>
+                                <span class="i i-list-colored icon-colored"></span>
+                                <span>Пациенты</span>
+                            </a>
+                        </li>
+                        <li id='menu-menu'>
+                            <a href="{% url 'menu'  %}">
+                                <span class="i i-eat icon-default"></span>
+                                <span class="i i-eat-colored icon-colored"></span>
+                                <span>Меню</span>
+                            </a>
+                        </li>
+                        <li id='menu-archive'>
+                            <a href="{% url 'archive'  %}">
+                                <span class="i i-box icon-default"></span>
+                                <span class="i i-box-colored icon-colored"></span>
+                                <span>Архив</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
-      {% endif %}
-      </ul>
-    </div>
-  </div>
-</nav>
-<div class="container-fluid " style="margin-top: 20px; margin-left: 10px;">
-    <div class="row">
+                <div class="sidebar-petrushka-block">
+                <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
+                    </a>
+                </div>
+            </div>
+
         {% block content %}
 
         {% endblock %}
-    </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    {% load static %}
+       </div>
+        <div data-modal="profile-form" data-modal-width="480">
+            <div class="title">Редактировать профиль</div>
+
+                <div class="form-group">
+                    <label for="#">E-mail</label>
+                    <input type="text" value="mail@example.com">
+                </div>
+                <div class="form-group item-actions flex flex-center">
+                    <button type="submit" data-modal-link="profile-edited">Сохранить</button>
+                    <a  class="button white" data-modal-link="password-form">Изменить пароль</a>
+                </div>
+
+        </div>
+
+
+        <div data-modal="profile-edited" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Email успешно изменён</div>
+            </div>
+        </div>
+
+
+        <div data-modal="password-form" data-modal-width="480">
+            <div class="title">Изменение пароля</div>
+
+                <div class="form-group">
+                    <label for="#">Введите старый пароль</label>
+                    <input type="password" name="old_password">
+                </div>
+                <div class="form-group">
+                    <label for="#">Введите новый пароль</label>
+                    <input type="password" name="new_password">
+                </div>
+                <div class="form-group item-actions flex flex-center">
+                    <button type="submit">Сохранить</button>
+                </div>
+
+        </div>
+
+
+        <div data-modal="patient-add-test" data-modal-width="480">
+                    <input id="test_full_name" type="text" name="full_name" value="Смирнова Антонина Сергеевна">
+                    <input id="test_receipt_date" type="text" name="receipt_date" value="12.07.2022" data-datepicker>
+                    <input id="test_receipt_time" type="text" name="receipt_time" value="14:00" data-timemask>
+                    <input id="test_department" name="department">
+                    <input id="test_type_of_diet" name="type_of_diet">
+                    <input id="test_room_number" name="room_number">
+                    <input id="test_comment" name="comment">
+        </div>
+            <div data-modal="patient-add-test1" data-modal-width="480">
+                    <input id="test1_full_name" type="text" name="full_name1">
+                    <input id="test1_receipt_date" type="text" name="receipt_date1">
+                    <input id="test1_receipt_time" type="text" name="receipt_time1">
+                    <input id="test1_department" type="text" name="department1">
+                    <input id="test1_type_of_diet" type="text" name="type_of_diet1">
+                    <input id="test1_room_number" type="text" name="room_number1">
+                    <input id="test1_comment" type="text" name="comment1">
+        </div>
+
+
+        <div  data-modal="patient-edited" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Учётная запись отредактирована</div>
+            </div>
+        </div>
+
+
+
+
+        <div data-modal="patient-add" data-modal-width="480">
+            <div class="title">Добавить нового пациента</div>
+
+                <div class="form-group">
+                    {{ user_form.full_name.label }}
+                    {{ user_form.full_name }}
+                    <p id ='error_full_name' class="error-field"></p>
+                </div>
+                <div class="form-group">
+                    {% load widget_tweaks %}
+                    {{ user_form.receipt_date.label }}
+                    {{ user_form.receipt_date|attr:"data-datepicker" }}
+                    <p id ='error_receipt_date' class="error-field"></p>
+                </div>
+                <div class="form-group">
+                    {{ user_form.receipt_time.label }}
+                    {{ user_form.receipt_time|attr:"data-timemask" }}
+                    <p id ='error_receipt_time' class="error-field"></p>
+                </div>
+                <div class="form-group">
+                    {{ user_form.department.label }}
+                    {{ user_form.department }}
+                    <p id ='error_department' class="error-field"></p>
+                </div>
+                <div class="form-group">
+                    {{ user_form.type_of_diet.label }}
+                    {{ user_form.type_of_diet }}
+                    <p id ='error_type_of_diet' class="error-field"></p>
+                </div>
+                <div class="form-group">
+                    {{ user_form.room_number.label }}
+                    {{ user_form.room_number }}
+                    <p id ='error_room_number' class="error-field"></p>
+                </div>
+                <div class="form-group">
+                    {{ user_form.comment.label }}
+                    {{ user_form.comment|attr:"rows='4'" }}
+                    <p id ='error_comment' class="error-field"></p>
+                </div>
+
+
+
+                <div class="form-group item-actions flex flex-center">
+                    <button name="add_patient" onclick="validationForm()">Сохранить</button>
+                    <a  class="button white" data-modal-close>Отменить</a>
+                </div>
+
+        </div>
+
+
+
+
+        <div data-modal="patient-added" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Учётная запись создана</div>
+                <div class="text">Пациент получит доступ к выбору рациона в личном кабинете по QR-коду в его палате</div>
+            </div>
+        </div>
+
+
+
+
+
+        <div data-modal="logout" data-modal-width="400">
+            <div class="title align-center">Вы уверены, что хотите выйти?</div>
+            <div class="confirm-block">
+                <div class="buttons">
+                    <a class="button" href="{% url 'logout' %}">Выйти</a>
+                    <a class="button white" data-modal-close>Отменить</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div data-modal="patient-archive" data-modal-width="400">
+            <div class="title align-center">Перенести учётную запись пациента в архив?</div>
+            <div class="confirm-block">
+                <div class="buttons">
+                    <a  class="button" data-modal-link="patient-archived">Архивировать</a>
+                    <a  class="button white" data-modal-close>Отменить</a>
+                </div>
+            </div>
+        </div>
+        <div id="123" class='test' data-modal="patient-archived" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Учётная запись архивирована</div>
+            </div>
+          </div>
+   
+    <script src="{% static 'doctor/js/all.js' %}"></script>
+</form>
 </body>
 </html>
