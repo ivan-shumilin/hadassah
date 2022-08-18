@@ -87,12 +87,50 @@ class Product(models.Model):
 
     def __str__(self):
         return f'{self.name}, {self.category}'
-#
+
 
 class Timetable(models.Model):
     datetime = models.DateField()
     item = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
     date_create = models.DateField(default=date.today, null=True)
+    def __str__(self):
+        return f'{self.item}'
+
+
+class ProductLp(models.Model):
+    name = models.CharField(max_length=200, null=True)
+    carbohydrate = models.CharField(max_length=200, null=True)
+    fat = models.CharField(max_length=200, null=True)
+    fiber = models.CharField(max_length=200, null=True)
+    energy = models.CharField(max_length=200, null=True)
+    image = models.CharField(max_length=2000, null=True)
+    description = models.CharField(max_length=1000, null=True)
+    category = models.CharField(max_length=2000, null=True)
+    comment = models.CharField(max_length=5000, null=True)
+
+    def __str__(self):
+        return f'{self.name}, {self.category}'
+
+class TimetableLp(models.Model):
+    item = models.ForeignKey('ProductLp', on_delete=models.SET_NULL, null=True)
+    day_of_the_week = models.CharField(
+        max_length=100,
+        choices=DAT_OF_THE_WEEK,
+        blank=True,
+        default='',
+        help_text='День недели')
+    type_of_diet = models.CharField(
+        max_length=100,
+        choices=TYPE_DIET,
+        blank=True,
+        default='',
+        help_text='Выбор диеты')
+    meals = models.CharField(
+        max_length=100,
+        choices=MEALS,
+        blank=True,
+        default='',
+        help_text='Выбор диеты')
     def __str__(self):
         return f'{self.item}'
 
@@ -106,3 +144,4 @@ class Barcodes(models.Model):
        )
     def __str__(self):
         return f'{self.number}'
+

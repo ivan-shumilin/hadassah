@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput
 from .forms import PatientRegistrationForm, DietChoiceForm
-from nutritionist.models import CustomUser, Product, Timetable
+from nutritionist.models import CustomUser, Product, Timetable, ProductLp
 from nutritionist.forms import TimetableForm
 import random, calendar, datetime
 import datetime
@@ -13,6 +13,18 @@ from django.conf import settings
 from django.utils import dateformat
 from dateutil.parser import parse
 from django.db.models.functions import Lower
+from doctor.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet
+from django.db.models import Q
+
+
+
+
+
+
+
+
+
+
 
 
 def group_doctors_check(user):
@@ -237,64 +249,7 @@ def archive(request):
     return render(request, 'archive.html', context=data)
 
 
-def sorting_dishes(meal, queryset_main_dishes, queryset_side_dishes, queryset_salad):
-    """Сортировка блюд по приемам пищи"""
 
-    if meal == 'breakfast':
-        return [], [], []
-    if meal == 'afternoon':
-        return [], [], []
-    if meal == 'lunch':
-        if len(queryset_main_dishes) == 0:
-            queryset_main_dishes = []
-        if len(queryset_side_dishes) == 0:
-            queryset_side_dishes = []
-        if len(queryset_salad) == 0:
-            queryset_salad = []
-
-        if len(queryset_main_dishes) == 1 or len(queryset_main_dishes) == 2:
-            queryset_main_dishes = queryset_main_dishes[0:1]
-        if len(queryset_side_dishes) == 1 or len(queryset_side_dishes) == 2:
-            queryset_side_dishes = queryset_side_dishes[0:1]
-        if len(queryset_salad) == 1 or len(queryset_salad) == 2:
-            queryset_salad = queryset_salad[0:1]
-
-        if len(queryset_main_dishes) >= 3:
-            queryset_main_dishes = queryset_main_dishes[0:2]
-        if len(queryset_side_dishes) >= 3:
-            queryset_side_dishes = queryset_side_dishes[0:2]
-        if len(queryset_salad) >= 3:
-            queryset_salad = queryset_salad[0:2]
-
-    if meal == 'dinner':
-        if len(queryset_main_dishes) <= 1:
-            queryset_main_dishes = []
-        if len(queryset_side_dishes) <= 1:
-            queryset_side_dishes = []
-        if len(queryset_salad) <= 1:
-            queryset_salad = []
-
-        if len(queryset_main_dishes) == 2:
-            queryset_main_dishes = queryset_main_dishes[1:2]
-        if len(queryset_side_dishes) == 2:
-            queryset_side_dishes = queryset_side_dishes[1:2]
-        if len(queryset_salad) == 2:
-            queryset_salad = queryset_salad[1:2]
-
-        if len(queryset_main_dishes) == 3:
-            queryset_main_dishes = queryset_main_dishes[2:3]
-        if len(queryset_side_dishes) == 3:
-            queryset_side_dishes = queryset_side_dishes[2:3]
-        if len(queryset_salad) == 3:
-            queryset_salad = queryset_salad[2:3]
-
-        if len(queryset_main_dishes) >= 4:
-            queryset_main_dishes = queryset_main_dishes[2:4]
-        if len(queryset_side_dishes) >= 3:
-            queryset_side_dishes = queryset_side_dishes[2:4]
-        if len(queryset_salad) >= 3:
-            queryset_salad = queryset_salad[2:4]
-    return queryset_main_dishes, queryset_side_dishes, queryset_salad
 
 
 @login_required(login_url='login')
@@ -307,37 +262,77 @@ def menu(request):
         'tomorrow': str(date.today() + datetime.timedelta(days=1)),
         'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
     }
-    
+
     if request.GET == {}:
         diet_form = DietChoiceForm({'type_of_diet': 'ОВД'})
         diet = 'ovd'
         date_get = str(date.today())
-        meal = 'lunch'
+        meal = 'breakfast'
 
     else:
         diet = request.GET['type_of_diet']
         date_get = request.GET['date']
         diet_form = DietChoiceForm(request.GET)
         meal = request.GET['meal']
+    day_of_the_week = get_day_of_the_week(date_get)
+    translated_diet = translate_diet(diet)
+    products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
+                                        Q(timetablelp__type_of_diet=translated_diet) &
+                                        Q(timetablelp__meals=meal))
 
-    queryset_main_dishes = Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Вторые блюда').order_by(Lower('name'))
-    queryset_side_dishes = Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Гарниры').order_by(Lower('name'))
-    queryset_salad = Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Салаты').order_by(Lower('name'))
+    products_main = []
+    products_porridge = []
+    products_dessert = []
+    products_fruit = []
+    products_salad = []
+    products_soup = []
+    products_drink = []
+    products_garnish = []
 
-    queryset_main_dishes, queryset_side_dishes, queryset_salad = \
-        sorting_dishes(meal, queryset_main_dishes, queryset_side_dishes, queryset_salad)
+    queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Вторые блюда').order_by(Lower('name')))
+    queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Гарниры').order_by(Lower('name')))
+    queryset_salad = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Салаты').order_by(Lower('name')))
+    queryset_soup = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Первые блюда').order_by(Lower('name')))
 
-    queryset = Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'})
+    queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup = \
+        sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup)
+
+    if meal == 'breakfast':
+        products_main = list(products.filter(category='основной'))
+        products_porridge = list(products.filter(category='каша'))
+
+    if meal == 'afternoon':
+        products_dessert = list(products.filter(category='десерт'))
+        products_fruit = list(products.filter(category='фрукты'))
+        products_drink = list(products.filter(category='напиток'))
+
+    if meal == 'lunch':
+        products_main = list(products.filter(category='основной'))
+        products_garnish = list(products.filter(category='гарнир'))
+        products_salad = list(products.filter(category='салат'))
+        products_soup = list(products.filter(category='суп'))
+        products_drink = list(products.filter(category='напиток'))
+
+    if meal == 'dinner':
+        products_main = list(products.filter(category='основной'))
+        products_garnish = list(products.filter(category='гарнир'))
+
+
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
     data = {'diet_form': diet_form,
             'date_menu': date_menu,
-            'products': queryset,
-            'products_main_dishes': queryset_main_dishes,
-            'products_side_dishes': queryset_side_dishes,
-            'products_salad': queryset_salad,
+            'products_main': products_main + queryset_main_dishes,
+            'products_porridge': products_porridge,
+            'products_dessert': products_dessert,
+            'products_fruit': products_fruit,
+            'products_garnish': products_garnish + queryset_garnish,
+            'products_salad': products_salad + queryset_salad,
+            'products_soup': products_soup + queryset_soup,
+            'products_drink': products_drink,
             'page': page,
             'date_get': date_get,
             'formatted_date': formatted_date,

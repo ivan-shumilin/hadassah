@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'hadassah.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hadassah1',
+        'NAME': 'hadassah',
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
         'HOST': 'localhost',

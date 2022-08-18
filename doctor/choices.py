@@ -47,3 +47,20 @@ STATUS_BARCODES = (
     ('active', 'active'),
     ('no_active', 'no_active'),
 )
+
+DAT_OF_THE_WEEK = (
+    ('понедельник', 'понедельник'),
+    ('вторник', 'вторник'),
+    ('среда', 'среда'),
+    ('четверг', 'четверг'),
+    ('пятница', 'пятница'),
+    ('суббота', 'суббота'),
+    ('воскресенье', 'воскресенье'),
+)
+
+MEALS = (
+    ('breakfast', 'breakfast'),
+    ('lunch', 'lunch'),
+    ('afternoon', 'afternoon'),
+    ('dinner', 'dinner'),
+)

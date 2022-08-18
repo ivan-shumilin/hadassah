@@ -33,53 +33,150 @@
                     </div>
                     <div class="date">{{ formatted_date|lower  }}</div>
                 </div>
+            {% if products_main %}    
                 <h3 class="dish-category">Основное блюдо</h3>
                 <div class="eat-grid">         
-                    {% for product in products_main_dishes %}                
-                            <div class="item">
-                                <div class="info">
-                                    <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                    <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
-                                </div>
-                                <div class="img">
-                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                </div>
-                            </div>               
-                    {% endfor %}            
-                        </div>
-                <h3 class="dish-category">Гарнир</h3>
-                <div class="eat-grid">         
-                    {% for product in products_side_dishes %}                
-                            <div class="item">
-                                <div class="info">
-                                    <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                    <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
-                                </div>
-                                <div class="img">
-                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                </div>
-                            </div>               
+                    {% for product in products_main %}                
+                        <div class="item">
+                            <div class="info">
+                                <div class="name">{{ product.name }}</div>
+                                <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
+                            </div>
+                             <div class="img">
+                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                            </div>
+                        </div>               
                     {% endfor %}            
                 </div>
+            {% endif %}
+            
+            {% if products_porridge %} 
+                <h3 class="dish-category">Каша</h3>
+                <div class="eat-grid">         
+                    {% for product in products_porridge %}                
+                        <div class="item">
+                            <div class="info">
+                                <div class="name">{{ product.name }}</div>
+                                <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
+                            </div>
+                             <div class="img">
+                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                            </div>
+                        </div>               
+                    {% endfor %}            
+                </div>
+            {% endif %}
+
+            {% if products_dessert %} 
+                <h3 class="dish-category">Десерт</h3>
+                <div class="eat-grid">         
+                    {% for product in products_dessert %}                
+                        <div class="item">
+                            <div class="info">
+                                <div class="name">{{ product.name }}</div>
+                                <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
+                            </div>
+                             <div class="img">
+                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                            </div>
+                        </div>               
+                    {% endfor %}            
+                </div>
+            {% endif %}
+            {% if products_fruit %} 
+                <h3 class="dish-category">Фрукт</h3>
+                <div class="eat-grid">         
+                    {% for product in products_fruit %}                
+                        <div class="item">
+                            <div class="info">
+                                <div class="name">{{ product.name }}</div>
+                                <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
+                            </div>
+                             <div class="img">
+                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                            </div>
+                        </div>               
+                    {% endfor %}            
+                </div>
+            {% endif %}
+
+            {% if products_garnish %} 
+                <h3 class="dish-category">Гарнир</h3>
+                <div class="eat-grid">         
+                    {% for product in products_garnish %}                
+                        <div class="item">
+                            <div class="info">
+                                <div class="name">{{ product.name }}</div>
+                                <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
+                            </div>
+                             <div class="img">
+                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                            </div>
+                        </div>               
+                    {% endfor %}            
+                </div>
+            {% endif %}
+
+            {% if products_salad %} 
                 <h3 class="dish-category">Салат</h3>
                 <div class="eat-grid">         
                     {% for product in products_salad %}                
-                            <div class="item">
-                                <div class="info">
-                                    <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                    <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
-                                </div>
-                                <div class="img">
-                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                </div>
-                            </div>               
+                        <div class="item">
+                            <div class="info">
+                                <div class="name">{{ product.name }}</div>
+                                <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
+                            </div>
+                            <div class="img">
+                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                            </div>
+                        </div>               
                     {% endfor %}            
-                </div>                
-                <h3 class="dish-category">Десерт</h3>
-                <h3 class="dish-category">Напиток</h3> 
+                </div>
+            {% endif %}
+
+        {% if products_soup %} 
+            <h3 class="dish-category">Суп</h3>
+            <div class="eat-grid">
+                {% for product in products_soup %}
+                        <div class="item">
+                        <div class="info">
+                            <div class="name">{{ product.name }}</div>
+                                <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                            <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
+                        </div>
+                        <div class="img">
+                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if products_drink %} 
+            <h3 class="dish-category">Напиток</h3>
+            <div class="eat-grid">
+                {% for product in products_drink %}
+                        <div class="item">
+                        <div class="info">
+                            <div class="name">{{ product.name }}</div>
+                                <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                            <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
+                        </div>
+                        <div class="img">
+                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}        
+
+
                 
             </div>
         </div>
