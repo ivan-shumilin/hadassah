@@ -18,6 +18,9 @@
                 <div class="form-group">
                     <label for="{{ user_form.email.id_for_label }}">E-mail</label>
                     {{ user_form.email }}
+                        {% if errors %}
+                            <p style="color: red;" class="error-field">{{ errors|cut:"["|cut:"]"|cut:"'" }}</p>
+                        {% endif %}
                 </div>
                 <div class="form-group item-actions flex flex-center">
                     <button type="submit">Зарегистрироваться</button>
