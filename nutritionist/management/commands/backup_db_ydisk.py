@@ -13,7 +13,12 @@ headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Au
 def create_backup():
     name = str(date.today()) + '.json'
     with open(name, 'w', encoding='utf-8') as outfile:
-        management.call_command('dumpdata', 'nutritionist.product', 'nutritionist.timetable', stdout=outfile)
+        management.call_command('dumpdata',
+                                'nutritionist.product',
+                                'nutritionist.timetable',
+                                'nutritionist.productlp',
+                                'nutritionist.timetablelp',
+                                stdout=outfile)
 
 
 def create_folder(path):
