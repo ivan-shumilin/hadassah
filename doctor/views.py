@@ -322,6 +322,7 @@ def menu(request):
     if meal == 'dinner':
         products_main = list(products.filter(category='основной'))
         products_garnish = list(products.filter(category='гарнир'))
+        products_drink = list(products.filter(category='напиток'))
 
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
