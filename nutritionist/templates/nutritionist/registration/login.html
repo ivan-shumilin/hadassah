@@ -11,9 +11,6 @@
                             <div class="form-group">
                                 <label for="{{ user_form.username.id_for_label }}">E-mail</label>
                                 {{ user_form.username }}
-                                {% if errors %}
-                                    <p style="color: red;" class="error-field">{{ errors }}</p>
-                                {% endif %}
                             </div>
                             <div class="form-group">
                                 <label for="{{ user_form.password.id_for_label }}">Пароль</label>
