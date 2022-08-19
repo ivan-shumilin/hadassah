@@ -302,10 +302,12 @@ def menu(request):
         sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup)
 
     if meal == 'breakfast':
+        products_garnish = list(products.filter(category='гарнир'))
         products_main = list(products.filter(category='основной'))
         products_porridge = list(products.filter(category='каша'))
 
     if meal == 'afternoon':
+        products_main = list(products.filter(category='основной'))
         products_dessert = list(products.filter(category='десерт'))
         products_fruit = list(products.filter(category='фрукты'))
         products_drink = list(products.filter(category='напиток'))
