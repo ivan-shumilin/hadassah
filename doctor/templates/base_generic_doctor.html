@@ -20,12 +20,45 @@
 </head>
 {% if page == 'menu-menu' %}
 <body>
-    <form action="{% url 'menu' %}" style='padding-left: 0px; padding-right: 0px;' method="get" novalidate>
+<div data-modal="profile-form" data-modal-width="480">
+            <div class="title">Редактировать профиль</div>
+                <form id='profile-form-id' method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="#">E-mail</label>
+                        <input id='change-email' type="text" value="{{ user.email }}">
+                        <p style="color: red;" id='change-email-error'></p>
+                    </div>
+                    <div class="form-group item-actions flex flex-center">
+                        <button onclick="validationChangeEmailForm()">Сохранить</button>
+                        <a class="button white" data-modal-link="password-form">Изменить пароль</a>
+                    </div>
+                   
+                    <input style="display: none;" type="text" id="changed-email" name="changed-email">
+                    <input style="display: none;" type="checkbox" id="change-email_flag"  name="change-email">
+                    <input style="display: none;" type="text" id="changed-password" name="changed-password">
+                    <input style="display: none;" type="checkbox" id="change-password_flag"  name="change-password_flag">                    
+                </form>
+        </div>
+    <form id='form-get' action="{% url 'menu' %}" style='padding-left: 0px; padding-right: 0px;' method="get" novalidate>
+
 {% else %}
 <body  class="has-right">
     <form style='padding-left: 0px; padding-right: 0px;' method="post" novalidate>
         {% csrf_token %}
-{% endif %}        
+        <div data-modal="profile-form" data-modal-width="480">
+            <div class="title">Редактировать профиль</div>
+                <div class="form-group">
+                        <label for="#">E-mail</label>
+                        <input id='change-email' type="text" value="{{ user.email }}">
+                        <p style="color: red;" id='change-email-error'></p>
+                    </div>
+                    <div class="form-group item-actions flex flex-center">
+                        <button onclick="validationChangeEmailForm()">Сохранить</button>
+                        <a class="button white" data-modal-link="password-form">Изменить пароль</a>
+                    </div>
+        </div>
+{% endif %}
 
     
     {{ formset.management_form }}
@@ -53,6 +86,12 @@
                         </div>
                     </div>
                 </div>
+
+
+
+
+
+
 
                 <div class="sidebar-menu-block">
                     <p style="display: none;" id="page">{{ page }}</p>
@@ -93,19 +132,7 @@
 
     {% load static %}
        </div>
-        <div data-modal="profile-form" data-modal-width="480">
-            <div class="title">Редактировать профиль</div>
 
-                <div class="form-group">
-                    <label for="#">E-mail</label>
-                    <input type="text" value="mail@example.com">
-                </div>
-                <div class="form-group item-actions flex flex-center">
-                    <button type="submit" data-modal-link="profile-edited">Сохранить</button>
-                    <a  class="button white" data-modal-link="password-form">Изменить пароль</a>
-                </div>
-
-        </div>
 
 
         <div data-modal="profile-edited" data-modal-width="400">
@@ -117,23 +144,35 @@
             </div>
         </div>
 
+        <div data-modal="password-edited" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Пароль успешно изменён</div>
+            </div>
+        </div>
 
         <div data-modal="password-form" data-modal-width="480">
             <div class="title">Изменение пароля</div>
 
                 <div class="form-group">
                     <label for="#">Введите старый пароль</label>
-                    <input type="password" name="old_password">
+                    <input  type="password" name="old_password" id="old_password">
                 </div>
                 <div class="form-group">
                     <label for="#">Введите новый пароль</label>
-                    <input type="password" name="new_password">
+                    <input  type="password" name="new_password" id="new_password">
+                    <p id="change-password-error" style="color: red;"></p>
                 </div>
                 <div class="form-group item-actions flex flex-center">
-                    <button type="submit">Сохранить</button>
+                    <button name="change_patient" onclick="validationChangePasswordForm()">Сохранить</button>
                 </div>
 
         </div>
+
+
+
 
 
         <div data-modal="patient-add-test" data-modal-width="480">
@@ -226,7 +265,7 @@
                     <div class="i i-ok"></div>
                 </div>
                 <div class="title">Учётная запись создана</div>
-                <div class="text">Пациент получит доступ к выбору рациона в личном кабинете по QR-коду в его палате</div>
+                <div class="text">Пациент получит доступ к выбору рациона в личном кабинете по QR-коду в его палате</div>
             </div>
         </div>
 
@@ -235,7 +274,7 @@
 
 
         <div data-modal="logout" data-modal-width="400">
-            <div class="title align-center">Вы уверены, что хотите выйти?</div>
+            <div class="title align-center">Вы уверены, что хотите выйти?</div>
             <div class="confirm-block">
                 <div class="buttons">
                     <a class="button" href="{% url 'logout' %}">Выйти</a>
@@ -246,7 +285,7 @@
 
 
         <div data-modal="patient-archive" data-modal-width="400">
-            <div class="title align-center">Перенести учётную запись пациента в архив?</div>
+            <div class="title align-center">Перенести учётную запись пациента в архив?</div>
             <div class="confirm-block">
                 <div class="buttons">
                     <a  class="button" data-modal-link="patient-archived">Архивировать</a>
@@ -262,7 +301,7 @@
                 <div class="title">Учётная запись архивирована</div>
             </div>
           </div>
-   
+
     <script src="{% static 'doctor/js/all.js' %}"></script>
 </form>
 </body>

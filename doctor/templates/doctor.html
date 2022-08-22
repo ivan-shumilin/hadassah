@@ -16,17 +16,24 @@
                     <input style="display: none;" type="checkbox" id="edit_patient_flag"  name="edit_patient_flag">
                     <input style="display: none;" type="checkbox" id="archive"  name="archive">
                     <input style="display: none;" type="text" id="id_edit_user" name="id_edit_user">
+                    <input style="display: none;" type="text" id="changed-email" name="changed-email">
+                    <input style="display: none;" type="checkbox" id="change-email_flag"  name="change-email">
+                    <input style="display: none;" type="text" id="changed-password" name="changed-password">
+                    <input style="display: none;" type="checkbox" id="change-password_flag"  name="change-password_flag">
                 </div>
 
                <div style="display: none;" id="filter_by">{{ filter_by }}</div>
                <div style="display: none;" id="sorting">{{ sorting }}</div>
                <div style="display: none;" id="status">{{ modal }}</div>
-                
+
                <a style="display: none;"  id="archived" data-modal-link="patient-archived">a</a>
                <a style="display: none;" id="edited" data-modal-link="patient-edited">Редактировать</a>
                <a style="display: none;" id="patient-added" data-modal-link="patient-added">a</a>
                <a style="display: none;" id="modal-close" data-modal-close>a</a>
+               <a style="display: none;" id="password-edited" data-modal-link="password-edited">a</a>
+               <a style="display: none;" id="profile-edited" data-modal-link="profile-edited">a</a>
                
+
                <div id="123" class='test' data-modal="patient-archived" data-modal-width="400">
                 <div class="message-block">
                     <div class="icon">
@@ -40,7 +47,7 @@
                 <div class="table" data-columns="30% 20% 30% 20%">
                     <div class="tr">
                         <div class="th">
-                              <label id="full_name" onclick="check_function('input_full_name')" class="sort" for="input_full_name">фио пациента</label>
+                              <label id="full_name" onclick="check_function('input_full_name')" class="sort" for="input_full_name">фио пациента</label>
                               <input type="radio" class="btn-check" id="input_full_name" value="full_name" name="filter_by">
                         </div>
                         <div class="th">
@@ -116,7 +123,7 @@
 
     </div>
     <div id="patient-archived{{ form.id.value }}" data-modal="patient-archive{{ form.id.value }}" data-modal-width="400">
-        <div class="title align-center">Перенести учётную запись пациента в архив?</div>
+        <div class="title align-center">Перенести учётную запись пациента в архив?</div>
         <div class="confirm-block">
             <div class="buttons">
                 <a class="button" onclick="patientArchive('{{ form.id.value }}')">Архивировать</a>
@@ -169,7 +176,7 @@
                             <a>Завтра</a>
                             <a>Послезавтра</a>
                         </div>
-                        <div class="date">12 июля, вторник</div>
+                        <div class="date">12 июля, вторник</div>
                         <div class="boxes">
                             <div class="box">
                                 <div class="title">Завтрак</div>
@@ -179,11 +186,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -192,11 +199,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -205,11 +212,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -223,11 +230,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -236,11 +243,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -249,11 +256,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -262,11 +269,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -275,11 +282,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -288,11 +295,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -301,11 +308,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -314,11 +321,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -327,11 +334,11 @@
                                             <img src="./img/eat.jpg" alt="">
                                         </div>
                                         <div class="info">
-                                            <div class="name">Рыба под маринадом</div>
-                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                            <div class="name">Рыба под маринадом</div>
+                                            <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
                                             <div class="text">
-                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
-                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец болгарский п/ф, соль,
+                                                перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
                                             </div>
                                         </div>
                                     </div>
@@ -377,11 +384,11 @@ const list1 = document.querySelectorAll('.tag')
         if (item1.innerHTML == 'ОВД') {
             item1.classList.add('green')
         }
-        if (item1.innerHTML == 'ОВД б/с') {
+        if (item1.innerHTML == 'ОВД б/с') {
             item1.classList.add('mint')
         }
         if (item1.innerHTML == 'ОВД без сахара') {
-            item1.innerHTML = 'ОВД б/с'
+            item1.innerHTML = 'ОВД б/с'
             item1.classList.add('mint')
         }
         if (item1.innerHTML == 'ЩД') {
@@ -405,7 +412,7 @@ const list1 = document.querySelectorAll('.tag')
 })
 
 // фильтрация/сортировка страницы
-function check_function(value) {    
+function check_function(value) {
     var form = document.querySelector('form');
     document.getElementById(value).setAttribute('checked', 'true');
     document.getElementById('filter_by_flag').setAttribute('checked', 'true');
@@ -426,7 +433,7 @@ if (list4 == 'down') {
 
 
 function validationForm() {
-    
+
     var form = document.querySelector('form');
     var div_form = document.querySelector('.form-group');
     var fields = form.querySelectorAll('.field')
@@ -445,30 +452,30 @@ function validationForm() {
     if (!full_name.value) {
         document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
         error = error + 1
-    }   
+    }
     if (!receipt_date.value) {
         document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
         error = error + 1
-    } 
+    }
     if (!receipt_time.value) {
         document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
         error = error + 1
-    } 
+    }
     if (department.value == 'Не выбрано') {
         document.getElementById('error_department').innerHTML = 'Обязательное поле'
         error = error + 1
-    }   
-    
+    }
+
     if (type_of_diet.value == 'Не выбрано') {
         document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
         error = error + 1
-    } 
+    }
     if (room_number.value == 'Не выбрано') {
         document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
         error = error + 1
-    } 
-    
-    if (error == 0) {    
+    }
+
+    if (error == 0) {
         document.getElementById('add_patient_flag').setAttribute('checked', 'true');
         document.getElementById('test_full_name').value = full_name.value
         document.getElementById('test_receipt_date').value = receipt_date.value
@@ -479,7 +486,7 @@ function validationForm() {
         document.getElementById('test_comment').value = id_comment.value
         form.submit();
 
-        
+
     }
 }
 
@@ -503,28 +510,28 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
     if (!full_name.value) {
         document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
         error = error + 1
-    }   
+    }
     if (!receipt_date.value) {
         document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
         error = error + 1
-    } 
+    }
     if (!receipt_time.value) {
         document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
         error = error + 1
-    } 
+    }
     if (department.value == 'Не выбрано') {
         document.getElementById('error_department').innerHTML = 'Обязательное поле'
         error = error + 1
-    }   
+    }
     if (type_of_diet.value == 'Не выбрано') {
         document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
         error = error + 1
-    } 
+    }
     if (room_number.value == 'Не выбрано') {
         document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
         error = error + 1
-    } 
-    if (error == 0) {     
+    }
+    if (error == 0) {
         document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
         document.getElementById('id_edit_user').value = id
         document.getElementById('test1_full_name').value = full_name.value
@@ -536,7 +543,7 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
         document.getElementById('test1_comment').value = comment.value
         document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
         form.submit()
-        //form.submit();            
+
     }
  }
 
@@ -548,7 +555,46 @@ function patientArchive(id) {
     // document.getElementById('close'+id).click()
     // document.getElementById('archived').click()
     //setTimeout(() => { form.submit();}, 500);
-} 
+}
+
+function validationChangeEmailForm() {
+    var form = document.querySelector('form');
+    var email = document.getElementById('change-email')
+    var errors = document.getElementById('change-email-error')
+    errors.innerHTML = ""
+    var error = 0
+    if (!email.value.includes('@')) {
+        document.getElementById('change-email-error').innerHTML = 'Такой почты не существует'
+        error = error + 1
+    }
+
+
+    if (error == 0) {
+
+        document.getElementById('change-email_flag').setAttribute('checked', 'true');
+        document.getElementById('changed-email').value = email.value
+        form.submit();
+    }
+}
+
+function validationChangePasswordForm() {    
+    var form = document.querySelector('form');
+    var old_password = document.getElementById('old_password');
+    var new_password = document.getElementById('new_password');
+    var errors = document.getElementById('change-password-error');
+    errors.innerHTML = ""
+    var error = 0    
+    if (new_password.value == old_password.value) {
+        document.getElementById('change-password-error').innerHTML = 'Пароли совпадают'
+        error = error + 1
+    }
+    if (error == 0) {
+        document.getElementById('change-password_flag').setAttribute('checked', 'true');
+        document.getElementById('changed-password').value = new_password.value
+        form.submit();
+    }
+}
+
 
 
 
@@ -569,5 +615,3 @@ function patientArchive(id) {
 
 
 {% endblock %}
-
-

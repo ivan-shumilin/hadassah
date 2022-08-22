@@ -1,4 +1,4 @@
-from nutritionist.models import ProductLp
+from nutritionist.models import ProductLp, CustomUser
 from django.db import transaction
 from dateutil.parser import parse
 
@@ -173,3 +173,10 @@ def translate_diet(diet):
         'vkd': 'ВКД',
     }
     return TYPE_DIET[diet]
+
+
+def сhange_password(email, request):
+    user = CustomUser.objects.get(id=request.user.id)
+    user.email = email
+    user.save()
+    return

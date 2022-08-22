@@ -102,6 +102,39 @@ def doctor(request):
                            'user_form': user_form,
                            'filter_by': filter_by})
 
+    if request.method == 'POST' and 'change-email' in request.POST:
+        user_form = PatientRegistrationForm()
+        user = CustomUser.objects.get(id=request.user.id)
+        user.email = request.POST['changed-email']
+        user.username = request.POST['changed-email']
+        user.save()
+        formset = CustomUserFormSet(queryset=queryset)
+        request.user.email = request.POST['changed-email']
+        data = {
+            'formset': formset,
+            'page': page,
+            'modal': 'profile-edited',
+            'sorting': sorting,
+            'user_form': user_form,
+            'filter_by': filter_by
+        }
+        return render(request, 'doctor.html', context=data)
+
+    if request.method == 'POST' and 'changed-password' in request.POST:
+        user_form = PatientRegistrationForm()
+        formset = CustomUserFormSet(queryset=queryset)
+        user = CustomUser.objects.get(id=request.user.id)
+        user.set_password(request.POST['changed-password'])
+        user.save()
+        data = {
+            'formset': formset,
+            'page': page,
+            'modal': 'password-edited',
+            'sorting': sorting,
+            'user_form': user_form,
+            'filter_by': filter_by
+        }
+        return render(request, 'doctor.html', context=data)
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
         user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
@@ -119,7 +152,7 @@ def doctor(request):
                 'formset': formset,
                 'page': page,
                 'sorting': sorting,
-                'modal': 'edited',                 
+                'modal': 'edited',
                 'user_form': user_form,
                 'filter_by': filter_by
             }
@@ -166,7 +199,6 @@ def doctor(request):
     }
     return render(request, 'doctor.html', context=data)
 
-
 @login_required(login_url='login')
 @user_passes_test(group_doctors_check, login_url='login')
 def archive(request):
@@ -205,6 +237,43 @@ def archive(request):
         else:
             filter_by = request.POST.getlist('filter_by')[0]
             queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
+
+    if request.method == 'POST' and 'change-email' in request.POST:
+        # сhange_password(request.POST['changed-email'], request)
+        user_form = PatientRegistrationForm()
+        user = CustomUser.objects.get(id=request.user.id)
+        user.email = request.POST['changed-email']
+        user.username = request.POST['changed-email']
+        user.save()
+        formset = CustomUserFormSet(queryset=queryset)
+        request.user.email = request.POST['changed-email']
+        data = {
+            'formset': formset,
+            'page': page,
+            'modal': 'profile-edited',
+            'sorting': sorting,
+            'user_form': user_form,
+            'filter_by': filter_by
+        }
+        return render(request, 'doctor.html', context=data)
+
+
+    if request.method == 'POST' and 'changed-password' in request.POST:
+        user_form = PatientRegistrationForm()
+        formset = CustomUserFormSet(queryset=queryset)
+        user = CustomUser.objects.get(id=request.user.id)
+        user.set_password(request.POST['changed-password'])
+        user.save()
+        data = {
+            'formset': formset,
+            'page': page,
+            'modal': 'password-edited',
+            'sorting': sorting,
+            'user_form': user_form,
+            'filter_by': filter_by
+        }
+        return render(request, 'doctor.html', context=data)
+
     if request.method == 'POST' and 'archive' in request.POST:
         id_user = request.POST.getlist('id_edit_user')[0]
         user = CustomUser.objects.get(id=id_user)
@@ -263,7 +332,7 @@ def menu(request):
         'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
     }
 
-    if request.GET == {}:
+    if request.GET == {} or request.method == 'POST':
         diet_form = DietChoiceForm({'type_of_diet': 'ОВД'})
         diet = 'ovd'
         date_get = str(date.today())
@@ -326,6 +395,59 @@ def menu(request):
 
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
+
+    if request.method == 'POST' and 'change-email' in request.POST:
+        # сhange_password(request.POST['changed-email'], request)
+
+        user = CustomUser.objects.get(id=request.user.id)
+        user.email = request.POST['changed-email']
+        user.username = request.POST['changed-email']
+        user.save()
+        request.user.email = request.POST['changed-email']
+        data = {
+            'diet_form': diet_form,
+            'date_menu': date_menu,
+            'products_main': products_main + queryset_main_dishes,
+            'products_porridge': products_porridge,
+            'products_dessert': products_dessert,
+            'products_fruit': products_fruit,
+            'products_garnish': products_garnish + queryset_garnish,
+            'products_salad': products_salad + queryset_salad,
+            'products_soup': products_soup + queryset_soup,
+            'products_drink': products_drink,
+            'page': page,
+            'date_get': date_get,
+            'formatted_date': formatted_date,
+            'meal': meal,
+            'modal': 'profile-edited',
+
+        }
+        return render(request, 'menu.html', context=data)
+
+    if request.method == 'POST' and 'changed-password' in request.POST:
+        user = CustomUser.objects.get(id=request.user.id)
+        user.set_password(request.POST['changed-password'])
+        user.save()
+        data = {
+            'diet_form': diet_form,
+            'date_menu': date_menu,
+            'products_main': products_main + queryset_main_dishes,
+            'products_porridge': products_porridge,
+            'products_dessert': products_dessert,
+            'products_fruit': products_fruit,
+            'products_garnish': products_garnish + queryset_garnish,
+            'products_salad': products_salad + queryset_salad,
+            'products_soup': products_soup + queryset_soup,
+            'products_drink': products_drink,
+            'page': page,
+            'date_get': date_get,
+            'formatted_date': formatted_date,
+            'meal': meal,
+            'modal': 'password-edited',
+
+        }
+        return render(request, 'menu.html', context=data)
+
     data = {'diet_form': diet_form,
             'date_menu': date_menu,
             'products_main': products_main + queryset_main_dishes,
@@ -342,3 +464,6 @@ def menu(request):
             'meal': meal,
             }
     return render(request, 'menu.html', context=data)
+
+def menu_test(request):
+    return render(request, 'menu_test.html', {})

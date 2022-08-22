@@ -6,6 +6,9 @@
 <input style='display: none;' type="text" id='input_type_of_diet' name='type_of_diet' value=''>
 <input style='display: none;' type="text" id='meal' name='meal' value=''>
 
+<a style="display: none;" id="password-edited" data-modal-link="password-edited">a</a>
+<a style="display: none;" id="profile-edited" data-modal-link="profile-edited">a</a>
+<div style="display: none;" id="status">{{ modal }}</div>
 
 
             <div id="center" data-simplebar>
@@ -33,10 +36,10 @@
                     </div>
                     <div class="date">{{ formatted_date|lower  }}</div>
                 </div>
-            {% if products_main %}    
+            {% if products_main %}
                 <h3 class="dish-category">Основное блюдо</h3>
-                <div class="eat-grid">         
-                    {% for product in products_main %}                
+                <div class="eat-grid">
+                    {% for product in products_main %}
                         <div class="item">
                             <div class="info">
                                 <div class="name">{{ product.name }}</div>
@@ -46,15 +49,15 @@
                              <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
-                        </div>               
-                    {% endfor %}            
+                        </div>
+                    {% endfor %}
                 </div>
             {% endif %}
-            
-            {% if products_porridge %} 
+
+            {% if products_porridge %}
                 <h3 class="dish-category">Каша</h3>
-                <div class="eat-grid">         
-                    {% for product in products_porridge %}                
+                <div class="eat-grid">
+                    {% for product in products_porridge %}
                         <div class="item">
                             <div class="info">
                                 <div class="name">{{ product.name }}</div>
@@ -64,15 +67,15 @@
                              <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
-                        </div>               
-                    {% endfor %}            
+                        </div>
+                    {% endfor %}
                 </div>
             {% endif %}
 
-            {% if products_dessert %} 
+            {% if products_dessert %}
                 <h3 class="dish-category">Десерт</h3>
-                <div class="eat-grid">         
-                    {% for product in products_dessert %}                
+                <div class="eat-grid">
+                    {% for product in products_dessert %}
                         <div class="item">
                             <div class="info">
                                 <div class="name">{{ product.name }}</div>
@@ -82,14 +85,14 @@
                              <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
-                        </div>               
-                    {% endfor %}            
+                        </div>
+                    {% endfor %}
                 </div>
             {% endif %}
-            {% if products_fruit %} 
+            {% if products_fruit %}
                 <h3 class="dish-category">Фрукт</h3>
-                <div class="eat-grid">         
-                    {% for product in products_fruit %}                
+                <div class="eat-grid">
+                    {% for product in products_fruit %}
                         <div class="item">
                             <div class="info">
                                 <div class="name">{{ product.name }}</div>
@@ -99,15 +102,15 @@
                              <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
-                        </div>               
-                    {% endfor %}            
+                        </div>
+                    {% endfor %}
                 </div>
             {% endif %}
 
-            {% if products_garnish %} 
+            {% if products_garnish %}
                 <h3 class="dish-category">Гарнир</h3>
-                <div class="eat-grid">         
-                    {% for product in products_garnish %}                
+                <div class="eat-grid">
+                    {% for product in products_garnish %}
                         <div class="item">
                             <div class="info">
                                 <div class="name">{{ product.name }}</div>
@@ -117,15 +120,15 @@
                              <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
-                        </div>               
-                    {% endfor %}            
+                        </div>
+                    {% endfor %}
                 </div>
             {% endif %}
 
-            {% if products_salad %} 
+            {% if products_salad %}
                 <h3 class="dish-category">Салат</h3>
-                <div class="eat-grid">         
-                    {% for product in products_salad %}                
+                <div class="eat-grid">
+                    {% for product in products_salad %}
                         <div class="item">
                             <div class="info">
                                 <div class="name">{{ product.name }}</div>
@@ -135,12 +138,12 @@
                             <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
-                        </div>               
-                    {% endfor %}            
+                        </div>
+                    {% endfor %}
                 </div>
             {% endif %}
 
-        {% if products_soup %} 
+        {% if products_soup %}
             <h3 class="dish-category">Суп</h3>
             <div class="eat-grid">
                 {% for product in products_soup %}
@@ -158,7 +161,7 @@
             </div>
         {% endif %}
 
-        {% if products_drink %} 
+        {% if products_drink %}
             <h3 class="dish-category">Напиток</h3>
             <div class="eat-grid">
                 {% for product in products_drink %}
@@ -174,62 +177,17 @@
                     </div>
                 {% endfor %}
             </div>
-        {% endif %}        
+        {% endif %}
 
 
-                
+
             </div>
         </div>
-
-
-
-
-
-        <div data-modal="profile-edited" data-modal-width="400">
-            <div class="message-block">
-                <div class="icon">
-                    <div class="i i-ok"></div>
-                </div>
-                <div class="title">Email успешно изменён</div>
-            </div>
-        </div>
-
-        {% comment %}
-        <div data-modal="password-form" data-modal-width="480">
-            <div class="title">Изменение пароля</div>
-
-                <div class="form-group">
-                    <label for="#">Введите старый пароль</label>
-                    <input type="password" name="old_password">
-                </div>
-                <div class="form-group">
-                    <label for="#">Введите новый пароль</label>
-                    <input type="password" name="new_password">
-                </div>
-                <div class="form-group item-actions flex flex-center">
-                    <button type="submit">Сохранить</button>
-                </div>
-
-        </div>
-        {% endcomment %}
-
-
-        <div data-modal="logout" data-modal-width="400">
-            <div class="title align-center">Вы уверены, что хотите выйти?</div>
-            <div class="confirm-block">
-                <div class="buttons">
-                    <a href="#" class="button">Выйти</a>
-                    <a href="#" class="button white" data-modal-close>Отменить</a>
-                </div>
-            </div>
-        </div>
-
-
         <div data-modal="diet" data-modal-width="480">
             <div class="title">Выберите диету из списка</div>
             <form action="#">
                 <div class="form-group">
-                    <label for="#">Диета</label>                    
+                    <label for="#">Диета</label>
                     {{ diet_form.type_of_diet }}
                 </div>
                 <div class="form-group item-actions flex flex-center">
@@ -259,7 +217,7 @@ function submitDietForm(id_type_of_diet) {
 }
 
 function submitForm() {
-    var form = document.querySelector('form');
+    var form = document.getElementById('form-get');
     form.submit();
 }
 
@@ -276,7 +234,7 @@ var diet_menu = document.getElementById('diet-menu')
         }
         if (diet_name.innerHTML == 'ovd_sugarless') {
             diet_menu.classList.add('mint-menu')
-            diet_name.innerHTML = 'ОВД б/с'
+            diet_name.innerHTML = 'ОВД б/с'
         }
         if (diet_name.innerHTML == 'shd') {
             diet_menu.classList.add('yellow-menu')
@@ -303,6 +261,47 @@ var diet_menu = document.getElementById('diet-menu')
             diet_name.innerHTML = 'ВКД'
         }
 
+function validationChangeEmailForm() {
+    var form1 = document.getElementById('profile-form-id');
+    var email = document.getElementById('change-email');
+    var errors = document.getElementById('change-email-error');
+    errors.innerHTML = ""
+    var error = 0
+    if (!email.value.includes('@')) {
+        document.getElementById('change-email-error').innerHTML = 'Такой почты не существует'
+        error = error + 1
+    }
 
-</script>    
+
+    if (error == 0) {
+
+        document.getElementById('change-email_flag').setAttribute('checked', 'true');
+        document.getElementById('changed-email').value = email.value
+        form1.submit();
+    }
+}
+
+function validationChangePasswordForm() {    
+    var form1 = document.getElementById('profile-form-id');
+    var old_password = document.getElementById('old_password');
+    var new_password = document.getElementById('new_password');
+    var errors = document.getElementById('change-password-error');
+    errors.innerHTML = ""
+    var error = 0    
+    if (new_password.value == old_password.value) {
+        document.getElementById('change-password-error').innerHTML = 'Пароли совпадают'
+        error = error + 1
+    }
+    if (error == 0) {
+        
+        document.getElementById('change-password_flag').setAttribute('checked', 'true');
+        document.getElementById('changed-password').value = new_password.value
+        form1.submit();
+    }
+}
+
+
+
+
+</script>
     {% endblock %}
