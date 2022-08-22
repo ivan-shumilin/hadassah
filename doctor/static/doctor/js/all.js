@@ -149,6 +149,7 @@
                     },
                     type: 'inline',
                     mainClass: $(this).attr('data-modal') + '-modal mfp-fade',
+                    
                     closeOnBgClick: false,
                     showCloseBtn: true,
                     callbacks: {
