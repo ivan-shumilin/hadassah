@@ -16,10 +16,7 @@
                     <input style="display: none;" type="checkbox" id="edit_patient_flag"  name="edit_patient_flag">
                     <input style="display: none;" type="checkbox" id="archive"  name="archive">
                     <input style="display: none;" type="text" id="id_edit_user" name="id_edit_user">
-                    <input style="display: none;" type="text" id="changed-email" name="changed-email">
-                    <input style="display: none;" type="checkbox" id="change-email_flag"  name="change-email">
-                    <input style="display: none;" type="text" id="changed-password" name="changed-password">
-                    <input style="display: none;" type="checkbox" id="change-password_flag"  name="change-password_flag">
+
                 </div>
 
                <div style="display: none;" id="filter_by">{{ filter_by }}</div>
@@ -413,7 +410,7 @@ const list1 = document.querySelectorAll('.tag')
 
 // фильтрация/сортировка страницы
 function check_function(value) {
-    var form = document.querySelector('form');
+    var form = document.getElementById('main-form');
     document.getElementById(value).setAttribute('checked', 'true');
     document.getElementById('filter_by_flag').setAttribute('checked', 'true');
     form.submit();
@@ -434,7 +431,7 @@ if (list4 == 'down') {
 
 function validationForm() {
 
-    var form = document.querySelector('form');
+    var form = document.getElementById('main-form');
     var div_form = document.querySelector('.form-group');
     var fields = form.querySelectorAll('.field')
     var full_name = document.getElementById('id_full_name')
@@ -492,7 +489,7 @@ function validationForm() {
 
 
 function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_department, id_type_of_diet, id_room_number, id_comment, id) {
-    var form = document.querySelector('form');
+    var form = document.getElementById('main-form');
     var full_name = document.getElementById(id_full_name)
     var receipt_date = document.getElementById(id_receipt_date)
     var receipt_time = document.getElementById(id_receipt_time)
@@ -548,7 +545,7 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
  }
 
 function patientArchive(id) {
-    var form = document.querySelector('form');
+    var form = document.getElementById('main-form');
     document.getElementById('id_edit_user').value = id;
     document.getElementById('archive').setAttribute('checked', 'true');
     form.submit()
@@ -558,7 +555,7 @@ function patientArchive(id) {
 }
 
 function validationChangeEmailForm() {
-    var form = document.querySelector('form');
+    var form1 = document.getElementById('profile-form-id');
     var email = document.getElementById('change-email')
     var errors = document.getElementById('change-email-error')
     errors.innerHTML = ""
@@ -578,7 +575,7 @@ function validationChangeEmailForm() {
 }
 
 function validationChangePasswordForm() {    
-    var form = document.querySelector('form');
+    var form1 = document.getElementById('profile-form-id');
     var old_password = document.getElementById('old_password');
     var new_password = document.getElementById('new_password');
     var errors = document.getElementById('change-password-error');
@@ -589,11 +586,13 @@ function validationChangePasswordForm() {
         error = error + 1
     }
     if (error == 0) {
+        
         document.getElementById('change-password_flag').setAttribute('checked', 'true');
         document.getElementById('changed-password').value = new_password.value
-        form.submit();
+        form1.submit();
     }
 }
+
 
 
 

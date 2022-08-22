@@ -120,20 +120,21 @@ def doctor(request):
         }
         return render(request, 'doctor.html', context=data)
 
-    if request.method == 'POST' and 'changed-password' in request.POST:
-        user_form = PatientRegistrationForm()
-        formset = CustomUserFormSet(queryset=queryset)
-        user = CustomUser.objects.get(id=request.user.id)
-        user.set_password(request.POST['changed-password'])
-        user.save()
-        data = {
-            'formset': formset,
-            'page': page,
-            'modal': 'password-edited',
-            'sorting': sorting,
-            'user_form': user_form,
-            'filter_by': filter_by
-        }
+    if request.method == 'POST' and 'change-password_flag' in request.POST:
+        if request.POST['change-password_flag'] == 'on':
+            user_form = PatientRegistrationForm()
+            formset = CustomUserFormSet(queryset=queryset)
+            user = CustomUser.objects.get(id=request.user.id)
+            user.set_password(request.POST['changed-password'])
+            user.save()
+            data = {
+                'formset': formset,
+                'page': page,
+                'modal': 'password-edited',
+                'sorting': sorting,
+                'user_form': user_form,
+                'filter_by': filter_by
+            }
         return render(request, 'doctor.html', context=data)
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
@@ -258,21 +259,22 @@ def archive(request):
         return render(request, 'doctor.html', context=data)
 
 
-    if request.method == 'POST' and 'changed-password' in request.POST:
-        user_form = PatientRegistrationForm()
-        formset = CustomUserFormSet(queryset=queryset)
-        user = CustomUser.objects.get(id=request.user.id)
-        user.set_password(request.POST['changed-password'])
-        user.save()
-        data = {
-            'formset': formset,
-            'page': page,
-            'modal': 'password-edited',
-            'sorting': sorting,
-            'user_form': user_form,
-            'filter_by': filter_by
-        }
-        return render(request, 'doctor.html', context=data)
+    if request.method == 'POST' and 'change-password_flag' in request.POST:
+        if request.POST['change-password_flag'] == 'on':
+            user_form = PatientRegistrationForm()
+            formset = CustomUserFormSet(queryset=queryset)
+            user = CustomUser.objects.get(id=request.user.id)
+            user.set_password(request.POST['changed-password'])
+            user.save()
+            data = {
+                'formset': formset,
+                'page': page,
+                'modal': 'password-edited',
+                'sorting': sorting,
+                'user_form': user_form,
+                'filter_by': filter_by
+            }
+            return render(request, 'doctor.html', context=data)
 
     if request.method == 'POST' and 'archive' in request.POST:
         id_user = request.POST.getlist('id_edit_user')[0]

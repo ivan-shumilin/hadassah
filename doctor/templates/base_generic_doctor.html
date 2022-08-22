@@ -44,20 +44,29 @@
 
 {% else %}
 <body  class="has-right">
-    <form style='padding-left: 0px; padding-right: 0px;' method="post" novalidate>
+    <div data-modal="profile-form" data-modal-width="480">
+    <div class="title">Редактировать профиль</div>
+    <form id='profile-form-id' method="post" novalidate>
         {% csrf_token %}
-        <div data-modal="profile-form" data-modal-width="480">
-            <div class="title">Редактировать профиль</div>
-                <div class="form-group">
-                        <label for="#">E-mail</label>
-                        <input id='change-email' type="text" value="{{ user.email }}">
-                        <p style="color: red;" id='change-email-error'></p>
-                    </div>
-                    <div class="form-group item-actions flex flex-center">
-                        <button onclick="validationChangeEmailForm()">Сохранить</button>
-                        <a class="button white" data-modal-link="password-form">Изменить пароль</a>
-                    </div>
+        <div class="form-group">
+            <label for="#">E-mail</label>
+            <input id='change-email' type="text" value="{{ user.email }}">
+            <p style="color: red;" id='change-email-error'></p>
         </div>
+        <div class="form-group item-actions flex flex-center">
+            <button onclick="validationChangeEmailForm()">Сохранить</button>
+            <a class="button white" data-modal-link="password-form">Изменить пароль</a>
+        </div>
+       
+        <input style="display: none;" type="text" id="changed-email" name="changed-email">
+        <input style="display: none;" type="checkbox" id="change-email_flag"  name="change-email">
+        <input style="display: none;" type="text" id="changed-password" name="changed-password">
+        <input style="display: none;" type="checkbox" id="change-password_flag"  name="change-password_flag">                    
+    </form>
+    </div>
+    <form id='main-form' style='padding-left: 0px; padding-right: 0px;' method="post" novalidate>
+        {% csrf_token %}
+ 
 {% endif %}
 
     
