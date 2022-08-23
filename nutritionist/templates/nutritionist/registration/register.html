@@ -5,7 +5,7 @@
     <div class="content">
         <div class="segment">
             <div class="title">Регистрация</div>
-            <form action="#" class="register-form"  method="post">
+            <form action="#" class="register-form" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="{{ user_form.name.id_for_label }}">Фамилия</label>
@@ -18,9 +18,9 @@
                 <div class="form-group">
                     <label for="{{ user_form.email.id_for_label }}">E-mail</label>
                     {{ user_form.email }}
-                        {% if errors %}
-                            <p style="color: red;" class="error-field">{{ errors|cut:"["|cut:"]"|cut:"'" }}</p>
-                        {% endif %}
+                    {% if errors %}
+                        <p style="color: red;" class="error-field">{{ errors|cut:"["|cut:"]"|cut:"'" }}</p>
+                    {% endif %}
                 </div>
                 <div class="form-group item-actions flex flex-center">
                     <button type="submit">Зарегистрироваться</button>
@@ -28,6 +28,5 @@
             </form>
         </div>
     </div>
-</div>
 </div>
 {% endblock %}

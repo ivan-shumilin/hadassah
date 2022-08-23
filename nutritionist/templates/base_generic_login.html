@@ -12,7 +12,7 @@
     <!-- Add additional CSS in static file -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'nutritionist/css/all.css' %}">
-    <title>{% block title %}Nutritionist tool{% endblock %}</title>
+    <title>{% block title %}hadassah{% endblock %}</title>
 
 
 </head>
@@ -27,13 +27,11 @@
                 <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
             </div>
         </div>
-<form style='padding-left: 0px; padding-right: 0px;' action="" method="post" novalidate>
-    {% csrf_token %}
-    {{ formset.management_form }}
+
     {% block content %}
 
     {% endblock %}
-</form>
+
     </div>
 </body>
         <script src="./js/all.js"></script>

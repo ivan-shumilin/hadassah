@@ -1,33 +1,33 @@
 {% extends "base_generic_login.html" %}
 
 {% block content %}
-
-            <div class="right">
-                <div class="content">
-                    <div class="segment">
-                        <div class="title">Авторизация</div>
-                        <form action="#" class="login-form" method="post">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="{{ user_form.username.id_for_label }}">E-mail</label>
-                                {{ user_form.username }}
-                            </div>
-                            <div class="form-group">
-                                <label for="{{ user_form.password.id_for_label }}">Пароль</label>
-                                {{ user_form.password }}
-                                {% if errors %}
-                                    <p style="color: red;" class="error-field">{{ errors }}</p>
-                                {% endif %}
-                            </div>
-                            <div class="form-group item-actions flex flex-center">
-                                <button type="submit">Войти</button>
-                                <button type="button" class="white" onclick="location.href='{% url 'reset_password' %}'">Забыли пароль?</button>
-                            </div>
-                        </form>
-                    </div>
+<div class="right">
+    <div class="content">
+        <div class="segment">
+            <div class="title">Авторизация</div>
+            <form action="" class="login-form" method="post" novalidate>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ user_form.username.id_for_label }}">E-mail</label>
+                    {{ user_form.username }}
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="{{ user_form.password.id_for_label }}">Пароль</label>
+                    {{ user_form.password }}
+                    {% if errors %}
+                    <p style="color: red;" class="error-field">{{ errors }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group item-actions flex flex-center">
+                    <button type="submit">Войти</button>
+                    <button type="button" class="white" onclick="location.href='{% url 'reset_password' %}'">Забыли
+                        пароль?
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
+</div>
 
 
 {% endblock %}
