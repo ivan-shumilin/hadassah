@@ -288,17 +288,7 @@
 function funonload() {
     var page = document.getElementById('page')
     document.getElementById(page.innerHTML).classList.add('active');
-
     var list6 = document.getElementById('status').innerHTML
     document.getElementById(list6).click();
-    if (list6) {
-        setTimeout(() => {
-            document.getElementById('modal-close').click();
-
-        }, 1800);
-
-       }
-
-
 }
 window.onload = funonload;

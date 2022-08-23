@@ -150,6 +150,7 @@ def doctor(request):
         user.save()
         formset = CustomUserFormSet(queryset=queryset)
         data = {
+                'id_edited_user': user_form.data['id_edit_user'],
                 'formset': formset,
                 'page': page,
                 'sorting': sorting,

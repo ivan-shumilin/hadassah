@@ -371,10 +371,6 @@ const list = document.querySelectorAll('.product')
     })
 })
 
-const list2 = document.querySelectorAll('.product')
-  if (list2.length > 0) {
-    list2[0].click()
-  }
 
 const list1 = document.querySelectorAll('.tag')
  list1.forEach(item1 =>{
@@ -594,7 +590,25 @@ function validationChangePasswordForm() {
 }
 
 
+// 
+function clickOnElement () {
+    if ('{{ id_edited_user }}' == '') {
+        const elements = document.querySelectorAll('.product')
+        if (elements.length > 0) {
+            elements[0].click()
+        } 
+    } else {
+        clickOnEditedElement();
+    }    
+}
 
+
+function clickOnEditedElement() {
+    document.getElementById('{{ id_edited_user }}').click();
+}
+
+
+clickOnElement();
 
 
 
