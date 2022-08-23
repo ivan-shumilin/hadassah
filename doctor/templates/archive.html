@@ -7,6 +7,10 @@
     <div>
         {# какая форма сработала  #}
         <input style="display: none;" type="checkbox" id="filter_by_flag"  name="filter_by_flag">
+        <input style="display: none;" type="text" id="filter_by_value"  name="filter_by_value">
+        <input style="display: none;" type="text" id="sorting_value"  name="sorting_value">        
+        <input style="display: none;" type="text" id="is_pressing_again"  name="is_pressing_again">
+
         <input style="display: none;" type="checkbox" id="add_patient_flag"  name="add_patient">
         <input style="display: none;" type="checkbox" id="edit_patient_flag"  name="edit_patient_flag">
         <input style="display: none;" type="checkbox" id="archive"  name="archive">
@@ -173,6 +177,7 @@
         </div>
 <script>
 
+filtration()
 
 
 function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, comment, id) {
@@ -235,26 +240,35 @@ const list1 = document.querySelectorAll('.tag')
 // фильтрация/сортировка страницы
 function check_function(value) {
     var form = document.getElementById('main-form');
+    let filterBy = document.getElementById('filter_by').innerHTML
+    if (document.getElementById(value).checked) {
+        document.getElementById('is_pressing_again').value = 'True'
+    } else {
+        document.getElementById('is_pressing_again').value = 'False'
+    }
     document.getElementById(value).setAttribute('checked', 'true');
     document.getElementById('filter_by_flag').setAttribute('checked', 'true');
+    if ((document.getElementById(filterBy).classList.contains('desc'))) {
+        document.getElementById('sorting_value').value = 'down'
+    } else {
+        document.getElementById('sorting_value').value = 'top'
+    }
     form.submit();
 }
 
-
-var list4 = document.getElementById('sorting').innerHTML
-
-var list3 = document.getElementById('filter_by').innerHTML
-document.getElementById(list3).classList.add('active');
-
-document.getElementById('input_' + list3).setAttribute('checked', 'true');
-
-if (list4 == 'down') {
-    document.getElementById(list3).classList.add('desc');
+function filtration() {
+    let sorting = document.getElementById('sorting').innerHTML
+    let filterBy = document.getElementById('filter_by').innerHTML
+    document.getElementById(filterBy).classList.add('active');
+    document.getElementById('input_' + filterBy).setAttribute('checked', 'true');
+    if (sorting == 'down') {
+        document.getElementById(filterBy).classList.add('desc');
+    }
 }
 
 
-function validationForm() {
 
+function validationForm() {
     var form = document.getElementById('main-form');
     var div_form = document.querySelector('.form-group');
     var fields = form.querySelectorAll('.field')
@@ -306,8 +320,6 @@ function validationForm() {
         document.getElementById('test_room_number').value = room_number.value
         document.getElementById('test_comment').value = id_comment.value
         form.submit();
-
-
     }
 }
 
@@ -388,8 +400,6 @@ function patientRestore(id) {
     //setTimeout(() => { form.submit();}, 500);
 }
 
-// data-modal-link="patient-restored"
-
 
 function funonload() {
     var list6 = document.getElementById('status').innerHTML
@@ -397,12 +407,8 @@ function funonload() {
     if (list6) {
         setTimeout(() => {
             document.getElementById('modal-close').click();
-
         }, 1500);
-
        }
-
-    // document.getElementById('archived').click()
 }
 window.onload = funonload;
 
@@ -443,16 +449,6 @@ function validationChangePasswordForm() {
         form.submit();
     }
 }
-
-
-//131311393
-
-
-
-// $('.test').magnificPopup();
-
-
-
 
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

@@ -17,45 +17,37 @@ from doctor.functions import sorting_dishes, parsing, get_day_of_the_week, trans
 from django.db.models import Q
 
 
-
-
-
-
-
-
-
-
-
-
 def group_doctors_check(user):
     return user.groups.filter(name='doctors').exists()
 
-filter_by = 'full_name' # дефолтная фильтрация
+
+filter_by = 'full_name'  # дефолтная фильтрация
 sorting = 'top'
+
+
 @login_required(login_url='login')
 @user_passes_test(group_doctors_check, login_url='login')
 def doctor(request):
     CustomUserFormSet = modelformset_factory(CustomUser,
-                                          fields=(
-                                              'full_name', 'receipt_date', 'receipt_time', 'department',
-                                              'room_number', 'type_of_diet', 'comment', 'id'),
-                                          widgets={
-                                              'full_name': TextInput(attrs={'required': "True"}),
-                                              'room_number': Select(attrs={}),
-                                              'department': Select(attrs={}),
-                                              'type_of_diet': Select(attrs={}),
-                                              'receipt_date': TextInput(),
-                                              'receipt_time': TextInput(),
-                                              'comment': Textarea(),
-                                              'id': Textarea(attrs={'style': "display: none;"}),
-                                          },
-                                          extra=0, )
+                                             fields=(
+                                                 'full_name', 'receipt_date', 'receipt_time', 'department',
+                                                 'room_number', 'type_of_diet', 'comment', 'id'),
+                                             widgets={
+                                                 'full_name': TextInput(attrs={'required': "True"}),
+                                                 'room_number': Select(attrs={}),
+                                                 'department': Select(attrs={}),
+                                                 'type_of_diet': Select(attrs={}),
+                                                 'receipt_date': TextInput(),
+                                                 'receipt_time': TextInput(),
+                                                 'comment': Textarea(),
+                                                 'id': Textarea(attrs={'style': "display: none;"}),
+                                             },
+                                             extra=0, )
     global filter_by
     global sorting
     page = 'menu-doctor'
     queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
     if request.method == 'POST' and 'filter_by_flag' in request.POST:
-
         if filter_by == request.POST.getlist('filter_by')[0]:
             if sorting == 'top':
                 queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
@@ -63,15 +55,14 @@ def doctor(request):
             else:
                 queryset = CustomUser.objects.filter(status='patient').order_by(f'-{filter_by}')
                 sorting = 'top'
-
         else:
             filter_by = request.POST.getlist('filter_by')[0]
             queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
+
     if request.method == 'POST' and 'add_patient' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
         formset = \
             CustomUserFormSet(request.POST, request.FILES, queryset=queryset)
-
         if user_form.is_valid():
             while True:
                 login = ''.join([random.choice("123456789qwertyuiopasdfghjklzxcvbnm") for i in range(10)])
@@ -94,7 +85,7 @@ def doctor(request):
             queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
             formset = CustomUserFormSet(queryset=queryset)
             return render(request,
-                           'doctor.html',
+                          'doctor.html',
                           {'formset': formset,
                            'modal': 'patient-added',
                            'page': page,
@@ -150,14 +141,14 @@ def doctor(request):
         user.save()
         formset = CustomUserFormSet(queryset=queryset)
         data = {
-                'id_edited_user': user_form.data['id_edit_user'],
-                'formset': formset,
-                'page': page,
-                'sorting': sorting,
-                'modal': 'edited',
-                'user_form': user_form,
-                'filter_by': filter_by
-            }
+            'id_edited_user': user_form.data['id_edit_user'],
+            'formset': formset,
+            'page': page,
+            'sorting': sorting,
+            'modal': 'edited',
+            'user_form': user_form,
+            'filter_by': filter_by
+        }
         return render(request, 'doctor.html', context=data)
 
     if request.method == 'POST' and 'archive' in request.POST:
@@ -193,52 +184,55 @@ def doctor(request):
     user_form = PatientRegistrationForm()
     formset = CustomUserFormSet(queryset=queryset)
     data = {
-            'formset': formset,
-            'page': page,
-            'sorting': sorting,
-            'user_form': user_form,
-            'filter_by': filter_by
+        'formset': formset,
+        'page': page,
+        'sorting': sorting,
+        'user_form': user_form,
+        'filter_by': filter_by
     }
     return render(request, 'doctor.html', context=data)
+
 
 @login_required(login_url='login')
 @user_passes_test(group_doctors_check, login_url='login')
 def archive(request):
     CustomUserFormSet = modelformset_factory(CustomUser,
-                                          fields=(
-                                              'full_name', 'receipt_date', 'receipt_time', 'department',
-                                              'room_number', 'type_of_diet', 'comment', 'id'),
-                                          widgets={
-                                              'full_name': TextInput(attrs={'class': 'form-control'}),
-                                              'room_number': Select(attrs={'class': 'form-control'}),
-                                              'department': Select(attrs={'class': 'form-control'}),
-                                              'type_of_diet': Select(attrs={'class': 'form-control'}),
-                                              'receipt_date': DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'}),
-                                              'receipt_time': TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
-                                              'comment': TextInput(attrs={'class': 'form-control', 'placeholder': 'Комментарий'}),
-                                              'id': Textarea(attrs={'style': "display: none;"}),
-                                          },
-                                          extra=0, )
-
+                                             fields=(
+                                                 'full_name', 'receipt_date', 'receipt_time', 'department',
+                                                 'room_number', 'type_of_diet', 'comment', 'id'),
+                                             widgets={
+                                                 'full_name': TextInput(attrs={'class': 'form-control'}),
+                                                 'room_number': Select(attrs={'class': 'form-control'}),
+                                                 'department': Select(attrs={'class': 'form-control'}),
+                                                 'type_of_diet': Select(attrs={'class': 'form-control'}),
+                                                 'receipt_date': DateInput(format='%Y-%m-%d',
+                                                                           attrs={'class': 'form-control',
+                                                                                  'type': 'date'}),
+                                                 'receipt_time': TimeInput(
+                                                     attrs={'class': 'form-control', 'type': 'time'}),
+                                                 'comment': TextInput(
+                                                     attrs={'class': 'form-control', 'placeholder': 'Комментарий'}),
+                                                 'id': Textarea(attrs={'style': "display: none;"}),
+                                             },
+                                             extra=0, )
 
     page = 'menu-archive'
-    global filter_by
-    global sorting
+    filter_by = 'full_name'  # дефолтная фильтрация
+    sorting = 'top'
 
     queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
     if request.method == 'POST' and 'filter_by_flag' in request.POST:
-
-        if filter_by == request.POST.getlist('filter_by')[0]:
-            if sorting == 'top':
-                queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
+        filter_by = request.POST.getlist('filter_by')[0]
+        if request.POST['is_pressing_again'] == 'True':
+            if request.POST['sorting_value'] == 'top':
+                queryset = CustomUser.objects.filter(status='patient_archive').order_by(f'-{filter_by}')
                 sorting = 'down'
             else:
-                queryset = CustomUser.objects.filter(status='patient_archive').order_by(f'-{filter_by}')
+                queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
                 sorting = 'top'
-
         else:
-            filter_by = request.POST.getlist('filter_by')[0]
             queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
+
 
     if request.method == 'POST' and 'change-email' in request.POST:
         # сhange_password(request.POST['changed-email'], request)
@@ -258,7 +252,6 @@ def archive(request):
             'filter_by': filter_by
         }
         return render(request, 'doctor.html', context=data)
-
 
     if request.method == 'POST' and 'change-password_flag' in request.POST:
         if request.POST['change-password_flag'] == 'on':
@@ -312,16 +305,13 @@ def archive(request):
     user_form = PatientRegistrationForm()
     formset = CustomUserFormSet(queryset=queryset)
     data = {
-            'sorting': sorting,
-            'formset': formset,
-            'user_form': user_form,
-            'page': page,
-            'filter_by': filter_by,
+        'sorting': sorting,
+        'formset': formset,
+        'user_form': user_form,
+        'page': page,
+        'filter_by': filter_by,
     }
     return render(request, 'archive.html', context=data)
-
-
-
 
 
 @login_required(login_url='login')
@@ -396,7 +386,6 @@ def menu(request):
         products_garnish = list(products.filter(category='гарнир'))
         products_drink = list(products.filter(category='напиток'))
 
-
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
 
     if request.method == 'POST' and 'change-email' in request.POST:
@@ -467,6 +456,7 @@ def menu(request):
             'meal': meal,
             }
     return render(request, 'menu.html', context=data)
+
 
 def menu_test(request):
     return render(request, 'menu_test.html', {})
