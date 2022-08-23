@@ -12,10 +12,14 @@
                 <div>
                     {# какая форма сработала  #}
                     <input style="display: none;" type="checkbox" id="add_patient_flag"  name="add_patient">
-                    <input style="display: none;" type="checkbox" id="filter_by_flag"  name="filter_by_flag">
                     <input style="display: none;" type="checkbox" id="edit_patient_flag"  name="edit_patient_flag">
                     <input style="display: none;" type="checkbox" id="archive"  name="archive">
                     <input style="display: none;" type="text" id="id_edit_user" name="id_edit_user">
+
+                    <input style="display: none;" type="checkbox" id="filter_by_flag"  name="filter_by_flag">
+                    <input style="display: none;" type="text" id="filter_by_value"  name="filter_by_value">
+                    <input style="display: none;" type="text" id="sorting_value"  name="sorting_value">
+                    <input style="display: none;" type="text" id="is_pressing_again"  name="is_pressing_again">
 
                 </div>
 
@@ -348,6 +352,7 @@
         </div>
 <script>
 
+filtration()
 
 
 function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, comment, id) {
@@ -404,29 +409,42 @@ const list1 = document.querySelectorAll('.tag')
         }
 })
 
+
 // фильтрация/сортировка страницы
 function check_function(value) {
+    
     var form = document.getElementById('main-form');
+    let filterBy = document.getElementById('filter_by').innerHTML
+
+    if (document.getElementById(value).checked) {
+        document.getElementById('is_pressing_again').value = 'True'
+    } else {
+
+        document.getElementById('is_pressing_again').value = 'False'
+    }
     document.getElementById(value).setAttribute('checked', 'true');
     document.getElementById('filter_by_flag').setAttribute('checked', 'true');
+    if ((document.getElementById(filterBy).classList.contains('desc'))) {
+        document.getElementById('sorting_value').value = 'down'
+    } else {
+        document.getElementById('sorting_value').value = 'top'
+    }
     form.submit();
 }
 
 
-var list4 = document.getElementById('sorting').innerHTML
-
-var list3 = document.getElementById('filter_by').innerHTML
-document.getElementById(list3).classList.add('active');
-
-document.getElementById('input_' + list3).setAttribute('checked', 'true');
-
-if (list4 == 'down') {
-    document.getElementById(list3).classList.add('desc');
+function filtration() {
+    let sorting = document.getElementById('sorting').innerHTML
+    let filterBy = document.getElementById('filter_by').innerHTML
+    document.getElementById(filterBy).classList.add('active');
+    document.getElementById('input_' + filterBy).setAttribute('checked', 'true');
+    if (sorting == 'down') {
+        document.getElementById(filterBy).classList.add('desc');
+    }
 }
 
 
 function validationForm() {
-
     var form = document.getElementById('main-form');
     var div_form = document.querySelector('.form-group');
     var fields = form.querySelectorAll('.field')

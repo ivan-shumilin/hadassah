@@ -21,8 +21,7 @@ def group_doctors_check(user):
     return user.groups.filter(name='doctors').exists()
 
 
-filter_by = 'full_name'  # дефолтная фильтрация
-sorting = 'top'
+
 
 
 @login_required(login_url='login')
@@ -43,21 +42,24 @@ def doctor(request):
                                                  'id': Textarea(attrs={'style': "display: none;"}),
                                              },
                                              extra=0, )
-    global filter_by
-    global sorting
+
     page = 'menu-doctor'
-    queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
+    filter_by = 'full_name'  # дефолтная фильтрация
+    sorting = 'top'
+
+    queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
     if request.method == 'POST' and 'filter_by_flag' in request.POST:
-        if filter_by == request.POST.getlist('filter_by')[0]:
-            if sorting == 'top':
-                queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
+        filter_by = request.POST.getlist('filter_by')[0]
+        if request.POST['is_pressing_again'] == 'True':
+            if request.POST['sorting_value'] == 'top':
+                queryset = CustomUser.objects.filter(status='patient_archive').order_by(f'-{filter_by}')
                 sorting = 'down'
             else:
-                queryset = CustomUser.objects.filter(status='patient').order_by(f'-{filter_by}')
+                queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
                 sorting = 'top'
         else:
-            filter_by = request.POST.getlist('filter_by')[0]
-            queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
+            queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
+
 
     if request.method == 'POST' and 'add_patient' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
