@@ -355,22 +355,26 @@
             </form>
         </div>
 <script>
-let url = 'https://www.sk.petrushkagroup.com/api/v1/barcode/verify'
-alert(url);
-let user = {
-    "barcode": "100000000011"
-};
-let response = fetch(url, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json;',
-    'Vary':' Accept'
-  },
-  body: JSON.stringify(user)
-});
+const myfunction = async function() {    
+    let url = 'https://www.sk.petrushkagroup.com/api/v1/barcode/verify'
+    alert(url);
+    let user = {
+        "barcode": "100000000011"
+    };
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
 
-let result = response.json();
-alert(result);
+      },
+      body: JSON.stringify(user)
+    });
+
+    let result = await response.text();
+    alert(result);
+}
+
+myfunction();
 </script>
         {% load static %}
     <script src="{% static 'doctor/js/all.js' %}"></script>
