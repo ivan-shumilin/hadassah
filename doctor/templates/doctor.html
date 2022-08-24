@@ -595,20 +595,17 @@ function validationChangePasswordForm() {
     var errors = document.getElementById('change-password-error');
     errors.innerHTML = ""
     var error = 0
-    checkPassword('{{ user.id }}', old_password.value).then(res => console.log(res))
- 
- 
-    // if (checkPassword('{{ user.id }}', old_password.value)) {
-    //     document.getElementById('change-password-error').innerHTML = 'Введён неверный пароль'
-    //     error = error + 1
-
-    // }
+    checkPassword('{{ user.id }}', old_password.value).then(res => {
+        if (!res) {
+            document.getElementById('change-password-error').innerHTML = 'Введён неверный пароль';
+            error = error + 1;
+        }
+    })
     if (new_password.value == old_password.value) {
         document.getElementById('change-password-error').innerHTML = 'Пароли совпадают'
         error = error + 1
     }
-    if (error == 0) {
-        
+    if (error == 0) {        
         document.getElementById('change-password_flag').setAttribute('checked', 'true');
         document.getElementById('changed-password').value = new_password.value
         form1.submit();
@@ -658,10 +655,10 @@ const checkPassword = async function(userId, oldPassword) {
     console.log(typeof(result))
     console.log(result == 'Yes')
     console.log(result == "Yes")
-    if (result == 'Yes') {
-        return "True";
+    if (result == "\"Yes\"") {
+        return true;
     } else {
-        return "False";
+        return false;
     }
 }
 
