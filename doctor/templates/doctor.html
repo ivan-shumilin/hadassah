@@ -595,7 +595,7 @@ function validationChangePasswordForm() {
     var errors = document.getElementById('change-password-error');
     errors.innerHTML = ""
     var error = 0
-    checkPassword('{{ user.id }}', old_password.value).catch(alert)
+    alert(checkPassword('{{ user.id }}', old_password.value))
     if (checkPassword('{{ user.id }}', old_password.value)) {
         document.getElementById('change-password-error').innerHTML = 'Введён неверный пароль'
         error = error + 1
