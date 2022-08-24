@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <title>Title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
+    </head>
+    <body>
+
+        <div id="wrapper">
+            <div id="left">
+                <div class="sidebar-header-block">
+                    <a href="#" class="logo">
+                        <img src="./img/logo.svg" alt="">
+                    </a>
+                    <div class="profile">
+                        <a href="#" class="label" data-fade-toggle-link="profile-info">
+                            <span class="i i-user"></span>
+                            Профиль
+                        </a>
+                        <div class="info" data-fade-toggle="profile-info">
+                            <div class="segment">
+                                <div class="name">В. Вайнштейн</div>
+                                <div class="email">mail@example.com</div>
+                                <div class="links">
+                                    <a href="#" data-modal-link="logout">Выйти</a>
+                                    <a href="#" data-modal-link="profile-form">Изменить</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-menu-block">
+                    <ul>
+                        <li>
+                            <a href="/">
+                                <span class="i i-list icon-default"></span>
+                                <span class="i i-list-colored icon-colored"></span>
+                                <span>Пациенты</span>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="./menu.htm">
+                                <span class="i i-eat icon-default"></span>
+                                <span class="i i-eat-colored icon-colored"></span>
+                                <span>Меню</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./archive.htm">
+                                <span class="i i-box icon-default"></span>
+                                <span class="i i-box-colored icon-colored"></span>
+                                <span>Архив</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-petrushka-block">
+                    <a href="#">
+                        <img src="./img/petrushka.png" alt="">
+                    </a>
+                </div>
+            </div>
+
+            <div id="center" data-simplebar>
+                <div class="header-block">
+                    <div class="title">Архив учётных записей</div>
+                    <div class="menu">
+                        <div class="switch">
+                            <a href="#" class="active">Сегодня</a>
+                            <a href="#">Завтра</a>
+                            <a href="#">Послезавтра</a>
+                        </div>
+                    </div>
+                    <div class="green-menu">
+                        <a href="#" data-modal-link="diet">Диета</a>
+                        <a href="#" class="active">ОВД</a>
+                    </div>
+                </div>
+
+                <div class="eat-menu-block">
+                    <div class="menu">
+                        <a href="#" class="active">Завтрак</a>
+                        <a href="#">Обед</a>
+                        <a href="#">Полдник</a>
+                        <a href="#">Ужин</a>
+                    </div>
+                    <div class="date">12 июля, вторник</div>
+                </div>
+
+                <div class="eat-grid">
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat1.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat2.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat3.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat1.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat2.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat3.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat1.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat2.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat3.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat1.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat2.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="info">
+                            <div class="name">Рыба под маринадом</div>
+                            <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                            <div class="text">
+                                Минтай филе с/м, лук репчатый пассированный п/ф, морковь
+                                пассированная п/ф, томатная паста пассированная п/ф,
+                                перец болгарский п/ф, соль, перец горошком
+                                (смесь), лавровый лист, сахар песок, вода, зелень в асс.
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="./img/eat3.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div data-modal="profile-form" data-modal-width="480">
+            <div class="title">Редактировать профиль</div>
+            <form action="#">
+                <div class="form-group">
+                    <label for="#">E-mail</label>
+                    <input type="text" value="mail@example.com">
+                </div>
+                <div class="form-group item-actions flex flex-center">
+                    <button type="submit" data-modal-link="profile-edited">Сохранить</button>
+                    <a href="#" class="button white" data-modal-link="password-form">Изменить пароль</a>
+                </div>
+            </form>
+        </div>
+
+
+        <div data-modal="profile-edited" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Email успешно изменён</div>
+            </div>
+        </div>
+
+
+        <div data-modal="password-form" data-modal-width="480">
+            <div class="title">Изменение пароля</div>
+            <form action="#" class="password-form">
+                <div class="form-group">
+                    <label for="#">Введите старый пароль</label>
+                    <input type="password" name="old_password">
+                </div>
+                <div class="form-group">
+                    <label for="#">Введите новый пароль</label>
+                    <input type="password" name="new_password">
+                </div>
+                <div class="form-group item-actions flex flex-center">
+                    <button type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+
+
+        <div data-modal="logout" data-modal-width="400">
+            <div class="title align-center">Вы уверены, что хотите выйти?</div>
+            <div class="confirm-block">
+                <div class="buttons">
+                    <a href="#" class="button">Выйти</a>
+                    <a href="#" class="button white" data-modal-close>Отменить</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div data-modal="diet" data-modal-width="480">
+            <div class="title">Выберите диету из списка</div>
+            <form action="#">
+                <div class="form-group">
+                    <label for="#">Диета</label>
+                    <select name="diet">
+                        <option value="1">Диета 1</option>
+                        <option value="2">Диета 2</option>
+                        <option value="3">Диета 3</option>
+                        <option value="4">Диета 4</option>
+                    </select>
+                </div>
+                <div class="form-group item-actions flex flex-center">
+                    <button type="submit">Показать</button>
+                    <a href="#" class="button white" data-modal-close>Отменить</a>
+                </div>
+            </form>
+        </div>
+<script>
+let url = 'https://www.sk.petrushkagroup.com/api/v1/barcode/verify'
+alert(url);
+let user = {
+    "barcode": "100000000011"
+};
+let response = fetch(url, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json;',
+    'Vary':' Accept'
+  },
+  body: JSON.stringify(user)
+});
+
+let result = response.json();
+alert(result);
+</script>
+        {% load static %}
+    <script src="{% static 'doctor/js/all.js' %}"></script>
+    </body>
+</html>
