@@ -6,4 +6,5 @@ urlpatterns = [
     path('archive', views.archive, name='archive'),
     path('menu', views.menu, name='menu'),
     path('menu-test', views.menu_test, name='menu-test'),
+    path('api/v1/password/verify', views.VerifyPasswordAPIView.as_view()),
     ]

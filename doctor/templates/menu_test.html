@@ -26,7 +26,7 @@
                         </a>
                         <div class="info" data-fade-toggle="profile-info">
                             <div class="segment">
-                                <div class="name">В. Вайнштейн</div>
+                                <div class="name">{{ user.id }}</div>
                                 <div class="email">mail@example.com</div>
                                 <div class="links">
                                     <a href="#" data-modal-link="logout">Выйти</a>
@@ -359,7 +359,8 @@ const myfunction = async function() {
     let url = 'https://www.sk.petrushkagroup.com/api/v1/barcode/verify'
     alert(url);
     let user = {
-        "barcode": "100000000011"
+        "user_id": "{{ user.id }}",
+        "row_password": 
     };
     let response = await fetch(url, {
       method: 'POST',

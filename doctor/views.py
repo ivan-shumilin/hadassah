@@ -15,6 +15,8 @@ from dateutil.parser import parse
 from django.db.models.functions import Lower
 from doctor.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet
 from django.db.models import Q
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
 def group_doctors_check(user):
@@ -462,3 +464,13 @@ def menu(request):
 
 def menu_test(request):
     return render(request, 'menu_test.html', {})
+
+class VerifyPasswordAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        user = CustomUser.objects.get(id=data['id_user'])
+        row_password = data['row_password   ']
+        if user.check_password(row_password):
+            return Response('Yes')
+        else:
+            return Response('No')

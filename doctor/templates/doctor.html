@@ -594,7 +594,12 @@ function validationChangePasswordForm() {
     var new_password = document.getElementById('new_password');
     var errors = document.getElementById('change-password-error');
     errors.innerHTML = ""
-    var error = 0    
+    var error = 0
+    if (checkPassword('{{ user.id }}', old_password.value)) {
+        document.getElementById('change-password-error').innerHTML = 'Введён неверный пароль'
+        error = error + 1
+
+    }
     if (new_password.value == old_password.value) {
         document.getElementById('change-password-error').innerHTML = 'Пароли совпадают'
         error = error + 1
@@ -603,7 +608,7 @@ function validationChangePasswordForm() {
         
         document.getElementById('change-password_flag').setAttribute('checked', 'true');
         document.getElementById('changed-password').value = new_password.value
-        form1.submit();
+        // form1.submit();
     }
 }
 
@@ -627,6 +632,29 @@ function clickOnEditedElement() {
 
 
 clickOnElement();
+
+const checkPassword = async function(userId, oldPassword) {  
+    let url = 'https://www.sk.petrushkagroup.com/api/v1/barcode/verify'
+
+    let user = {
+        "user_id": userId,
+        "row_password": oldPassword
+    };
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(user)
+    });
+    let result = await response.text();
+
+    if (result == 'Yes') {
+        return True;
+    } else {
+        return False;
+    }
+}
 
 
 
