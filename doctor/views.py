@@ -469,7 +469,7 @@ class VerifyPasswordAPIView(APIView):
     def post(self, request):
         data = request.data
         user = CustomUser.objects.get(id=data['id_user'])
-        row_password = data['row_password   ']
+        row_password = data['row_password']
         if user.check_password(row_password):
             return Response('Yes')
         else:
