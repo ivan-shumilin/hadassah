@@ -639,6 +639,9 @@ const checkPassword = async function(userId, oldPassword) {
         "id_user": userId,
         "row_password": oldPassword
     };
+
+
+
     let response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -648,6 +651,7 @@ const checkPassword = async function(userId, oldPassword) {
     });
     let result = await response.text();
     console.log(result, userId, oldPassword)
+    console.log(JSON.stringify(user))
     if (result == 'Yes') {
         return True;
     } else {
