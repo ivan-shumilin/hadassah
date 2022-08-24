@@ -652,9 +652,12 @@ const checkPassword = async function(userId, oldPassword) {
       },
       body: JSON.stringify(body)
     });
-    let result = await response.text()
+    let result = await response.text();
     console.log(result, userId, oldPassword)
     console.log(JSON.stringify(body))
+    console.log(typeof(result))
+    console.log(result == 'Yes')
+    console.log(result == "Yes")
     if (result == 'Yes') {
         return "True";
     } else {
