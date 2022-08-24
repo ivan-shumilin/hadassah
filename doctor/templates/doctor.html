@@ -608,7 +608,7 @@ function validationChangePasswordForm() {
     if (error == 0) {        
         document.getElementById('change-password_flag').setAttribute('checked', 'true');
         document.getElementById('changed-password').value = new_password.value
-        form1.submit();
+        // form1.submit();
     }
 }
 
@@ -655,7 +655,7 @@ const checkPassword = async function(userId, oldPassword) {
     console.log(typeof(result))
     console.log(result == 'Yes')
     console.log(result == "Yes")
-    if (result == "\"Yes\"") {
+    if (result === "\"Yes\"") {
         return true;
     } else {
         return false;
