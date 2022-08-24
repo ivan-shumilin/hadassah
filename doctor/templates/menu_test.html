@@ -365,12 +365,13 @@ const myfunction = async function() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;',
-        'Vary':' Accept'
+        'Vary': 'Accept'
+
       },
       body: JSON.stringify(user)
     });
 
-    let result = await response.json;
+    let result = await response.text();
     alert(result);
 }
 
