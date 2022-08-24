@@ -635,9 +635,8 @@ clickOnElement();
 
 const checkPassword = async function(userId, oldPassword) {  
     let url = 'https://www.sk.petrushkagroup.com/api/v1/barcode/verify'
-
     let user = {
-        "user_id": userId,
+        "id_user": userId,
         "row_password": oldPassword
     };
     let response = await fetch(url, {
