@@ -588,50 +588,20 @@ function validationChangeEmailForm() {
     }
 }
 
-// function validationChangePasswordForm() {    
-//     var form1 = document.getElementById('profile-form-id');
-//     var old_password = document.getElementById('old_password');
-//     var new_password = document.getElementById('new_password');
-//     var errors = document.getElementById('change-password-error');
-//     errors.innerHTML = ""
-//     var error = 0
-//     checkPassword('{{ user.id }}', old_password.value).then(res => {
-//         if (!res) {
-//             document.getElementById('change-password-error').innerHTML = 'Введён неверный пароль';
-//             error = error + 1;
-//         }
-//         let completed = true;
-//     })
-//     if (new_password.value == old_password.value) {
-//         document.getElementById('change-password-error').innerHTML = 'Пароли совпадают'
-//         error = error + 1
-//     }
-//     if (error == 0) {        
-//         document.getElementById('change-password_flag').setAttribute('checked', 'true');
-//         document.getElementById('changed-password').value = new_password.value
-//         // form1.submit();
-//     }
-// }
-
-
-
-
-
-
-function validationChangePasswordForm() {    
+function validationChangePasswordForm() {
     var form1 = document.getElementById('profile-form-id');
     var old_password = document.getElementById('old_password');
     var new_password = document.getElementById('new_password');
     var errors = document.getElementById('change-password-error');
     errors.innerHTML = ""
     var error = 0
-    checkPassword('{{ user.id }}', old_password.value).then(res => {
-        let completed = res;
-    })
-    if (!completed) {
-            document.getElementById('change-password-error').innerHTML = 'Введён неверный пароль';
-            error = error + 1;
-        }
+    // checkPassword('{{ user.id }}', old_password.value).then(res => {
+    //     if (!res) {
+    //         document.getElementById('change-password-error').innerHTML = 'Введён неверный пароль';
+    //         error = error + 1;
+    //     }
+    //     let completed = true;
+    // })
     if (new_password.value == old_password.value) {
         document.getElementById('change-password-error').innerHTML = 'Пароли совпадают'
         error = error + 1
@@ -642,6 +612,45 @@ function validationChangePasswordForm() {
         form1.submit();
     }
 }
+
+
+
+
+
+
+// function validationChangePasswordForm() {
+//     setTimeout(
+//         () => {
+//         console.log('Hello after 4 seconds');
+//         },
+//         2 * 1000
+//     );
+//     setTimeout();
+//     alert('hi!')
+//     var form1 = document.getElementById('profile-form-id');
+//     var old_password = document.getElementById('old_password');
+//     var new_password = document.getElementById('new_password');
+//     var errors = document.getElementById('change-password-error');
+//     errors.innerHTML = ""
+//     var error = 0
+//     checkPassword('{{ user.id }}', old_password.value).then(res => {
+//         let completed = res;
+//     })
+
+//     if (!completed) {
+//             document.getElementById('change-password-error').innerHTML = 'Введён неверный пароль';
+//             error = error + 1;
+//         }
+//     if (new_password.value == old_password.value) {
+//         document.getElementById('change-password-error').innerHTML = 'Пароли совпадают'
+//         error = error + 1
+//     }
+//     if (error == 0) {        
+//         document.getElementById('change-password_flag').setAttribute('checked', 'true');
+//         document.getElementById('changed-password').value = new_password.value
+//         form1.submit();
+//     }
+// }
 
 
 
