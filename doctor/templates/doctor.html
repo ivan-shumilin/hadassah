@@ -595,6 +595,7 @@ function validationChangePasswordForm() {
     var errors = document.getElementById('change-password-error');
     errors.innerHTML = ""
     var error = 0
+    checkPassword('{{ user.id }}', old_password.value).catch(alert)
     if (checkPassword('{{ user.id }}', old_password.value)) {
         document.getElementById('change-password-error').innerHTML = 'Введён неверный пароль'
         error = error + 1
@@ -633,14 +634,38 @@ function clickOnEditedElement() {
 
 clickOnElement();
 
+// const checkPassword = async function(userId, oldPassword) {  
+//     let url = 'https://www.sk.petrushkagroup.com/doctor/api/v1/password/verify'
+//     let user = {
+//         "id_user": userId,
+//         "row_password": oldPassword
+//     };
+
+
+
+//     let response = await fetch(url, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json;',
+//       },
+//       body: JSON.stringify(user)
+//     });
+//     let result = response.text();
+//     console.log(result, userId, oldPassword)
+//     console.log(JSON.stringify(user))
+//     if (result == 'Yes') {
+//         return 1;
+//     } else {
+//         return 2;
+//     }
+// }
+
 const checkPassword = async function(userId, oldPassword) {  
     let url = 'https://www.sk.petrushkagroup.com/doctor/api/v1/password/verify'
     let user = {
         "id_user": userId,
         "row_password": oldPassword
     };
-
-
 
     let response = await fetch(url, {
       method: 'POST',
@@ -649,15 +674,16 @@ const checkPassword = async function(userId, oldPassword) {
       },
       body: JSON.stringify(user)
     });
-    let result = await response.text();
-    console.log(result, userId, oldPassword)
-    console.log(JSON.stringify(user))
-    if (result == 'Yes') {
-        return True;
-    } else {
-        return False;
+
+    if (response.status == 200) {
+      let result = response.text();
+      return result;
     }
+
+  throw new Error(response.status);
 }
+
+
 
 
 
