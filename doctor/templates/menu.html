@@ -287,16 +287,23 @@ async function validationChangePasswordForm() {
     var form1 = document.getElementById('profile-form-id');
     var old_password = document.getElementById('old_password');
     var new_password = document.getElementById('new_password');
-    var errors = document.getElementById('change-password-error');
-    errors.innerHTML = ""
+    document.getElementById('old-password-error').innerHTML = "";
+    document.getElementById('new-password-error').innerHTML = "";
+    document.getElementById('change-email-form-old-password').classList.remove('error');
+    document.getElementById('change-email-form-new-password').classList.remove('error')
+ 
     var error = 0
     let res = await checkPassword('{{ user.id }}', old_password.value)
     if (!res) {
-            document.getElementById('change-password-error').innerHTML = 'Введён неверный пароль';
+            document.getElementById('change-email-form-old-password').classList.add('error');
+            document.getElementById('old-password-error').classList.add('error');
+            document.getElementById('old-password-error').innerHTML = 'Введён неверный пароль';
             error = error + 1;
         }
     if (new_password.value == old_password.value) {
-        document.getElementById('change-password-error').innerHTML = 'Пароли совпадают'
+        document.getElementById('change-email-form-new-password').classList.add('error')
+        document.getElementById('new-password-error').classList.add('error');
+        document.getElementById('new-password-error').innerHTML = 'Пароли совпадают';
         error = error + 1
     }
     if (error == 0) {        

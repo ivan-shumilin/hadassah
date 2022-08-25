@@ -672,14 +672,6 @@ async function validationChangePasswordForm() {
     }
 }
 
-const checkPasswordTest = async function(userId, oldPassword) { 
-    let promise = new Promise((resolve, reject) => {
-        setTimeout(() => resolve("готово!"), 1000)
-  });
-
-  let result = await promise;    
-}
-
 const checkPassword = async function(userId, oldPassword) {  
     let url = 'https://www.sk.petrushkagroup.com/doctor/api/v1/password/verify'
     let body = {
@@ -707,6 +699,13 @@ const checkPassword = async function(userId, oldPassword) {
     }
 }
 
+const checkPasswordTest = async function(userId, oldPassword) { 
+    let promise = new Promise((resolve, reject) => {
+        setTimeout(() => resolve("готово!"), 1000)
+  });
+
+  let result = await promise;    
+}
 
 function clickOnElement () {
     if ('{{ id_edited_user }}' == '') {
