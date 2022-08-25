@@ -7,16 +7,24 @@
             <div class="title">Авторизация</div>
             <form action="" class="login-form" method="post" novalidate>
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="{{ user_form.username.id_for_label }}">E-mail</label>
-                    {{ user_form.username }}
-                </div>
-                <div class="form-group">
-                    <label for="{{ user_form.password.id_for_label }}">Пароль</label>
-                    {{ user_form.password }}
-                    {% if errors %}
-                    <p style="color: red;" class="error-field">{{ errors }}</p>
-                    {% endif %}
+                {% if errors %}
+                    <div class="form-group error">
+                        <label for="{{ user_form.username.id_for_label }}">E-mail</label>
+                        {{ user_form.username }}
+                    </div>
+                    <div class="form-group error">
+                        <label for="{{ user_form.password.id_for_label }}">Пароль</label>
+                        {{ user_form.password }}
+                        <div class="error">{{ errors|cut:"["|cut:"]"|cut:"'" }}</div>
+                {% else %}
+                    <div class="form-group">
+                        <label for="{{ user_form.username.id_for_label }}">E-mail</label>
+                        {{ user_form.username }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ user_form.password.id_for_label }}">Пароль</label>
+                        {{ user_form.password }}                    
+                {% endif %}
                 </div>
                 <div class="form-group item-actions flex flex-center">
                     <button type="submit">Войти</button>

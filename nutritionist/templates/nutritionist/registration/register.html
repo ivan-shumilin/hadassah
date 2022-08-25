@@ -15,13 +15,17 @@
                     <label for="{{ user_form.lastname.id_for_label }}">Имя</label>
                     {{ user_form.lastname }}
                 </div>
+                {% if errors %}
+                <div class="form-group error">
+                    <label for="{{ user_form.email.id_for_label }}">E-mail</label>
+                    {{ user_form.email }}
+                    <div class="error">{{ errors|cut:"["|cut:"]"|cut:"'" }}</div>
+                </div>
+                {% else %}
                 <div class="form-group">
                     <label for="{{ user_form.email.id_for_label }}">E-mail</label>
                     {{ user_form.email }}
-                    {% if errors %}
-                        <p style="color: red;" class="error-field">{{ errors|cut:"["|cut:"]"|cut:"'" }}</p>
-                    {% endif %}
-                </div>
+                {% endif %}
                 <div class="form-group item-actions flex flex-center">
                     <button type="submit">Зарегистрироваться</button>
                 </div>

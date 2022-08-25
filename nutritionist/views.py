@@ -1,4 +1,4 @@
-import json, os, requests, random, math, calendar, datetime
+import json, os, requests, random, math, calendar, datetime, re
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
@@ -715,7 +715,7 @@ def user_login(request):
             if user.groups.filter(name='patients').exists():
                 return HttpResponseRedirect(reverse('patient'))
         else:
-            errors = 'Пользователя с таким именем или паролем не существует'
+            errors = 'Пользователь с таким именем или паролем не существует'
     else:
         user_form = UserloginForm()
     return render(request, 'nutritionist/registration/login.html', {'user_form': user_form,
@@ -737,6 +737,9 @@ def register(request):
         if user_form.is_valid():
             try:
                 user = CustomUser.objects.create_user(user_form.data['email'], user_form.data['email'], password)
+                # def chk_rest(s):
+                #     pat = r'([^а-яА-Яa-zA-Z0-9ёЁ\)\(-\' .,])'
+                #     return re.findall(pat, flags=re.I)
                 user.first_name = user_form.data['name']
                 user.last_name = user_form.data['lastname']
                 group_nutritionists = Group.objects.get(name='doctors')
