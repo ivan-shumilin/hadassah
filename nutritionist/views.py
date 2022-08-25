@@ -763,6 +763,8 @@ def register(request):
                 return render(request, 'nutritionist/registration/register_done.html', {'user_form': user_form, 'errors': errors})
             except Exception:
                 errors.append('Пользователь с такой почтой уже существует')
+                return render(request, 'nutritionist/registration/register.html',
+                              {'user_form': user_form, 'errors': errors})
 
 
     user_form = UserRegistrationForm()
