@@ -652,7 +652,7 @@ async function validationChangePasswordForm() {
     document.getElementById('change-email-form-new-password').classList.remove('error')
  
     var error = 0
-    let res = await checkPasswordTest('{{ user.id }}', old_password.value)
+    let res = await checkPassword('{{ user.id }}', old_password.value)
     if (!res) {
             document.getElementById('change-email-form-old-password').classList.add('error');
             document.getElementById('old-password-error').classList.add('error');
