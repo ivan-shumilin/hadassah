@@ -78,36 +78,36 @@
 
     <div data-modal="modal-start{{ form.id.value }}" data-modal-width="480">
             <div class="title">Редактировать профиль пациента</div>
-                <div class="form-group">
+                <div id ='full_name_edit' class="form-group">
                     <label>ФИО пациента</label>
                     <input id="{{ form.full_name.id_for_label }}" type="text" value="{{ form.full_name.value }}">
-                    <p id ='error_full_name' class="error-field"></p>
+                    <div id ='error_full_name' class="error-field"></div>
                 </div>
-                <div class="form-group">
+                <div id='receipt_date_edit' class="form-group">
                     {% load widget_tweaks %}
                     <label>Дата госпитализации</label>
                     <input type="text" value="{{ form.receipt_date.value|date:'d.m.Y' }}" data-datepicker id="{{ form.receipt_date.id_for_label }}">
-                    <p id ='error_receipt_date' class="error-field"></p>
+                    <div id ='error_receipt_date' class="error-field"></div>
                 </div>
-                <div class="form-group">
+                <div id='receipt_time_edit' class="form-group">
                     <label>Время госпитализации</label>
                     <input type="text" value="{{ form.receipt_time.value|date:'H:i' }}" data-timemask id="{{ form.receipt_time.id_for_label }}">
-                    <p id ='error_receipt_time' class="error-field"></p>
+                    <div id ='error_receipt_time' class="error-field"></div>
                 </div>
-                <div class="form-group">
+                <div id='department_edit' class="form-group">
                     <label>Отделение</label>
                     {{ form.department }}
-                    <p id ='error_department' class="error-field"></p>
+                    <div id ='error_department' class="error-field"></div>
                 </div>
-                <div class="form-group">
+                <div id='type_of_diet_edit' class="form-group">
                     <label>Диета</label>
                     {{ form.type_of_diet }}
-                    <p id ='error_type_of_diet' class="error-field"></p>
+                    <div id ='error_type_of_diet' class="error-field"></div>
                 </div>
-                <div class="form-group">
+                <div id='room_number_edit' class="form-group">
                     <label>Номер палаты</label>
                     {{ form.room_number }}
-                    <p id ='error_room_number' class="error-field"></p>
+                    <div id ='error_room_number' class="error-field"></div>
                 </div>
                 <div class="form-group">
                     <label>Комментарий</label>
@@ -393,13 +393,13 @@ const list1 = document.querySelectorAll('.tag')
             item1.classList.add('yellow')
         }
         if (item1.innerHTML == 'БД') {
-            item1.classList.add('yellow')
+            item1.classList.add('pink')
         }
         if (item1.innerHTML == 'ВБД') {
             item1.classList.add('orange')
         }
         if (item1.innerHTML == 'НБД') {
-            item1.classList.add('yellow')
+            item1.classList.add('red')
         }
         if (item1.innerHTML == 'НКД') {
             item1.classList.add('blue')
@@ -456,33 +456,56 @@ function validationForm() {
     var room_number = document.getElementById('id_room_number')
     var comment = document.getElementById('id_comment')
     var errors = document.querySelectorAll('.error-field')
+    var formGroup = document.querySelectorAll('.form-group')
     for (var i = 0; i < errors.length; i++) {
-    errors[i].innerHTML = '';
+        errors[i].innerHTML = '';
+        errors[i].classList.remove('error');
+        formGroup[i].classList.remove('error');
     }
     var error = 0
+    var st = new RegExp("[^а-яА-Яa-zA-Z0-9+/)/(/-/'/ /./,]+");
     if (!full_name.value) {
         document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
+        document.getElementById('error_full_name').classList.add('error')
+        document.getElementById('full_name_add').classList.add('error')
+        error = error + 1
+    }
+    if (st.test(full_name.value)) {
+        document.getElementById('error_full_name').innerHTML = "Поле может содержать только буквы и символы ()-,'."
+        document.getElementById('error_full_name').classList.add('error')
+        document.getElementById('full_name_add').classList.add('error')
         error = error + 1
     }
     if (!receipt_date.value) {
         document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
+        document.getElementById('error_receipt_date').classList.add('error')
+        document.getElementById('receipt_date_add').classList.add('error')
+
         error = error + 1
     }
     if (!receipt_time.value) {
         document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
+        document.getElementById('error_receipt_time').classList.add('error')
+        document.getElementById('receipt_time_add').classList.add('error')        
         error = error + 1
     }
     if (department.value == 'Не выбрано') {
         document.getElementById('error_department').innerHTML = 'Обязательное поле'
+        document.getElementById('error_department').classList.add('error')
+        document.getElementById('department_add').classList.add('error')
         error = error + 1
     }
 
     if (type_of_diet.value == 'Не выбрано') {
         document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
+        document.getElementById('error_type_of_diet').classList.add('error')
+        document.getElementById('type_of_diet_add').classList.add('error')
         error = error + 1
     }
     if (room_number.value == 'Не выбрано') {
         document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
+        document.getElementById('error_room_number').classList.add('error')
+        document.getElementById('room_number_add').classList.add('error')
         error = error + 1
     }
 
@@ -496,8 +519,6 @@ function validationForm() {
         document.getElementById('test_room_number').value = room_number.value
         document.getElementById('test_comment').value = id_comment.value
         form.submit();
-
-
     }
 }
 
@@ -514,34 +535,59 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
 
 
     var errors = document.querySelectorAll('.error-field')
+    var formGroup = document.querySelectorAll('.form-group')
     for (var i = 0; i < errors.length; i++) {
-    errors[i].innerHTML = '';
+        errors[i].innerHTML = '';
+        errors[i].classList.remove('error');
+        formGroup[i].classList.remove('error');
     }
     var error = 0
+    var st = new RegExp("[^а-яА-Яa-zA-Z0-9+/)/(/-/'/ /./,]+");
     if (!full_name.value) {
         document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
+        document.getElementById('error_full_name').classList.add('error')
+        document.getElementById('full_name_edit').classList.add('error')
+        error = error + 1
+    }
+    if (st.test(full_name.value)) {
+        document.getElementById('error_full_name').innerHTML = "Поле может содержать только буквы и символы ()-,'."
+        document.getElementById('error_full_name').classList.add('error')
+        document.getElementById('full_name_edit').classList.add('error')
         error = error + 1
     }
     if (!receipt_date.value) {
         document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
+        document.getElementById('error_receipt_date').classList.add('error')
+        document.getElementById('receipt_date_edit').classList.add('error')
+
         error = error + 1
     }
     if (!receipt_time.value) {
         document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
+        document.getElementById('error_receipt_time').classList.add('error')
+        document.getElementById('receipt_time_edit').classList.add('error')        
         error = error + 1
     }
     if (department.value == 'Не выбрано') {
         document.getElementById('error_department').innerHTML = 'Обязательное поле'
+        document.getElementById('error_department').classList.add('error')
+        document.getElementById('department_edit').classList.add('error')
         error = error + 1
     }
+
     if (type_of_diet.value == 'Не выбрано') {
         document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
+        document.getElementById('error_type_of_diet').classList.add('error')
+        document.getElementById('type_of_diet_edit').classList.add('error')
         error = error + 1
     }
     if (room_number.value == 'Не выбрано') {
         document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
+        document.getElementById('error_room_number').classList.add('error')
+        document.getElementById('room_number_edit').classList.add('error')
         error = error + 1
     }
+
     if (error == 0) {
         document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
         document.getElementById('id_edit_user').value = id
@@ -568,23 +614,31 @@ function patientArchive(id) {
     //setTimeout(() => { form.submit();}, 500);
 }
 
-function validationChangeEmailForm() {
+async function validationChangeEmailForm() {
     var form1 = document.getElementById('profile-form-id');
     var email = document.getElementById('change-email')
     var errors = document.getElementById('change-email-error')
+    document.getElementById('change-email-form').classList.remove('error')
     errors.innerHTML = ""
     var error = 0
+    var st = new RegExp("[^a-zA-Z0-9/-/./@/_]+");
+    if (st.test(email.value)) {
+        document.getElementById('change-email-error').innerHTML = "Такой почты не существует"
+        document.getElementById('change-email-error').classList.add('error')
+        document.getElementById('change-email-form').classList.add('error')
+        error = error + 1
+    }
     if (!email.value.includes('@')) {
         document.getElementById('change-email-error').innerHTML = 'Такой почты не существует'
+        document.getElementById('change-email-error').classList.add('error')
+        document.getElementById('change-email-form').classList.add('error')
         error = error + 1
     }
 
-
     if (error == 0) {
-
         document.getElementById('change-email_flag').setAttribute('checked', 'true');
         document.getElementById('changed-email').value = email.value
-        form.submit();
+        form1.submit();
     }
 }
 
@@ -597,11 +651,13 @@ async function validationChangePasswordForm() {
     var error = 0
     let res = await checkPassword('{{ user.id }}', old_password.value)
     if (!res) {
-            document.getElementById('change-password-error').innerHTML = 'Введён неверный пароль';
+            document.getElementById('change-email-form-old-password').classList.add('error')
+            document.getElementById('old-password-error').classList.add('error')
+            document.getElementById('old-password-error').innerHTML = 'Введён неверный пароль';
             error = error + 1;
         }
     if (new_password.value == old_password.value) {
-        document.getElementById('change-password-error').innerHTML = 'Пароли совпадают'
+        document.getElementById('new-password-error').innerHTML = 'Пароли совпадают'
         error = error + 1
     }
     if (error == 0) {        

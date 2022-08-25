@@ -24,13 +24,13 @@
             <div class="title">Редактировать профиль</div>
                 <form id='profile-form-id' method="post" novalidate>
                     {% csrf_token %}
-                    <div class="form-group">
+                    <div id='change-email-form' class="form-group">
                         <label for="#">E-mail</label>
                         <input id='change-email' type="text" value="{{ user.email }}">
-                        <p style="color: red;" id='change-email-error'></p>
+                        <div id='change-email-error'></div>
                     </div>
                     <div class="form-group item-actions flex flex-center">
-                        <button onclick="validationChangeEmailForm()">Сохранить</button>
+                        <button type="button" onclick="validationChangeEmailForm()">Сохранить</button>
                         <a class="button white" data-modal-link="password-form">Изменить пароль</a>
                     </div>
                    
@@ -48,13 +48,13 @@
     <div class="title">Редактировать профиль</div>
     <form id='profile-form-id' method="post" novalidate>
         {% csrf_token %}
-        <div class="form-group">
+        <div id='change-email-form' class="form-group">
             <label for="#">E-mail</label>
             <input id='change-email' type="text" value="{{ user.email }}">
-            <p style="color: red;" id='change-email-error'></p>
+            <div id='change-email-error'></div>
         </div>
         <div class="form-group item-actions flex flex-center">
-            <button onclick="validationChangeEmailForm()">Сохранить</button>
+            <button type="button" onclick="validationChangeEmailForm()">Сохранить</button>
             <a class="button white" data-modal-link="password-form">Изменить пароль</a>
         </div>
        
@@ -166,14 +166,15 @@
         <div data-modal="password-form" data-modal-width="480">
             <div class="title">Изменение пароля</div>
 
-                <div class="form-group">
+                <div id='change-email-form-old-password' class="form-group">
                     <label for="#">Введите старый пароль</label>
                     <input  type="password" name="old_password" id="old_password">
+                    <div id="old-password-error"></div>
                 </div>
-                <div class="form-group">
+                <div id='change-email-form-new-password' class="form-group">
                     <label for="#">Введите новый пароль</label>
                     <input  type="password" name="new_password" id="new_password">
-                    <p id="change-password-error" style="color: red;"></p>
+                    <div id="new-password-error"></div>
                 </div>
                 <div class="form-group item-actions flex flex-center">
                     <button name="change_patient" onclick="validationChangePasswordForm()">Сохранить</button>
@@ -220,41 +221,41 @@
         <div data-modal="patient-add" data-modal-width="480">
             <div class="title">Добавить нового пациента</div>
 
-                <div class="form-group">
+                <div id ='full_name_add' class="form-group">
                     {{ user_form.full_name.label }}
                     {{ user_form.full_name }}
-                    <p id ='error_full_name' class="error-field"></p>
+                    <div id ='error_full_name' class="error-field"></div>
                 </div>
-                <div class="form-group">
+                <div id='receipt_date_add' class="form-group">
                     {% load widget_tweaks %}
                     {{ user_form.receipt_date.label }}
                     {{ user_form.receipt_date|attr:"data-datepicker" }}
-                    <p id ='error_receipt_date' class="error-field"></p>
+                    <div id ='error_receipt_date' class="error-field"></div>
                 </div>
-                <div class="form-group">
+                <div id='receipt_time_add' class="form-group">
                     {{ user_form.receipt_time.label }}
                     {{ user_form.receipt_time|attr:"data-timemask" }}
-                    <p id ='error_receipt_time' class="error-field"></p>
+                    <div id ='error_receipt_time' class="error-field"></div>
                 </div>
-                <div class="form-group">
+                <div id='department_add' class="form-group">
                     {{ user_form.department.label }}
                     {{ user_form.department }}
-                    <p id ='error_department' class="error-field"></p>
+                    <div id ='error_department' class="error-field"></div>
                 </div>
-                <div class="form-group">
+                <div id='type_of_diet_add' class="form-group">
                     {{ user_form.type_of_diet.label }}
                     {{ user_form.type_of_diet }}
-                    <p id ='error_type_of_diet' class="error-field"></p>
+                    <div id ='error_type_of_diet' class="error-field"></div>
                 </div>
-                <div class="form-group">
+                <div id='room_number_add' class="form-group">
                     {{ user_form.room_number.label }}
                     {{ user_form.room_number }}
-                    <p id ='error_room_number' class="error-field"></p>
+                    <div id ='error_room_number' class="error-field"></div>
                 </div>
                 <div class="form-group">
                     {{ user_form.comment.label }}
                     {{ user_form.comment|attr:"rows='4'" }}
-                    <p id ='error_comment' class="error-field"></p>
+                    <div id ='error_receipt_date' class="error-field"></div>
                 </div>
 
 
