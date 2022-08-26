@@ -44,7 +44,12 @@ def doctor(request):
                                                  'id': Textarea(attrs={'style': "display: none;"}),
                                              },
                                              extra=0, )
-
+    CustomUserFormSet.form.base_fields['department'].choices = CustomUserFormSet.form.base_fields['department'].choices[
+                                                               2:]
+    CustomUserFormSet.form.base_fields['type_of_diet'].choices = CustomUserFormSet.form.base_fields['type_of_diet'].choices[
+                                                               2:]
+    CustomUserFormSet.form.base_fields['room_number'].choices = CustomUserFormSet.form.base_fields['room_number'].choices[
+                                                               2:]
     page = 'menu-doctor'
     filter_by = 'full_name'  # дефолтная фильтрация
     sorting = 'top'
