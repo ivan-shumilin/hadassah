@@ -320,7 +320,7 @@ def catalog_salad(request, page):
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Салаты')
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Салаты')[page_start:page_finish]
+    q = Product.objects.filter(category='Салаты').order_by(Lower('name'))[page_start:page_finish]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -415,7 +415,7 @@ def catalog_soup(request, page):
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Первые блюда')
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Первые блюда')[page_start:page_finish]
+    q = Product.objects.filter(category='Первые блюда').order_by(Lower('name'))[page_start:page_finish]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -511,7 +511,7 @@ def catalog_main_dishes(request, page):
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Вторые блюда')
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Вторые блюда')[page_start:page_finish]
+    q = Product.objects.filter(category='Вторые блюда').order_by(Lower('name'))[page_start:page_finish]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -607,7 +607,7 @@ def catalog_side_dishes(request, page):
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Гарниры')
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Гарниры')[page_start:page_finish]
+    q = Product.objects.filter(category='Гарниры').order_by(Lower('name'))[page_start:page_finish]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
