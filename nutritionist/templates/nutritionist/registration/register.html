@@ -5,16 +5,20 @@
     <div class="content">
         <div class="segment">
             <div class="title">Регистрация</div>
-            <form action="#" class="register-form" method="post">
+            <form id='register-form' class="register-form" method="post">
                 {% csrf_token %}
-                <div class="form-group">
+
+                <div id='form-group-lastname' class="form-group">
                     <label for="{{ user_form.name.id_for_label }}">Фамилия</label>
-                    {{ user_form.name }}
-                </div>
-                <div class="form-group">
-                    <label for="{{ user_form.lastname.id_for_label }}">Имя</label>
                     {{ user_form.lastname }}
+                    <div id='error_lastname' class='error-field'></div>
                 </div>
+                <div id='form-group-name' class="form-group">
+                    <label for="{{ user_form.lastname.id_for_label }}">Имя</label>
+                    {{ user_form.name }}
+                    <div id='error_name' class='error-field'></div>
+                </div>
+
                 {% if errors %}
                 <div class="form-group error">
                     <label for="{{ user_form.email.id_for_label }}">E-mail</label>
@@ -22,15 +26,82 @@
                     <div class="error">{{ errors|cut:"["|cut:"]"|cut:"'" }}</div>
                 </div>
                 {% else %}
-                <div class="form-group">
+                <div id='form-group-email' class="form-group">
                     <label for="{{ user_form.email.id_for_label }}">E-mail</label>
                     {{ user_form.email }}
+                    <div id='error_email' class='error-field'></div>
                 {% endif %}
+
                 <div class="form-group item-actions flex flex-center">
-                    <button type="submit">Зарегистрироваться</button>
+                    <button type="button" onclick="validationForm();" style='margin-top: 16px;'>Зарегистрироваться</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    function validationForm() {
+        var form = document.getElementById('register-form');
+        var name = document.getElementById('id_name');
+        var lastname = document.getElementById('id_lastname');
+        var email = document.getElementById('id_email');
+        var errors = document.querySelectorAll('.error-field');
+        var formGroup = document.querySelectorAll('.form-group');
+
+        var errors = document.querySelectorAll('.error-field')
+        var formGroup = document.querySelectorAll('.form-group')
+        for (var i = 0; i < errors.length; i++) {
+            errors[i].innerHTML = '';
+            errors[i].classList.remove('error');
+            formGroup[i].classList.remove('error');
+        }
+
+        var error = 0;
+        var st = new RegExp("[^а-яА-Яa-zA-Z0-9ёЁ+/)/(/-/'/ /./,-]+");
+        var stEmail = new RegExp("[^a-zA-Z0-9/-/./@/_-]+");
+        if (!name.value) {
+            document.getElementById('error_name').innerHTML = 'Обязательное поле'
+            document.getElementById('error_name').classList.add('error')
+            document.getElementById('form-group-name').classList.add('error')
+            error = error + 1
+        }
+        if (!lastname.value) {
+            document.getElementById('error_lastname').innerHTML = 'Обязательное поле'
+            document.getElementById('error_lastname').classList.add('error')
+            document.getElementById('form-group-lastname').classList.add('error')
+            error = error + 1
+        }
+        if (!email.value) {
+            document.getElementById('error_email').innerHTML = 'Обязательное поле'
+            document.getElementById('error_email').classList.add('error')
+            document.getElementById('form-group-email').classList.add('error')
+            error = error + 1
+        }
+
+        if (st.test(name.value)) {
+            document.getElementById('error_name').innerHTML = "Поле может содержать только буквы и символы ()-,'."
+            document.getElementById('error_name').classList.add('error')
+            document.getElementById('form-group-name').classList.add('error')
+            error = error + 1
+        }
+        if (st.test(lastname.value)) {
+            document.getElementById('error_lastname').innerHTML = "Поле может содержать только буквы и символы ()-,'."
+            document.getElementById('error_lastname').classList.add('error')
+            document.getElementById('form-group-lastname').classList.add('error')
+            error = error + 1
+        }
+        if (stEmail.test(email.value) || !email.value.includes('@') || !email.value.includes('.')) {
+            document.getElementById('error_email').innerHTML = "Такой почты не существует"
+            document.getElementById('error_email').classList.add('error')
+            document.getElementById('form-group-email').classList.add('error')
+            error = error + 1
+        }
+        if (error == 0) { form.submit(); }
+    }
+    </script>
 {% endblock %}
+
+
+<!-- проверка на допустимые символы ФИ
+проверка на коррекртый email -->

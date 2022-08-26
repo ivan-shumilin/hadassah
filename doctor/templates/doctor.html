@@ -446,7 +446,6 @@ function filtration() {
 
 function validationForm() {
     var form = document.getElementById('main-form');
-    var div_form = document.querySelector('.form-group');
     var fields = form.querySelectorAll('.field')
     var full_name = document.getElementById('id_full_name')
     var receipt_date = document.getElementById('id_receipt_date')
@@ -463,7 +462,7 @@ function validationForm() {
         formGroup[i].classList.remove('error');
     }
     var error = 0
-    var st = new RegExp("[^а-яА-Яa-zA-Z0-9ёЁ+/)/(/-/'/ /./,]+");
+    var st = new RegExp("[^а-яА-Яa-zA-Z0-9ёЁ+/)/(/-/'/ /./,-]+");
     if (!full_name.value) {
         document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
         document.getElementById('error_full_name').classList.add('error')
@@ -533,7 +532,6 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
     var room_number = document.getElementById(id_room_number)
     var comment = document.getElementById(id_comment)
 
-
     var errors = document.querySelectorAll('.error-field')
     var formGroup = document.querySelectorAll('.form-group')
     for (var i = 0; i < errors.length; i++) {
@@ -542,7 +540,7 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
         formGroup[i].classList.remove('error');
     }
     var error = 0
-    var st = new RegExp("[^а-яА-Яa-zA-Z0-9ёЁ+/)/(/-/'/ /./,]+");
+    var st = new RegExp("[^а-яА-Яa-zA-Z0-9ёЁ+/)/(/-/'/ /./,-]+");
     if (!full_name.value) {
         document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
         document.getElementById('error_full_name').classList.add('error')
@@ -621,14 +619,14 @@ async function validationChangeEmailForm() {
     document.getElementById('change-email-form').classList.remove('error')
     errors.innerHTML = ""
     var error = 0
-    var st = new RegExp("[^a-zA-Z0-9/-/./@/_]+");
+    var st = new RegExp("[^a-zA-Z0-9/-/./@/_-]+");
     if (st.test(email.value)) {
         document.getElementById('change-email-error').innerHTML = "Такой почты не существует"
         document.getElementById('change-email-error').classList.add('error')
         document.getElementById('change-email-form').classList.add('error')
         error = error + 1
     }
-    if (!email.value.includes('@')) {
+    if (!email.value.includes('@') || !email.value.includes('.')) {
         document.getElementById('change-email-error').innerHTML = 'Такой почты не существует'
         document.getElementById('change-email-error').classList.add('error')
         document.getElementById('change-email-form').classList.add('error')
