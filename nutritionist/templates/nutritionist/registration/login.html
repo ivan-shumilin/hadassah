@@ -16,7 +16,7 @@
                     <div id='form-group-password' class="form-group error">
                         <label for="{{ user_form.password.id_for_label }}">Пароль</label>
                         {{ user_form.password }}
-                        <div class="error-password">{{ errors|cut:"["|cut:"]"|cut:"'" }}</div>
+                        <div class="error-password error">{{ errors|cut:"["|cut:"]"|cut:"'" }}</div>
                 {% else %}
                     <div id='form-group-username' class="form-group">
                         <label for="{{ user_form.username.id_for_label }}">E-mail</label>
