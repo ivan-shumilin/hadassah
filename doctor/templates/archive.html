@@ -412,23 +412,31 @@ function funonload() {
 }
 window.onload = funonload;
 
-function validationChangeEmailForm() {
+async function validationChangeEmailForm() {
     var form1 = document.getElementById('profile-form-id');
     var email = document.getElementById('change-email')
     var errors = document.getElementById('change-email-error')
+    document.getElementById('change-email-form').classList.remove('error')
     errors.innerHTML = ""
     var error = 0
-    if (!email.value.includes('@')) {
+    var st = new RegExp("[^a-zA-Z0-9/-/./@/_-]+");
+    if (st.test(email.value)) {
+        document.getElementById('change-email-error').innerHTML = "Такой почты не существует"
+        document.getElementById('change-email-error').classList.add('error')
+        document.getElementById('change-email-form').classList.add('error')
+        error = error + 1
+    }
+    if (!email.value.includes('@') || !email.value.includes('.')) {
         document.getElementById('change-email-error').innerHTML = 'Такой почты не существует'
+        document.getElementById('change-email-error').classList.add('error')
+        document.getElementById('change-email-form').classList.add('error')
         error = error + 1
     }
 
-
     if (error == 0) {
-
         document.getElementById('change-email_flag').setAttribute('checked', 'true');
         document.getElementById('changed-email').value = email.value
-        form.submit();
+        form1.submit();
     }
 }
 
