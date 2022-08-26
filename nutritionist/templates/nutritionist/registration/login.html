@@ -5,29 +5,32 @@
     <div class="content">
         <div class="segment">
             <div class="title">Авторизация</div>
-            <form action="" class="login-form" method="post" novalidate>
+            <form id='register-form' class="login-form" method="post" novalidate>
                 {% csrf_token %}
                 {% if errors %}
-                    <div class="form-group error">
+                    <div id='form-group-username' class="form-group error">
                         <label for="{{ user_form.username.id_for_label }}">E-mail</label>
                         {{ user_form.username }}
+                        <div id='error-username' class='error-field'></div>
                     </div>
-                    <div class="form-group error">
+                    <div id='form-group-password' class="form-group error">
                         <label for="{{ user_form.password.id_for_label }}">Пароль</label>
                         {{ user_form.password }}
-                        <div class="error">{{ errors|cut:"["|cut:"]"|cut:"'" }}</div>
+                        <div class="error-password">{{ errors|cut:"["|cut:"]"|cut:"'" }}</div>
                 {% else %}
-                    <div class="form-group">
+                    <div id='form-group-username' class="form-group">
                         <label for="{{ user_form.username.id_for_label }}">E-mail</label>
                         {{ user_form.username }}
+                        <div id='error-username' class='error-field'></div>
                     </div>
-                    <div class="form-group">
+                    <div id='form-group-password' class="form-group">
                         <label for="{{ user_form.password.id_for_label }}">Пароль</label>
-                        {{ user_form.password }}                    
+                        {{ user_form.password }}
+                        <div id='error-password' class='error-field'></div>
                 {% endif %}
                 </div>
                 <div class="form-group item-actions flex flex-center">
-                    <button type="submit">Войти</button>
+                    <button type="button" onclick="validationForm();">Войти</button>
                     <button type="button" class="white" onclick="location.href='{% url 'reset_password' %}'">Забыли
                         пароль?
                     </button>
@@ -37,5 +40,52 @@
     </div>
 </div>
 
+<script>
+    function validationForm() {
+        var form = document.getElementById('register-form');
+        var username = document.getElementById('id_username');
+        var password = document.getElementById('id_password');
+
+        var errors = document.querySelectorAll('.error-field');
+        var formGroup = document.querySelectorAll('.form-group');
+
+        for (var i = 0; i < errors.length; i++) {
+            errors[i].innerHTML = '';
+            errors[i].classList.remove('error');
+            formGroup[i].classList.remove('error');
+        }
+
+        var error = 0;
+        var st = new RegExp("[^а-яА-Яa-zA-Z0-9ёЁ+/)/(/-/'/ /./,-]+");
+        var stEmail = new RegExp("[^a-zA-Z0-9/-/./@/_-]+");
+        if (!username.value) {
+            document.getElementById('error-username').innerHTML = 'Обязательное поле'
+            document.getElementById('error-username').classList.add('error')
+            document.getElementById('form-group-username').classList.add('error')
+            error = error + 1
+        }
+        if (stEmail.test(username.value)) {
+            document.getElementById('error-username').innerHTML = "Такой почты не существует"
+            document.getElementById('error-username').classList.add('error')
+            document.getElementById('form-group-username').classList.add('error')
+            error = error + 1
+        }
+        if (stEmail.test(username.value) || !username.value.includes('@') || !username.value.includes('.')) {
+            document.getElementById('error-username').innerHTML = "Такой почты не существует"
+            document.getElementById('error-username').classList.add('error')
+            document.getElementById('form-group-username').classList.add('error')
+            error = error + 1
+        }
+
+        if (!password.value) {
+            document.getElementById('error-password').innerHTML = 'Обязательное поле'
+            document.getElementById('error-password').classList.add('error')
+            document.getElementById('form-group-password').classList.add('error')
+            error = error + 1
+        }
+
+        if (error == 0) { form.submit(); }
+    }
+    </script>
 
 {% endblock %}
