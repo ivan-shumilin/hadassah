@@ -64,18 +64,6 @@
             document.getElementById('form-group-username').classList.add('error')
             error = error + 1
         }
-        if (stEmail.test(username.value)) {
-            document.getElementById('error-username').innerHTML = "Такой почты не существует"
-            document.getElementById('error-username').classList.add('error')
-            document.getElementById('form-group-username').classList.add('error')
-            error = error + 1
-        }
-        if (stEmail.test(username.value) || !username.value.includes('@') || !username.value.includes('.')) {
-            document.getElementById('error-username').innerHTML = "Такой почты не существует"
-            document.getElementById('error-username').classList.add('error')
-            document.getElementById('form-group-username').classList.add('error')
-            error = error + 1
-        }
 
         if (!password.value) {
             document.getElementById('error-password').innerHTML = 'Обязательное поле'
