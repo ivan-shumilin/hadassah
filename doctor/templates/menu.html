@@ -203,7 +203,7 @@
         </div>
         <div data-modal="diet" data-modal-width="480">
             <div class="title">Выберите диету из списка</div>
- 
+            <form action="#">
                 <div class="form-group">
                     <label for="#">Диета</label>
                     {{ diet_form.type_of_diet }}
@@ -212,7 +212,7 @@
                     <button onclick="submitDietForm('{{ diet_form.type_of_diet.id_for_label }}')">Показать</button>
                     <a  class="button white" data-modal-close>Отменить</a>
                 </div>
-
+            </form>
         </div>
 <script>
 document.getElementById('{{ date_get }}').classList.add('active');
