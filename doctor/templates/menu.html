@@ -48,9 +48,11 @@
                                 <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                 <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
                             </div>
+                            {% if product.image %}
                              <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>
@@ -66,9 +68,11 @@
                                 <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                 <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
                             </div>
+                            {% if product.image %}
                              <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>
@@ -84,9 +88,11 @@
                                 <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                 <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
                             </div>
+                            {% if product.image %}
                              <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>
@@ -101,9 +107,11 @@
                                 <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                 <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
                             </div>
+                            {% if product.image %}
                              <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>
@@ -119,9 +127,11 @@
                                 <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                 <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
                             </div>
+                            {% if product.image %}
                              <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>
@@ -137,9 +147,11 @@
                                 <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                 <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
                             </div>
+                            {% if product.image %}
                             <div class="img">
                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                             </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>
@@ -155,9 +167,11 @@
                                 <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                             <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
                         </div>
+                        {% if product.image %}
                         <div class="img">
                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                         </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
@@ -173,9 +187,11 @@
                                 <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                             <div class="text">{{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}</div>
                         </div>
+                        {% if product.image %}
                         <div class="img">
                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                         </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
