@@ -48,11 +48,11 @@
               <input type="radio" class="btn-check" id="input_type_of_diet" value="type_of_diet" name="filter_by">
         </div>
     </div>
-
+    {% load formatting_full_name %}
     {% for form in formset %}
       <div id="{{ form.id.value }}" class="tr product" onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
         <div class="td">
-          <div class="name">{{ form.full_name.value }}</div>
+          <div class="name">{{ form.full_name.value|formatting_full_name }}</div>
         </div>
         <div class="td">{{ form.room_number.value }}</div>
         <div class="td">{{ form.department.value }}</div>
