@@ -253,6 +253,68 @@ def index(request):
     return render(request, 'index.html', context=data)
 
 
+@user_passes_test(group_nutritionists_check, login_url='login')
+@login_required(login_url='login')
+def search(request):
+    error = ''
+    ProductFormSet = modelformset_factory(Product,
+                                          fields=(
+                                              'iditem', 'name', 'description', 'ovd', 'ovd_sugarless', 'shd', 'bd',
+                                              'vbd', 'nbd', 'nkd',
+                                              'vkd', 'not_suitable', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
+                                              'cooking_method', 'comment'),
+                                          widgets={'ovd': CheckboxInput(
+                                              attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'ovd_sugarless': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'shd': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'bd': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'vbd': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'nbd': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'nkd': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'vkd': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'not_suitable': CheckboxInput(
+                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                              'name': Textarea(attrs={'style': "display: none;"}),
+                                              'description': Textarea(attrs={'style': "display: none;"}),
+                                              'carbohydrate': Textarea(attrs={'style': "display: none;"}),
+                                              'iditem': Textarea(attrs={'style': "display: none;"}),
+                                              'fat': Textarea(attrs={'style': "display: none;"}),
+                                              'fiber': Textarea(attrs={'style': "display: none;"}),
+                                              'energy': Textarea(attrs={'style': "display: none;"}),
+                                              'category': Textarea(attrs={'style': "display: none;"}),
+                                              'cooking_method': Textarea(attrs={'style': "display: none;"}),
+                                              'comment': Textarea(attrs={'class': "form-control", 'rows': "3"}),
+                                          },
+                                          extra=0, )
+    formset = ''
+    queryset = Product.objects.all()
+    if request.method == 'POST':
+        formset = \
+            ProductFormSet(request.POST, request.FILES, queryset=queryset)
+        if formset.is_valid():
+            formset.save()
+            queryset = Product.objects.filter(name=formset.data['form-0-name'])
+            formset = ProductFormSet(queryset=queryset)
+        else:
+            error = 'error'
+    if request.GET != {}:
+        queryset = Product.objects.filter(name=request.GET['search'])
+        formset = ProductFormSet(queryset=queryset)
+    products = Product.objects.all()
+    data = {
+        'formset': formset,
+        'products': products,
+        'error': error,
+        }
+    return render(request, 'search.html', context=data)
+
 def page_calc(page, count_prosucts):
     page = int(page)
     page_start = page - 25
@@ -357,6 +419,7 @@ def catalog_salad(request, page):
         formset = ProductFormSet(queryset=queryset, prefix='salad')
 
         data = {
+            'queryset': queryset,
             'page': page,
             'page_prev': page_prev,
             'page_next': page_next,
