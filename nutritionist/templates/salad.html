@@ -18,6 +18,14 @@
     </div>
 </div>
 <div class="row" style="margin-bottom: 50px">
+    <div>
+        <input type='text' list='queryset' placeholder='блюда' class='form-control'>
+            <datalist id='queryset'>
+                {% for product in queryset %}
+                    <option value="{{ product.name }}"></option>
+                {% endfor %}
+            </datalist>
+    </div>
     <nav aria-label="Page navigation example">
         <ul class="pagination">
         {% if page_prev == '0' %}
