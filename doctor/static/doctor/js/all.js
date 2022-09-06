@@ -126,8 +126,14 @@
         return $.isFunction(fn) ? elements.each(fn) : elements;
     }
 
+
 })(jQuery);
 (function ($) {
+
+    let is_mobile = function () {
+        return ($(window).width() <= 1400);
+    }
+
 
     function behaviors() {
 
@@ -149,7 +155,6 @@
                     },
                     type: 'inline',
                     mainClass: $(this).attr('data-modal') + '-modal mfp-fade',
-                    
                     closeOnBgClick: false,
                     showCloseBtn: true,
                     callbacks: {
@@ -180,7 +185,8 @@
             .once()
             .flatpickr({
                 locale: 'ru',
-                dateFormat: 'd.m.Y'
+                dateFormat: 'd.m.Y',
+                disableMobile: "true"
             });
 
 
@@ -221,15 +227,20 @@
 
 
         $('.table')
-            .once('table', function () {
+            .once()
+            .on('table', function () {
                 let $this = $(this);
+                let tr = $this.find('.tr');
 
-                $this
-                    .find('.tr')
-                    .css('grid-template-columns', $this.attr('data-columns'));
+                if (is_mobile()) {
+                    tr.css('grid-template-columns', $this.attr('data-columns-mobile'));
+                } else {
+                    tr.css('grid-template-columns', $this.attr('data-columns'));
+                }
 
                 $this.show();
-            });
+            })
+            .trigger('table');
 
 
         $('.tabs a')
@@ -256,6 +267,30 @@
             });
 
 
+        $('.eat-menu-block .menu a')
+            .once('tabs')
+            .click(function (e) {
+                e.preventDefault();
+
+                let $this = $(this);
+
+                $this
+                    .closest('.menu')
+                    .find('a')
+                    .each(function () {
+                        let item = $(this);
+
+                        item.removeClass('active');
+
+                        $('[data-eat-menu-tab-content="' + item.attr('data-tab') + '"]').removeClass('active');
+                    });
+
+                $this.addClass('active');
+
+                $('[data-eat-menu-tab-content="' + $this.attr('data-tab') + '"]').addClass('active');
+            });
+
+
         $('[data-fade-toggle-link]')
             .once()
             .click(function (e) {
@@ -269,7 +304,156 @@
                     .fadeToggle('fast');
             });
 
+
+        $('[data-eat-choose-grid] [data-toggle]')
+            .once()
+            .click(function (e) {
+                e.preventDefault();
+
+                $(this)
+                    .closest('.item')
+                    .toggleClass('open');
+            });
+
+
+        $('[data-eat-choose-grid] [data-choose]')
+            .once()
+            .click(function (e) {
+                e.preventDefault();
+
+                let $this = $(this);
+                let item = $this.closest('[data-item]');
+                let grid = $this.closest('[data-eat-choose-grid]');
+
+                grid
+                    .find('[data-item]')
+                    .removeClass('active');
+
+                item.addClass('active');
+            });
+
+
+        $('[data-eat-history-grid] [data-toggle]')
+            .once()
+            .click(function (e) {
+                e.preventDefault();
+
+                $(this)
+                    .closest('.item')
+                    .toggleClass('open');
+            });
+
+
+        $('.review-form .item-rating')
+            .once()
+            .on('update', function (e, value) {
+                value = value ?? 0;
+
+                if (value === 0) return;
+
+                let $this = $(this);
+                let stars = $this.find('.star');
+
+                stars.removeClass('active');
+
+                for (let i = 1; i <= value; i++) {
+                    stars
+                        .filter('[data-value="' + i + '"]')
+                        .addClass('active');
+                }
+            })
+            .each(function () {
+                let $this = $(this);
+                let form = $this.closest('form');
+                let value = form.find('input[name="rating"]').val();
+
+                $this.trigger('update', [value]);
+            })
+            .find('.star')
+            .on('update', function () {
+                let $this = $(this);
+
+                $this
+                    .closest('.item-rating')
+                    .trigger('update', [$this.attr('data-value')]);
+            })
+            .hover(
+                function () {
+                    let $this = $(this);
+                    let item = $this.closest('.item-rating');
+
+                    item.addClass('hover');
+
+                    $this.trigger('update');
+                },
+                function () {
+                    let $this = $(this);
+                    let item = $this.closest('.item-rating');
+                    let form = $this.closest('form');
+                    let value = form.find('input[name="rating"]').val();
+
+                    item.removeClass('hover');
+
+                    $(this).trigger('update', [value]);
+                }
+            )
+            .click(function (e) {
+                e.preventDefault();
+
+                let $this = $(this);
+                let item = $this.closest('.item-rating');
+                let form = $this.closest('form');
+
+                item.removeClass('hover');
+
+                form.find('input[name="rating"]').val(
+                    $this.attr('data-value')
+                );
+            });
+
+
+        $('[data-sidebar-toggle]')
+            .once()
+            .click(function (e) {
+                e.preventDefault();
+
+                $('body').toggleClass('sidebar-visible');
+            });
+
+
+        $('.table .tr[data-patient-card-show]')
+            .once('patient-card-toggle')
+            .click(function () {
+                let $this = $(this);
+                let table = $this.closest('.table');
+
+                table.find('.tr').removeClass('active');
+
+                $this.addClass('active');
+
+                $('body').addClass('patient-card-visible');
+            });
+
+
+        $('[data-patient-card-toggle]')
+            .once()
+            .click(function () {
+                $('body').toggleClass('patient-card-visible');
+            });
+
+
+        $('[data-order-toggle]')
+            .once()
+            .click(function () {
+                $('body').toggleClass('order-visible');
+            });
+
     }
+
+
+    $(window).resize(function () {
+        $('.table').trigger('table');
+    });
 
 
     $(document).ready(function () {
@@ -282,9 +466,7 @@
     });
 
 })(jQuery);
-
-
-
+//  делаем нужную ссылку визуально активной
 function funonload() {
     var page = document.getElementById('page')
     document.getElementById(page.innerHTML).classList.add('active');
