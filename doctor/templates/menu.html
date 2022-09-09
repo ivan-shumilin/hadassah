@@ -13,41 +13,43 @@
 <div style="display: none;" id="status">{{ modal }}</div>
 
 
-            <div id="center" data-simplebar>
-                <div class="mobile-header-block">
-                    <div class="logo">
-                        <a href='https://hadassah.moscow/' class="logo">
-                            {% load static %}
-                            <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
-                        </a>
-                    </div>
-                    <a class="menu-link" data-sidebar-toggle>
-                        <div class="i i-menu"></div>
-                    </a>
-                    <div class="petrushka">
-                        <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
-                    </div>
-                </div>
-
-                <div class="header-block">
-                    <div class="menu-link-and-name">
-                        <a class="menu-link" data-sidebar-toggle>
+            <div id="center">
+                <div id="header">
+                    <div class="mobile-header-block">
+                        <div class="logo">
+                            <a href='https://hadassah.moscow/' class="logo">
+                                {% load static %}
+                                <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
+                            </a>
+                        </div>
+                        <a class="menu" data-sidebar-toggle>
                             <div class="i i-menu"></div>
                         </a>
-                        <div class="title">Меню</div>
-                    </div>
-
-                    <div class="menu">
-                        <div class="switch">
-                            <a id='{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
-                            <a id='{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
-                            <a id='{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+                        <div class="petrushka">
+                            <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
                         </div>
                     </div>
 
-                    <div id='diet-menu' class="green-menu">
-                        <a data-modal-link="diet">Диета</a>
-                        <a id='diet_name' class="active" data-modal-link="diet">{{ diet_form.type_of_diet.value }}</a>
+                    <div class="header-block">
+                        <div class="menu-link-and-name">
+                            <a class="menu-link" data-sidebar-toggle>
+                                <div class="i i-menu"></div>
+                            </a>
+                            <div class="title">Меню</div>
+                        </div>
+
+                        <div class="menu">
+                            <div class="switch">
+                                <a id='{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
+                                <a id='{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
+                                <a id='{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+                            </div>
+                        </div>
+
+                        <div id='diet-menu' class="green-menu">
+                            <a data-modal-link="diet">Диета</a>
+                            <a id='diet_name' class="active" data-modal-link="diet">{{ diet_form.type_of_diet.value }}</a>
+                        </div>
                     </div>
                 </div>
 
@@ -59,278 +61,280 @@
                     </div>
                 </div>
 
-                <div class="eat-menu-block">
-                    <div class="menu">
-                        <a id='breakfast' onclick="submitMeals('breakfast')" >Завтрак</a>
-                        <a id='lunch' onclick="submitMeals('lunch')" >Обед</a>
-                        <a id='afternoon' onclick="submitMeals('afternoon')">Полдник</a>
-                        <a id='dinner' onclick="submitMeals('dinner')">Ужин</a>
+                <div id="content" data-simplebar>
+                    <div class="eat-menu-block">
+                        <div class="menu">
+                            <a id='breakfast' onclick="submitMeals('breakfast')" >Завтрак</a>
+                            <a id='lunch' onclick="submitMeals('lunch')" >Обед</a>
+                            <a id='afternoon' onclick="submitMeals('afternoon')">Полдник</a>
+                            <a id='dinner' onclick="submitMeals('dinner')">Ужин</a>
+                        </div>
+                        <div class="date">{{ formatted_date|lower  }}</div>
                     </div>
-                    <div class="date">{{ formatted_date|lower  }}</div>
-                </div>
-                
-            {% if products_main %}
-                <h3 class="dish-category">Основное блюдо</h3>
-                <div class="eat-grid">
-                    {% for product in products_main %}
-                        <div class="item">
-                            <div class="info">
-                                <div class="name-and-value">
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img">
-                                            <img src="./img/eat1.jpg" alt="">
-                                        </div>
-                                    {% endif %}
-                                    <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                </div>
-                                <div class="text">
-                                    {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                </div>
-                            </div>
-                            {% if product.image %}
-                                <div class="img">
-                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
 
-            {% if products_porridge %}
-                <h3 class="dish-category">Каша</h3>
-                <div class="eat-grid">
-                    {% for product in products_porridge %}
-                        <div class="item">
-                            <div class="info">
-                                <div class="name-and-value">
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                    {% if products_main %}
+                        <h3 class="dish-category">Основное блюдо</h3>
+                        <div class="eat-grid">
+                            {% for product in products_main %}
+                                <div class="item">
+                                    <div class="info">
+                                        <div class="name-and-value">
+                                            {% if product.image %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="./img/eat1.jpg" alt="">
+                                                </div>
+                                            {% endif %}
+                                            <div class="name">{{ product.name }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                         </div>
-                                    {% else %}
-                                        <div class="img">
-                                            <img src="./img/eat1.jpg" alt="">
+                                        <div class="text">
+                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                                         </div>
-                                    {% endif %}
-                                    <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                </div>
-                                <div class="text">
-                                    {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                </div>
-                            </div>
-                            {% if product.image %}
-                                <div class="img">
-                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
-            {% if products_dessert %}
-                <h3 class="dish-category">Десерт</h3>
-                <div class="eat-grid">
-                    {% for product in products_dessert %}
-                        <div class="item">
-                            <div class="info">
-                                <div class="name-and-value">
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img">
-                                            <img src="./img/eat1.jpg" alt="">
-                                        </div>
-                                    {% endif %}
-                                    <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                </div>
-                                <div class="text">
-                                    {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                </div>
-                            </div>
-                            {% if product.image %}
-                                <div class="img">
-                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            {% if products_fruit %}
-                <h3 class="dish-category">Фрукт</h3>
-                <div class="eat-grid">
-                    {% for product in products_fruit %}
-                        <div class="item">
-                            <div class="info">
-                                <div class="name-and-value">
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img">
-                                            <img src="./img/eat1.jpg" alt="">
-                                        </div>
-                                    {% endif %}
-                                    <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                </div>
-                                <div class="text">
-                                    {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                </div>
-                            </div>
-                            {% if product.image %}
-                                <div class="img">
-                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
-            {% if products_garnish %}
-                <h3 class="dish-category">Гарнир</h3>
-                <div class="eat-grid">
-                    {% for product in products_garnish %}
-                        <div class="item">
-                            <div class="info">
-                                <div class="name-and-value">
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img">
-                                            <img src="./img/eat1.jpg" alt="">
-                                        </div>
-                                    {% endif %}
-                                    <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                </div>
-                                <div class="text">
-                                    {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                </div>
-                            </div>
-                            {% if product.image %}
-                                <div class="img">
-                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
-            {% if products_salad %}
-                <h3 class="dish-category">Салат</h3>
-                <div class="eat-grid">
-                    {% for product in products_salad %}
-                        <div class="item">
-                            <div class="info">
-                                <div class="name-and-value">
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img">
-                                            <img src="./img/eat1.jpg" alt="">
-                                        </div>
-                                    {% endif %}
-                                    <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                </div>
-                                <div class="text">
-                                    {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                </div>
-                            </div>
-                            {% if product.image %}
-                                <div class="img">
-                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
-        {% if products_soup %}
-            <h3 class="dish-category">Суп</h3>
-            <div class="eat-grid">
-                {% for product in products_soup %}
-                    <div class="item">
-                        <div class="info">
-                            <div class="name-and-value">
-                                {% if product.image %}
-                                    <div class="img">
-                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                     </div>
-                                {% else %}
-                                    <div class="img">
-                                        <img src="./img/eat1.jpg" alt="">
-                                    </div>
-                                {% endif %}
-                                <div class="name">{{ product.name }}</div>
-                                <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                            </div>
-                            <div class="text">
-                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                            </div>
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
                         </div>
-                        {% if product.image %}
-                            <div class="img">
-                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+                    {% endif %}
 
-        {% if products_drink %}
-            <h3 class="dish-category">Напиток</h3>
-            <div class="eat-grid">
-                {% for product in products_drink %}
-                    <div class="item">
-                        <div class="info">
-                            <div class="name-and-value">
-                                {% if product.image %}
-                                    <div class="img">
-                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                    {% if products_porridge %}
+                        <h3 class="dish-category">Каша</h3>
+                        <div class="eat-grid">
+                            {% for product in products_porridge %}
+                                <div class="item">
+                                    <div class="info">
+                                        <div class="name-and-value">
+                                            {% if product.image %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="./img/eat1.jpg" alt="">
+                                                </div>
+                                            {% endif %}
+                                            <div class="name">{{ product.name }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                        </div>
+                                        <div class="text">
+                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                        </div>
                                     </div>
-                                {% else %}
-                                    <div class="img">
-                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                    </div>
-                                {% endif %}
-                                <div class="name">{{ product.name }}</div>
-                                <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                            </div>
-                            <div class="text">
-                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                            </div>
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
                         </div>
-                        {% if product.image %}
-                            <div class="img">
-                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+                    {% endif %}
+
+                    {% if products_dessert %}
+                        <h3 class="dish-category">Десерт</h3>
+                        <div class="eat-grid">
+                            {% for product in products_dessert %}
+                                <div class="item">
+                                    <div class="info">
+                                        <div class="name-and-value">
+                                            {% if product.image %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="./img/eat1.jpg" alt="">
+                                                </div>
+                                            {% endif %}
+                                            <div class="name">{{ product.name }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                        </div>
+                                        <div class="text">
+                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                        </div>
+                                    </div>
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if products_fruit %}
+                        <h3 class="dish-category">Фрукт</h3>
+                        <div class="eat-grid">
+                            {% for product in products_fruit %}
+                                <div class="item">
+                                    <div class="info">
+                                        <div class="name-and-value">
+                                            {% if product.image %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="./img/eat1.jpg" alt="">
+                                                </div>
+                                            {% endif %}
+                                            <div class="name">{{ product.name }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                        </div>
+                                        <div class="text">
+                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                        </div>
+                                    </div>
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if products_garnish %}
+                        <h3 class="dish-category">Гарнир</h3>
+                        <div class="eat-grid">
+                            {% for product in products_garnish %}
+                                <div class="item">
+                                    <div class="info">
+                                        <div class="name-and-value">
+                                            {% if product.image %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="./img/eat1.jpg" alt="">
+                                                </div>
+                                            {% endif %}
+                                            <div class="name">{{ product.name }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                        </div>
+                                        <div class="text">
+                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                        </div>
+                                    </div>
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if products_salad %}
+                        <h3 class="dish-category">Салат</h3>
+                        <div class="eat-grid">
+                            {% for product in products_salad %}
+                                <div class="item">
+                                    <div class="info">
+                                        <div class="name-and-value">
+                                            {% if product.image %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="./img/eat1.jpg" alt="">
+                                                </div>
+                                            {% endif %}
+                                            <div class="name">{{ product.name }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                        </div>
+                                        <div class="text">
+                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                        </div>
+                                    </div>
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if products_soup %}
+                        <h3 class="dish-category">Суп</h3>
+                        <div class="eat-grid">
+                            {% for product in products_soup %}
+                                <div class="item">
+                                    <div class="info">
+                                        <div class="name-and-value">
+                                            {% if product.image %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="./img/eat1.jpg" alt="">
+                                                </div>
+                                            {% endif %}
+                                            <div class="name">{{ product.name }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                        </div>
+                                        <div class="text">
+                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                        </div>
+                                    </div>
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if products_drink %}
+                        <h3 class="dish-category">Напиток</h3>
+                        <div class="eat-grid">
+                            {% for product in products_drink %}
+                                <div class="item">
+                                    <div class="info">
+                                        <div class="name-and-value">
+                                            {% if product.image %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% endif %}
+                                            <div class="name">{{ product.name }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                        </div>
+                                        <div class="text">
+                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                        </div>
+                                    </div>
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div data-modal="diet" data-modal-width="480">

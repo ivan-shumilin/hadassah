@@ -1,33 +1,35 @@
 {% extends "base_generic_doctor.html" %}
 {% block content %}
             <div id="center" data-simplebar>
-                <div class="mobile-header-block">
-                    <div class="logo">
-                        <a href='https://hadassah.moscow/' class="logo">
-                            {% load static %}
-                            <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
-                        </a>
-                    </div>
-                    <a class="menu-link" data-sidebar-toggle>
-                        <div class="i i-menu"></div>
-                    </a>
-                    <div class="petrushka">
-                        <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
-                    </div>
-                </div>
-
-                <div class="header-block">
-                    <div class="menu-link-and-name">
+                <div id="header">
+                    <div class="mobile-header-block">
+                        <div class="logo">
+                            <a href='https://hadassah.moscow/' class="logo">
+                                {% load static %}
+                                <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
+                            </a>
+                        </div>
                         <a class="menu-link" data-sidebar-toggle>
                             <div class="i i-menu"></div>
                         </a>
-                        <div class="title">Ваши пациенты</div>
+                        <div class="petrushka">
+                            <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
+                        </div>
                     </div>
 
-                    <a href="#" class="button" data-modal-link="patient-add">
-                        <span class="i i-plus"></span>
-                        Добавить
-                    </a>
+                    <div class="header-block">
+                        <div class="menu-link-and-name">
+                            <a class="menu-link" data-sidebar-toggle>
+                                <div class="i i-menu"></div>
+                            </a>
+                            <div class="title">Ваши пациенты</div>
+                        </div>
+
+                        <a href="#" class="button" data-modal-link="patient-add">
+                            <span class="i i-plus"></span>
+                            Добавить
+                        </a>
+                    </div>
                 </div>
 
                 <div>
@@ -65,108 +67,109 @@
                     </div>
                 </div>
 
-
-                <div class="table"
-                     data-columns="30% 20% 30% 1fr"
-                     data-columns-mobile="30% 15% 30% 1fr">
-                    <div class="tr thead">
-                        <div class="th">
-                                <label id="full_name" onclick="check_function('input_full_name')" class="sort" for="input_full_name">
-                                    <span style="cursor: pointer;">фио пациента</span></label>
-                                <input type="radio" class="btn-check" id="input_full_name" value="full_name" name="filter_by">
-                        </div>
-                        <div class="th">
-                                <label id="room_number" onclick="check_function('input_room_number')" class="sort" for="input_room_number">
-                                    <span style="cursor: pointer;" class="only-desktop">палата</span>
-                                    <span style="cursor: pointer;" class="only-mobile">№</span>
-                                <input type="radio" class="btn-check" id="input_room_number" value="room_number" name="filter_by">
-                        </div>
-                        <div class="th">
-                                <label id="department" onclick="check_function('input_department')" class="sort" for="input_department">
-                                    <span style="cursor: pointer;">отделение</span></label>
-                                <input type="radio" class="btn-check" id="input_department" value="department" name="filter_by">
-                        </div>
-                        <div class="th">
-                                <label id="type_of_diet" onclick="check_function('input_type_of_diet')" class="sort" for="input_type_of_diet">
-                                    <span style="cursor: pointer;">диета</span></label>
-                                <input type="radio" class="btn-check" id="input_type_of_diet" value="type_of_diet" name="filter_by">
-                        </div>
-                    </div>
-                    {% load formatting_full_name %}
-                    {% for form in formset %}
-                    <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
-                        <div class="td">
-                            <div class="name ellipsis">{{ form.full_name.value|formatting_full_name }}</div>
-                        </div>
-                        <div class="td">{{ form.room_number.value }}</div>
-                        <div class="td">
-                            <div class="ellipsis">
-                                {{ form.department.value }}
+                <div id="content" data-simplebar>
+                    <div class="table"
+                        data-columns="30% 20% 30% 1fr"
+                        data-columns-mobile="30% 15% 30% 1fr">
+                        <div class="tr thead">
+                            <div class="th">
+                                    <label id="full_name" onclick="check_function('input_full_name')" class="sort" for="input_full_name">
+                                        <span style="cursor: pointer;">фио пациента</span></label>
+                                    <input type="radio" class="btn-check" id="input_full_name" value="full_name" name="filter_by">
+                            </div>
+                            <div class="th">
+                                    <label id="room_number" onclick="check_function('input_room_number')" class="sort" for="input_room_number">
+                                        <span style="cursor: pointer;" class="only-desktop">палата</span>
+                                        <span style="cursor: pointer;" class="only-mobile">№</span>
+                                    <input type="radio" class="btn-check" id="input_room_number" value="room_number" name="filter_by">
+                            </div>
+                            <div class="th">
+                                    <label id="department" onclick="check_function('input_department')" class="sort" for="input_department">
+                                        <span style="cursor: pointer;">отделение</span></label>
+                                    <input type="radio" class="btn-check" id="input_department" value="department" name="filter_by">
+                            </div>
+                            <div class="th">
+                                    <label id="type_of_diet" onclick="check_function('input_type_of_diet')" class="sort" for="input_type_of_diet">
+                                        <span style="cursor: pointer;">диета</span></label>
+                                    <input type="radio" class="btn-check" id="input_type_of_diet" value="type_of_diet" name="filter_by">
                             </div>
                         </div>
-                        <div class="td">
-                            <span class="tag">{{ form.type_of_diet.value }}</span>
-                        </div>
-                    </div>
-
-                    <div data-modal="modal-start{{ form.id.value }}" data-modal-width="480">
-                            <div class="title">Редактировать профиль пациента</div>
-                                <div id ='full_name_edit' class="form-group">
-                                    <label>ФИО пациента</label>
-                                    <input id="{{ form.full_name.id_for_label }}" type="text" value="{{ form.full_name.value }}">
-                                    <div id ='error_full_name' class="error-field"></div>
+                        {% load formatting_full_name %}
+                        {% for form in formset %}
+                        <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
+                            <div class="td">
+                                <div class="name ellipsis">{{ form.full_name.value|formatting_full_name }}</div>
+                            </div>
+                            <div class="td">{{ form.room_number.value }}</div>
+                            <div class="td">
+                                <div class="ellipsis">
+                                    {{ form.department.value }}
                                 </div>
-                                <div id='receipt_date_edit' class="form-group">
-                                    {% load widget_tweaks %}
-                                    <label>Дата госпитализации</label>
-                                    <input type="text" value="{{ form.receipt_date.value|date:'d.m.Y' }}" data-datepicker id="{{ form.receipt_date.id_for_label }}">
-                                    <div id ='error_receipt_date' class="error-field"></div>
-                                </div>
-                                <div id='receipt_time_edit' class="form-group">
-                                    <label>Время госпитализации</label>
-                                    <input type="text" value="{{ form.receipt_time.value|date:'H:i' }}" data-timemask id="{{ form.receipt_time.id_for_label }}">
-                                    <div id ='error_receipt_time' class="error-field"></div>
-                                </div>
-                                <div id='department_edit' class="form-group">
-                                    <label>Отделение</label>
-                                    {{ form.department }}
-                                    <div id ='error_department' class="error-field"></div>
-                                </div>
-                                <div id='type_of_diet_edit' class="form-group">
-                                    <label>Диета</label>
-                                    {{ form.type_of_diet }}
-                                    <div id ='error_type_of_diet' class="error-field"></div>
-                                </div>
-                                <div id='room_number_edit' class="form-group">
-                                    <label>Номер палаты</label>
-                                    {{ form.room_number }}
-                                    <div id ='error_room_number' class="error-field"></div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Комментарий</label>
-                                    {{ form.comment|attr:"rows='4'" }}
-                                    <p id ='error_comment' class="error-field"></p>
-                                </div>
-
-
-
-                                <div class="form-group item-actions flex flex-center">
-                                    <button name="add_patient" onclick="validationEditForm('{{ form.full_name.id_for_label }}', '{{ form.receipt_date.id_for_label }}', '{{ form.receipt_time.id_for_label }}', '{{ form.department.id_for_label }}', '{{ form.type_of_diet.id_for_label }}', '{{ form.room_number.id_for_label }}', '{{ form.comment.id_for_label }}', '{{ form.id.value }}')">Сохранить</button>
-                                    <a class="button white" data-modal-close>Отменить</a>
-                                </div>
-
-                    </div>
-                    <div id="patient-archived{{ form.id.value }}" data-modal="patient-archive{{ form.id.value }}" data-modal-width="400">
-                        <div class="title align-center">Перенести учётную запись пациента в архив?</div>
-                        <div class="confirm-block">
-                            <div class="buttons">
-                                <a class="button" onclick="patientArchive('{{ form.id.value }}')">Архивировать</a>
-                                <a id='close{{ form.id.value }}' class="button white" data-modal-close>Отменить</a>
+                            </div>
+                            <div class="td">
+                                <span class="tag">{{ form.type_of_diet.value }}</span>
                             </div>
                         </div>
-                    </div>
-                                    {% endfor %}
+
+                        <div data-modal="modal-start{{ form.id.value }}" data-modal-width="480">
+                                <div class="title">Редактировать профиль пациента</div>
+                                    <div id ='full_name_edit' class="form-group">
+                                        <label>ФИО пациента</label>
+                                        <input id="{{ form.full_name.id_for_label }}" type="text" value="{{ form.full_name.value }}">
+                                        <div id ='error_full_name' class="error-field"></div>
+                                    </div>
+                                    <div id='receipt_date_edit' class="form-group">
+                                        {% load widget_tweaks %}
+                                        <label>Дата госпитализации</label>
+                                        <input type="text" value="{{ form.receipt_date.value|date:'d.m.Y' }}" data-datepicker id="{{ form.receipt_date.id_for_label }}">
+                                        <div id ='error_receipt_date' class="error-field"></div>
+                                    </div>
+                                    <div id='receipt_time_edit' class="form-group">
+                                        <label>Время госпитализации</label>
+                                        <input type="text" value="{{ form.receipt_time.value|date:'H:i' }}" data-timemask id="{{ form.receipt_time.id_for_label }}">
+                                        <div id ='error_receipt_time' class="error-field"></div>
+                                    </div>
+                                    <div id='department_edit' class="form-group">
+                                        <label>Отделение</label>
+                                        {{ form.department }}
+                                        <div id ='error_department' class="error-field"></div>
+                                    </div>
+                                    <div id='type_of_diet_edit' class="form-group">
+                                        <label>Диета</label>
+                                        {{ form.type_of_diet }}
+                                        <div id ='error_type_of_diet' class="error-field"></div>
+                                    </div>
+                                    <div id='room_number_edit' class="form-group">
+                                        <label>Номер палаты</label>
+                                        {{ form.room_number }}
+                                        <div id ='error_room_number' class="error-field"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Комментарий</label>
+                                        {{ form.comment|attr:"rows='4'" }}
+                                        <p id ='error_comment' class="error-field"></p>
+                                    </div>
+
+
+
+                                    <div class="form-group item-actions flex flex-center">
+                                        <button name="add_patient" onclick="validationEditForm('{{ form.full_name.id_for_label }}', '{{ form.receipt_date.id_for_label }}', '{{ form.receipt_time.id_for_label }}', '{{ form.department.id_for_label }}', '{{ form.type_of_diet.id_for_label }}', '{{ form.room_number.id_for_label }}', '{{ form.comment.id_for_label }}', '{{ form.id.value }}')">Сохранить</button>
+                                        <a class="button white" data-modal-close>Отменить</a>
+                                    </div>
+
+                        </div>
+                        <div id="patient-archived{{ form.id.value }}" data-modal="patient-archive{{ form.id.value }}" data-modal-width="400">
+                            <div class="title align-center">Перенести учётную запись пациента в архив?</div>
+                            <div class="confirm-block">
+                                <div class="buttons">
+                                    <a class="button" onclick="patientArchive('{{ form.id.value }}')">Архивировать</a>
+                                    <a id='close{{ form.id.value }}' class="button white" data-modal-close>Отменить</a>
                                 </div>
+                            </div>
+                        </div>
+                                        {% endfor %}
+                    </div>
+                </div>
             </div>
 
 
@@ -188,7 +191,7 @@
                                 <div class="fields">
                                     <div class="field">
                                         <div class="label">Дата госпитализации</div>
-                                        <div  id="receipt_datetime_field" class="value"></div>
+                                        <div id="receipt_datetime_field" class="value"></div>
                                     </div>
                                     <div class="field">
                                         <div class="label">Отделение</div>
@@ -211,53 +214,16 @@
                             </div>
                             <div class="eat" data-tab-content="eat">
                                 <div class="switch">
-                                    <a href="#" class="active">Сегодня</a>
-                                    <a href="#">Завтра</a>
-                                    <a href="#">Послезавтра</a>
+                                    <a href="#" class="active" data-tab="today">Сегодня</a>
+                                    <a href="#" data-tab="tomorrow">Завтра</a>
+                                    <a href="#" data-tab="day_after_tomorrow">Послезавтра</a>
                                 </div>
                                 <div class="date">12 июля, вторник</div>
-                                <div class="boxes">
+                                <div class="boxes" data-tab-content="today">
                                     <div class="box">
-                                        <div class="title">Завтрак</div>
+                                        <div id='test' class="title">Завтрак</div>
                                         <div class="products-list">
-                                            <div class="item">
-                                                <div class="img">
-                                                    <img src="./img/eat.jpg" alt="">
-                                                </div>
-                                                <div class="info">
-                                                    <div class="img">
-                                                        <img src="./img/eat.jpg" alt="">
-                                                    </div>
-                                                    <div class="name">Рыба под маринадом</div>
-                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
-                                                    <div class="text">
-                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
-                                                        болгарский
-                                                        п/ф,
-                                                        соль,
-                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item">
-                                                <div class="img">
-                                                    <img src="./img/eat.jpg" alt="">
-                                                </div>
-                                                <div class="info">
-                                                    <div class="img">
-                                                        <img src="./img/eat.jpg" alt="">
-                                                    </div>
-                                                    <div class="name">Рыба под маринадом</div>
-                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
-                                                    <div class="text">
-                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
-                                                        болгарский
-                                                        п/ф,
-                                                        соль,
-                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
                                             <div class="item">
                                                 <div class="img">
                                                     <img src="./img/eat.jpg" alt="">
@@ -281,159 +247,7 @@
                                     </div>
                                     <div class="box">
                                         <div class="title">Обед</div>
-                                        <div class="products-list">
-                                            <div class="item">
-                                                <div class="img">
-                                                    <img src="./img/eat.jpg" alt="">
-                                                </div>
-                                                <div class="info">
-                                                    <div class="img">
-                                                        <img src="./img/eat.jpg" alt="">
-                                                    </div>
-                                                    <div class="name">Рыба под маринадом</div>
-                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
-                                                    <div class="text">
-                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
-                                                        болгарский
-                                                        п/ф,
-                                                        соль,
-                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item">
-                                                <div class="img">
-                                                    <img src="./img/eat.jpg" alt="">
-                                                </div>
-                                                <div class="info">
-                                                    <div class="img">
-                                                        <img src="./img/eat.jpg" alt="">
-                                                    </div>
-                                                    <div class="name">Рыба под маринадом</div>
-                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
-                                                    <div class="text">
-                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
-                                                        болгарский
-                                                        п/ф,
-                                                        соль,
-                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item">
-                                                <div class="img">
-                                                    <img src="./img/eat.jpg" alt="">
-                                                </div>
-                                                <div class="info">
-                                                    <div class="img">
-                                                        <img src="./img/eat.jpg" alt="">
-                                                    </div>
-                                                    <div class="name">Рыба под маринадом</div>
-                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
-                                                    <div class="text">
-                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
-                                                        болгарский
-                                                        п/ф,
-                                                        соль,
-                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item">
-                                                <div class="img">
-                                                    <img src="./img/eat.jpg" alt="">
-                                                </div>
-                                                <div class="info">
-                                                    <div class="img">
-                                                        <img src="./img/eat.jpg" alt="">
-                                                    </div>
-                                                    <div class="name">Рыба под маринадом</div>
-                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
-                                                    <div class="text">
-                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
-                                                        болгарский
-                                                        п/ф,
-                                                        соль,
-                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item">
-                                                <div class="img">
-                                                    <img src="./img/eat.jpg" alt="">
-                                                </div>
-                                                <div class="info">
-                                                    <div class="img">
-                                                        <img src="./img/eat.jpg" alt="">
-                                                    </div>
-                                                    <div class="name">Рыба под маринадом</div>
-                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
-                                                    <div class="text">
-                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
-                                                        болгарский
-                                                        п/ф,
-                                                        соль,
-                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item">
-                                                <div class="img">
-                                                    <img src="./img/eat.jpg" alt="">
-                                                </div>
-                                                <div class="info">
-                                                    <div class="img">
-                                                        <img src="./img/eat.jpg" alt="">
-                                                    </div>
-                                                    <div class="name">Рыба под маринадом</div>
-                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
-                                                    <div class="text">
-                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
-                                                        болгарский
-                                                        п/ф,
-                                                        соль,
-                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item">
-                                                <div class="img">
-                                                    <img src="./img/eat.jpg" alt="">
-                                                </div>
-                                                <div class="info">
-                                                    <div class="img">
-                                                        <img src="./img/eat.jpg" alt="">
-                                                    </div>
-                                                    <div class="name">Рыба под маринадом</div>
-                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
-                                                    <div class="text">
-                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
-                                                        болгарский
-                                                        п/ф,
-                                                        соль,
-                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item">
-                                                <div class="img">
-                                                    <img src="./img/eat.jpg" alt="">
-                                                </div>
-                                                <div class="info">
-                                                    <div class="img">
-                                                        <img src="./img/eat.jpg" alt="">
-                                                    </div>
-                                                    <div class="name">Рыба под маринадом</div>
-                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
-                                                    <div class="text">
-                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
-                                                        болгарский
-                                                        п/ф,
-                                                        соль,
-                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="products-list">                                            
                                             <div class="item">
                                                 <div class="img">
                                                     <img src="./img/eat.jpg" alt="">
@@ -456,21 +270,123 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+                                <div class="boxes" data-tab-content="tomorrow">
+                                    <div class="box">
+                                        <div class="title">Завтрак2</div>
+                                        <div class="products-list">
+                                            <div class="item">
+                                                <div class="img">
+                                                    <img src="./img/eat.jpg" alt="">
+                                                </div>
+                                                <div class="info">
+                                                    <div class="img">
+                                                        <img src="./img/eat.jpg" alt="">
+                                                    </div>
+                                                    <div class="name">Рыба под маринадом</div>
+                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                                    <div class="text">
+                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
+                                                        болгарский
+                                                        п/ф,
+                                                        соль,
+                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="box">
+                                        <div class="title">Обед</div>
+                                        <div class="products-list">                                            
+                                            <div class="item">
+                                                <div class="img">
+                                                    <img src="./img/eat.jpg" alt="">
+                                                </div>
+                                                <div class="info">
+                                                    <div class="img">
+                                                        <img src="./img/eat.jpg" alt="">
+                                                    </div>
+                                                    <div class="name">Рыба под маринадом</div>
+                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                                    <div class="text">
+                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
+                                                        болгарский
+                                                        п/ф,
+                                                        соль,
+                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="boxes" data-tab-content="day_after_tomorrow">
+                                    <div class="box">
+                                        <div class="title">Завтрак3</div>
+                                        <div class="products-list">
+
+                                            <div class="item">
+                                                <div class="img">
+                                                    <img src="./img/eat.jpg" alt="">
+                                                </div>
+                                                <div class="info">
+                                                    <div class="img">
+                                                        <img src="./img/eat.jpg" alt="">
+                                                    </div>
+                                                    <div class="name">Рыба под маринадом</div>
+                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                                    <div class="text">
+                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
+                                                        болгарский
+                                                        п/ф,
+                                                        соль,
+                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="box">
+                                        <div class="title">Обед</div>
+                                        <div class="products-list">                                            
+                                            <div class="item">
+                                                <div class="img">
+                                                    <img src="./img/eat.jpg" alt="">
+                                                </div>
+                                                <div class="info">
+                                                    <div class="img">
+                                                        <img src="./img/eat.jpg" alt="">
+                                                    </div>
+                                                    <div class="name">Рыба под маринадом</div>
+                                                    <div class="value">К 1001.3, Б 31.1, Ж 62.4, У 78.9</div>
+                                                    <div class="text">
+                                                        Минтай филе с/м, лук репчатый пассированный п/ф, морковь пассированная п/ф, томатная паста пассированная п/ф, перец
+                                                        болгарский
+                                                        п/ф,
+                                                        соль,
+                                                        перец горошком (смесь), лавровый лист, сахар песок, вода, зелень в асс
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-
-        </div>
 <script>
 
 filtration()
 
 
-function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, comment, id) {
+async function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, comment, id) {
     document.getElementById("full_name_field").innerHTML = full_name;
     document.getElementById("receipt_datetime_field").innerHTML = receipt_date + ' ' + receipt_time;
     document.getElementById("department_field").innerHTML = department;
@@ -479,8 +395,31 @@ function displayInfoPatient(full_name, receipt_date, receipt_time, department, t
     document.getElementById("comment_field").innerHTML = comment;
     document.getElementById("modal_field").setAttribute('data-modal-link', 'modal-start'+id);
     document.getElementById("archive_field").setAttribute('data-modal-link', 'patient-archive'+id);
+    let res = await getMenuForPatient(id)
+    var obj = JSON.parse(res);
+     // document.getElementById("test").innerHTML = menu_patients.id.today;
+    alert(obj.menu.today.breakfast.products_porridge);
+} 
 
+const getMenuForPatient = async function(userId, oldPassword) {
+    let url = 'https://5452-176-59-40-153.eu.ngrok.io/doctor/api/v1/patient/menu'
+    let body = {
+        "id_user": 'userId',
+        "row_password": 'oldPassword'
+    };
+
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+
+    return result;
 }
+
 
 
 const list = document.querySelectorAll('.product')
@@ -785,7 +724,7 @@ async function validationChangePasswordForm() {
     }
 }
 
-const checkPassword = async function(userId, oldPassword) {  
+const checkPassword = async function(userId, oldPassword) {
     let url = 'https://www.sk.petrushkagroup.com/doctor/api/v1/password/verify'
     let body = {
         "id_user": userId,
@@ -817,7 +756,7 @@ const checkPasswordTest = async function(userId, oldPassword) {
         setTimeout(() => resolve("готово!"), 1000)
   });
 
-  let result = await promise;    
+  let result = await promise;
 }
 
 function clickOnElement () {

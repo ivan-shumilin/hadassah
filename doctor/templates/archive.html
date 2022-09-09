@@ -1,41 +1,43 @@
 {% extends "base_generic_doctor.html" %}
 {% block content %}
 <div id="center" data-simplebar>
-    <div class="mobile-header-block">
-        <div class="logo">
-            <a href='https://hadassah.moscow/' class="logo">
-                {% load static %}
-                <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
-            </a>
-        </div>
-        <a class="menu-link" data-sidebar-toggle>
-            <div class="i i-menu"></div>
-        </a>
-        <div class="petrushka">
-            <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
-        </div>
-    </div>
-
-    <div class="header-block">
-        <div class="menu-link-and-name">
+    <div id="header">
+        <div class="mobile-header-block">
+            <div class="logo">
+                <a href='https://hadassah.moscow/' class="logo">
+                    {% load static %}
+                    <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
+                </a>
+            </div>
             <a class="menu-link" data-sidebar-toggle>
                 <div class="i i-menu"></div>
             </a>
-            <div class="title">Ваши пациенты</div>
+            <div class="petrushka">
+                <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
+            </div>
         </div>
-    </div>
-    <div>
-        {# какая форма сработала  #}
-        <input style="display: none;" type="checkbox" id="filter_by_flag"  name="filter_by_flag">
-        <input style="display: none;" type="text" id="filter_by_value"  name="filter_by_value">
-        <input style="display: none;" type="text" id="sorting_value"  name="sorting_value">
-        <input style="display: none;" type="text" id="is_pressing_again"  name="is_pressing_again">
 
-        <input style="display: none;" type="checkbox" id="add_patient_flag"  name="add_patient">
-        <input style="display: none;" type="checkbox" id="edit_patient_flag"  name="edit_patient_flag">
-        <input style="display: none;" type="checkbox" id="archive"  name="archive">
-        <input style="display: none;" type="text" id="id_edit_user" name="id_edit_user">
+        <div class="header-block">
+            <div class="menu-link-and-name">
+                <a class="menu-link" data-sidebar-toggle>
+                    <div class="i i-menu"></div>
+                </a>
+                <div class="title">Ваши пациенты</div>
+            </div>
+        </div>
+        <div>
+            {# какая форма сработала  #}
+            <input style="display: none;" type="checkbox" id="filter_by_flag"  name="filter_by_flag">
+            <input style="display: none;" type="text" id="filter_by_value"  name="filter_by_value">
+            <input style="display: none;" type="text" id="sorting_value"  name="sorting_value">
+            <input style="display: none;" type="text" id="is_pressing_again"  name="is_pressing_again">
 
+            <input style="display: none;" type="checkbox" id="add_patient_flag"  name="add_patient">
+            <input style="display: none;" type="checkbox" id="edit_patient_flag"  name="edit_patient_flag">
+            <input style="display: none;" type="checkbox" id="archive"  name="archive">
+            <input style="display: none;" type="text" id="id_edit_user" name="id_edit_user">
+
+        </div>
     </div>
 
     <div style="display: none;" id="filter_by">{{ filter_by }}</div>
@@ -49,61 +51,63 @@
     <a style="display: none;" id="password-edited" data-modal-link="password-edited">a</a>
     <a style="display: none;" id="profile-edited" data-modal-link="profile-edited">a</a>
 
-    <div class="table" 
-         data-columns="30% 20% 30% 20%"
-         data-columns-mobile="30% 15% 30% 1fr">
+    <div id="content" data-simplebar>
+        <div class="table" 
+            data-columns="30% 20% 30% 20%"
+            data-columns-mobile="30% 15% 30% 1fr">
 
-         <div class="tr thead">
-            <div class="th">
-                    <label id="full_name" onclick="check_function('input_full_name')" class="sort" for="input_full_name">
-                        <span style="cursor: pointer;">фио пациента</span></label>
-                    <input type="radio" class="btn-check" id="input_full_name" value="full_name" name="filter_by">
-            </div>
-            <div class="th">
-                    <label id="room_number" onclick="check_function('input_room_number')" class="sort" for="input_room_number">
-                        <span style="cursor: pointer;" class="only-desktop">палата</span>
-                        <span style="cursor: pointer;" class="only-mobile">№</span>
-                    <input type="radio" class="btn-check" id="input_room_number" value="room_number" name="filter_by">
-            </div>
-            <div class="th">
-                    <label id="department" onclick="check_function('input_department')" class="sort" for="input_department">
-                        <span style="cursor: pointer;">отделение</span></label>
-                    <input type="radio" class="btn-check" id="input_department" value="department" name="filter_by">
-            </div>
-            <div class="th">
-                    <label id="type_of_diet" onclick="check_function('input_type_of_diet')" class="sort" for="input_type_of_diet">
-                        <span style="cursor: pointer;">диета</span></label>
-                    <input type="radio" class="btn-check" id="input_type_of_diet" value="type_of_diet" name="filter_by">
-            </div>
-        </div>
-        {% load formatting_full_name %}
-        {% for form in formset %}
-            <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
-                <div class="td">
-                    <div class="name ellipsis">{{ form.full_name.value|formatting_full_name }}</div>
+            <div class="tr thead">
+                <div class="th">
+                        <label id="full_name" onclick="check_function('input_full_name')" class="sort" for="input_full_name">
+                            <span style="cursor: pointer;">фио пациента</span></label>
+                        <input type="radio" class="btn-check" id="input_full_name" value="full_name" name="filter_by">
                 </div>
-                <div class="td">{{ form.room_number.value }}</div>
-                <div class="td">
-                    <div class="ellipsis">
-                        {{ form.department.value }}
+                <div class="th">
+                        <label id="room_number" onclick="check_function('input_room_number')" class="sort" for="input_room_number">
+                            <span style="cursor: pointer;" class="only-desktop">палата</span>
+                            <span style="cursor: pointer;" class="only-mobile">№</span>
+                        <input type="radio" class="btn-check" id="input_room_number" value="room_number" name="filter_by">
+                </div>
+                <div class="th">
+                        <label id="department" onclick="check_function('input_department')" class="sort" for="input_department">
+                            <span style="cursor: pointer;">отделение</span></label>
+                        <input type="radio" class="btn-check" id="input_department" value="department" name="filter_by">
+                </div>
+                <div class="th">
+                        <label id="type_of_diet" onclick="check_function('input_type_of_diet')" class="sort" for="input_type_of_diet">
+                            <span style="cursor: pointer;">диета</span></label>
+                        <input type="radio" class="btn-check" id="input_type_of_diet" value="type_of_diet" name="filter_by">
+                </div>
+            </div>
+            {% load formatting_full_name %}
+            {% for form in formset %}
+                <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
+                    <div class="td">
+                        <div class="name ellipsis">{{ form.full_name.value|formatting_full_name }}</div>
+                    </div>
+                    <div class="td">{{ form.room_number.value }}</div>
+                    <div class="td">
+                        <div class="ellipsis">
+                            {{ form.department.value }}
+                        </div>
+                    </div>
+                    <div class="td">
+                        <span class="tag">{{ form.type_of_diet.value }}</span>
                     </div>
                 </div>
-                <div class="td">
-                    <span class="tag">{{ form.type_of_diet.value }}</span>
-                </div>
-            </div>
 
-            <div id="patient-restore{{ form.id.value }}" data-modal="patient-restore{{ form.id.value }}" data-modal-width="400">
-            <div class="title align-center">Восстановить учётную запись пациента?</div>
-            <div class="confirm-block">
-                <div class="text">Данные пациента вновь появятся в списке активных учётных записей, для него активируется личный кабинет</div>
-                <div class="buttons">
-                    <a class="button" onclick="patientRestore('{{ form.id.value }}')">Восстановить</a>
-                    <a class="button white" data-modal-close>Отменить</a>
+                <div id="patient-restore{{ form.id.value }}" data-modal="patient-restore{{ form.id.value }}" data-modal-width="400">
+                <div class="title align-center">Восстановить учётную запись пациента?</div>
+                <div class="confirm-block">
+                    <div class="text">Данные пациента вновь появятся в списке активных учётных записей, для него активируется личный кабинет</div>
+                    <div class="buttons">
+                        <a class="button" onclick="patientRestore('{{ form.id.value }}')">Восстановить</a>
+                        <a class="button white" data-modal-close>Отменить</a>
+                    </div>
                 </div>
-            </div>
-            </div>
-        {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 
