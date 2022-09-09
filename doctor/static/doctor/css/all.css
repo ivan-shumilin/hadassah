@@ -2894,8 +2894,7 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
   align-items: center;
   border-bottom: 2px solid #eef1f8;
   box-sizing: border-box;
-  justify-content: space-between;
-  margin-bottom: 34px
+  justify-content: space-between
 }
 
 .eat-menu-block, .eat-menu-block .menu {
@@ -3000,6 +2999,10 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
   -o-object-fit: cover;
   object-fit: cover;
   width: 100%
+}
+
+.eat-choose-block {
+  margin-top: 34px
 }
 
 .eat-choose-block .category {
@@ -3433,6 +3436,24 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
   padding-right: 20px
 }
 
+.eat-grid-block {
+  margin-top: 34px
+}
+
+.eat-grid-block .category {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 18px
+}
+
+.eat-grid-block .eat-grid {
+  margin-bottom: 30px
+}
+
+.eat-grid-block .eat-grid:last-child {
+  margin-bottom: 0
+}
+
 @media screen and (max-width:1440px) {
   .only-desktop {
       display: none
@@ -3600,6 +3621,10 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
 
   .table .tr.active {
       border-radius: 0
+  }
+
+  .eat-grid-block .category {
+      margin-bottom: 14px
   }
 }
 
