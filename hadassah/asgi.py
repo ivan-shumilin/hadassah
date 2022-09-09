@@ -1,29 +1,11 @@
-{
-          "name": "",
-          "carbohydrate": "",
-          "fat": "",
-          "fiber": "",
-          "energy": "",
-          "image": "",
-          "description": "",
-          "category": ""
-      }"
+"""
 ASGI config for hadassah project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/4.0/howto/deployment/asgi/
-{
-          "name": "",
-          "carbohydrate": "",
-          "fat": "",
-          "fiber": "",
-          "energy": "",
-          "image": "",
-          "description": "",
-          "category": ""
-      }"
+"""
 
 import os
 
