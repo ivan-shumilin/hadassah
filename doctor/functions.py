@@ -1,6 +1,10 @@
-from nutritionist.models import ProductLp, CustomUser
+from nutritionist.models import ProductLp, CustomUser, MenuByDay
 from django.db import transaction
 from dateutil.parser import parse
+from django.db.models import Q
+from typing import List
+from datetime import datetime, date, timedelta
+from django.utils import dateformat
 
 def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup):
     """Сортировка блюд по приемам пищи"""
@@ -171,6 +175,14 @@ def translate_diet(diet):
         'nbd': 'НБД',
         'nkd': 'НКД',
         'vkd': 'ВКД',
+        'ОВД': 'ovd',
+        'ОВД без сахара': 'ovd_sugarless',
+        'ЩД': 'shd',
+        'БД': 'bd',
+        'ВБД': 'vbd',
+        'НБД': 'nbd',
+        'НКД': 'nkd',
+        'ВКД': 'vkd',
     }
     return TYPE_DIET[diet]
 
@@ -196,3 +208,247 @@ def formatting_full_name(full_name):
         else:
             res += value[0:1].capitalize() + '.'
     return res
+
+def check_value(category, products):
+    value: str = ''
+    try:
+        value = products.get(category=category).id
+    except Exception:
+        value = None
+    return value
+
+
+def check_value_two(menu_all, date_str, meal, category):
+    value: str = ''
+    if category == 'main':
+        try:
+            id = menu_all.filter(date=date_str).get(meal=meal).main
+            product = ProductLp.objects.get(id=id)
+            value = {
+                'id': id,
+                'name': product.name,
+                'carbohydrate': product.carbohydrate,
+                'fat': product.fat,
+                'fiber': product.fiber,
+                'energy': product.energy,
+                'image': product.image,
+                'description': product.description,
+                'category': product.category,
+            }
+        except Exception:
+            value = None
+        return value
+    if category == 'garnish':
+        try:
+            id = menu_all.filter(date=date_str).get(meal=meal).garnish
+            product = ProductLp.objects.get(id=id)
+            value = {
+                'id': id,
+                'name': product.name,
+                'carbohydrate': product.carbohydrate,
+                'fat': product.fat,
+                'fiber': product.fiber,
+                'energy': product.energy,
+                'image': product.image,
+                'description': product.description,
+                'category': product.category,
+            }
+
+        except Exception:
+            value = None
+        return value
+    if category == 'porridge':
+        try:
+            id = menu_all.filter(date=date_str).get(meal=meal).porridge
+            product = ProductLp.objects.get(id=id)
+            value = {
+                'id': id,
+                'name': product.name,
+                'carbohydrate': product.carbohydrate,
+                'fat': product.fat,
+                'fiber': product.fiber,
+                'energy': product.energy,
+                'image': product.image,
+                'description': product.description,
+                'category': product.category,
+            }
+        except Exception:
+            value = None
+        return value
+    if category == 'soup':
+        try:
+            id = menu_all.filter(date=date_str).get(meal=meal).soup
+            product = ProductLp.objects.get(id=id)
+            value = {
+                'id': id,
+                'name': product.name,
+                'carbohydrate': product.carbohydrate,
+                'fat': product.fat,
+                'fiber': product.fiber,
+                'energy': product.energy,
+                'image': product.image,
+                'description': product.description,
+                'category': product.category,
+            }
+        except Exception:
+            value = None
+        return value
+    if category == 'dessert':
+        try:
+            id = menu_all.filter(date=date_str).get(meal=meal).dessert
+            product = ProductLp.objects.get(id=id)
+            value = {
+                'id': id,
+                'name': product.name,
+                'carbohydrate': product.carbohydrate,
+                'fat': product.fat,
+                'fiber': product.fiber,
+                'energy': product.energy,
+                'image': product.image,
+                'description': product.description,
+                'category': product.category,
+            }
+        except Exception:
+            value = None
+        return value
+    if category == 'fruit':
+        try:
+            id = menu_all.filter(date=date_str).get(meal=meal).fruit
+            product = ProductLp.objects.get(id=id)
+            value = {
+                'id': id,
+                'name': product.name,
+                'carbohydrate': product.carbohydrate,
+                'fat': product.fat,
+                'fiber': product.fiber,
+                'energy': product.energy,
+                'image': product.image,
+                'description': product.description,
+                'category': product.category,
+            }
+        except Exception:
+            value = None
+        return value
+    if category == 'drink':
+        try:
+            id = menu_all.filter(date=date_str).get(meal=meal).drink
+            product = ProductLp.objects.get(id=id)
+            value = {
+                'id': id,
+                'name': product.name,
+                'carbohydrate': product.carbohydrate,
+                'fat': product.fat,
+                'fiber': product.fiber,
+                'energy': product.energy,
+                'image': product.image,
+                'description': product.description,
+                'category': product.category,
+            }
+        except Exception:
+            value = None
+        return value
+    if category == 'salad':
+        try:
+            id = menu_all.filter(date=date_str).get(meal=meal).salad
+            product = ProductLp.objects.get(id=id)
+            value = {
+                'id': id,
+                'name': product.name,
+                'carbohydrate': product.carbohydrate,
+                'fat': product.fat,
+                'fiber': product.fiber,
+                'energy': product.energy,
+                'image': product.image,
+                'description': product.description,
+                'category': product.category,
+            }
+        except Exception:
+            value = None
+        return value
+
+
+
+def creates_dict_with_menu_patients(id):
+    menu_all = MenuByDay.objects.filter(user_id=id)
+    menu = {}
+    day_date = {
+        'today': str(date.today()),
+        'tomorrow': str(date.today() + timedelta(days=1)),
+        'day_after_tomorrow': str(date.today() + timedelta(days=2)),
+    }
+    for day, date_str in day_date.items():
+        menu[day] = {}
+        for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+            menu[day][meal] = {
+                'main': check_value_two(menu_all, date_str, meal, "main"),
+                'garnish': check_value_two(menu_all, date_str, meal, "garnish"),
+                'porridge': check_value_two(menu_all, date_str, meal, "porridge"),
+                'soup': check_value_two(menu_all, date_str, meal, "soup"),
+                'dessert': check_value_two(menu_all, date_str, meal, "dessert"),
+                'fruit': check_value_two(menu_all, date_str, meal, "fruit"),
+                'drink': check_value_two(menu_all, date_str, meal, "drink"),
+                'salad': check_value_two(menu_all, date_str, meal, "salad"),
+            }
+        menu[day]['date_human_style'] = dateformat.format(date.fromisoformat(date_str), 'd E, l')
+    return menu
+
+def add_default_menu(user):
+    # генератор списка return даты на след 2 дня
+    days = [parse(user.receipt_date) + timedelta(days=delta) for delta in [0, 1, 2]]
+    for day_of_the_week in days:
+        for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+            translated_diet = user.type_of_diet
+            products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=get_day_of_the_week(str(day_of_the_week))) &
+                                                Q(timetablelp__type_of_diet=translated_diet) &
+                                                Q(timetablelp__meals=meal))
+            to_create = []
+            to_create.append(MenuByDay(
+                user_id=user,
+                date=day_of_the_week,
+                meal=meal,
+                main=check_value('основной', products),
+                garnish=check_value('гарнир', products),
+                porridge=check_value('каша', products),
+                soup=check_value('суп', products),
+                dessert=check_value('десерт', products),
+                fruit=check_value('фрукты', products),
+                drink=check_value('напиток', products),
+                salad=check_value('салат', products),
+                ))
+            MenuByDay.objects.bulk_create(to_create)
+    return
+
+def add_default_menu_on_one_day(day_of_the_week, user):
+    for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+        translated_diet = user.type_of_diet
+        products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=get_day_of_the_week(str(day_of_the_week))) &
+                                            Q(timetablelp__type_of_diet=translated_diet) &
+                                            Q(timetablelp__meals=meal))
+        to_create = []
+        to_create.append(MenuByDay(
+            user_id=user,
+            date=day_of_the_week,
+            meal=meal,
+            main=check_value('основной', products),
+            garnish=check_value('гарнир', products),
+            porridge=check_value('каша', products),
+            soup=check_value('суп', products),
+            dessert=check_value('десерт', products),
+            fruit=check_value('фрукты', products),
+            drink=check_value('напиток', products),
+            salad=check_value('салат', products),
+            ))
+        MenuByDay.objects.bulk_create(to_create)
+    return
+
+def add_menu_three_days_ahead():
+    users = CustomUser.objects.filter(status='patient')
+    days = [date.today() + timedelta(days=delta) for delta in [0, 1, 2]]
+    for user in users:
+
+        menu_all = MenuByDay.objects.filter(user_id=user.id)
+        for index, day in enumerate(days):
+            if len(menu_all.filter(date=str(day))) == 0 and (day >= user.receipt_date):
+                for change_day in days[index:]:
+                    add_default_menu_on_one_day(change_day, user)
+    return

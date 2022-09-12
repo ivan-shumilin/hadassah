@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp
+from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp, MenuByDay
 
 
 admin.site.register(Base)
@@ -44,6 +44,13 @@ class ProductLpAdmin(admin.ModelAdmin):
     list_per_page = 200
 
     inlines = [TimetableLpAdmin]
+
+@admin.register(MenuByDay)
+class MenuByDayAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'date', 'meal')
+    fields = ('user_id', 'date', 'meal', 'main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad')
+    list_per_page = 200
+
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm

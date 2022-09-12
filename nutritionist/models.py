@@ -3,6 +3,7 @@ from datetime import date
 import uuid
 from django.contrib.auth.models import AbstractUser
 from doctor.choices import *
+from patient.choices import *
 
 
 class CustomUser(AbstractUser):
@@ -45,7 +46,7 @@ class CustomUser(AbstractUser):
 
 
     def __str__(self):
-        return f'{self.last_name, self.comment}'
+        return f'{self.full_name}'
 
 
 
@@ -97,6 +98,28 @@ class Timetable(models.Model):
         return f'{self.item}'
 
 
+class MenuByDay(models.Model):
+    user_id = models.ForeignKey('CustomUser', on_delete=models.SET_NULL, null=True)
+    date = models.DateField()
+    meal = models.CharField(
+            max_length=100,
+            choices=MEALS,
+            blank=True,
+            default='',
+        )
+    main = models.CharField(max_length=100, null=True)
+    garnish = models.CharField(max_length=100, null=True)
+    porridge = models.CharField(max_length=100, null=True)
+    soup = models.CharField(max_length=100, null=True)
+    dessert = models.CharField(max_length=100, null=True)
+    fruit = models.CharField(max_length=100, null=True)
+    drink = models.CharField(max_length=100, null=True)
+    salad = models.CharField(max_length=100, null=True)
+
+    def __str__(self):
+        return f'{self.user_id} {self.date}'
+
+
 class ProductLp(models.Model):
     name = models.CharField(max_length=200, null=True)
     carbohydrate = models.CharField(max_length=200, null=True)
@@ -144,4 +167,3 @@ class Barcodes(models.Model):
        )
     def __str__(self):
         return f'{self.number}'
-
