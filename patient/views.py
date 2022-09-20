@@ -79,7 +79,7 @@ def patient(request, id):
 
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
-
+    date_timer = parse(date_get)
     data = {'user': user,
             'breakfast': breakfast,
             'afternoon': afternoon,
@@ -88,6 +88,7 @@ def patient(request, id):
             'date_menu': date_menu,
             'page': page,
             'date_get': date_get,
+            'date': date_timer,
             'formatted_date': formatted_date,
             'products': menu_for_lk_patient
             }

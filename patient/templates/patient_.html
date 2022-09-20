@@ -730,7 +730,7 @@
                     <div class="inner">
                         <div class="block-title">Ваш заказ</div>
                         <div class="info">
-                            Автоматический выбор блюд через: <span class="value">4 ч 15 м</span>
+                            Автоматический выбор блюд через: <span class="value"><div id="timer"></div></span>
                         </div>
                         <div class="items">
                             <div id="breakfast-rigth" class="box">
@@ -900,5 +900,63 @@ function submitForm() {
     var form = document.getElementById('form-get');
     form.submit();
 }
+
+
+// Берём элемент для вывода таймера
+let timer_show = document.getElementById("timer");
+ 
+// Функция для вычисления разности времени
+function diffSubtract(date1, date2) {
+    return date2 - date1;
+}
+let str_day = ''
+let str_hours = ''
+let minutes = ''
+// Массив данных о времени
+let end_date = {
+    "full_year": "{{ date.year }}", // Год
+    "month": "{{ date|date:'m' }}", // Номер месяца
+    "day": "{{ date|date:'d' }}", // День
+    "hours": "00", // Час
+    "minutes": "00", // Минуты
+    "seconds": "00" // Секунды
+}
+ 
+// Строка для вывода времени
+let end_date_str = `${end_date.full_year}-${end_date.month}-${end_date.day}T${end_date.hours}:${end_date.minutes}:${end_date.seconds}`;
+
+// Запуск интервала таймера
+timer = setInterval(function () {
+    // Получение времени сейчас
+    let now = new Date();
+    // Получение заданного времени
+    let date = new Date(end_date_str);
+    // Вычисление разницы времени 
+    let ms_left = diffSubtract(now, date);
+    // Если разница времени меньше или равна нулю 
+    if (ms_left <= 0) { // То
+        // Выключаем интервал
+        clearInterval(timer);
+        // Выводим сообщение об окончание
+        timer_show.innerHTML = 'выбор сделан';
+    } else { // Иначе
+        // Получаем время зависимую от разницы
+        let res = new Date(ms_left);
+
+        if (res.getUTCDate() - 1 > 0) {
+            str_day = `${res.getUTCDate() - 1} д `
+        }
+        if (res.getUTCHours() > 0) {
+            str_hours = `${res.getUTCHours()} ч `
+        }
+        if (res.getUTCMinutes() > 0) {
+            str_minutes = `${res.getUTCMinutes()} м`
+        }
+        // Делаем строку для вывода
+        let str_timer = str_day + str_hours + str_minutes;
+        // Выводим время
+        timer_show.innerHTML = str_timer;
+    }
+}, 1000)
 </script>
 {% endblock %}
