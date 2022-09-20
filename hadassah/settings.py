@@ -41,6 +41,12 @@ ALLOWED_HOSTS = [
 	    'loclhost',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "https://sk.petrushkagroup.com/",
+    "http://localhost:8080",
+    "http://127.0.0.1:000",
+]
+
 
 
 # Application definition
@@ -57,11 +63,12 @@ INSTALLED_APPS = [
     'patient',
     'rest_framework',
     'djoser',
+    "corsheaders",
     'widget_tweaks',
 ]
 
 MIDDLEWARE = [
-    # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     # 'whitenoise.middleware.WhiteNoiseMiddleware',
