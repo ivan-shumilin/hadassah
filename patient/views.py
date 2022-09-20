@@ -28,27 +28,27 @@ def group_patient_check(user):
 def patient(request, id):
     import datetime
     page = 'menu-menu'
-    # date_menu = {
-    #     'today': str(date.today()),
-    #     'tomorrow': str(date.today() + datetime.timedelta(days=1)),
-    #     'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
-    # }
+    date_menu = {
+        'today': str(date.today()),
+        'tomorrow': str(date.today() + datetime.timedelta(days=1)),
+        'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
+    }
 
     # для тестирования идем в прошлое
-    date_menu = {
-        'today': str(date.today() - datetime.timedelta(days=10)),
-        'tomorrow': str(date.today() - datetime.timedelta(days=9)),
-        'day_after_tomorrow': str(date.today() - datetime.timedelta(days=8)),
-    }
+    # date_menu = {
+    #     'today': str(date.today() - datetime.timedelta(days=10)),
+    #     'tomorrow': str(date.today() - datetime.timedelta(days=9)),
+    #     'day_after_tomorrow': str(date.today() - datetime.timedelta(days=8)),
+    # }
 
     user = CustomUser.objects.get(id=id)
     diet = translate_diet(user.type_of_diet)
     translated_diet = user.type_of_diet
     meal = 'lunch'
     if request.GET == {} or request.method == 'POST':
-        # date_get = str(date.today())
+        date_get = str(date.today())
         # для тестирования идем в прошлое
-        date_get = str(date.today() - datetime.timedelta(days=10))
+        # date_get = str(date.today() - datetime.timedelta(days=10))
     else:
         date_get = request.GET['date']
 
