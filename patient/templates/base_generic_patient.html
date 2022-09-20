@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Title{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
+    <style>
+        .table input[type="radio"] {
+            display: none;
+        }
+    </style>
+
+
+</head>
+
+
+<body class="has-right small-left">
+    <form id='form-get' style='padding-left: 0px; padding-right: 0px;' method="get" novalidate>
+        {{ formset.management_form }}
+        <div id="wrapper">
+            <div id="left">
+                <div class="sidebar">
+                    <div class="overlay" data-sidebar-toggle></div>
+                    <div class="inner">
+                        <div class="sidebar-header-block">
+                            <a href='https://hadassah.moscow/' class="logo">
+                                <img alt="">
+                            </a>
+
+                            <div class="profile">
+                                <a href="#" class="label" data-fade-toggle-link="profile-info">
+                                    <span class="icon"></span>
+                                    Профиль
+                                </a>
+                                <div class="info" data-fade-toggle="profile-info">
+                                    <div class="segment">
+                                        <div class="name">
+                                            {% load formatting_full_name %}
+                                            {{ user.full_name|formatting_full_name }}
+                                        </div>
+                                        <div class="value">
+                                            <span>Отделение</span>
+                                            {{ user.department }}
+                                        </div>
+                                        <div class="value">
+                                            <span>Диета</span>
+                                            {{ user.type_of_diet }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-menu-block">
+                            <ul>
+                                <li class="active">
+                                    <a href="{% url 'patient' id=user.id %}">
+                                        <span class="i i-eat icon-default"></span>
+                                        <span class="i i-eat-colored icon-colored"></span>
+                                        <span>Меню</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'patient_history' id=user.id %}">
+                                        <span class="i i-box icon-default"></span>
+                                        <span class="i i-box-colored icon-colored"></span>
+                                        <span>Архив</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="sidebar-petrushka-block">
+                            <a href="#">
+                                <img>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% block content %}
+
+        {% endblock %}
+
+    {% load static %}
+        </div>  <!-- div wrapper -->
+
+<script src="{% static 'doctor/js/all.js' %}"></script>
+
+</body>
+</html>
