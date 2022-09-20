@@ -1,10 +1,11 @@
-from nutritionist.models import ProductLp, CustomUser, MenuByDay
+from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product
 from django.db import transaction
 from dateutil.parser import parse
 from django.db.models import Q
 from typing import List
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
+from django.db.models.functions import Lower
 
 def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup):
     """Сортировка блюд по приемам пищи"""
@@ -452,3 +453,59 @@ def add_menu_three_days_ahead():
                 for change_day in days[index:]:
                     add_default_menu_on_one_day(change_day, user)
     return
+
+
+def creating_meal_menu_cafe(date_get, diet, meal):
+
+    queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Вторые блюда').order_by(Lower('name')))
+    queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Гарниры').order_by(Lower('name')))
+    queryset_salad = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Салаты').order_by(Lower('name')))
+    queryset_soup = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Первые блюда').order_by(Lower('name')))
+
+    queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup = \
+        sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup)
+
+    return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup
+
+
+def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
+    products_main = []
+    products_porridge = []
+    products_dessert = []
+    products_fruit = []
+    products_salad = []
+    products_soup = []
+    products_drink = []
+    products_garnish = []
+
+    products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
+                                        Q(timetablelp__type_of_diet=translated_diet) &
+                                        Q(timetablelp__meals=meal))
+
+    if meal == 'breakfast':
+        products_garnish = list(products.filter(category='гарнир'))
+        products_main = list(products.filter(category='основной'))
+        products_porridge = list(products.filter(category='каша'))
+
+    if meal == 'afternoon':
+        products_main = list(products.filter(category='основной'))
+        products_dessert = list(products.filter(category='десерт'))
+        products_fruit = list(products.filter(category='фрукты'))
+        products_drink = list(products.filter(category='напиток'))
+
+    if meal == 'lunch':
+        products_main = list(products.filter(category='основной'))
+        products_garnish = list(products.filter(category='гарнир'))
+        products_salad = list(products.filter(category='салат'))
+        products_soup = list(products.filter(category='суп'))
+        products_drink = list(products.filter(category='напиток'))
+
+    if meal == 'dinner':
+        products_main = list(products.filter(category='основной'))
+        products_garnish = list(products.filter(category='гарнир'))
+        products_drink = list(products.filter(category='напиток'))
+    return products_main, products_garnish, products_salad, products_soup, products_porridge, products_dessert, products_fruit, products_drink

@@ -1,0 +1,209 @@
+{% extends "base_generic_patient.html" %}
+{% block content %}
+<div id="center">
+    <div id="header">
+        <div class="header-block">
+            <div class="menu-link-and-name">
+                <a href="#" class="menu-link" data-sidebar-toggle>
+                    <div class="i i-menu"></div>
+                </a>
+                <div class="title">История заказов</div>
+            </div>
+
+            <form class="date-form">
+                <div class="form-group">
+                    <select name="department">
+                        <option value="12.06.2022">12 июля, вторник</option>
+                        <option value="11.06.2022">11 июля, вторник</option>
+                        <option value="10.06.2022">10 июля, вторник</option>
+                        <option value="9.06.2022">9 июля, вторник</option>
+                        <option value="8.06.2022">8 июля, вторник</option>
+                        <option value="12.06.2022">12 июля, вторник</option>
+                        <option value="11.06.2022">11 июля, вторник</option>
+                        <option value="10.06.2022">10 июля, вторник</option>
+                        <option value="9.06.2022">9 июля, вторник</option>
+                        <option value="8.06.2022">8 июля, вторник</option>
+                        <option value="12.06.2022">12 июля, вторник</option>
+                        <option value="11.06.2022">11 июля, вторник</option>
+                        <option value="10.06.2022">10 июля, вторник</option>
+                        <option value="9.06.2022">9 июля, вторник</option>
+                        <option value="8.06.2022">8 июля, вторник</option>
+                    </select>
+                </div>
+            </form>
+
+            <div class="green-menu">
+                <a href="#" data-modal-link="diet">Диета</a>
+                <a href="#" class="active">ОВД</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="content" data-simplebar>
+        <div class="date-form-block">
+            <form class="date-form">
+                <div class="form-group">
+                    <select name="department">
+                        <option value="12.06.2022">12 июля, вторник</option>
+                        <option value="11.06.2022">11 июля, вторник</option>
+                        <option value="10.06.2022">10 июля, вторник</option>
+                        <option value="9.06.2022">9 июля, вторник</option>
+                        <option value="8.06.2022">8 июля, вторник</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="eat-history-block">
+            <div class="eat-history-grid" data-eat-history-grid>
+                <div class="item" data-item>
+                    <div class="info">
+                        <div class="name">Каша овсяная с сухофруктами</div>
+                        <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                    </div>
+                    <div class="img">
+
+                    </div>
+                    <div class="review">
+                        <form class="review-form">
+                            <input type="hidden" name="rating" value="0">
+
+                            <div class="form-group item-rating">
+                                <div class="star" data-value="1"></div>
+                                <div class="star" data-value="2"></div>
+                                <div class="star" data-value="3"></div>
+                                <div class="star" data-value="4"></div>
+                                <div class="star" data-value="5"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
+                            </div>
+                            <div class="form-group item-actions">
+                                <button type="submit">Отправить оценку</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="toggle" data-toggle>
+                        <a href="#">Оценить</a>
+                    </div>
+                    <div class="reviewed">
+                        <span>Уже оценили</span>
+                    </div>
+                </div>
+                <div class="item closed" data-item>
+                    <div class="info">
+                        <div class="name">Яйцо варёное вкрутую</div>
+                        <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                    </div>
+                    <div class="img">
+                        <img src="./img/eat-b2.jpg" alt="">
+                    </div>
+                    <div class="review">
+                        <form class="review-form">
+                            <input type="hidden" name="rating" value="0">
+
+                            <div class="form-group item-rating">
+                                <div class="star" data-value="1"></div>
+                                <div class="star" data-value="2"></div>
+                                <div class="star" data-value="3"></div>
+                                <div class="star" data-value="4"></div>
+                                <div class="star" data-value="5"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
+                            </div>
+                            <div class="form-group item-actions">
+                                <button type="submit">Отправить оценку</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="toggle" data-toggle>
+                        <a href="#">Оценить</a>
+                    </div>
+                    <div class="reviewed">
+                        <span>Уже оценили</span>
+                    </div>
+                </div>
+            </div>
+            <div class="category">
+                <div class="name">Обед</div>
+            </div>
+            <div class="eat-history-grid" data-eat-history-grid>
+                <div class="item" data-item>
+                    <div class="info">
+                        <div class="name">Яйцо варёное вкрутую</div>
+                        <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                    </div>
+                    <div class="img">
+                        <img src="./img/eat-b2.jpg" alt="">
+                    </div>
+                    <div class="review">
+                        <form class="review-form">
+                            <input type="hidden" name="rating" value="0">
+
+                            <div class="form-group item-rating">
+                                <div class="star" data-value="1"></div>
+                                <div class="star" data-value="2"></div>
+                                <div class="star" data-value="3"></div>
+                                <div class="star" data-value="4"></div>
+                                <div class="star" data-value="5"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
+                            </div>
+                            <div class="form-group item-actions">
+                                <button type="submit">Отправить оценку</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="toggle" data-toggle>
+                        <a href="#">Оценить</a>
+                    </div>
+                    <div class="reviewed">
+                        <span>Уже оценили</span>
+                    </div>
+                </div>
+                <div class="item" data-item>
+                    <div class="info">
+                        <div class="name">Каша овсяная с сухофруктами</div>
+                        <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
+                    </div>
+                    <div class="img">
+                        <img src="./img/eat-b1.jpg" alt="">
+                    </div>
+                    <div class="review">
+                        <form class="review-form">
+                            <input type="hidden" name="rating" value="0">
+
+                            <div class="form-group item-rating">
+                                <div class="star" data-value="1"></div>
+                                <div class="star" data-value="2"></div>
+                                <div class="star" data-value="3"></div>
+                                <div class="star" data-value="4"></div>
+                                <div class="star" data-value="5"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
+                            </div>
+                            <div class="form-group item-actions">
+                                <button type="submit">Отправить оценку</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="toggle" data-toggle>
+                        <a href="#">Оценить</a>
+                    </div>
+                    <div class="reviewed">
+                        <span>Уже оценили</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

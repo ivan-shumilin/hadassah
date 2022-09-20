@@ -13,7 +13,7 @@ from django.utils import dateformat
 from dateutil.parser import parse
 from django.db.models.functions import Lower
 from doctor.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, add_default_menu, \
-    creates_dict_with_menu_patients, add_menu_three_days_ahead
+    creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -346,16 +346,26 @@ def archive(request):
 def menu(request):
     import datetime
     page = 'menu-menu'
+    # date_menu = {
+    #     'today': str(date.today()),
+    #     'tomorrow': str(date.today() + datetime.timedelta(days=1)),
+    #     'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
+    # }
+
+    # для тестирования идем в прошлое
     date_menu = {
-        'today': str(date.today()),
-        'tomorrow': str(date.today() + datetime.timedelta(days=1)),
-        'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
+        'today': str(date.today() - datetime.timedelta(days=10)),
+        'tomorrow': str(date.today() - datetime.timedelta(days=9)),
+        'day_after_tomorrow': str(date.today() - datetime.timedelta(days=8)),
     }
 
     if request.GET == {} or request.method == 'POST':
         diet_form = DietChoiceForm({'type_of_diet': 'ОВД'})
         diet = 'ovd'
-        date_get = str(date.today())
+        # date_get = str(date.today())
+
+        # для тестирования идем в прошлое
+        date_get = str(date.today() - datetime.timedelta(days=10))
         meal = 'breakfast'
 
     else:
@@ -365,53 +375,17 @@ def menu(request):
         meal = request.GET['meal']
     day_of_the_week = get_day_of_the_week(date_get)
     translated_diet = translate_diet(diet)
-    products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
-                                        Q(timetablelp__type_of_diet=translated_diet) &
-                                        Q(timetablelp__meals=meal))
 
-    products_main = []
-    products_porridge = []
-    products_dessert = []
-    products_fruit = []
-    products_salad = []
-    products_soup = []
-    products_drink = []
-    products_garnish = []
+    products_lp: tuple = creating_meal_menu_lp(day_of_the_week, translated_diet, meal)
 
-    queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Вторые блюда').order_by(Lower('name')))
-    queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Гарниры').order_by(Lower('name')))
-    queryset_salad = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Салаты').order_by(Lower('name')))
-    queryset_soup = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Первые блюда').order_by(Lower('name')))
+    products_main, products_garnish, products_salad,\
+    products_soup, products_porridge, products_dessert,\
+    products_fruit, products_drink = products_lp
 
-    queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup = \
-        sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup)
+    products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
 
-    if meal == 'breakfast':
-        products_garnish = list(products.filter(category='гарнир'))
-        products_main = list(products.filter(category='основной'))
-        products_porridge = list(products.filter(category='каша'))
-
-    if meal == 'afternoon':
-        products_main = list(products.filter(category='основной'))
-        products_dessert = list(products.filter(category='десерт'))
-        products_fruit = list(products.filter(category='фрукты'))
-        products_drink = list(products.filter(category='напиток'))
-
-    if meal == 'lunch':
-        products_main = list(products.filter(category='основной'))
-        products_garnish = list(products.filter(category='гарнир'))
-        products_salad = list(products.filter(category='салат'))
-        products_soup = list(products.filter(category='суп'))
-        products_drink = list(products.filter(category='напиток'))
-
-    if meal == 'dinner':
-        products_main = list(products.filter(category='основной'))
-        products_garnish = list(products.filter(category='гарнир'))
-        products_drink = list(products.filter(category='напиток'))
+    queryset_main_dishes, queryset_garnish, queryset_salad,\
+    queryset_soup = products_cafe
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
 

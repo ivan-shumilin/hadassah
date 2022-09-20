@@ -12,8 +12,8 @@ from django.conf import settings
 from django.utils import dateformat
 from dateutil.parser import parse
 from django.db.models.functions import Lower
-from doctor.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet
-from patient.functions import formation_menu
+from doctor.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, creating_meal_menu_cafe, creating_meal_menu_lp
+from patient.functions import formation_menu, creating_menu_for_lk_patient
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -23,26 +23,39 @@ def group_patient_check(user):
     return user.groups.filter(name='patients').exists()
 
 
-@login_required
-@user_passes_test(group_patient_check, login_url='login')
+# @login_required
+# @user_passes_test(group_patient_check, login_url='login')
 def patient(request, id):
     import datetime
     page = 'menu-menu'
+    # date_menu = {
+    #     'today': str(date.today()),
+    #     'tomorrow': str(date.today() + datetime.timedelta(days=1)),
+    #     'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
+    # }
+
+    # для тестирования идем в прошлое
     date_menu = {
-        'today': str(date.today()),
-        'tomorrow': str(date.today() + datetime.timedelta(days=1)),
-        'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
+        'today': str(date.today() - datetime.timedelta(days=10)),
+        'tomorrow': str(date.today() - datetime.timedelta(days=9)),
+        'day_after_tomorrow': str(date.today() - datetime.timedelta(days=8)),
     }
+
     user = CustomUser.objects.get(id=id)
     diet = translate_diet(user.type_of_diet)
     translated_diet = user.type_of_diet
+    meal = 'lunch'
     if request.GET == {} or request.method == 'POST':
-        date_get = str(date.today())
-        meal = 'breakfast'
+        # date_get = str(date.today())
+        # для тестирования идем в прошлое
+        date_get = str(date.today() - datetime.timedelta(days=10))
     else:
         date_get = request.GET['date']
-        meal = request.GET['meal']
+
     day_of_the_week = get_day_of_the_week(date_get)
+
+    menu_for_lk_patient = creating_menu_for_lk_patient(date_get, diet, meal, day_of_the_week, translated_diet)
+
 
     products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
                                         Q(timetablelp__type_of_diet=translated_diet) &
@@ -66,6 +79,7 @@ def patient(request, id):
 
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
+
     data = {'user': user,
             'breakfast': breakfast,
             'afternoon': afternoon,
@@ -75,9 +89,10 @@ def patient(request, id):
             'page': page,
             'date_get': date_get,
             'formatted_date': formatted_date,
+            'products': menu_for_lk_patient
             }
-
     return render(request, 'patient_.html', context=data)
 
-def test(request):
-    return render(request, 'test.html', {})
+
+def patient_history(request, id):
+        return render(request, 'patient_history.html', {})

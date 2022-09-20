@@ -1,0 +1,904 @@
+{% extends "base_generic_patient.html" %}
+{% block content %}
+<input style='display: none;' type="radio" id='input_{{ date_menu.today }}' name='date' value='{{ date_menu.today }}'>
+<input style='display: none;' type="radio" id='input_{{ date_menu.tomorrow }}' name='date' value='{{ date_menu.tomorrow }}'>
+<input style='display: none;' type="radio" id='input_{{ date_menu.day_after_tomorrow }}' name='date' value='{{ date_menu.day_after_tomorrow }}'>
+<div style="display: none;" id="status">{{ modal }}</div>
+
+
+            <div id="center" data-simplebar>
+                <div class="header-block">
+                    <div class="menu-link-and-name">
+                        <a class="menu-link" data-sidebar-toggle>
+                            <div class="i i-menu"></div>
+                        </a>
+                        <div class="title">Меню</div>
+                    </div>
+
+                    <div class="menu">
+                        <div class="switch">
+                            <a id='{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
+                            <a id='{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
+                            <a id='{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+                        </div>
+                    </div>
+
+                    <div id='diet-menu' class="green-menu">
+                        <a data-modal-link="diet">Диета</a>
+                        <a id='diet_name' class="active" data-modal-link="diet">{{ user.type_of_diet }}</a>
+                    </div>
+                </div>
+
+                <div class="day-switch-block">
+                    <div class="switch">
+                        <a id='test{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
+                        <a id='test{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
+                        <a id='test{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+                    </div>
+                </div>
+</form>
+
+                <div class="eat-menu-block">
+                    <div class="menu">
+                        <a class="active" data-tab="breakfast">Завтрак</a>
+                        <a data-tab="lunch">Обед</a>
+                        <a data-tab="afternoon-tea">Полдник</a>
+                        <a data-tab="dinner">Ужин</a>
+                    </div>
+                    <div class="date">{{ formatted_date|lower  }}</div>
+                </div>
+                
+
+            <div id="breakfast" data-eat-menu-tab-content="breakfast" class="active">
+                <div class="eat-choose-block">
+                    {% for product in products.breakfast.lp.main %}
+                        <div class="category">
+                            <div class="name">Основное блюдо</div>
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        </div>
+                        <div class="eat-choose-grid" data-eat-choose-grid>                            
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+
+                    {% for product in products.breakfast.lp.porridge %}
+                        <div class="category">
+                            <div class="name">Каша</div>
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        </div>
+                        <div class="eat-choose-grid" data-eat-choose-grid>
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id ='lunch' data-eat-menu-tab-content="lunch">
+                <div class="eat-choose-block">
+                    <div class="category">
+                        <div class="name">Салат</div>
+                        {% if not products.lunch.cafe.salad %}
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        {% endif %}
+                    </div>
+                    <div class="eat-choose-grid" data-eat-choose-grid>
+                        {% for product in products.lunch.lp.salad %}
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img">
+
+                                    </div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% for product in products.lunch.cafe.salad %}
+                            <div class="item" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="category">
+                        <div class="name">Суп</div>
+                        {% if not products.lunch.cafe.soup %}
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        {% endif %}
+                    </div>
+                    <div class="eat-choose-grid" data-eat-choose-grid>
+                        {% for product in products.lunch.lp.soup %}
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% for product in products.lunch.cafe.soup %}
+                            <div class="item" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="category">
+                        <div class="name">Основное блюдо</div>
+                        {% if not products.lunch.cafe.main %}
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        {% endif %}
+                    </div>
+                    <div class="eat-choose-grid" data-eat-choose-grid>
+                        {% for product in products.lunch.lp.main %}
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% for product in products.lunch.cafe.main %}
+                            <div class="item" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+
+                    <div class="category">
+                        <div class="name">Гарнир</div>
+                        {% if not products.lunch.cafe.garnish %}
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        {% endif %}
+                    </div>
+                    <div class="eat-choose-grid" data-eat-choose-grid>
+                        {% for product in products.lunch.lp.garnish %}
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% for product in products.lunch.cafe.garnish %}                       
+                            <div class="item" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="category">
+                        <div class="name">Напиток</div>
+                        {% if not products.lunch.cafe.drink %}
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        {% endif %}
+                    </div>
+                    <div class="eat-choose-grid" data-eat-choose-grid>
+                        {% for product in products.lunch.lp.drink %}
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% for product in products.lunch.cafe.drink %}
+                            <div class="item" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div id="afternoon" data-eat-menu-tab-content="afternoon-tea">
+                <div class="eat-choose-block">
+                    {% for product in products.afternoon.lp.main %}
+                        <div class="category">
+                            <div class="name">Основное блюдо</div>
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        </div>
+                        <div class="eat-choose-grid" data-eat-choose-grid>                            
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% for product in products.afternoon.lp.dessert %}
+                        <div class="category">
+                            <div class="name">Десерт</div>
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        </div>
+                        <div class="eat-choose-grid" data-eat-choose-grid>
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    {% for product in products.afternoon.lp.fruit %}
+                        <div class="category">
+                            <div class="name">Фрукт</div>
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        </div>
+                        <div class="eat-choose-grid" data-eat-choose-grid>
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% for product in products.afternoon.lp.drink %}
+                        <div class="category">
+                            <div class="name">Напиток</div>
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        </div>
+                        <div class="eat-choose-grid" data-eat-choose-grid>                            
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id="dinner" data-eat-menu-tab-content="dinner">
+                <div class="eat-choose-block">
+                    <div class="category">
+                        <div class="name">Основное блюдо</div>
+                        {% if not products.dinner.cafe.main %}
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        {% endif %}
+                    </div>
+                    <div class="eat-choose-grid" data-eat-choose-grid>
+                        {% for product in products.dinner.lp.main %}
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% for product in products.dinner.cafe.main %}
+                            <div class="item" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+
+                    <div class="category">
+                        <div class="name">Гарнир</div>
+                        {% if not products.dinner.cafe.garnish %}
+                            <div class="info">Это блюдо нельзя заменить</div>
+                        {% endif %}
+                    </div>
+                    <div class="eat-choose-grid" data-eat-choose-grid>
+                        {% for product in products.dinner.lp.garnish %}
+                            <div class="item active" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% for product in products.dinner.cafe.garnish %}                       
+                            <div class="item" data-item>
+                                <div class="info">
+                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="text" data-toggle>
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                    <div class="choose" data-choose>
+                                        <a href="#">
+                                            Уже выбрано блюдо из этой категории.
+                                            Нажмите, чтобы заменить его.
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    <div class="img">
+                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    </div>
+                                {% else %}
+                                    <div class="img"></div>
+                                {% endif %}
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Состав</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-toggle-block">
+                <a href="#" data-order-toggle>
+                    <span class="i i-arrow"></span>
+                    <span>Ваш заказ</span>
+                </a>
+            </div>
+        </div>
+
+        <div id="right" data-simplebar>
+            <div class="order-block">
+                <div class="overlay" data-order-toggle></div>
+                <div class="content">
+                    <a href="#" class="toggle" data-order-toggle>
+                        <span class="i i-arrow"></span>
+                    </a>
+                    <div class="inner">
+                        <div class="block-title">Ваш заказ</div>
+                        <div class="info">
+                            Автоматический выбор блюд через: <span class="value">4 ч 15 м</span>
+                        </div>
+                        <div class="items">
+                            <div id="breakfast-rigth" class="box">
+                                <div class="title">Завтрак</div>
+                                <div class="item">
+                                    <div class="name">Каша овсяная с сухофруктами</div>
+                                </div>
+                                <div class="item">
+                                    <div class="name">Яйцо варёное вкрутую</div>
+                                    <div class="toggle">
+                                        <div class="i i-double-arrow"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="name">Каша овсяная с сухофруктами</div>
+                                    <div class="toggle">
+                                        <div class="i i-double-arrow"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="name">Ассорти из свежих фруктов</div>
+                                    <div class="toggle">
+                                        <div class="i i-double-arrow"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="lunch-rigth" class="box">
+                                <div class="title">Обед</div>
+                                <div class="item">
+                                    <div class="name">Суп куриный с вермишелью</div>
+                                </div>
+                                <div class="item">
+                                    <div class="name">Котлета из трески на пару</div>
+                                    <div class="toggle">
+                                        <div class="i i-double-arrow"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="name">Пюре картофельное со сливочным маслом</div>
+                                    <div class="toggle">
+                                        <div class="i i-double-arrow"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="name">Салат из капусты с огурцом</div>
+                                    <div class="toggle">
+                                        <div class="i i-double-arrow"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="name">Компот из сухофруктов</div>
+                                    <div class="toggle">
+                                        <div class="i i-double-arrow"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id = "afternoon-rigth" class="box">
+                                <div class="title">Полдник</div>
+                                <div class="item">
+                                    <div class="name">Творог обезжиренный с ягодами</div>
+                                </div>
+                                <div class="item">
+                                    <div class="name">Апельсиновый сок</div>
+                                    <div class="toggle">
+                                        <div class="i i-double-arrow"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dinner-rigth" class="box">
+                                <div class="title">Ужин</div>
+                                <div class="item">
+                                    <div class="name">Лосось запечённый</div>
+                                    <div class="toggle">
+                                        <div class="i i-double-arrow"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <a href="#" class="button">Подтвердить заказ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+
+
+addHtmlBreakfast();
+addHtmlAfternoon();
+addHtmlLunch();
+addHtmlDinner();
+
+function addHtmlBreakfast() {
+    let products = document.querySelectorAll('#breakfast>.eat-choose-block>.eat-choose-grid>.active>.info>.name')
+    item = document.getElementById('breakfast-rigth')
+    while (item.firstChild) {
+        item.removeChild(item.firstChild);
+    }
+    result = '';
+    result += '<div class="title">Завтрак</div>'
+    for (var index = 0; index < products.length; index++ ) {
+        result += '<div class="item"><div class="name">' + products[index].innerText + '</div></div>'
+    }
+    result += '</div>'
+    item.insertAdjacentHTML("beforeend", result);
+}
+
+
+function addHtmlLunch() {
+    let products = document.querySelectorAll('#lunch>.eat-choose-block>.eat-choose-grid>.active>.info>.name')
+    item = document.getElementById('lunch-rigth')
+    while (item.firstChild) {
+        item.removeChild(item.firstChild);
+    }
+    result = '';
+    result += '<div class="title">Обед</div>'
+    for (var index = 0; index < products.length; index++ ) {
+        result += '<div class="item"><div class="name">' + products[index].innerText + '</div></div>'
+    }
+    result += '</div>'
+    item.insertAdjacentHTML("beforeend", result);
+}
+
+
+function addHtmlAfternoon() {
+    let products = document.querySelectorAll('#afternoon>.eat-choose-block>.eat-choose-grid>.active>.info>.name')
+    item = document.getElementById('afternoon-rigth')
+    while (item.firstChild) {
+        item.removeChild(item.firstChild);
+    }
+    result = '';
+    result += '<div class="title">Полдник</div>'
+    for (var index = 0; index < products.length; index++ ) {
+        result += '<div class="item"><div class="name">' + products[index].innerText + '</div></div>'
+    }
+    result += '</div>'
+    item.insertAdjacentHTML("beforeend", result);
+}
+
+
+function addHtmlDinner() {
+    let products = document.querySelectorAll('#dinner>.eat-choose-block>.eat-choose-grid>.active>.info>.name')
+    item = document.getElementById('dinner-rigth')
+    while (item.firstChild) {
+        item.removeChild(item.firstChild);
+    }
+    result = '';
+    result += '<div class="title">Ужин</div>'
+    for (var index = 0; index < products.length; index++ ) {
+        result += '<div class="item"><div class="name">' + products[index].innerText + '</div></div>'
+    }
+    result += '</div>'
+    item.insertAdjacentHTML("beforeend", result);
+}
+
+
+document.getElementById('{{ date_get }}').classList.add('active');
+
+function data_function(value) {
+    document.getElementById(value).setAttribute('checked', 'true');
+    submitForm();
+}
+
+function submitForm() {
+    var form = document.getElementById('form-get');
+    form.submit();
+}
+</script>
+{% endblock %}
