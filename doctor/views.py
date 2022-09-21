@@ -352,25 +352,18 @@ def menu(request):
         'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
     }
 
-    # для тестирования идем в прошлое
-    # date_menu = {
-    #     'today': str(date.today() - datetime.timedelta(days=10)),
-    #     'tomorrow': str(date.today() - datetime.timedelta(days=9)),
-    #     'day_after_tomorrow': str(date.today() - datetime.timedelta(days=8)),
-    # }
 
     if request.GET == {} or request.method == 'POST':
         diet_form = DietChoiceForm({'type_of_diet': 'ОВД'})
         diet = 'ovd'
         date_get = str(date.today())
 
-        # для тестирования идем в прошлое
-        # date_get = str(date.today() - datetime.timedelta(days=10))
         meal = 'breakfast'
 
     else:
         diet = request.GET['type_of_diet']
         date_get = request.GET['date']
+
         diet_form = DietChoiceForm(request.GET)
         meal = request.GET['meal']
     day_of_the_week = get_day_of_the_week(date_get)

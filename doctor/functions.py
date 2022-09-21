@@ -214,17 +214,42 @@ def check_value(category, products):
     value: str = ''
     try:
         value = products.get(category=category).id
+        value = 'lp-' + str(value)
     except Exception:
         value = None
     return value
 
+def check_value_(menu_all, date_str, meal, category):
+    try:
+        id = menu_all.filter(date=date_str).get(meal=meal).main
+        if 'cafe' in id:
+            product = Product.objects.get(id=id.split('-')[2])
+        else:
+            product = ProductLp.objects.get(id=id)
+        value = {
+            'id': id,
+            'name': product.name,
+            'carbohydrate': product.carbohydrate,
+            'fat': product.fat,
+            'fiber': product.fiber,
+            'energy': product.energy,
+            'image': product.image,
+            'description': product.description,
+            'category': product.category,
+        }
+    except Exception:
+        value = None
+    return value
 
 def check_value_two(menu_all, date_str, meal, category):
     value: str = ''
     if category == 'main':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).main
-            product = ProductLp.objects.get(id=id)
+            if 'cafe' in id:
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                product = ProductLp.objects.get(id=id)
             value = {
                 'id': id,
                 'name': product.name,
@@ -242,7 +267,10 @@ def check_value_two(menu_all, date_str, meal, category):
     if category == 'garnish':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).garnish
-            product = ProductLp.objects.get(id=id)
+            if 'cafe' in id:
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                product = ProductLp.objects.get(id=id)
             value = {
                 'id': id,
                 'name': product.name,
@@ -261,7 +289,10 @@ def check_value_two(menu_all, date_str, meal, category):
     if category == 'porridge':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).porridge
-            product = ProductLp.objects.get(id=id)
+            if 'cafe' in id:
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                product = ProductLp.objects.get(id=id)
             value = {
                 'id': id,
                 'name': product.name,
@@ -279,7 +310,10 @@ def check_value_two(menu_all, date_str, meal, category):
     if category == 'soup':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).soup
-            product = ProductLp.objects.get(id=id)
+            if 'cafe' in id:
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                product = ProductLp.objects.get(id=id)
             value = {
                 'id': id,
                 'name': product.name,
@@ -297,7 +331,10 @@ def check_value_two(menu_all, date_str, meal, category):
     if category == 'dessert':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).dessert
-            product = ProductLp.objects.get(id=id)
+            if 'cafe' in id:
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                product = ProductLp.objects.get(id=id)
             value = {
                 'id': id,
                 'name': product.name,
@@ -315,7 +352,10 @@ def check_value_two(menu_all, date_str, meal, category):
     if category == 'fruit':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).fruit
-            product = ProductLp.objects.get(id=id)
+            if 'cafe' in id:
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                product = ProductLp.objects.get(id=id)
             value = {
                 'id': id,
                 'name': product.name,
@@ -333,7 +373,10 @@ def check_value_two(menu_all, date_str, meal, category):
     if category == 'drink':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).drink
-            product = ProductLp.objects.get(id=id)
+            if 'cafe' in id:
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                product = ProductLp.objects.get(id=id)
             value = {
                 'id': id,
                 'name': product.name,
@@ -351,7 +394,10 @@ def check_value_two(menu_all, date_str, meal, category):
     if category == 'salad':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).salad
-            product = ProductLp.objects.get(id=id)
+            if 'cafe' in id:
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                product = ProductLp.objects.get(id=id)
             value = {
                 'id': id,
                 'name': product.name,
@@ -446,7 +492,6 @@ def add_menu_three_days_ahead():
     users = CustomUser.objects.filter(status='patient')
     days = [date.today() + timedelta(days=delta) for delta in [0, 1, 2]]
     for user in users:
-
         menu_all = MenuByDay.objects.filter(user_id=user.id)
         for index, day in enumerate(days):
             if len(menu_all.filter(date=str(day))) == 0 and (day >= user.receipt_date):

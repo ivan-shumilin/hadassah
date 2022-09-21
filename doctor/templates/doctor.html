@@ -271,60 +271,10 @@ async function displayInfoPatient(full_name, receipt_date, receipt_time, departm
     for (day in days) {
         addHtml(day, obj, meals, item, result, product);
     }
-    // let item = document.getElementById("today")
-    // while (item.firstChild) {
-    //     item.removeChild(item.firstChild);
-    // }
-    // let result = '';
-    // for (var meal in meals ) {
-    //     result += '<div class="box"><div id="test" class="title">' + meals[meal] + '</div><div id="products-list" class="products-list">'
-    //     for (var key in obj.today[meal]) {
-    //         console.log(key)
-
-    //         if (obj.today[meal][key] != null) {
-    //             let product = obj.today[meal][key]
-    //             result += '<div class="item">'
-    //             result += '<div class="img"><img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/' + product.image + '" alt=""></div>'
-    //             result += '<div class="info"><div class="img"><img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/' + product.image + '" alt=""></div>'
-    //             result += '<div id="name_today" class="name">' + product.name + '</div>'
-    //             result += '<div class="value">' + 'К' + product.energy +  ', Б '+ product.fiber +  ', Ж '+ product.fat +  ', У '+ product.carbohydrate +'</div>'
-    //             result += '<div class="text">' + product.description + '</div>' 
-    //             result += '</div></div>'
-    //         }
-        
-    //     }
-    //     result += '</div></div>'
-    // }
-    // item.insertAdjacentHTML("beforeend", result);
-
-    // item = document.getElementById("tomorrow");
-    // while (item.firstChild) {
-    //     item.removeChild(item.firstChild);
-    // }
-    // result = '';
-    // for (var meal in meals ) {
-    //     result += '<div class="box"><div id="test" class="title">' + meals[meal] + '</div><div id="products-list" class="products-list">'
-    //     for (var key in obj.tomorrow[meal]) {
-    //         console.log(key)
-
-    //         if (obj.tomorrow[meal][key] != null) {
-    //             product = obj.tomorrow[meal][key]
-    //             result += '<div class="item">'
-    //             result += '<div class="img"><img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/' + product.image + '" alt=""></div>'
-    //             result += '<div class="info"><div class="img"><img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/' + product.image + '" alt=""></div>'
-    //             result += '<div id="name_today" class="name">' + product.name + '</div>'
-    //             result += '<div class="value">' + 'К' + product.energy +  ', Б '+ product.fiber +  ', Ж '+ product.fat +  ', У '+ product.carbohydrate +'</div>'
-    //             result += '<div class="text">' + product.description + '</div>' 
-    //             result += '</div></div>'
-    //         }
-        
-    //     }
-    //     result += '</div></div>'
-    // }
-    // item.insertAdjacentHTML("beforeend", result);
-
 
 }
+
+
 function addHtml(day, obj, meals, item, result, product) {
     item = document.getElementById(day)
     while (item.firstChild) {
@@ -340,8 +290,14 @@ function addHtml(day, obj, meals, item, result, product) {
             if (obj[day][meal][key] != null) {
                 product = obj[day][meal][key]
                 result += '<div class="item">'
-                result += '<div class="img"><img src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
-                result += '<div class="info"><div class="img"><img src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
+ 
+                if (product.image == null) {
+                    result += '<div class="img"><img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
+                    result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
+                } else {
+                    result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
+                    result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
+                }
                 result += '<div id="name_today" class="name">' + product.name + '</div>'
                 result += '<div class="value">' + 'К' + formattingFFC(product.energy) +  ', Б '+ formattingFFC(product.fiber) +  ', Ж '+ formattingFFC(product.fat) +  ', У '+ formattingFFC(product.carbohydrate) +'</div>'
                 result += '<div class="text">' + product.description + '</div>' 
@@ -365,6 +321,7 @@ function formattingFFC(value) {
 
 
 const getMenuForPatient = async function(userId) {
+    // let url = 'https://dc83-176-59-174-137.eu.ngrok.io/doctor/api/v1/patient/menu'
     let url = 'https://www.sk.petrushkagroup.com/doctor/api/v1/patient/menu'
     let body = {
         "id_user": userId

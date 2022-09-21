@@ -107,6 +107,93 @@ def creating_menu_for_lk_patient(date_get, diet, meal_, day_of_the_week, transla
     return menu
 
 
+def create_category(value):
+    main = ''
+    garnish = ''
+    porridge = ''
+    soup = ''
+    dessert = ''
+    fruit = ''
+    drink = ''
+    salad = ''
+    for item in value:
+        list_item = item.split('-')
+        if 'main' in list_item:
+            if list_item[0] == 'lp':
+                main = list_item[2]
+            else:
+                main = 'cafe-main-' + list_item[2]
+
+        if 'garnish' in list_item:
+            if list_item[0] == 'lp':
+                garnish = list_item[2]
+            else:
+                garnish = 'cafe-garnish-' + list_item[2]
+
+        if 'porridge' in list_item:
+            if list_item[0] == 'lp':
+                porridge = list_item[2]
+            else:
+                porridge = 'cafe-porridge-' + list_item[2]
+
+        if 'soup' in list_item:
+            if list_item[0] == 'lp':
+                soup = list_item[2]
+            else:
+                soup = 'cafe-soup-' + list_item[2]
+
+        if 'dessert' in list_item:
+            if list_item[0] == 'lp':
+                dessert = list_item[2]
+            else:
+                dessert = 'cafe-dessert-' + list_item[2]
+
+        if 'fruit' in list_item:
+            if list_item[0] == 'lp':
+                fruit = list_item[2]
+            else:
+                fruit = 'cafe-fruit-' + list_item[2]
+
+        if 'drink' in list_item:
+            if list_item[0] == 'lp':
+                drink = list_item[2]
+            else:
+                drink = 'cafe-drink-' + list_item[2]
+
+        if 'salad' in list_item:
+            if list_item[0] == 'lp':
+                salad = list_item[2]
+            else:
+                salad = 'cafe-salad-' + list_item[2]
+    return main, garnish, porridge, soup, dessert, fruit, drink, salad
+
+
+def create_patient_select(id, date_get):
+    menu = MenuByDay.objects.filter(user_id=id)
+    menu = menu.filter(date=date_get)
+    patient_select = {}
+    for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+        menu_item = menu.get(meal=meal)
+        patient_select[meal] = {
+            'main': menu_item.main,
+            'garnish': menu_item.garnish,
+            'porridge': menu_item.porridge,
+            'soup': menu_item.soup,
+            'dessert': menu_item.dessert,
+            'fruit': menu_item.fruit,
+            'drink': menu_item.drink,
+            'salad': menu_item.salad,
+        }
+# сделаем из словаря список
+    patient_select_list = []
+    for key in patient_select.keys():
+
+        for key2 in patient_select[key].keys():
+            if patient_select[key][key2] != None:
+                if patient_select[key][key2] != '' and 'cafe' in patient_select[key][key2]:
+                    patient_select_list.append(patient_select[key][key2])
+
+    return ','.join(patient_select_list)
 
 
 

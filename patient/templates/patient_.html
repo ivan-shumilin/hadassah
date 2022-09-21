@@ -56,10 +56,12 @@
                             <div class="name">Основное блюдо</div>
                             <div class="info">Это блюдо нельзя заменить</div>
                         </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>                            
+                        <div class="eat-choose-grid" data-eat-choose-grid>
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
+ 
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -95,6 +97,7 @@
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-porridge-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -135,6 +138,7 @@
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-salad-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -164,6 +168,7 @@
                             <div class="item" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">cafe-salad-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -200,6 +205,7 @@
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-soup-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -227,6 +233,7 @@
                             <div class="item" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">cafe-soup-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -263,6 +270,7 @@
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -290,6 +298,7 @@
                             <div class="item" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -327,6 +336,7 @@
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -350,10 +360,11 @@
                                 </div>
                             </div>
                         {% endfor %}
-                        {% for product in products.lunch.cafe.garnish %}                       
+                        {% for product in products.lunch.cafe.garnish %}
                             <div class="item" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -389,6 +400,7 @@
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-drink-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -416,6 +428,7 @@
                             <div class="item" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">cafe-drink-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -450,10 +463,11 @@
                             <div class="name">Основное блюдо</div>
                             <div class="info">Это блюдо нельзя заменить</div>
                         </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>                            
+                        <div class="eat-choose-grid" data-eat-choose-grid>
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -487,6 +501,7 @@
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-dessert-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -521,6 +536,7 @@
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-fruit-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -554,6 +570,7 @@
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-drink-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -594,6 +611,7 @@
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -621,6 +639,7 @@
                             <div class="item" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -658,6 +677,7 @@
                             <div class="item active" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -681,10 +701,11 @@
                                 </div>
                             </div>
                         {% endfor %}
-                        {% for product in products.dinner.cafe.garnish %}                       
+                        {% for product in products.dinner.cafe.garnish %}
                             <div class="item" data-item>
                                 <div class="info">
                                     <div class="name" data-choose>{{ product.name }}</div>
+                                    <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -810,7 +831,7 @@
                             </div>
                         </div>
                         <div class="footer">
-                            <a href="#" class="button">Подтвердить заказ</a>
+                            <a onclick="submitPatientSelection()" class="button">Подтвердить заказ</a>
                         </div>
                     </div>
                 </div>
@@ -818,7 +839,68 @@
         </div>
     </div>
 <script>
+//  отмечаем блюда, которые выбрал пациент
+selectPatientChoice()
+function selectPatientChoice() {
+    const split_str = '{{ patient_select }}'.split(",");
 
+
+    let chooses = document.querySelectorAll('.eat-choose-grid')
+    for (var index1 = 0; index1 < chooses.length; index1++ ) {
+        let items = chooses[index1].querySelectorAll('.eat-choose-grid>.item')
+            for (var index2 = 0; index2 < items.length; index2++ ) {
+                let item = items[index2].querySelector('.info>.id')
+                if (split_str.includes(item.innerText)) {
+                    for (var index3 = 0; index3 < items.length; index3++ ) {
+                        items[index3].classList.remove('active')
+                    }
+                    items[index2].classList.add('active')
+                }
+            }
+    }
+}
+
+function submitPatientSelection() {
+    let patientSelection = {
+        "breakfast": [],
+        "lunch": [],
+        "afternoon": [],
+        "dinner": []
+    }
+    for (meal in patientSelection) {
+        let products = document.querySelectorAll('#' + meal +'>.eat-choose-block>.eat-choose-grid>.active>.info>.id')
+        for (var index = 0; index < products.length; index++ ) {
+            patientSelection[meal].push(products[index].innerText)
+        }
+    }
+    submitApiPatientSelection(patientSelection)
+    alert('Заказ подтвержден')
+
+};
+
+
+
+
+const submitApiPatientSelection = async function(menu) {
+    // let url = 'https://dc83-176-59-174-137.eu.ngrok.io/patient/api/v1/submitselection'
+    let url = 'https://www.sk.petrushkagroup.com//patient/api/v1/submitselection'
+    let body = {
+        "menu": menu,
+        "date": "{{ date|date:'Y-m-d' }}",
+        "id_user": "{{ user.id }}"
+    };
+
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+
+    return result;
+}
 
 addHtmlBreakfast();
 addHtmlAfternoon();

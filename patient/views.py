@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput
 from doctor.forms import PatientRegistrationForm, DietChoiceForm
-from nutritionist.models import CustomUser, Product, Timetable, ProductLp
+from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay
 from nutritionist.forms import TimetableForm
 import random, calendar, datetime
 from datetime import datetime, date, timedelta
@@ -13,7 +13,7 @@ from django.utils import dateformat
 from dateutil.parser import parse
 from django.db.models.functions import Lower
 from doctor.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, creating_meal_menu_cafe, creating_meal_menu_lp
-from patient.functions import formation_menu, creating_menu_for_lk_patient
+from patient.functions import formation_menu, creating_menu_for_lk_patient, create_category, create_patient_select
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -34,12 +34,7 @@ def patient(request, id):
         'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
     }
 
-    # для тестирования идем в прошлое
-    # date_menu = {
-    #     'today': str(date.today() - datetime.timedelta(days=10)),
-    #     'tomorrow': str(date.today() - datetime.timedelta(days=9)),
-    #     'day_after_tomorrow': str(date.today() - datetime.timedelta(days=8)),
-    # }
+
 
     user = CustomUser.objects.get(id=id)
     diet = translate_diet(user.type_of_diet)
@@ -47,8 +42,7 @@ def patient(request, id):
     meal = 'lunch'
     if request.GET == {} or request.method == 'POST':
         date_get = str(date.today())
-        # для тестирования идем в прошлое
-        # date_get = str(date.today() - datetime.timedelta(days=10))
+
     else:
         date_get = request.GET['date']
 
@@ -76,6 +70,8 @@ def patient(request, id):
 
     breakfast, afternoon, lunch, dinner = formation_menu(products)
 
+    patient_select = create_patient_select(id, date_get)
+    # patient_select = 'cafe-salad-1162,cafe-soup-1161,cafe-main-1094'
 
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
@@ -90,10 +86,40 @@ def patient(request, id):
             'date_get': date_get,
             'date': date_timer,
             'formatted_date': formatted_date,
-            'products': menu_for_lk_patient
+            'products': menu_for_lk_patient,
+            'patient_select': patient_select
             }
     return render(request, 'patient_.html', context=data)
 
 
 def patient_history(request, id):
         return render(request, 'patient_history.html', {})
+
+
+class SubmitPatientSelectionAPIView(APIView):
+    def post(self, request):
+        data = request.data
+
+        menu = MenuByDay.objects.filter(user_id=data['id_user'])
+        menu = menu.filter(date=data['date'])
+
+
+
+        for key, value in data['menu'].items():
+            main, garnish, porridge, soup, dessert, fruit, drink, salad = create_category(value)
+            menu_item = menu.get(meal=key)
+            menu_item.main = main
+            menu_item.garnish = garnish
+            menu_item.porridge = porridge
+            menu_item.soup = soup
+            menu_item.dessert = dessert
+            menu_item.fruit = fruit
+            menu_item.drink = drink
+            menu_item.salad = salad
+            menu_item.save()
+
+
+
+
+        return Response('Ok')
+
