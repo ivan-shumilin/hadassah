@@ -93,7 +93,8 @@ def patient(request, id):
 
 
 def patient_history(request, id):
-        return render(request, 'patient_history.html', {})
+    user = CustomUser.objects.get(id=id)
+    return render(request, 'patient_history.html', {'user': user})
 
 
 class SubmitPatientSelectionAPIView(APIView):
