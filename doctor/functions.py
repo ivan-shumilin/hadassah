@@ -241,6 +241,22 @@ def check_value_(menu_all, date_str, meal, category):
         value = None
     return value
 
+def create_value(product):
+    value = {
+        'id': id,
+        'name': product.name,
+        'carbohydrate': round(float(product.carbohydrate), 1),
+        'fat': round(float(product.fat), 1),
+        'fiber': round(float(product.fiber), 1),
+        'energy': round(float(product.energy), 1),
+        'image': product.image,
+        'description': product.description,
+        'category': product.category,
+    }
+    return value
+
+
+
 def check_value_two(menu_all, date_str, meal, category):
     value: str = ''
     if category == 'main':
@@ -250,17 +266,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = {
-                'id': id,
-                'name': product.name,
-                'carbohydrate': round(float(product.carbohydrate), 1),
-                'fat': round(float(product.fat), 1),
-                'fiber': round(float(product.fiber), 1),
-                'energy': round(float(product.energy), 1),
-                'image': product.image,
-                'description': product.description,
-                'category': product.category,
-            }
+            value = create_value(product)
         except Exception:
             value = None
         return value
@@ -271,18 +277,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = {
-                'id': id,
-                'name': product.name,
-                'carbohydrate': product.carbohydrate,
-                'fat': product.fat,
-                'fiber': product.fiber,
-                'energy': product.energy,
-                'image': product.image,
-                'description': product.description,
-                'category': product.category,
-            }
-
+            value = create_value(product)
         except Exception:
             value = None
         return value
@@ -293,17 +288,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = {
-                'id': id,
-                'name': product.name,
-                'carbohydrate': product.carbohydrate,
-                'fat': product.fat,
-                'fiber': product.fiber,
-                'energy': product.energy,
-                'image': product.image,
-                'description': product.description,
-                'category': product.category,
-            }
+            value = create_value(product)
         except Exception:
             value = None
         return value
@@ -314,17 +299,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = {
-                'id': id,
-                'name': product.name,
-                'carbohydrate': product.carbohydrate,
-                'fat': product.fat,
-                'fiber': product.fiber,
-                'energy': product.energy,
-                'image': product.image,
-                'description': product.description,
-                'category': product.category,
-            }
+                value = create_value(product)
         except Exception:
             value = None
         return value
@@ -335,17 +310,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = {
-                'id': id,
-                'name': product.name,
-                'carbohydrate': product.carbohydrate,
-                'fat': product.fat,
-                'fiber': product.fiber,
-                'energy': product.energy,
-                'image': product.image,
-                'description': product.description,
-                'category': product.category,
-            }
+                value = create_value(product)
         except Exception:
             value = None
         return value
@@ -356,17 +321,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = {
-                'id': id,
-                'name': product.name,
-                'carbohydrate': product.carbohydrate,
-                'fat': product.fat,
-                'fiber': product.fiber,
-                'energy': product.energy,
-                'image': product.image,
-                'description': product.description,
-                'category': product.category,
-            }
+                value = create_value(product)
         except Exception:
             value = None
         return value
@@ -377,17 +332,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = {
-                'id': id,
-                'name': product.name,
-                'carbohydrate': product.carbohydrate,
-                'fat': product.fat,
-                'fiber': product.fiber,
-                'energy': product.energy,
-                'image': product.image,
-                'description': product.description,
-                'category': product.category,
-            }
+            value = create_value(product)
         except Exception:
             value = None
         return value
@@ -398,17 +343,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = {
-                'id': id,
-                'name': product.name,
-                'carbohydrate': product.carbohydrate,
-                'fat': product.fat,
-                'fiber': product.fiber,
-                'energy': product.energy,
-                'image': product.image,
-                'description': product.description,
-                'category': product.category,
-            }
+            value = create_value(product)
         except Exception:
             value = None
         return value
