@@ -241,7 +241,8 @@ def check_value_(menu_all, date_str, meal, category):
         value = None
     return value
 
-def create_value(product):
+def create_value(product, id):
+    value: str = ''
     value = {
         'id': id,
         'name': product.name,
@@ -262,88 +263,104 @@ def check_value_two(menu_all, date_str, meal, category):
     if category == 'main':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).main
+            if id == '':
+                return None
             if 'cafe' in id:
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product)
+            value = create_value(product, id)
         except Exception:
             value = None
         return value
     if category == 'garnish':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).garnish
+            if id == '':
+                return None
             if 'cafe' in id:
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product)
+            value = create_value(product, id)
         except Exception:
             value = None
         return value
     if category == 'porridge':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).porridge
+            if id == '':
+                return None
             if 'cafe' in id:
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product)
+            value = create_value(product, id)
         except Exception:
             value = None
         return value
     if category == 'soup':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).soup
+            if id == '':
+                return None
             if 'cafe' in id:
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-                value = create_value(product)
+                value = create_value(product, id)
         except Exception:
             value = None
         return value
     if category == 'dessert':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).dessert
+            if id == '':
+                return None
             if 'cafe' in id:
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-                value = create_value(product)
+                value = create_value(product, id)
         except Exception:
             value = None
         return value
     if category == 'fruit':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).fruit
+            if id == '':
+                return None
             if 'cafe' in id:
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-                value = create_value(product)
+                value = create_value(product, id)
         except Exception:
             value = None
         return value
     if category == 'drink':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).drink
+            if id == '':
+                return None
             if 'cafe' in id:
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product)
+            value = create_value(product, id)
         except Exception:
             value = None
         return value
     if category == 'salad':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).salad
+            if id == '':
+                return None
             if 'cafe' in id:
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product)
+            value = create_value(product, id)
         except Exception:
             value = None
         return value
