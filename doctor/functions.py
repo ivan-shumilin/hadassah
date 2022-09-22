@@ -214,7 +214,6 @@ def check_value(category, products):
     value: str = ''
     try:
         value = products.get(category=category).id
-        value = 'lp-' + str(value)
     except Exception:
         value = None
     return value
@@ -308,7 +307,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-                value = create_value(product, id)
+            value = create_value(product, id)
         except Exception:
             value = None
         return value
@@ -321,7 +320,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-                value = create_value(product, id)
+            value = create_value(product, id)
         except Exception:
             value = None
         return value
@@ -334,7 +333,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-                value = create_value(product, id)
+            value = create_value(product, id)
         except Exception:
             value = None
         return value
@@ -392,7 +391,7 @@ def creates_dict_with_menu_patients(id):
     return menu
 
 def add_default_menu(user):
-    # генератор списка return даты на след 2 дня
+    # генератор списка return даты на след 3 дня
     days = [parse(user.receipt_date) + timedelta(days=delta) for delta in [0, 1, 2]]
     for day_of_the_week in days:
         for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:

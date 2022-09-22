@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp, MenuByDay
+from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp, MenuByDay, Barcodes
 
 
 admin.site.register(Base)
@@ -50,6 +50,13 @@ class MenuByDayAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'date', 'meal')
     fields = ('user_id', 'date', 'meal', 'main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad')
     list_per_page = 200
+
+@admin.register(Barcodes)
+class BarcodesAdmin(admin.ModelAdmin):
+    list_display = ('number', 'status')
+    fields = ('number', 'status')
+    list_per_page = 200
+
 
 
 class CustomUserAdmin(UserAdmin):

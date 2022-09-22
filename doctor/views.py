@@ -108,6 +108,7 @@ def doctor(request):
         user.save()
         logging.info(f'Создан пациент {user_form.data["full_name"]}')
         add_default_menu(user)
+        add_menu_three_days_ahead()
         logging.info(f'Добавлена диета {user_form.data["full_name"]} {user_form.data["type_of_diet"]}')
         queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
         formset = CustomUserFormSet(queryset=queryset)
