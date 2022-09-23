@@ -12,8 +12,10 @@ from django.conf import settings
 from django.utils import dateformat
 from dateutil.parser import parse
 from django.db.models.functions import Lower
-from doctor.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, creating_meal_menu_cafe, creating_meal_menu_lp
-from patient.functions import formation_menu, creating_menu_for_lk_patient, create_category, create_patient_select
+from doctor.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, creating_meal_menu_cafe,\
+    creating_meal_menu_lp, creates_dict_with_menu_patients_on_day
+from patient.functions import formation_menu, creating_menu_for_lk_patient, create_category, create_patient_select,\
+    date_menu_history
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -93,8 +95,38 @@ def patient(request, id):
 
 
 def patient_history(request, id):
+    if request.GET == {} or request.method == 'POST':
+        date_get = str(date.today())
+
+    else:
+        date_get = request.GET['date']
     user = CustomUser.objects.get(id=id)
-    return render(request, 'patient_history.html', {'user': user})
+    day_history = date_menu_history(id, user)
+    menu = creates_dict_with_menu_patients_on_day(id, date_get)
+    breakfast = []
+    afternoon = []
+    lunch = []
+    dinner = []
+
+    [breakfast.append(item) for item in menu['breakfast'].values()]
+    [afternoon.append(item) for item in menu['afternoon'].values()]
+    [lunch.append(item) for item in menu['lunch'].values()]
+    [dinner.append(item) for item in menu['dinner'].values()]
+    data = {'user': user,
+            'day_history': day_history,
+            'page': 'history',
+            'date_get': date_get,
+            'menu': menu,
+            'breakfast': breakfast,
+            'afternoon': afternoon,
+            'lunch': lunch,
+            'dinner': dinner
+            }
+    return render(request, 'patient_history.html', context=data)
+
+
+def patient_history_test(request):
+    return render(request, 'patient_history_test.html', {})
 
 
 class SubmitPatientSelectionAPIView(APIView):
@@ -103,8 +135,6 @@ class SubmitPatientSelectionAPIView(APIView):
 
         menu = MenuByDay.objects.filter(user_id=data['id_user'])
         menu = menu.filter(date=data['date'])
-
-
 
         for key, value in data['menu'].items():
             main, garnish, porridge, soup, dessert, fruit, drink, salad = create_category(value)

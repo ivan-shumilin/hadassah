@@ -6,6 +6,7 @@ from typing import List
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from django.db.models.functions import Lower
+import logging, random
 
 def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup):
     """Сортировка блюд по приемам пищи"""
@@ -245,10 +246,10 @@ def create_value(product, id):
     value = {
         'id': id,
         'name': product.name,
-        'carbohydrate': round(float(product.carbohydrate), 1),
-        'fat': round(float(product.fat), 1),
-        'fiber': round(float(product.fiber), 1),
-        'energy': round(float(product.energy), 1),
+        'carbohydrate': round(float(0 if product.carbohydrate == None else product.carbohydrate), 1),
+        'fat': round(float(0 if product.fat == None else product.fat), 1),
+        'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
+        'energy': round(float(0 if product.energy == None else product.energy), 1),
         'image': product.image,
         'description': product.description,
         'category': product.category,
@@ -367,6 +368,7 @@ def check_value_two(menu_all, date_str, meal, category):
 
 
 def creates_dict_with_menu_patients(id):
+    """ Создаем меню на 3 дня для вывода в ЛК врача"""
     menu_all = MenuByDay.objects.filter(user_id=id)
     menu = {}
     day_date = {
@@ -389,6 +391,26 @@ def creates_dict_with_menu_patients(id):
             }
         menu[day]['date_human_style'] = dateformat.format(date.fromisoformat(date_str), 'd E, l')
     return menu
+
+
+def creates_dict_with_menu_patients_on_day(id, date_show):
+    """ Создаем меню на день для вывода в ЛК пациента(история) """
+    menu_all = MenuByDay.objects.filter(user_id=id)
+    menu = {}
+
+    for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+        menu[meal] = {
+            'main': check_value_two(menu_all, date_show, meal, "main"),
+            'garnish': check_value_two(menu_all, date_show, meal, "garnish"),
+            'porridge': check_value_two(menu_all, date_show, meal, "porridge"),
+            'soup': check_value_two(menu_all, date_show, meal, "soup"),
+            'dessert': check_value_two(menu_all, date_show, meal, "dessert"),
+            'fruit': check_value_two(menu_all, date_show, meal, "fruit"),
+            'drink': check_value_two(menu_all, date_show, meal, "drink"),
+            'salad': check_value_two(menu_all, date_show, meal, "salad"),
+        }
+    return menu
+
 
 def add_default_menu(user):
     # генератор списка return даты на след 3 дня
@@ -505,3 +527,63 @@ def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
         products_garnish = list(products.filter(category='гарнир'))
         products_drink = list(products.filter(category='напиток'))
     return products_main, products_garnish, products_salad, products_soup, products_porridge, products_dessert, products_fruit, products_drink
+
+
+def delete_choices(CustomUserFormSet):
+    """ Удаляем два выбора из formset 'не выбрано', '-------' """
+    CustomUserFormSet.form.base_fields['department'].choices = CustomUserFormSet.form.base_fields['department'].choices[
+                                                               2:]
+    CustomUserFormSet.form.base_fields['type_of_diet'].choices = CustomUserFormSet.form.base_fields[
+                                                                     'type_of_diet'].choices[
+                                                                 2:]
+    CustomUserFormSet.form.base_fields['room_number'].choices = CustomUserFormSet.form.base_fields[
+                                                                    'room_number'].choices[
+                                                                2:]
+    return CustomUserFormSet
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    filename="mylog.log",
+    format="%(asctime)s - %(module)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s",
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
+
+
+def create_user(user_form):
+    # генерируем уникальный логин
+    while True:
+        login = ''.join([random.choice("123456789qwertyuiopasdfghjklzxcvbnm") for i in range(10)])
+        try:
+            CustomUser.objects.get(id=login)
+            continue
+        except Exception:
+            break
+
+    user = CustomUser.objects.create_user(login)
+    user.full_name = user_form.data['full_name']
+    user.receipt_date = datetime.strptime(user_form.data['receipt_date'], '%d.%m.%Y').strftime('%Y-%m-%d')
+    user.receipt_time = parse(user_form.data['receipt_time']).strftime('%h:%m')
+    user.receipt_time = user_form.data['receipt_time']
+    user.department = user_form.data['department']
+    user.room_number = user_form.data['room_number']
+    user.type_of_diet = user_form.data['type_of_diet']
+    user.comment = user_form.data['comment']
+    user.status = 'patient'
+    user.save()
+    logging.info(f'Создан пациент {user_form.data["full_name"]} {user_form.data["type_of_diet"]}')
+    add_default_menu(user)
+    add_menu_three_days_ahead()
+
+
+def edit_user(user_form):
+    user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
+    user.full_name = user_form.data['full_name1']
+    user.receipt_date = parse(user_form.data['receipt_date1']).strftime('%Y-%m-%d')
+    user.receipt_time = user_form.data['receipt_time1']
+    user.receipt_time = user_form.data['receipt_time1']
+    user.department = user_form.data['department1']
+    user.room_number = user_form.data['room_number1']
+    user.type_of_diet = user_form.data['type_of_diet1']
+    user.comment = user_form.data['comment1']
+    user.save()
+    logging.info(f'Пациент отредактирован {user_form.data["full_name"]}')

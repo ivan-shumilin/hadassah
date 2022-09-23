@@ -13,17 +13,11 @@ from django.utils import dateformat
 from dateutil.parser import parse
 from django.db.models.functions import Lower
 from doctor.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, add_default_menu, \
-    creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe
+    creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe, \
+    creates_dict_with_menu_patients_on_day, delete_choices, create_user
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
-logging.basicConfig(
-    level=logging.DEBUG,
-    filename="mylog.log",
-    format="%(asctime)s - %(module)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s",
-    datefmt='%H:%M:%S',
-)
 
 
 def group_doctors_check(user):
@@ -48,27 +42,13 @@ def doctor(request):
                                                  'id': Textarea(attrs={'style': "display: none;"}),
                                              },
                                              extra=0, )
-    CustomUserFormSet.form.base_fields['department'].choices = CustomUserFormSet.form.base_fields['department'].choices[
-                                                               2:]
-    CustomUserFormSet.form.base_fields['type_of_diet'].choices = CustomUserFormSet.form.base_fields[
-                                                                     'type_of_diet'].choices[
-                                                                 2:]
-    CustomUserFormSet.form.base_fields['room_number'].choices = CustomUserFormSet.form.base_fields[
-                                                                    'room_number'].choices[
-                                                                2:]
+    CustomUserFormSet = delete_choices(CustomUserFormSet)
+
     page = 'menu-doctor'
     filter_by = 'full_name'  # дефолтная фильтрация
     sorting = 'top'
 
     add_menu_three_days_ahead()
-    # делать один раз в сутки в 24:00
-    # из всех users берем одного
-    #   берем user и смотрим есть ли меню на сегодня сегодгя, завтра, послезавтра
-    #       если нет: добавляем на сегодгя, завтра, послезавтра
-    #       иначе: на 1 строку
-
-
-
 
     queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
     if request.method == 'POST' and 'filter_by_flag' in request.POST:
@@ -85,31 +65,9 @@ def doctor(request):
 
     if request.method == 'POST' and 'add_patient' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        formset = \
-            CustomUserFormSet(request.POST, request.FILES, queryset=queryset)
-
-        while True:
-            login = ''.join([random.choice("123456789qwertyuiopasdfghjklzxcvbnm") for i in range(10)])
-            try:
-                CustomUser.objects.get(id=login)
-                continue
-            except Exception:
-                break
-        user = CustomUser.objects.create_user(login)
-        user.full_name = user_form.data['full_name']
-        user.receipt_date = datetime.strptime(user_form.data['receipt_date'], '%d.%m.%Y').strftime('%Y-%m-%d')
-        user.receipt_time = parse(user_form.data['receipt_time']).strftime('%h:%m')
-        user.receipt_time = user_form.data['receipt_time']
-        user.department = user_form.data['department']
-        user.room_number = user_form.data['room_number']
-        user.type_of_diet = user_form.data['type_of_diet']
-        user.comment = user_form.data['comment']
-        user.status = 'patient'
-        user.save()
-        logging.info(f'Создан пациент {user_form.data["full_name"]}')
-        add_default_menu(user)
-        add_menu_three_days_ahead()
-        logging.info(f'Добавлена диета {user_form.data["full_name"]} {user_form.data["type_of_diet"]}')
+        # formset = \
+        #     CustomUserFormSet(request.POST, request.FILES, queryset=queryset)
+        create_user(user_form)
         queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
         formset = CustomUserFormSet(queryset=queryset)
         return render(request,
@@ -157,16 +115,8 @@ def doctor(request):
         return render(request, 'doctor.html', context=data)
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
-        user.full_name = user_form.data['full_name1']
-        user.receipt_date = parse(user_form.data['receipt_date1']).strftime('%Y-%m-%d')
-        user.receipt_time = user_form.data['receipt_time1']
-        user.receipt_time = user_form.data['receipt_time1']
-        user.department = user_form.data['department1']
-        user.room_number = user_form.data['room_number1']
-        user.type_of_diet = user_form.data['type_of_diet1']
-        user.comment = user_form.data['comment1']
-        user.save()
+        edit_user(user_form)
+
         formset = CustomUserFormSet(queryset=queryset)
         data = {
             'id_edited_user': user_form.data['id_edit_user'],
@@ -472,5 +422,12 @@ class GetPatientMenuAPIView(APIView):
     def post(self, request):
         data = request.data
         response = creates_dict_with_menu_patients(data['id_user'])
+        response = json.dumps(response)
+        return Response(response)
+
+class GetPatientMenuDayAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        response = creates_dict_with_menu_patients_on_day(data['id_user'], data['date_show'])
         response = json.dumps(response)
         return Response(response)

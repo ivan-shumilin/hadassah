@@ -1,5 +1,6 @@
 {% extends "base_generic_patient.html" %}
 {% block content %}
+{% load static %}
 <div id="center">
     <div id="header">
         <div class="header-block">
@@ -9,28 +10,17 @@
                 </a>
                 <div class="title">История заказов</div>
             </div>
-
-            <form class="date-form">
-                <div class="form-group">
-                    <select name="department">
-                        <option value="12.06.2022">12 июля, вторник</option>
-                        <option value="11.06.2022">11 июля, вторник</option>
-                        <option value="10.06.2022">10 июля, вторник</option>
-                        <option value="9.06.2022">9 июля, вторник</option>
-                        <option value="8.06.2022">8 июля, вторник</option>
-                        <option value="12.06.2022">12 июля, вторник</option>
-                        <option value="11.06.2022">11 июля, вторник</option>
-                        <option value="10.06.2022">10 июля, вторник</option>
-                        <option value="9.06.2022">9 июля, вторник</option>
-                        <option value="8.06.2022">8 июля, вторник</option>
-                        <option value="12.06.2022">12 июля, вторник</option>
-                        <option value="11.06.2022">11 июля, вторник</option>
-                        <option value="10.06.2022">10 июля, вторник</option>
-                        <option value="9.06.2022">9 июля, вторник</option>
-                        <option value="8.06.2022">8 июля, вторник</option>
-                    </select>
-                </div>
-            </form>
+            {% if day_history %}
+                <form class="date-form">
+                    <div class="form-group">
+                        <select name="date" class="optionValue">
+                            {% for date in day_history %}
+                                <option  value="{{ date.number}}">{{ date.word }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            {% endif %}
 
             <div class="green-menu">
                 <a href="#" data-modal-link="diet">Диета</a>
@@ -40,170 +30,273 @@
     </div>
 
     <div id="content" data-simplebar>
-        <div class="date-form-block">
-            <form class="date-form">
-                <div class="form-group">
-                    <select name="department">
-                        <option value="12.06.2022">12 июля, вторник</option>
-                        <option value="11.06.2022">11 июля, вторник</option>
-                        <option value="10.06.2022">10 июля, вторник</option>
-                        <option value="9.06.2022">9 июля, вторник</option>
-                        <option value="8.06.2022">8 июля, вторник</option>
-                    </select>
+        {% if day_history %}
+            <div class="date-form-block">
+                <form class="date-form">
+                    <div class="form-group">
+                        <select name="department">
+                            <option value="12.06.2022">12 июля, вторник</option>
+                            <option value="11.06.2022">11 июля, вторник</option>
+                            <option value="10.06.2022">10 июля, вторник</option>
+                            <option value="9.06.2022">9 июля, вторник</option>
+                            <option value="8.06.2022">8 июля, вторник</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div id="items" class="eat-history-block">
+                <div class="category">
+                    <div class="name">Завтрак</div>
                 </div>
-            </form>
-        </div>
+                <div class="eat-history-grid" data-eat-history-grid>
+                    {% for product in breakfast %}
+                        {% if product %}
+                            <div class="item" data-item>
+                                <div class="info">
+                                    <div class="name">{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                </div>
+                                <div class="img">
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="{% static 'nutritionist/css/img/bg-none.png' %}" alt=""> 
+                                        </div>
+                                    {% endif %}
+                                    
+                                    
+                                </div>
+                                <div class="review">
+                                    <form class="review-form">
+                                        <input type="hidden" name="rating" value="0">
 
-        <div class="eat-history-block">
-            <div class="eat-history-grid" data-eat-history-grid>
-                <div class="item" data-item>
-                    <div class="info">
-                        <div class="name">Каша овсяная с сухофруктами</div>
-                        <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
-                    </div>
-                    <div class="img">
+                                        <div class="form-group item-rating">
+                                            <div class="star" data-value="1"></div>
+                                            <div class="star" data-value="2"></div>
+                                            <div class="star" data-value="3"></div>
+                                            <div class="star" data-value="4"></div>
+                                            <div class="star" data-value="5"></div>
+                                        </div>
 
-                    </div>
-                    <div class="review">
-                        <form class="review-form">
-                            <input type="hidden" name="rating" value="0">
-
-                            <div class="form-group item-rating">
-                                <div class="star" data-value="1"></div>
-                                <div class="star" data-value="2"></div>
-                                <div class="star" data-value="3"></div>
-                                <div class="star" data-value="4"></div>
-                                <div class="star" data-value="5"></div>
+                                        <div class="form-group">
+                                            <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
+                                        </div>
+                                        <div class="form-group item-actions">
+                                            <button type="submit">Отправить оценку</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Оценить</a>
+                                </div>
+                                <div class="reviewed">
+                                    <span>Уже оценили</span>
+                                </div>
                             </div>
-
-                            <div class="form-group">
-                                <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
-                            </div>
-                            <div class="form-group item-actions">
-                                <button type="submit">Отправить оценку</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="toggle" data-toggle>
-                        <a href="#">Оценить</a>
-                    </div>
-                    <div class="reviewed">
-                        <span>Уже оценили</span>
-                    </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-                <div class="item closed" data-item>
-                    <div class="info">
-                        <div class="name">Яйцо варёное вкрутую</div>
-                        <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
-                    </div>
-                    <div class="img">
-                        <img src="./img/eat-b2.jpg" alt="">
-                    </div>
-                    <div class="review">
-                        <form class="review-form">
-                            <input type="hidden" name="rating" value="0">
 
-                            <div class="form-group item-rating">
-                                <div class="star" data-value="1"></div>
-                                <div class="star" data-value="2"></div>
-                                <div class="star" data-value="3"></div>
-                                <div class="star" data-value="4"></div>
-                                <div class="star" data-value="5"></div>
-                            </div>
+                <div class="category">
+                    <div class="name">Обед</div>
+                </div>
+                <div class="eat-history-grid" data-eat-history-grid>
+                    {% for product in lunch %}
+                        {% if product %}
+                            <div class="item" data-item>
+                                <div class="info">
+                                    <div class="name">{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                </div>
+                                <div class="img">
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="{% static 'nutritionist/css/img/bg-none.png' %}" alt=""> 
+                                        </div>
+                                    {% endif %}
+                                    
+                                    
+                                </div>
+                                <div class="review">
+                                    <form class="review-form">
+                                        <input type="hidden" name="rating" value="0">
 
-                            <div class="form-group">
-                                <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
+                                        <div class="form-group item-rating">
+                                            <div class="star" data-value="1"></div>
+                                            <div class="star" data-value="2"></div>
+                                            <div class="star" data-value="3"></div>
+                                            <div class="star" data-value="4"></div>
+                                            <div class="star" data-value="5"></div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
+                                        </div>
+                                        <div class="form-group item-actions">
+                                            <button type="submit">Отправить оценку</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Оценить</a>
+                                </div>
+                                <div class="reviewed">
+                                    <span>Уже оценили</span>
+                                </div>
                             </div>
-                            <div class="form-group item-actions">
-                                <button type="submit">Отправить оценку</button>
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+                <div class="category">
+                    <div class="name">Полдник</div>
+                </div>
+                <div class="eat-history-grid" data-eat-history-grid>
+                    {% for product in afternoon %}
+                        {% if product %}
+                            <div class="item" data-item>
+                                <div class="info">
+                                    <div class="name">{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                </div>
+                                <div class="img">
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="{% static 'nutritionist/css/img/bg-none.png' %}" alt=""> 
+                                        </div>
+                                    {% endif %}
+                                    
+                                    
+                                </div>
+                                <div class="review">
+                                    <form class="review-form">
+                                        <input type="hidden" name="rating" value="0">
+
+                                        <div class="form-group item-rating">
+                                            <div class="star" data-value="1"></div>
+                                            <div class="star" data-value="2"></div>
+                                            <div class="star" data-value="3"></div>
+                                            <div class="star" data-value="4"></div>
+                                            <div class="star" data-value="5"></div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
+                                        </div>
+                                        <div class="form-group item-actions">
+                                            <button type="submit">Отправить оценку</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Оценить</a>
+                                </div>
+                                <div class="reviewed">
+                                    <span>Уже оценили</span>
+                                </div>
                             </div>
-                        </form>
-                    </div>
-                    <div class="toggle" data-toggle>
-                        <a href="#">Оценить</a>
-                    </div>
-                    <div class="reviewed">
-                        <span>Уже оценили</span>
-                    </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="category">
+                    <div class="name">Ужин</div>
+                </div>
+                <div class="eat-history-grid" data-eat-history-grid>
+                    {% for product in lunch %}
+                        {% if product %}
+                            <div class="item" data-item>
+                                <div class="info">
+                                    <div class="name">{{ product.name }}</div>
+                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                </div>
+                                <div class="img">
+                                    {% if product.image %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="{% static 'nutritionist/css/img/bg-none.png' %}" alt=""> 
+                                        </div>
+                                    {% endif %}
+                                    
+                                    
+                                </div>
+                                <div class="review">
+                                    <form class="review-form">
+                                        <input type="hidden" name="rating" value="0">
+
+                                        <div class="form-group item-rating">
+                                            <div class="star" data-value="1"></div>
+                                            <div class="star" data-value="2"></div>
+                                            <div class="star" data-value="3"></div>
+                                            <div class="star" data-value="4"></div>
+                                            <div class="star" data-value="5"></div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
+                                        </div>
+                                        <div class="form-group item-actions">
+                                            <button type="submit">Отправить оценку</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="toggle" data-toggle>
+                                    <a href="#">Оценить</a>
+                                </div>
+                                <div class="reviewed">
+                                    <span>Уже оценили</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
                 </div>
             </div>
-            <div class="category">
-                <div class="name">Обед</div>
+        {% else %}
+            <div>
+                <p>Нет заказов</p>
             </div>
-            <div class="eat-history-grid" data-eat-history-grid>
-                <div class="item" data-item>
-                    <div class="info">
-                        <div class="name">Яйцо варёное вкрутую</div>
-                        <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
-                    </div>
-                    <div class="img">
-                        <img src="./img/eat-b2.jpg" alt="">
-                    </div>
-                    <div class="review">
-                        <form class="review-form">
-                            <input type="hidden" name="rating" value="0">
-
-                            <div class="form-group item-rating">
-                                <div class="star" data-value="1"></div>
-                                <div class="star" data-value="2"></div>
-                                <div class="star" data-value="3"></div>
-                                <div class="star" data-value="4"></div>
-                                <div class="star" data-value="5"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
-                            </div>
-                            <div class="form-group item-actions">
-                                <button type="submit">Отправить оценку</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="toggle" data-toggle>
-                        <a href="#">Оценить</a>
-                    </div>
-                    <div class="reviewed">
-                        <span>Уже оценили</span>
-                    </div>
-                </div>
-                <div class="item" data-item>
-                    <div class="info">
-                        <div class="name">Каша овсяная с сухофруктами</div>
-                        <div class="value">Б 73, Ж 35, У 15, Ккал 140</div>
-                    </div>
-                    <div class="img">
-                        <img src="./img/eat-b1.jpg" alt="">
-                    </div>
-                    <div class="review">
-                        <form class="review-form">
-                            <input type="hidden" name="rating" value="0">
-
-                            <div class="form-group item-rating">
-                                <div class="star" data-value="1"></div>
-                                <div class="star" data-value="2"></div>
-                                <div class="star" data-value="3"></div>
-                                <div class="star" data-value="4"></div>
-                                <div class="star" data-value="5"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
-                            </div>
-                            <div class="form-group item-actions">
-                                <button type="submit">Отправить оценку</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="toggle" data-toggle>
-                        <a href="#">Оценить</a>
-                    </div>
-                    <div class="reviewed">
-                        <span>Уже оценили</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endif %}
+        
     </div>
 </div>
+<script>
+getValueFromSelect()
+function getValueFromSelect() {
+    var option = document.querySelector('.optionValue');
+    for (var i = 0; i < option.length; i++) {
+         console.log(option[i].value)
+        if (option[i].value == '{{ date_get }}') {
+            console.log("Yes");
+            option[i].selected = true
+        }
+
+        }
+        option.onchange= function(){
+            console.log(this.value);
+            formSubmit()
+        };
+}
+
+function formSubmit() {
+    var form = document.getElementById('form-get');
+    form.submit()
+}
+</script>
 
 {% endblock %}

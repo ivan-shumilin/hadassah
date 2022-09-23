@@ -4,6 +4,7 @@ from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from django.db.models.functions import Lower
 from doctor.functions import creating_meal_menu_lp, creating_meal_menu_cafe
+from dateutil.parser import parse
 
 
 def formation_menu(products):
@@ -196,4 +197,9 @@ def create_patient_select(id, date_get):
     return ','.join(patient_select_list)
 
 
-
+def date_menu_history(id, user):
+    days = [date.today() - timedelta(days=delta + 1) for delta in range((date.today() - user.receipt_date).days)]
+    days_history = []
+    for day in days:
+        days_history.append({'number': str(day), 'word': dateformat.format(day, 'd E, l')})
+    return days_history

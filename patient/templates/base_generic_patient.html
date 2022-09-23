@@ -19,8 +19,12 @@
 
 </head>
 
-
-<body class="has-right small-left">
+{% if page == 'history' %}
+    <body class="small-left">
+{% else %}
+    <body class="has-right small-left">
+    <!-- <body class="small-left"> -->
+{% endif %}
     <form id='form-get' style='padding-left: 0px; padding-right: 0px;' method="get" novalidate>
         {{ formset.management_form }}
         <div id="wrapper">
@@ -59,20 +63,28 @@
 
                         <div class="sidebar-menu-block">
                             <ul>
-                                <li class="active">
-                                    <a href="{% url 'patient' id=user.id %}">
-                                        <span class="i i-eat icon-default"></span>
-                                        <span class="i i-eat-colored icon-colored"></span>
-                                        <span>Меню</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'patient_history' id=user.id %}">
-                                        <span class="i i-box icon-default"></span>
-                                        <span class="i i-box-colored icon-colored"></span>
-                                        <span>Архив</span>
-                                    </a>
-                                </li>
+                                {% if page == 'history' %}
+                                    <li>
+                                {% else %}
+                                    <li class="active">
+                                {% endif %}
+                                        <a href="{% url 'patient' id=user.id %}">
+                                            <span class="i i-eat icon-default"></span>
+                                            <span class="i i-eat-colored icon-colored"></span>
+                                            <span>Меню</span>
+                                        </a>
+                                    </li>
+                                {% if page == 'history' %}
+                                    <li class="active">
+                                {% else %}
+                                    <li>
+                                {% endif %}
+                                        <a href="{% url 'patient_history' id=user.id %}">
+                                            <span class="i i-box icon-default"></span>
+                                            <span class="i i-box-colored icon-colored"></span>
+                                            <span>Архив</span>
+                                        </a>
+                                    </li>
                             </ul>
                         </div>
 
