@@ -14,7 +14,7 @@ from dateutil.parser import parse
 from django.db.models.functions import Lower
 from doctor.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, add_default_menu, \
     creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe, \
-    creates_dict_with_menu_patients_on_day, delete_choices, create_user
+    creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
