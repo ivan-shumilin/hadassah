@@ -172,6 +172,9 @@ def create_category(value):
 def create_patient_select(id, date_get):
     menu = MenuByDay.objects.filter(user_id=id)
     menu = menu.filter(date=date_get)
+    if not menu:
+        return ''
+
     patient_select = {}
     for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
         menu_item = menu.get(meal=meal)

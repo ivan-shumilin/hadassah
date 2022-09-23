@@ -102,7 +102,12 @@ def patient_history(request, id):
         date_get = request.GET['date']
     user = CustomUser.objects.get(id=id)
     day_history = date_menu_history(id, user)
+    # day_history = ['1']
     menu = creates_dict_with_menu_patients_on_day(id, date_get)
+    # для тестирования меню
+    # day_history = ['1']
+    # menu = creates_dict_with_menu_patients_on_day(id, '2022-09-23')
+
     breakfast = []
     afternoon = []
     lunch = []
