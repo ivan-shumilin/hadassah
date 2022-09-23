@@ -741,12 +741,6 @@ class BaseAPIView(APIView):
 class VerifyAPIView(APIView):
     def post(self, request):
         data = request.data
-        # try:
-        #     if Barcodes.objects.get(number=data['barcode']).status == 'active':
-        #         return Response('Yes')
-        # except Exception:
-        #     pass
-        # return Response('No')
         try:
             if Barcodes.objects.get(number=data['barcode']):
                 return Response('No')
@@ -754,29 +748,16 @@ class VerifyAPIView(APIView):
             pass
         return Response('Yes')
 
-# может реализовать через api? делать запрос из программы и просить штрихкод?
-# или рандомный штрихкод, который после использования будет записан в базу?
 
 
 class DeactivateAPIView(APIView):
-    # def post(self, request):
-    #     data = request.data
-        # try:
-        #     barcode = Barcodes.objects.get(number=data['barcode'])
-        #     if barcode.status == 'active':
-        #         barcode.status = 'no_active'
-        #         barcode.save()
-        #         return Response('Ok')
-        # except Exception:
-        #     return Response('Barcode does not exist')
-        # return Response('Barcode already deactivated')
     def post(self, request):
         data = request.data
         try:
             Barcodes.objects.get(number=data['barcode'])
             return Response('Barcode already deactivated')
         except Exception:
-            Barcodes(number=data['barcode']).save()
+            Barcodes(number=data['barcode'], status='no_active').save()
             return Response('Yes')
 
 
