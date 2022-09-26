@@ -159,7 +159,7 @@ class TimetableLp(models.Model):
 
 
 class Barcodes(models.Model):
-    number = models.CharField(max_length=15)
+    number = models.CharField(max_length=100)
     status = models.CharField(
         max_length=10,
         choices=STATUS_BARCODES,
