@@ -724,17 +724,31 @@ def catalog_side_dishes(request, page):
     return render(request, 'side_dishes.html', context=data)
 
 
+# class BaseAPIView(APIView):
+#     def post(self, request):
+#         data = request.data
+#         data_str = str(data)
+#         data_dict = dict(data)
+#         js = open("cooking_method.json").read()
+#         dict_tk = json.loads(js)
+#         if data_dict['menu']['location']['name'] == 'hadassah':
+#             load_menu(data_dict, dict_tk)
+#             load_timetable(data_dict)
+#             Base.objects.create(base=data_str)
+#         return Response(data)
+
 class BaseAPIView(APIView):
     def post(self, request):
         data = request.data
         data_str = str(data)
-        data_dict = dict(data)
-        js = open("cooking_method.json").read()
-        dict_tk = json.loads(js)
-        if data_dict['menu']['location']['name'] == 'hadassah':
-            load_menu(data_dict, dict_tk)
-            load_timetable(data_dict)
-            Base.objects.create(base=data_str)
+        Base.objects.create(base=data_str)
+        # data_dict = dict(data)
+        # js = open("cooking_method.json").read()
+        # dict_tk = json.loads(js)
+        # if data_dict['menu']['location']['name'] == 'hadassah':
+        #     load_menu(data_dict, dict_tk)
+        #     load_timetable(data_dict)
+        #     Base.objects.create(base=data_str)
         return Response(data)
 
 
