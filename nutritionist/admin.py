@@ -3,7 +3,8 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp, MenuByDay, Barcodes
+from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp, MenuByDay, Barcodes, CommentProduct, \
+    BotChatId
 
 
 admin.site.register(Base)
@@ -45,6 +46,12 @@ class ProductLpAdmin(admin.ModelAdmin):
 
     inlines = [TimetableLpAdmin]
 
+@admin.register(CommentProduct)
+class CommentProductAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'product_id', 'date_create', 'comment', 'rating',)
+    fields = ('user_id', 'product_id', 'date_create', 'comment', 'rating',)
+    list_per_page = 200
+
 @admin.register(MenuByDay)
 class MenuByDayAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'date', 'meal')
@@ -55,6 +62,12 @@ class MenuByDayAdmin(admin.ModelAdmin):
 class BarcodesAdmin(admin.ModelAdmin):
     list_display = ('number', 'status')
     fields = ('number', 'status')
+    list_per_page = 200
+
+@admin.register(BotChatId)
+class BotChatIdAdmin(admin.ModelAdmin):
+    list_display = ('chat_id',)
+    fields = ('chat_id',)
     list_per_page = 200
 
 

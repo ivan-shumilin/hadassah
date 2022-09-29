@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import date
+from datetime import datetime
 import uuid
 from django.contrib.auth.models import AbstractUser
 from doctor.choices import *
@@ -167,3 +168,23 @@ class Barcodes(models.Model):
        )
     def __str__(self):
         return f'{self.number}'
+
+class CommentProduct(models.Model):
+    user_id = models.ForeignKey('CustomUser', on_delete=models.SET_NULL, null=True)
+    product_id = models.CharField(max_length=200, null=True)
+    date_create = models.DateField(default=datetime.now)
+    comment = models.CharField(
+        max_length=10000,
+        null=True,
+        blank=True)
+    rating = models.CharField(max_length=10, null=True)
+
+    def __str__(self):
+        return f'{self.user_id} {self.product_id}'
+
+
+class BotChatId(models.Model):
+    chat_id = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f'{self.chat_id}'

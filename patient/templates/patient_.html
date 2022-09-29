@@ -3,6 +3,7 @@
 <input style='display: none;' type="radio" id='input_{{ date_menu.today }}' name='date' value='{{ date_menu.today }}'>
 <input style='display: none;' type="radio" id='input_{{ date_menu.tomorrow }}' name='date' value='{{ date_menu.tomorrow }}'>
 <input style='display: none;' type="radio" id='input_{{ date_menu.day_after_tomorrow }}' name='date' value='{{ date_menu.day_after_tomorrow }}'>
+<a style="display: none;"  id="orderConfirmed" data-modal-link="order-confirmed">a</a>
 <div style="display: none;" id="status">{{ modal }}</div>
 
 
@@ -38,6 +39,8 @@
                 </div>
 </form>
 
+
+{% if is_have %}
                 <div class="eat-menu-block">
                     <div class="menu">
                         <a class="active" data-tab="breakfast">Завтрак</a>
@@ -750,8 +753,8 @@
                     </a>
                     <div class="inner">
                         <div class="block-title">Ваш заказ</div>
-                        <div class="info">
-                            Автоматический выбор блюд через: <span class="value"><div id="timer"></div></span>
+                        <div id="timer_end" class="info">
+                            Автоматический выбор блюд через: <span id="timer" class="value"><div ></div></span>
                         </div>
                         <div class="items">
                             <div id="breakfast-rigth" class="box">
@@ -831,14 +834,22 @@
                             </div>
                         </div>
                         <div class="footer">
-                            <a onclick="submitPatientSelection()" class="button">Подтвердить заказ</a>
+                            <a id='confirmationOrder' onclick="submitPatientSelection()" class="button">Подтвердить заказ</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+{% else %}
+<div>
+    <p>Выбранная дата раньше даты госпитализации, данные недоступны</p>
+</div>
+{% endif %}
 <script>
+// отмечаем день
+document.getElementById('{{ date_get }}').classList.add('active');
 //  отмечаем блюда, которые выбрал пациент
 selectPatientChoice()
 function selectPatientChoice() {
@@ -874,7 +885,7 @@ function submitPatientSelection() {
         }
     }
     submitApiPatientSelection(patientSelection)
-    alert('Заказ подтвержден')
+    document.getElementById("orderConfirmed").click();
 
 };
 
@@ -882,8 +893,8 @@ function submitPatientSelection() {
 
 
 const submitApiPatientSelection = async function(menu) {
-    // let url = 'https:/3126-176-59-40-85.eu.ngrok.io/patient/api/v1/submitselection'
-    let url = 'https://www.sk.petrushkagroup.com/patient/api/v1/submitselection'
+    let url = 'https://a670-212-46-18-162.eu.ngrok.io/patient/api/v1/submitselection'
+    // let url = 'https://www.sk.petrushkagroup.com/patient/api/v1/submitselection'
     let body = {
         "menu": menu,
         "date": "{{ date|date:'Y-m-d' }}",
@@ -971,8 +982,6 @@ function addHtmlDinner() {
 }
 
 
-document.getElementById('{{ date_get }}').classList.add('active');
-
 function data_function(value) {
     document.getElementById(value).setAttribute('checked', 'true');
     submitForm();
@@ -986,6 +995,8 @@ function submitForm() {
 
 // Берём элемент для вывода таймера
 let timer_show = document.getElementById("timer");
+let timer_end = document.getElementById("timer_end");
+let confirmationOrder = document.getElementById("confirmationOrder");
  
 // Функция для вычисления разности времени
 function diffSubtract(date1, date2) {
@@ -1020,7 +1031,10 @@ timer = setInterval(function () {
         // Выключаем интервал
         clearInterval(timer);
         // Выводим сообщение об окончание
-        timer_show.innerHTML = 'выбор сделан';
+        timer_end.innerHTML = '<div>Этот заказ уже сформирован</div>';
+        confirmationOrder.innerHTML = 'Заказ подтверждён';
+        confirmationOrder.classList.add('disabled');
+        
     } else { // Иначе
         // Получаем время зависимую от разницы
         let res = new Date(ms_left);

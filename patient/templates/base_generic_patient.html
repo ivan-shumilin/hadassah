@@ -14,6 +14,13 @@
         .table input[type="radio"] {
             display: none;
         }
+        .footer .disabled {
+            color: #FDFEFF;
+            background: #A7BBC7;
+            border-radius: 8px;
+        }
+        
+        
     </style>
 
 
@@ -100,6 +107,24 @@
         {% block content %}
 
         {% endblock %}
+        <div  data-modal="order-confirmed" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Заказ принят</div>
+            </div>
+        </div>
+
+        <div  data-modal="comment-send" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Спасибо за отзыв!</div>
+            </div>
+        </div>
+
 
     {% load static %}
         </div>  <!-- div wrapper -->

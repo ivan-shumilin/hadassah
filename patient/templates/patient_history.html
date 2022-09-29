@@ -1,6 +1,9 @@
 {% extends "base_generic_patient.html" %}
 {% block content %}
 {% load static %}
+<!-- comment-send -->
+<a style="display: none;"  id="commentSend" data-modal-link="comment-send">a</a>
+
 <div id="center">
     <div id="header">
         <div class="header-block">
@@ -52,7 +55,7 @@
                 <div class="eat-history-grid" data-eat-history-grid>
                     {% for product in breakfast %}
                         {% if product %}
-                            <div class="item" data-item>
+                            <div id="{{ product.id }}" class="item" data-item>
                                 <div class="info">
                                     <div class="name">{{ product.name }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
@@ -71,8 +74,11 @@
                                     
                                 </div>
                                 <div class="review">
-                                    <form class="review-form">
+                                    <form  id="form-id-{{ product.id }}" method="POST" class="review-form">
                                         <input type="hidden" name="rating" value="0">
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <input type="hidden" name="product_name" value="{{ product.name }}">
+                                        <input type="hidden" name="date" value="{{ date_get }}">
 
                                         <div class="form-group item-rating">
                                             <div class="star" data-value="1"></div>
@@ -86,7 +92,7 @@
                                             <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
                                         </div>
                                         <div class="form-group item-actions">
-                                            <button type="button">Отправить оценку</button>
+                                            <button onclick="submitCommentForm('form-id-{{ product.id }}')" type="button">Отправить оценку</button>
                                         </div>
                                     </form>
                                 </div>
@@ -107,7 +113,7 @@
                 <div class="eat-history-grid" data-eat-history-grid>
                     {% for product in lunch %}
                         {% if product %}
-                            <div class="item" data-item>
+                        <div id="{{ product.id }}" class="item" data-item>
                                 <div class="info">
                                     <div class="name">{{ product.name }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
@@ -126,8 +132,11 @@
                                     
                                 </div>
                                 <div class="review">
-                                    <form class="review-form">
+                                    <form  id="form-id-{{ product.id }}" method="POST" class="review-form">
                                         <input type="hidden" name="rating" value="0">
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <input type="hidden" name="product_name" value="{{ product.name }}">
+                                        <input type="hidden" name="date" value="{{ date_get }}">
 
                                         <div class="form-group item-rating">
                                             <div class="star" data-value="1"></div>
@@ -141,7 +150,7 @@
                                             <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
                                         </div>
                                         <div class="form-group item-actions">
-                                            <button type="button">Отправить оценку</button>
+                                            <button onclick="submitCommentForm('form-id-{{ product.id }}')" type="button">Отправить оценку</button>
                                         </div>
                                     </form>
                                 </div>
@@ -162,7 +171,7 @@
                 <div class="eat-history-grid" data-eat-history-grid>
                     {% for product in afternoon %}
                         {% if product %}
-                            <div class="item" data-item>
+                            <div id="{{ product.id }}" class="item" data-item>
                                 <div class="info">
                                     <div class="name">{{ product.name }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
@@ -181,8 +190,12 @@
                                     
                                 </div>
                                 <div class="review">
-                                    <form class="review-form">
+                                    <form  id="form-id-{{ product.id }}" method="POST" class="review-form">
                                         <input type="hidden" name="rating" value="0">
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <input type="hidden" name="product_name" value="{{ product.name }}">
+                                        <input type="hidden" name="date" value="{{ date_get }}">
+                                        
 
                                         <div class="form-group item-rating">
                                             <div class="star" data-value="1"></div>
@@ -196,7 +209,7 @@
                                             <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
                                         </div>
                                         <div class="form-group item-actions">
-                                            <button type="button">Отправить оценку</button>
+                                            <button onclick="submitCommentForm('form-id-{{ product.id }}')" type="button">Отправить оценку</button>
                                         </div>
                                     </form>
                                 </div>
@@ -217,7 +230,7 @@
                 <div class="eat-history-grid" data-eat-history-grid>
                     {% for product in dinner %}
                         {% if product %}
-                            <div class="item" data-item>
+                            <div id="{{ product.id }}" class="item" data-item>
                                 <div class="info">
                                     <div class="name">{{ product.name }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
@@ -236,8 +249,11 @@
                                     
                                 </div>
                                 <div class="review">
-                                    <form class="review-form">
+                                    <form  id="form-id-{{ product.id }}" method="POST" class="review-form">
                                         <input type="hidden" name="rating" value="0">
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <input type="hidden" name="product_name" value="{{ product.name }}">
+                                        <input type="hidden" name="date" value="{{ date_get }}">
 
                                         <div class="form-group item-rating">
                                             <div class="star" data-value="1"></div>
@@ -251,7 +267,7 @@
                                             <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
                                         </div>
                                         <div class="form-group item-actions">
-                                            <button type="button">Отправить оценку</button>
+                                            <button onclick="submitCommentForm('form-id-{{ product.id }}')" type="button">Отправить оценку</button>
                                         </div>
                                     </form>
                                 </div>
@@ -269,13 +285,18 @@
             </div>
         {% else %}
             <div>
-                <p>Нет заказов</p>
+                <p>Выбранная дата раньше даты госпитализации, данные недоступны</p>
             </div>
         {% endif %}
         
     </div>
 </div>
 <script>
+function submitCommentForm(formId) {
+    console.log(formId)
+    document.getElementById(formId).submit();
+}
+
 getValueFromSelect()
 function getValueFromSelect() {
     var option = document.querySelector('.optionValue');
@@ -296,6 +317,18 @@ function getValueFromSelect() {
 function formSubmit() {
     var form = document.getElementById('form-get');
     form.submit()
+}
+
+mark()
+function mark() {
+    // добавляем класс блюдам, которые уже оценили
+    const productsMarked = '{{ products_marked }}'.split(" ");
+    let items = document.querySelectorAll('.item')
+    for (var index = 0; index < items.length; index++ ) {
+        if (productsMarked.includes(items[index].id)) {
+            items[index].classList.add('closed')
+        }
+    }
 }
 </script>
 

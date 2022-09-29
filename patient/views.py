@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput
 from doctor.forms import PatientRegistrationForm, DietChoiceForm
-from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay
+from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, CommentProduct, BotChatId
 from nutritionist.forms import TimetableForm
 import random, calendar, datetime
 from datetime import datetime, date, timedelta
@@ -19,6 +19,7 @@ from patient.functions import formation_menu, creating_menu_for_lk_patient, crea
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
+import telepot
 
 
 def group_patient_check(user):
@@ -37,7 +38,6 @@ def patient(request, id):
     }
 
 
-
     user = CustomUser.objects.get(id=id)
     diet = translate_diet(user.type_of_diet)
     translated_diet = user.type_of_diet
@@ -47,6 +47,9 @@ def patient(request, id):
 
     else:
         date_get = request.GET['date']
+
+    # если дата показа меньше даты госпитализации is_have = false
+    is_have = parse(date_get).date() >= user.receipt_date
 
     day_of_the_week = get_day_of_the_week(date_get)
 
@@ -78,7 +81,8 @@ def patient(request, id):
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
     date_timer = parse(date_get)
-    data = {'user': user,
+    data = {'is_have': is_have,
+            'user': user,
             'breakfast': breakfast,
             'afternoon': afternoon,
             'lunch': lunch,
@@ -95,14 +99,40 @@ def patient(request, id):
 
 
 def patient_history(request, id):
+    # сохраняем комментарий
+    user = CustomUser.objects.get(id=id)
+    if request.method == 'POST':
+        comment = CommentProduct()
+        comment.user_id = user
+        comment.product_id = request.POST['product_id']
+        comment.comment = request.POST['text']
+        comment.rating = request.POST['rating']
+        comment.save()
+
+        TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+        bot = telepot.Bot(TOKEN)
+        # все номера chat_id
+        messang = ''
+        messang += f'Отзыв на заказ от {request.POST["date"]}\n'
+        messang += f'{user.full_name}\n'
+        messang += f'{request.POST["product_name"]}\n'
+        messang += f'{request.POST["rating"]}/5\n'
+        messang += f'{request.POST["text"]}\n'
+        for item in BotChatId.objects.all():
+            bot.sendMessage(item.chat_id, messang)
+
+    # сформоровать строку с блюдами, которые пользователь уже оценил
+    products_marked = []
+    for item in CommentProduct.objects.filter(user_id=id):
+        products_marked.append(item.product_id)
+    products_marked = ' '.join(products_marked)
+
     if request.GET == {} or request.method == 'POST':
         date_get = str(date.today())
 
     else:
         date_get = request.GET['date']
-    user = CustomUser.objects.get(id=id)
     day_history = date_menu_history(id, user)
-    # day_history = ['1']
     menu = creates_dict_with_menu_patients_on_day(id, date_get)
     # для тестирования меню
     # day_history = ['1']
@@ -125,7 +155,8 @@ def patient_history(request, id):
             'breakfast': breakfast,
             'afternoon': afternoon,
             'lunch': lunch,
-            'dinner': dinner
+            'dinner': dinner,
+            'products_marked': products_marked
             }
     return render(request, 'patient_history.html', context=data)
 
