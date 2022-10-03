@@ -30,10 +30,10 @@
     <body class="small-left">
 {% else %}
     <body class="has-right small-left">
-    <!-- <body class="small-left"> -->
+        <form id='form-get' style='padding-left: 0px; padding-right: 0px;' method="get" novalidate>
+        {% csrf_token %}
 {% endif %}
-    <form id='form-get' style='padding-left: 0px; padding-right: 0px;' method="get" novalidate>
-        {% csrf_token %} 
+
         {{ formset.management_form }}
         <div id="wrapper">
             <div id="left">
