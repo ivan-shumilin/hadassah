@@ -474,6 +474,22 @@ def add_menu_three_days_ahead():
     return
 
 
+def check_have_menu():
+    # посмотреть все даты от регистрации до сегодня -1, если нет меню, тогда добавить.
+    users = CustomUser.objects.filter(status='patient')
+    # days = [date.today() + timedelta(days=delta) for delta in [0, 1, 2]]
+    for user in users:
+        menu_all = MenuByDay.objects.filter(user_id=user.id)
+        # находим кол-во дней от сегодня до даты регитрации
+        count_days = date.today() - user.receipt_date
+        for delta in range(1, count_days.days - 1):
+            # дата сегодня минус delta
+            day = date.today() - timedelta(days=delta)
+            if len(menu_all.filter(date=str(day))) == 0:
+                add_default_menu_on_one_day(day, user)
+    return
+
+
 def creating_meal_menu_cafe(date_get, diet, meal):
 
     queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
