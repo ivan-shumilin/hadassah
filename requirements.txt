@@ -36,6 +36,7 @@ Pillow==9.2.0
 psycopg2-binary==2.9.3
 pycparser==2.21
 PyJWT==2.3.0
+pyTelegramBotAPI==4.7.0
 python-barcode==0.14.0
 python-dateutil==2.8.2
 python3-openid==3.2.0
@@ -47,6 +48,7 @@ social-auth-app-django==4.0.0
 social-auth-core==4.2.0
 soupsieve==2.3.1
 sqlparse==0.4.2
+telepot==12.7
 uritemplate==4.1.1
 urllib3==1.26.10
 whitenoise==6.0.0
