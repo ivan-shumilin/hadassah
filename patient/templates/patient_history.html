@@ -190,7 +190,7 @@
                                     
                                 </div>
                                 <div class="review">
-                                    <form  id="form-id-{{ product.id }}" method="POST" class="review-form">
+                                    <form  id="form-id-{{ product.id }}" method="POST" class="review-form" novalidate>
                                         {% csrf_token %}
                                         <input type="hidden" name="rating" value="0">
                                         <input type="hidden" name="product_id" value="{{ product.id }}">
