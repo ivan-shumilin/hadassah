@@ -96,7 +96,7 @@
                         </div>
                         {% load formatting_full_name %}
                         {% for form in formset %}
-                        <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
+                        <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"Y-m-d" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
                             <div class="td">
                                 <div class="name ellipsis">{{ form.full_name.value|formatting_full_name }}</div>
                             </div>
@@ -121,7 +121,7 @@
                                     <div id='receipt_date_edit' class="form-group">
                                         {% load widget_tweaks %}
                                         <label>Дата госпитализации</label>
-                                        <input type="text" value="{{ form.receipt_date.value|date:'d.m.Y' }}" data-datepicker id="{{ form.receipt_date.id_for_label }}">
+                                        <input type="text" value="{{ form.receipt_date.value|date:'d.m.y' }}" data-datepicker id="{{ form.receipt_date.id_for_label }}">
                                         <div id ='error_receipt_date' class="error-field"></div>
                                     </div>
                                     <div id='receipt_time_edit' class="form-group">
@@ -238,7 +238,6 @@
                 </div>
             </div>
 <script>
-
 filtration()
 
 
@@ -252,15 +251,17 @@ async function displayInfoPatient(full_name, receipt_date, receipt_time, departm
     document.getElementById("link_lk_patient").innerHTML = '<a href="https://sk.petrushkagroup.com/patient/' + id + '">ЛК пациента</a>';
     document.getElementById("modal_field").setAttribute('data-modal-link', 'modal-start'+id);
     document.getElementById("archive_field").setAttribute('data-modal-link', 'patient-archive'+id);
+    let receiptDate = receipt_date
     let res = await getMenuForPatient(id)
     var obj = JSON.parse(res);
     var obj = JSON.parse(obj);
-    
+    console.log(receipt_date)
     let days = {
-        today: "today", 
-        tomorrow: "tomorrow", 
-        day_after_tomorrow: "day_after_tomorrow"
+        today: {"name": "today", "date": ""},
+        tomorrow: {"name": "tomorrow", "date": ""},
+        day_after_tomorrow: {"name": "day_after_tomorrow", "date": ""}
     }
+    console.log(Date.parse("2019-01-01"))
     let meals = {
         breakfast: "Завтрак", 
         lunch: "Обед", 
@@ -269,43 +270,50 @@ async function displayInfoPatient(full_name, receipt_date, receipt_time, departm
     }
     let item, result, product
     for (day in days) {
-        addHtml(day, obj, meals, item, result, product);
+        addHtml(day, obj, meals, item, result, product, receiptDate);
     }
 
 }
 
 
-function addHtml(day, obj, meals, item, result, product) {
+function addHtml(day, obj, meals, item, result, product, receiptDate) {
+    // Добавляет меню на один день в выборе пациента
     item = document.getElementById(day)
+
     while (item.firstChild) {
         item.removeChild(item.firstChild);
     }
     result = '';
     result += '<div class="date">' + obj[day].date_human_style + '</div>'
-    for (var meal in meals ) {        
-        result += '<div class="box"><div id="test" class="title">' + meals[meal] + '</div><div id="products-list" class="products-list">'
-        for (var key in obj[day][meal]) {
-            console.log(key)
-
-            if (obj[day][meal][key] != null) {
-                product = obj[day][meal][key]
-                result += '<div class="item">'
- 
-                if (product.image == null) {
-                    result += '<div class="img"><img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
-                    result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
-                } else {
-                    result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
-                    result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
+    console.log('day.date-', Date.parse(obj[day].date))
+    console.log('receipt_date-', Date.parse(receiptDate))
+// проверяем, если дата раньше даты госпитализации, выводим сообщение
+    if (Date.parse(obj[day].date) >= Date.parse(receiptDate)) {
+        for (var meal in meals ) {        
+            result += '<div class="box"><div id="test" class="title">' + meals[meal] + '</div><div id="products-list" class="products-list">'
+            for (var key in obj[day][meal]) {
+                if (obj[day][meal][key] != null) {
+                    product = obj[day][meal][key]
+                    isNotProducts = false
+                    result += '<div class="item">'
+    
+                    if (product.image == null) {
+                        result += '<div class="img"><img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
+                        result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
+                    } else {
+                        result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
+                        result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
+                    }
+                    result += '<div id="name_today" class="name">' + product.name + '</div>'
+                    result += '<div class="value">' + 'К' + formattingFFC(product.energy) +  ', Б '+ formattingFFC(product.fiber) +  ', Ж '+ formattingFFC(product.fat) +  ', У '+ formattingFFC(product.carbohydrate) +'</div>'
+                    result += '<div class="text">' + product.description + '</div>' 
+                    result += '</div></div>'
                 }
-                result += '<div id="name_today" class="name">' + product.name + '</div>'
-                result += '<div class="value">' + 'К' + formattingFFC(product.energy) +  ', Б '+ formattingFFC(product.fiber) +  ', Ж '+ formattingFFC(product.fat) +  ', У '+ formattingFFC(product.carbohydrate) +'</div>'
-                result += '<div class="text">' + product.description + '</div>' 
-                result += '</div></div>'
             }
-        
+            result += '</div></div>'
         }
-        result += '</div></div>'
+    } else {
+        result += 'Выбранная дата раньше даты госпитализации, данные недоступны'
     }
     item.insertAdjacentHTML("beforeend", result);
 }
@@ -321,8 +329,8 @@ function formattingFFC(value) {
 
 
 const getMenuForPatient = async function(userId) {
-    // let url = 'https://3126-176-59-40-85.eu.ngrok.io/doctor/api/v1/patient/menu'
-    let url = 'https://www.sk.petrushkagroup.com/doctor/api/v1/patient/menu'
+    let url = 'https://bc64-146-120-93-199.eu.ngrok.io/doctor/api/v1/patient/menu'
+    // let url = 'https://www.sk.petrushkagroup.com/doctor/api/v1/patient/menu'
     let body = {
         "id_user": userId
     };
