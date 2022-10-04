@@ -3,7 +3,7 @@
 <input style='display: none;' type="radio" id='input_{{ date_menu.today }}' name='date' value='{{ date_menu.today }}'>
 <input style='display: none;' type="radio" id='input_{{ date_menu.tomorrow }}' name='date' value='{{ date_menu.tomorrow }}'>
 <input style='display: none;' type="radio" id='input_{{ date_menu.day_after_tomorrow }}' name='date' value='{{ date_menu.day_after_tomorrow }}'>
-<input style='display: none;' type="text" id='input_type_of_diet' name='type_of_diet' value=''>
+<input style='display: none;' type="text" id='input_type_of_diet' name='input_type_of_diet' value=''>
 <input style='display: none;' type="text" id='meal' name='meal' value=''>
 <input style="display: none;" type="text" id="sorting_value"  name="sorting_value">
 <input style="display: none;" type="text" id="is_pressing_again"  name="is_pressing_again">
@@ -48,7 +48,7 @@
 
                         <div id='diet-menu' class="green-menu">
                             <a data-modal-link="diet">Диета</a>
-                            <a id='diet_name' class="active" data-modal-link="diet">{{ diet_form.type_of_diet.value }}</a>
+                            <a id='diet_name' class="active" data-modal-link="diet">{{ diet }}</a>
                         </div>
                     </div>
 
@@ -355,7 +355,7 @@
         </div>
         <div data-modal="diet" data-modal-width="480">
             <div class="title">Выберите диету из списка</div>
-            <form action="#">
+            <!-- <form action="#"> -->
                 <div class="form-group">
                     <label for="#">Диета</label>
                     {{ diet_form.type_of_diet }}
@@ -364,12 +364,13 @@
                     <button onclick="submitDietForm('{{ diet_form.type_of_diet.id_for_label }}')">Показать</button>
                     <a  class="button white" data-modal-close>Отменить</a>
                 </div>
-            </form>
+            <!-- </form> -->
         </div>
 <script>
 document.getElementById('{{ date_get }}').classList.add('active');
 document.getElementById('test{{ date_get }}').classList.add('active');
 document.getElementById('input_{{ date_get }}').setAttribute('checked', 'true');
+document.getElementById('input_type_of_diet').value = '{{ diet }}'
 document.getElementById('{{ meal }}').classList.add('active');
 document.getElementById('meal').value = '{{ meal }}'
 

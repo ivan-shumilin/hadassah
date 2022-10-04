@@ -308,14 +308,14 @@ def menu(request):
 
 
     if request.GET == {} or request.method == 'POST':
-        diet_form = DietChoiceForm({'type_of_diet': 'ОВД'})
+        diet_form = DietChoiceForm({'type_of_diet': 'ovd'})
         diet = 'ovd'
         date_get = str(date.today())
 
         meal = 'breakfast'
 
     else:
-        diet = request.GET['type_of_diet']
+        diet = request.GET['input_type_of_diet']
         date_get = request.GET['date']
 
         diet_form = DietChoiceForm(request.GET)
@@ -402,6 +402,7 @@ def menu(request):
             'date_get': date_get,
             'formatted_date': formatted_date,
             'meal': meal,
+            'diet': diet,
             }
     return render(request, 'menu.html', context=data)
 
