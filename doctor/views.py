@@ -49,6 +49,7 @@ def doctor(request):
     page = 'menu-doctor'
     filter_by = 'full_name'  # дефолтная фильтрация
     sorting = 'top'
+    today = date.today().strftime("%d.%m.%Y")
 
     check_have_menu()
     add_menu_three_days_ahead()
@@ -78,6 +79,7 @@ def doctor(request):
                       {'formset': formset,
                        'modal': 'patient-added',
                        'page': page,
+                       'today': today,
                        'sorting': sorting,
                        'user_form': user_form,
                        'filter_by': filter_by})
@@ -93,6 +95,7 @@ def doctor(request):
         data = {
             'formset': formset,
             'page': page,
+            'today': today,
             'modal': 'profile-edited',
             'sorting': sorting,
             'user_form': user_form,
@@ -110,6 +113,7 @@ def doctor(request):
             data = {
                 'formset': formset,
                 'page': page,
+                'today': today,
                 'modal': 'password-edited',
                 'sorting': sorting,
                 'user_form': user_form,
@@ -125,6 +129,7 @@ def doctor(request):
             'id_edited_user': user_form.data['id_edit_user'],
             'formset': formset,
             'page': page,
+            'today': today,
             'sorting': sorting,
             'modal': 'edited',
             'user_form': user_form,
@@ -144,6 +149,7 @@ def doctor(request):
                 'modal': 'archived',
                 'formset': formset,
                 'page': page,
+                'today': today,
                 'sorting': sorting,
                 'user_form': user_form,
                 'filter_by': filter_by
@@ -156,6 +162,7 @@ def doctor(request):
             data = {
                 'modal': 'archive',
                 'page': page,
+                'today': today,
                 'formset': formset,
                 'sorting': sorting,
                 'user_form': user_form,
@@ -168,6 +175,7 @@ def doctor(request):
         # 'menu_patients': menu_patients,
         'formset': formset,
         'page': page,
+        'today': today,
         'sorting': sorting,
         'user_form': user_form,
         'filter_by': filter_by
