@@ -62,7 +62,11 @@
                         <div class="eat-choose-grid" data-eat-choose-grid>
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
  
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
@@ -101,7 +105,11 @@
                         <div class="eat-choose-grid" data-eat-choose-grid>
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-porridge-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -144,7 +152,11 @@
                         {% for product in products.lunch.lp.salad %}
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-salad-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -176,7 +188,11 @@
                         {% for product in products.lunch.cafe.salad %}
                             <div class="item" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">cafe-salad-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -215,7 +231,11 @@
                         {% for product in products.lunch.lp.soup %}
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-soup-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -245,7 +265,11 @@
                         {% for product in products.lunch.cafe.soup %}
                             <div class="item" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">cafe-soup-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -284,7 +308,11 @@
                         {% for product in products.lunch.lp.main %}
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -314,7 +342,11 @@
                         {% for product in products.lunch.cafe.main %}
                             <div class="item" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -354,7 +386,11 @@
                         {% for product in products.lunch.lp.garnish %}
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -384,7 +420,11 @@
                         {% for product in products.lunch.cafe.garnish %}
                             <div class="item" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -422,7 +462,11 @@
                         {% for product in products.lunch.lp.drink %}
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-drink-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -452,7 +496,11 @@
                         {% for product in products.lunch.cafe.drink %}
                             <div class="item" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">cafe-drink-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -493,7 +541,11 @@
                         <div class="eat-choose-grid" data-eat-choose-grid>
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -529,7 +581,11 @@
                         <div class="eat-choose-grid" data-eat-choose-grid>
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-dessert-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -566,7 +622,11 @@
                         <div class="eat-choose-grid" data-eat-choose-grid>
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-fruit-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -602,7 +662,11 @@
                         <div class="eat-choose-grid" data-eat-choose-grid>                            
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-drink-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -645,7 +709,11 @@
                         {% for product in products.dinner.lp.main %}
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -675,7 +743,11 @@
                         {% for product in products.dinner.cafe.main %}
                             <div class="item" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -715,7 +787,19 @@
                         {% for product in products.dinner.lp.garnish %}
                             <div class="item active" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if not today %}
+                                        <div class="choose" data-choose>
+                                            <a href="#">
+                                                Уже выбрано блюдо из этой категории.
+                                                Нажмите, чтобы заменить его.
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
@@ -745,7 +829,11 @@
                         {% for product in products.dinner.cafe.garnish %}
                             <div class="item" data-item>
                                 <div class="info">
-                                    <div class="name" data-choose>{{ product.name }}</div>
+                                    {% if today %}
+                                        <div class="name">{{ product.name }}</div>
+                                    {% else %}
+                                        <div class="name" data-choose>{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
                                     <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                     <div class="text" data-toggle>
