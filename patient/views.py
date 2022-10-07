@@ -79,8 +79,11 @@ def patient(request, id):
     # patient_select = 'cafe-salad-1162,cafe-soup-1161,cafe-main-1094'
 
 
+
+
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
     date_timer = parse(date_get)
+    today = (date_get == str(date.today()))
     data = {'is_have': is_have,
             'user': user,
             'breakfast': breakfast,
@@ -93,7 +96,8 @@ def patient(request, id):
             'date': date_timer,
             'formatted_date': formatted_date,
             'products': menu_for_lk_patient,
-            'patient_select': patient_select
+            'patient_select': patient_select,
+            'today': today
             }
     return render(request, 'patient_.html', context=data)
 
