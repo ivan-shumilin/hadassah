@@ -554,6 +554,18 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
 
         error = error + 1
     }
+    let nowDate = new Date();
+    let todayDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+    let receiptDateList = (receipt_date.value).split(".");
+    receiptDate = new Date(receiptDateList[2], receiptDateList[1] - 1, receiptDateList[0])
+
+    if (receiptDate < todayDate) {
+        document.getElementById('error_receipt_date').innerHTML = 'Дата не может быть раньше текущей'
+        document.getElementById('error_receipt_date').classList.add('error')
+        document.getElementById('receipt_date_add').classList.add('error')
+        error = error + 1
+    }
+
     if (!receipt_time.value) {
         document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
         document.getElementById('error_receipt_time').classList.add('error')
