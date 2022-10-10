@@ -124,6 +124,7 @@ def patient_history(request, id):
         messang += f'{request.POST["text"]}\n'
         for item in BotChatId.objects.all():
             bot.sendMessage(item.chat_id, messang)
+        date_get = request.POST['date']
 
     # сформоровать строку с блюдами, которые пользователь уже оценил
     products_marked = []
@@ -131,11 +132,12 @@ def patient_history(request, id):
         products_marked.append(item.product_id)
     products_marked = ' '.join(products_marked)
 
-    if request.GET == {} or request.method == 'POST':
-        date_get = str(date.today())
+    if request.method == 'GET':
+        if request.GET == {}:
+            date_get = str(date.today())
+        else:
+            date_get = request.GET['date']
 
-    else:
-        date_get = request.GET['date']
     day_history = date_menu_history(id, user)
     menu = creates_dict_with_menu_patients_on_day(id, date_get)
     # для тестирования меню
