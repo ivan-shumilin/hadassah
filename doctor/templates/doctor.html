@@ -96,7 +96,7 @@
                         </div>
                         {% load formatting_full_name %}
                         {% for form in formset %}
-                        <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"Y-m-d" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
+                        <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.Y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
                             <div class="td">
                                 <div class="name ellipsis">{{ form.full_name.value|formatting_full_name }}</div>
                             </div>
@@ -244,7 +244,7 @@ filtration()
 
 async function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, comment, id) {
     document.getElementById("full_name_field").innerHTML = full_name;
-    document.getElementById("receipt_datetime_field").innerHTML = receipt_date + ' ' + receipt_time;
+    document.getElementById("receipt_datetime_field").innerHTML = receipt_date + ', ' + receipt_time;
     document.getElementById("department_field").innerHTML = department;
     document.getElementById("type_of_diet_field").innerHTML = type_of_diet;
     document.getElementById("room_number_field").innerHTML = room_number;
