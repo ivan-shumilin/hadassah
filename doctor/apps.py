@@ -6,8 +6,4 @@ class DoctorConfig(AppConfig):
     name = 'doctor'
 
 
-class AppNameConfig(AppConfig):
-    name = 'doctor'
-    def ready(self):
-        from scheduler import scheduler
-        scheduler.start()
+
