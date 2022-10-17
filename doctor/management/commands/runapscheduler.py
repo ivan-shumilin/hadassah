@@ -10,11 +10,23 @@ from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 from django_apscheduler import util
 
+import telepot
+from nutritionist.models import BotChatId
+
 logger = logging.getLogger(__name__)
 
 
 def my_job():
     print('Hi!')
+    TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+    bot = telepot.Bot(TOKEN)
+    # все номера chat_id
+    messang = ''
+    messang += f'Hello!'
+
+    for item in BotChatId.objects.all():
+        bot.sendMessage(item.chat_id, messang)
+
 
 
 # The `close_old_connections` decorator ensures that database connections, that have become
