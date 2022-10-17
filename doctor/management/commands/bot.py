@@ -9,7 +9,7 @@ from nutritionist.models import BotChatId
 class Command(BaseCommand):
     def handle(msg):
         content_type, chat_type, chat_id = telepot.glance(msg)
-        print(content_type, chat_type, chat_id)
+        # print(content_type, chat_type, chat_id)
         TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
         bot = telepot.Bot(TOKEN)
         if content_type == 'text':

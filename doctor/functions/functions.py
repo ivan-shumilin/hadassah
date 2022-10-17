@@ -188,6 +188,15 @@ def translate_diet(diet):
     }
     return TYPE_DIET[diet]
 
+def translate_meal(meal):
+    MEALS = {
+        'breakfast': 'Завтрак',
+        'lunch': 'Обед',
+        'afternoon': 'Полдник',
+        'dinner': 'Ужин'
+    }
+    return MEALS[meal]
+
 
 def сhange_password(email, request):
     user = CustomUser.objects.get(id=request.user.id)
@@ -364,7 +373,6 @@ def check_value_two(menu_all, date_str, meal, category):
         except Exception:
             value = None
         return value
-
 
 
 def creates_dict_with_menu_patients(id):
@@ -604,3 +612,81 @@ def edit_user(user_form):
     user.comment = user_form.data['comment1']
     user.save()
     logging.info(f'Пациент отредактирован {user_form.data["full_name"]}')
+
+
+def counting_diets(users):
+    diets_name = ['ОВД', 'ОВД без сахара', 'ЩД', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД']
+    diets_count = []
+    for diet in diets_name:
+        users_diet = users.filter(type_of_diet=diet)
+        start_2nd_floor = 200
+        end_2nd_floor = 299
+        start_3nd_floor = 300
+        end_3nd_floor = 399
+        if len(users_diet) > 0:
+            diets_count.append({
+                "name": diet,
+                "total": str(len(users_diet)),
+                "2nd_floor": len([users_floor for users_floor in users_diet if (int(users_floor.room_number) > start_2nd_floor) \
+                                  and (int(users_floor.room_number) < end_2nd_floor)]),
+                "3nd_floor": len([users_floor for users_floor in users_diet if (int(users_floor.room_number) > start_3nd_floor) \
+                                  and (int(users_floor.room_number) < end_3nd_floor)])
+            })
+    return diets_count
+
+
+
+def creates_dict_test(id, date_show, lp_or_cafe, meal):
+    """ Создаем словарь с блюдами на конкретный прием пищи для пациента """
+    menu_all = MenuByDay.objects.filter(user_id=id)
+    menu = {}
+    menu_list = []
+    # for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+    menu = {
+        'main': check_value_two(menu_all, date_show, meal, "main"),
+        'garnish': check_value_two(menu_all, date_show, meal, "garnish"),
+        'porridge': check_value_two(menu_all, date_show, meal, "porridge"),
+        'soup': check_value_two(menu_all, date_show, meal, "soup"),
+        'dessert': check_value_two(menu_all, date_show, meal, "dessert"),
+        'fruit': check_value_two(menu_all, date_show, meal, "fruit"),
+        'drink': check_value_two(menu_all, date_show, meal, "drink"),
+        'salad': check_value_two(menu_all, date_show, meal, "salad"),
+    }
+    if lp_or_cafe == 'lp':
+        for item in menu.values():
+            if item:
+                if 'cafe' not in item['id']:
+                    menu_list.append(item.get('name'))
+    if lp_or_cafe == 'cafe':
+        for item in menu.values():
+            if item:
+                if 'cafe' in item['id']:
+                    menu_list.append(item.get('name'))
+    return menu_list
+
+
+def create_list_users_on_floor(users, start, end, meal):
+    users = [user for user in users if (int(user.room_number) > start) \
+                                  and (int(user.room_number) < end)]
+    users_on_floor = []
+    for user in users:
+        users_on_floor.append(
+            {'name': user.full_name,
+             'number': '',
+             'room_number': user.room_number,
+             'diet': user.type_of_diet,
+             'products_lp': creates_dict_test(user.id, str(date.today()), 'lp', meal),
+             'products_cafe': creates_dict_test(user.id, str(date.today()), 'cafe', meal),
+             }
+        )
+    return users_on_floor
+
+def what_meal():
+    if datetime.today().time().hour > 19 or datetime.today().time().hour < 9:
+        return 'breakfast'
+    if datetime.today().time().hour >= 9 and datetime.today().time().hour < 12:
+        return 'lunch'
+    if datetime.today().time().hour >= 12 and datetime.today().time().hour < 16:
+        return 'afternoon'
+    if datetime.today().time().hour >= 16 and datetime.today().time().hour < 19:
+        return 'dinner'

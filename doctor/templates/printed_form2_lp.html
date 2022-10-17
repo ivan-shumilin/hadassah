@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Печатная форма №2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
+
+</head>
+<body>
+<h1>Производственный отчет<span class="lp ex-bold">Цех лечебного питания</span></h1>
+<p class="bold">{{ formatted_date }}, {{ time_now }}</p>
+<p class="bold underline">{{ meal }}</p>
+
+
+<table id='table2' width="95%">
+    <tr>
+        <td>№</td>
+        <td>Диета</td>
+        <td>Название блюда</td>
+        <td>Кол-во порций, шт.</td>
+
+    </tr>
+    {% if catalog.salad %}
+        <tr class='light-blue'>
+            <td>Салаты</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        
+        {% for product in catalog.salad %}
+            {% if product %}
+                <tr class='dashed'>
+                    <td></td>
+                    <td>{{ product.diet }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.count }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.soup %}
+        <tr class='light-blue'>
+            <td>Первые блюда</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        
+        {% for product in catalog.soup %}
+            {% if product %}
+                <tr class='dashed'>
+                    <td></td>
+                    <td>{{ product.diet }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.count }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.main %}
+        <tr class='light-blue'>
+            <td>Вторые блюда</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        
+        {% for product in catalog.main %}
+            {% if product %}
+                <tr class='dashed'>
+                    <td></td>
+                    <td>{{ product.diet }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.count }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.garnish %}
+        <tr class='light-blue'>
+            <td>Гарниры</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        
+        {% for product in catalog.garnish %}
+            {% if product %}
+                <tr class='dashed'>
+                    <td></td>
+                    <td>{{ product.diet }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.count }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.dessert %}
+        <tr class='light-blue'>
+            <td>Дессерты</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        
+        {% for product in catalog.dessert %}
+            {% if product %}
+                <tr class='dashed'>
+                    <td></td>
+                    <td>{{ product.diet }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.count }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.fruit %}
+        <tr class='light-blue'>
+            <td>Фрукты</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        
+        {% for product in catalog.fruit %}
+            {% if product %}
+                <tr class='dashed'>
+                    <td></td>
+                    <td>{{ product.diet }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.count }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.drink %}
+        <tr class='light-blue'>
+            <td>Напитки</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        
+        {% for product in catalog.drink %}
+            {% if product %}
+                <tr class='dashed'>
+                    <td></td>
+                    <td>{{ product.diet }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.count }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</table>
+</body>
+</html>

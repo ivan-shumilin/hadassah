@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'patient',
     'rest_framework',
     'djoser',
-    "corsheaders",
+    'corsheaders',
+    'django_apscheduler',
     'widget_tweaks',
 ]
 

@@ -38,6 +38,15 @@ TYPE_DIET_FOR_MENU = (
     ('nkd', 'НКД'),
     ('vkd', 'ВКД'),
 )
+
+# TYPE_DIET_FOR_MENU = (
+#     ('1', '1'),
+#     ('1', '1'),
+#     ('1', '1'),
+#     ('1', '1'),
+#     ('1', '1'),
+# )
+
 STATUS_PATIENT = (
     ('patient', 'patient'),
     ('patient_archive', 'patient_archive'),

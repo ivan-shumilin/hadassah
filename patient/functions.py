@@ -3,7 +3,7 @@ from typing import List
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from django.db.models.functions import Lower
-from doctor.functions import creating_meal_menu_lp, creating_meal_menu_cafe
+from doctor.functions.functions import creating_meal_menu_lp, creating_meal_menu_cafe
 from dateutil.parser import parse
 
 

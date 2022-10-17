@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Личный кабинет врача{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
+    <style>
+        .table input[type="radio"] {
+            display: none;
+        }
+        .links {
+            margin-left: 100px;
+            color: #1a1b1c;
+            font-family: Montserrat, Arial, sans-serif;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.62;
+            min-width: 320px;
+            padding: 0;
+
+        }
+
+    </style>
+
+
+</head>
+<!-- Если на странице "меню" -->
+{% if page == 'menu-menu' %}
+<body>
+<div data-modal="profile-form" data-modal-width="480">
+            <div class="title">Редактировать профиль</div>
+                <form id='profile-form-id' method="post" novalidate>
+                    {% csrf_token %}
+                    <div id='change-email-form' class="form-group">
+                        <label for="#">E-mail</label>
+                        <input id='change-email' type="text" value="{{ user.email }}">
+                        <div id='change-email-error'></div>
+                    </div>
+                    <div class="form-group item-actions flex flex-center">
+                        <button type="button" onclick="validationChangeEmailForm()">Сохранить</button>
+                        <a class="button white" data-modal-link="password-form">Изменить пароль</a>
+                    </div>
+                    <input style="display: none;"
+                           type="text"
+                           id="changed-email"
+                           name="changed-email">
+                    <input style="display: none;"
+                           type="checkbox"
+                           id="change-email_flag"
+                           name="change-email">
+                    <input style="display: none;"
+                           type="text"
+                           id="changed-password"
+                           name="changed-password">
+                    <input style="display: none;"
+                           type="checkbox"
+                           id="change-password_flag"
+                           name="change-password_flag">
+                </form>
+        </div>
+    <form id='form-get' action="{% url 'menu' %}" style='padding-left: 0px; padding-right: 0px;' method="get" novalidate>
+
+<!-- Если на странице "доктор" или "архив" -->
+{% else %}
+<body  class="has-right">
+    <div data-modal="profile-form" data-modal-width="480">
+    <div class="title">Редактировать профиль</div>
+    <form id='profile-form-id' method="post" novalidate>
+        {% csrf_token %}
+        <div id='change-email-form' class="form-group">
+            <label for="#">E-mail</label>
+            <input id='change-email' type="text" value="{{ user.email }}">
+            <div id='change-email-error'></div>
+        </div>
+        <div class="form-group item-actions flex flex-center">
+            <button type="button" onclick="validationChangeEmailForm()">Сохранить</button>
+            <a class="button white" data-modal-link="password-form">Изменить пароль</a>
+        </div>
+        <input style="display: none;"
+               type="text"
+               id="changed-email"
+               name="changed-email">
+        <input style="display: none;"
+               type="checkbox"
+               id="change-email_flag"
+               name="change-email">
+        <input style="display: none;"
+               type="text"
+               id="changed-password"
+               name="changed-password">
+        <input style="display: none;"
+               type="checkbox"
+               id="change-password_flag"
+               name="change-password_flag">
+    </form>
+    </div>
+    <form id='main-form' style='padding-left: 0px; padding-right: 0px;' method="post" novalidate>
+        {% csrf_token %}
+{% endif %}
+
+    {{ formset.management_form }}
+        <div id="wrapper">
+            <div id="left">
+                <div class="sidebar-toggle-block" data-sidebar-toggle>
+                    <div class="logo"></div>
+                    <div class="arrow">
+                        <div class="i i-arrow"></div>
+                    </div>
+                    <div class="petrushka"></div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="overlay" data-sidebar-toggle></div>
+                    <div class="inner">
+                        <div class="sidebar-header-block">
+                            <a class="close" data-sidebar-toggle>
+                                <span class="i i-close"></span>
+                            </a>
+                            <a href='https://hadassah.moscow/' class="logo">
+                                {% load static %}
+                                <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
+                            </a>
+
+
+                            <div class="profile">
+                                <a  class="label" data-fade-toggle-link="profile-info">
+                                    <span class="icon"></span>
+                                    Профиль
+                                </a>
+                                <div class="info" data-fade-toggle="profile-info">
+                                    <div class="segment">
+                                        <div class="name">
+                                            {{ user.first_name }}
+                                            {{ user.last_name }}
+                                        </div>
+                                        <div class="email">{{ user.email }}</div>
+                                        <div class="links">
+                                            <a  data-modal-link="logout">Выйти</a>
+                                            <a  data-modal-link="profile-form">Изменить</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="sidebar-petrushka-block">
+                            <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="center" data-simplebar>
+                <div id="header">
+                    <div class="mobile-header-block">
+                        <div class="logo">
+                            <a href='https://hadassah.moscow/' class="logo">
+                                {% load static %}
+                                <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
+                            </a>
+                        </div>
+                        <a class="menu-link" data-sidebar-toggle>
+                            <div class="i i-menu"></div>
+                        </a>
+                        <div class="petrushka">
+                            <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
+                        </div>
+                    </div>
+
+                    <div class="header-block">
+                        <div class="menu-link-and-name">
+                            <a class="menu-link" data-sidebar-toggle>
+                                <div class="i i-menu"></div>
+                            </a>
+                            <div style="margin-left: 100px;" class="title">Печатные формы</div>
+                        </div>
+                    </div>
+                </div>
+
+
+            <div id="content" data-simplebar>
+                <ul class='links'>
+                    <li><a href="{% url 'printed_form_one'  %}">Печатная форма №1</a></li>
+                    <li><a href="{% url 'printed_form_two'  %}">Печатная форма №2 (лечебный цех)</a></li>
+                    <li><a href="{% url 'printed_form_cafe'  %}">Печатная форма №2 (линия раздачи)</a></li>
+                </ul>
+            </div>
+    {% load static %}
+        </div>  <!-- div wrapper -->
+
+
+
+        <div data-modal="profile-edited" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Email успешно изменён</div>
+            </div>
+        </div>
+
+        <div data-modal="password-edited" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Пароль успешно изменён</div>
+            </div>
+            <a href="{% url 'logout' %}"><button  title="Close (Esc)" type="button" class="mfp-close">×</button></a>
+        </div>
+
+        <div data-modal="password-form" data-modal-width="480">
+            <div class="title">Изменение пароля</div>
+                <div id='change-email-form-old-password' class="form-group">
+                    <label for="#">Введите старый пароль</label>
+                    <input  type="password" name="old_password" id="old_password">
+                    <div id="old-password-error"></div>
+                </div>
+                <div id='change-email-form-new-password' class="form-group">
+                    <label for="#">Введите новый пароль</label>
+                    <input  type="password" name="new_password" id="new_password">
+                    <div id="new-password-error"></div>
+                </div>
+                <div class="form-group item-actions flex flex-center">
+                    <button name="change_patient" onclick="validationChangePasswordForm()">Сохранить</button>
+                </div>
+        </div>
+
+
+
+
+
+
+
+
+        <div data-modal="logout" data-modal-width="400">
+            <div class="title align-center">Вы уверены, что хотите выйти?</div>
+            <div class="confirm-block">
+                <div class="buttons">
+                    <a class="button" href="{% url 'logout' %}">Выйти</a>
+                    <a class="button white" data-modal-close>Отменить</a>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    <script src="{% static 'doctor/js/all.js' %}"></script>
+</form>
+</body>
+</html>
