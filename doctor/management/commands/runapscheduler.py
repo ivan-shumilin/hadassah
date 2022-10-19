@@ -11,6 +11,7 @@ from django_apscheduler import util
 
 import telepot
 from nutritionist.models import BotChatId
+from doctor.functions.for_print_forms import create_user_today, applies_changes
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             my_job_create_user_today,
-            trigger=CronTrigger(minute='30'),
+            trigger=CronTrigger(minute='35'),
             id="my_job_create_user_today",  # The `id` assigned to each job MUST be unique
             max_instances=1,
             replace_existing=True,
@@ -57,7 +58,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             my_job_applies_changes,
-            trigger=CronTrigger(minute='35'),
+            trigger=CronTrigger(minute='40'),
             id="my_job_applies_changes",  # The `id` assigned to each job MUST be unique
             max_instances=1,
             replace_existing=True,
