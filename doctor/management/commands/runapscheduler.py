@@ -15,9 +15,32 @@ from doctor.functions.for_print_forms import create_user_today, applies_changes
 
 logger = logging.getLogger(__name__)
 
+def send_messang(meal):
+    TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+    bot = telepot.Bot(TOKEN)
+    # все номера chat_id
+    messang = f'Заказ на {meal} сформирован.'
+    for item in BotChatId.objects.all():
+        bot.sendMessage(item.chat_id, messang)
 
 def my_job_applies_changes():
+    applies_changes()
+
+def my_job_applies_changes_breakfast():
     applies_changes() # накатываем изменения
+    send_messang('завтрак')
+
+def my_job_applies_changes_lunch():
+    applies_changes() # накатываем изменения
+    send_messang('обед')
+
+def my_job_applies_changes_afternoon():
+    applies_changes() # накатываем изменения
+    send_messang('полдник')
+
+def my_job_applies_changes_dinner():
+    applies_changes() # накатываем изменения
+    send_messang('ужин')
 
 def my_job_create_user_today():
     create_user_today() # создаем таблицу с пользователями на сегодня
@@ -49,7 +72,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             my_job_create_user_today,
-            trigger=CronTrigger(minute='35'),
+            trigger=CronTrigger(hour='00', minute='00'),
             id="my_job_create_user_today",  # The `id` assigned to each job MUST be unique
             max_instances=1,
             replace_existing=True,
@@ -57,13 +80,41 @@ class Command(BaseCommand):
         logger.info("Added job 'my_job_create_user_today'.")
 
         scheduler.add_job(
-            my_job_applies_changes,
-            trigger=CronTrigger(minute='40'),
-            id="my_job_applies_changes",  # The `id` assigned to each job MUST be unique
+            my_job_applies_changes_breakfast,
+            trigger=CronTrigger(hour='7', minute='00'),
+            id="my_job_applies_changes_breakfast",
             max_instances=1,
             replace_existing=True,
         )
-        logger.info("Added job 'my_job_create_user_today'.")
+        logger.info("Added job 'my_job_applies_changes_breakfast'.")
+
+        scheduler.add_job(
+            my_job_applies_changes_lunch,
+            trigger=CronTrigger(hour='9', minute='00'),
+            id="my_job_applies_changes_lunch",
+            max_instances=1,
+            replace_existing=True,
+        )
+        logger.info("Added job 'my_job_applies_changes_lunch'.")
+
+        scheduler.add_job(
+            my_job_applies_changes_afternoon,
+            trigger=CronTrigger(hour='12', minute='00'),
+            id="my_job_applies_changes_afternoon",
+            max_instances=1,
+            replace_existing=True,
+        )
+        logger.info("Added job 'my_job_applies_changes_afternoon'.")
+
+        scheduler.add_job(
+            my_job_applies_changes_dinner,
+            trigger=CronTrigger(hour='16', minute='00'),
+            id="my_job_applies_changes_dinner",
+            max_instances=1,
+            replace_existing=True,
+        )
+        logger.info("Added job 'my_job_applies_changes_dinner'.")
+
 
         scheduler.add_job(
             delete_old_job_executions,
