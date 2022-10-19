@@ -109,7 +109,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             my_job_applies_changes_dinner,
-            trigger=CronTrigger(hour='16', minute='43'),
+            trigger=CronTrigger(hour='16', minute='00'),
             id="my_job_applies_changes_dinner",
             max_instances=1,
             replace_existing=True,

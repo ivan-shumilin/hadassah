@@ -606,7 +606,7 @@ def create_user(user_form):
     add_menu_three_days_ahead()
 
     if parse(user.receipt_date).date() <= date.today():
-        if not check_time():
+        if check_time():
             update_UsersToday(user)
         else:
             update_СhangesUsersToday(user)
