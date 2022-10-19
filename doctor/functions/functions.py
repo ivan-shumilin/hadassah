@@ -7,6 +7,12 @@ from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from django.db.models.functions import Lower
 import logging, random
+import telepot
+from nutritionist.models import BotChatId
+from doctor.functions.bot import check_change
+from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
+    applies_changes
+
 
 def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup):
     """Сортировка блюд по приемам пищи"""
@@ -599,19 +605,76 @@ def create_user(user_form):
     add_default_menu(user)
     add_menu_three_days_ahead()
 
+    if parse(user.receipt_date).date() <= date.today():
+        if not check_time():
+            update_UsersToday(user)
+        else:
+            update_СhangesUsersToday(user)
+    # applies_changes() # накатываем изменения
+        snowflake = u'\u2757\ufe0f'  # Code: 600's snowflake
+        TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+        bot = telepot.Bot(TOKEN)
+        # все номера chat_id
+        messang = ''
+        messang += f'{snowflake} Изменение с {check_change(user)}\n'
+        messang += f'Поступил пациент {user.full_name}({user.type_of_diet})\n'
+        if user.comment:
+            messang += f'Комментарий: "[{user.comment}"'
+        for item in BotChatId.objects.all():
+            bot.sendMessage(item.chat_id, messang)
+
 
 def edit_user(user_form):
+    changes = []
     user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
+    if user.full_name != user_form.data['full_name1']:
+        changes.append(f"ФИО <b>{user.full_name}</b> заменили на <u><b>{user_form.data['full_name1']}</b></u>")
     user.full_name = user_form.data['full_name1']
+
     # user.receipt_date = parse(user_form.data['receipt_date1']).strftime('%Y-%m-%d')
+    if user.receipt_date != datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date():
+        changes.append(f"дату поступления <b>{user.receipt_date}</b> заменили на <u><b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b></u>")
     user.receipt_date = datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')
+
+    if (user.receipt_time).strftime('%H:%M') != user_form.data['receipt_time1']:
+        changes.append(f"время поступления <b>{(user.receipt_time).strftime('%H:%M')}</b> заменили на <u><b>{user_form.data['receipt_time1']}</b></u>")
     user.receipt_time = user_form.data['receipt_time1']
+
+    if user.department != user_form.data['department1']:
+        changes.append(f"отделение <b>{user.department}</b> заменили на <u><b>{user_form.data['department1']}</b></u>")
     user.department = user_form.data['department1']
+
+    if user.room_number != user_form.data['room_number1']:
+        changes.append(f"номер палаты <b>{user.room_number}</b> заменили на <u><b>{user_form.data['room_number1']}</b></u>")
     user.room_number = user_form.data['room_number1']
+
+    if user.type_of_diet != user_form.data['type_of_diet1']:
+        changes.append(f"тип диеты <b>{user.type_of_diet}</b> заменили на <u><b>{user_form.data['type_of_diet1']}</b></u>")
     user.type_of_diet = user_form.data['type_of_diet1']
+
+    if user.comment != user_form.data['comment1']:
+        changes.append(f'комметнарий "{user.comment if user.comment else "нет комментария"}" заменили на <u><b>"{user_form.data["comment1"]}"</b></u>')
     user.comment = user_form.data['comment1']
     user.save()
     logging.info(f'Пациент отредактирован {user_form.data["full_name"]}')
+
+    if parse(user.receipt_date).date() <= date.today():
+        if check_time():
+            update_UsersToday(user)
+        else:
+            update_СhangesUsersToday(user)
+    # applies_changes() # накатываем изменения
+        snowflake = u'\u2757\ufe0f'  # Code: 600's snowflake
+        TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+        bot = telepot.Bot(TOKEN)
+        # все номера chat_id
+        messang = ''
+        messang += f'{snowflake} Изменение с <u><b>{check_change(user)}</b></u>{snowflake}\n'
+        messang += f'Отредактирован профиль пациетна <b>{user.full_name}</b>.\n\n'
+        for change in changes:
+            messang += f'-{change}\n'
+        for item in BotChatId.objects.all():
+            bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
 
 def counting_diets(users):
@@ -666,8 +729,8 @@ def creates_dict_test(id, date_show, lp_or_cafe, meal):
 
 
 def create_list_users_on_floor(users, start, end, meal):
-    users = [user for user in users if (int(user.room_number) > start) \
-                                  and (int(user.room_number) < end)]
+    users = [user for user in users if (int(user.room_number) >= start) \
+                                  and (int(user.room_number) <= end)]
     users_on_floor = []
     for user in users:
         users_on_floor.append(
@@ -675,8 +738,8 @@ def create_list_users_on_floor(users, start, end, meal):
              'number': '',
              'room_number': user.room_number,
              'diet': user.type_of_diet,
-             'products_lp': creates_dict_test(user.id, str(date.today()), 'lp', meal),
-             'products_cafe': creates_dict_test(user.id, str(date.today()), 'cafe', meal),
+             'products_lp': creates_dict_test(user.user_id, str(date.today()), 'lp', meal),
+             'products_cafe': creates_dict_test(user.user_id, str(date.today()), 'cafe', meal),
              }
         )
     return users_on_floor

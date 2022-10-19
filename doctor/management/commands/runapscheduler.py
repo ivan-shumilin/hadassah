@@ -1,4 +1,3 @@
-# runapscheduler.py
 import logging
 
 from django.conf import settings
@@ -16,16 +15,11 @@ from nutritionist.models import BotChatId
 logger = logging.getLogger(__name__)
 
 
-def my_job():
-    print('Hi!')
-    TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-    bot = telepot.Bot(TOKEN)
-    # все номера chat_id
-    messang = ''
-    messang += f'Hello!'
+def my_job_applies_changes():
+    applies_changes() # накатываем изменения
 
-    for item in BotChatId.objects.all():
-        bot.sendMessage(item.chat_id, messang)
+def my_job_create_user_today():
+    create_user_today() # создаем таблицу с пользователями на сегодня
 
 
 
@@ -53,13 +47,22 @@ class Command(BaseCommand):
         scheduler.add_jobstore(DjangoJobStore(), "default")
 
         scheduler.add_job(
-            my_job,
-            trigger=CronTrigger(second="*/10"),  # Every 10 seconds
-            id="my_job",  # The `id` assigned to each job MUST be unique
+            my_job_create_user_today,
+            trigger=CronTrigger(minute='20'),
+            id="my_job_create_user_today",  # The `id` assigned to each job MUST be unique
             max_instances=1,
             replace_existing=True,
         )
-        logger.info("Added job 'my_job'.")
+        logger.info("Added job 'my_job_create_user_today'.")
+
+        scheduler.add_job(
+            my_job_applies_changes,
+            trigger=CronTrigger(minute='25'),
+            id="my_job_applies_changes",  # The `id` assigned to each job MUST be unique
+            max_instances=1,
+            replace_existing=True,
+        )
+        logger.info("Added job 'my_job_create_user_today'.")
 
         scheduler.add_job(
             delete_old_job_executions,

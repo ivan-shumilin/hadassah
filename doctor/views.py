@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput
 from .forms import PatientRegistrationForm, DietChoiceForm
-from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, BotChatId
+from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
+    UsersToday
 from nutritionist.forms import TimetableForm
 import random, calendar, datetime, logging, json
 from datetime import datetime, date, timedelta
@@ -17,12 +18,13 @@ from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_w
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two
 from doctor.functions.bot import check_change
+from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
+    applies_changes
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core import management
 import telepot
-
 
 
 def group_doctors_check(user):
@@ -47,6 +49,8 @@ def doctor(request):
                                                  'id': Textarea(attrs={'style': "display: none;"}),
                                              },
                                              extra=0, )
+    # create_user_today() # создаем таблицу с пользователями на сегодня
+    applies_changes() # накатить изменения
     CustomUserFormSet = delete_choices(CustomUserFormSet)
 
     page = 'menu-doctor'
@@ -146,6 +150,12 @@ def doctor(request):
         user.status = 'patient_archive'
         user.save()
 
+        if user.receipt_date <= date.today():
+            if check_time():
+                update_UsersToday(user)
+            else:
+                update_СhangesUsersToday(user)
+        # applies_changes() # накатываем изменения
         if date.today() >= user.receipt_date:
             snowflake = u'\u2757\ufe0f'  # Code: 600's snowflake
             TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
@@ -329,7 +339,6 @@ def menu(request):
         'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
     }
 
-
     if request.GET == {} or request.method == 'POST':
         diet_form = DietChoiceForm({'type_of_diet': 'ovd'})
         diet = 'ovd'
@@ -348,13 +357,13 @@ def menu(request):
 
     products_lp: tuple = creating_meal_menu_lp(day_of_the_week, translated_diet, meal)
 
-    products_main, products_garnish, products_salad,\
-    products_soup, products_porridge, products_dessert,\
+    products_main, products_garnish, products_salad, \
+    products_soup, products_porridge, products_dessert, \
     products_fruit, products_drink = products_lp
 
     products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
 
-    queryset_main_dishes, queryset_garnish, queryset_salad,\
+    queryset_main_dishes, queryset_garnish, queryset_salad, \
     queryset_soup = products_cafe
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
@@ -435,7 +444,7 @@ def printed_form_one(request):
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
     meal = what_meal()
-    users = CustomUser.objects.all()
+    users = UsersToday.objects.all()
     users = users.filter(status='patient').filter(receipt_date__lte=date.today())
     catalog = {'meal': translate_meal(meal),
                'count': len(users),
@@ -473,7 +482,6 @@ def printed_form_two_lp(request):
     # meal = what_meal()
     meal = 'lunch'
     catalog = {}
-
 
     users = CustomUser.objects.all()
     users = users.filter(status='patient').filter(receipt_date__lte=date.today())
@@ -536,7 +544,6 @@ def printed_form_two_cafe(request):
     meal = 'lunch'
     catalog = {}
 
-
     users = CustomUser.objects.all()
     users = users.filter(status='patient').filter(receipt_date__lte=date.today())
     for category in ['main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad']:
@@ -589,6 +596,7 @@ def printed_form_two_cafe(request):
     }
     return render(request, 'printed_form2_cafe.html', context=data)
 
+
 def admin(request):
     data = {}
     return render(request, 'admin.html', context=data)
@@ -611,6 +619,7 @@ class GetPatientMenuAPIView(APIView):
         response = creates_dict_with_menu_patients(data['id_user'])
         response = json.dumps(response)
         return Response(response)
+
 
 class GetPatientMenuDayAPIView(APIView):
     def post(self, request):
