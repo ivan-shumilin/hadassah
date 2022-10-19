@@ -16,12 +16,13 @@ from doctor.functions.for_print_forms import create_user_today, applies_changes
 logger = logging.getLogger(__name__)
 
 def send_messang(meal):
+    check = '\u2705'
     TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
     bot = telepot.Bot(TOKEN)
     # все номера chat_id
-    messang = f'Заказ на {meal} сформирован.'
+    messang = f'{check} Заказ на <u><b>{meal}</b></u> сформирован.'
     for item in BotChatId.objects.all():
-        bot.sendMessage(item.chat_id, messang)
+        bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
 def my_job_applies_changes():
     applies_changes()
@@ -108,7 +109,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             my_job_applies_changes_dinner,
-            trigger=CronTrigger(hour='16', minute='00'),
+            trigger=CronTrigger(hour='16', minute='43'),
             id="my_job_applies_changes_dinner",
             max_instances=1,
             replace_existing=True,
