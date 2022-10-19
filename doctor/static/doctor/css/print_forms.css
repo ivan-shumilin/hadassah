@@ -1,0 +1,135 @@
+html body {
+    background: #fdfeff;
+    color: #1a1b1c;
+    cursor: default;
+    font-family: Montserrat, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.42;
+    margin: 0;
+    min-width: 320px;
+    padding: 0;
+    padding-left: 20px;
+  }
+
+h1 {
+    font-size: 18px;
+    color: rgb(185, 185, 189);
+  }
+
+.bold {
+    font-size: 14px;
+    font-weight: 600;
+ }
+
+.ex-bold {
+    font-size: 16px;
+    font-weight: 650;
+ }
+
+.underline {
+    text-decoration: underline;
+}
+
+#table1 table {
+    border-collapse: collapse;
+    text-align: center;
+    font-weight: 600;
+}
+
+#table1 td:nth-child(1) {
+    text-align: left;
+}
+
+#table1 td {
+    padding: 5px;
+    padding-left: 10px;
+}
+
+#table1 tr:nth-child(2) td {
+    border-top: 1px dashed #1a1b1c;
+    border-bottom: 1px dashed #1a1b1c;
+}
+
+#table1 tr td:nth-child(2) {
+    border-right: 1px dashed #1a1b1c;
+    background: rgb(236, 240, 243);
+
+}
+
+#table1 tr:nth-child(1) td:nth-child(2) {
+    border-right: 1px dashed #fff;
+    background: #fff;
+}
+
+#table1 tr:last-child td:nth-child(2) {
+    border-right: 1px dashed #fff;
+    background: #fff;
+}
+
+#table1 tr:last-child td:nth-child(1),
+#table1 tr:last-child td:nth-child(2) {
+    border-top: 1px solid #1a1b1c;
+    font-weight: 400;
+}
+
+
+#table2 {
+    border-collapse: collapse;
+    text-align: left;
+    font-weight: 600;
+
+}
+
+#table2 td {
+    padding: 5px;
+    padding-left: 10px;
+}
+
+#table2 tr:first-child {
+    background-color: #226bc2;
+    color: #fafafa;
+    border-left: 1px solid #fff;
+}
+
+#table2 tr:first-child td {
+    border-left: 1px solid #fff;
+}
+
+.light-blue{
+    background-color: #c3d1e2;
+    border-bottom: 1px solid #1a1b1c;
+
+}
+
+td ul {
+    margin: 0;
+    padding: 0;
+}
+
+td li {
+    list-style-type: none;
+}
+
+.dashed td {
+    border-bottom: 1px dashed #1a1b1c;
+    font-weight: 400;
+}
+
+.dashed td:nth-child(5) {
+    background: rgb(236, 240, 243);
+}
+
+.lp {
+    color: #598a5a;
+    border: 3px solid #598a5a;
+    padding: 5px;
+    margin-left: 20px;
+}
+
+.cafe {
+    color: #ac3b3b;
+    border: 3px solid #ac3b3b;
+    padding: 5px;
+    margin-left: 20px;
+}
