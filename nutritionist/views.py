@@ -952,7 +952,7 @@ def printed_form_two_lp(request):
             for product in all_products:
                 flag = True
                 for un_product in unique_products:
-                    if product != None or un_product != None:
+                    if product != None and un_product != None:
                         if product['id'] == un_product['id']:
                             flag = False
                 if flag == True:
