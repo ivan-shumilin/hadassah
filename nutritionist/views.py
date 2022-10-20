@@ -933,8 +933,8 @@ def printed_form_two_lp(request):
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
-    # meal = what_meal()
-    meal = 'lunch'
+    meal = what_meal()
+    # meal = 'lunch'
     catalog = {}
 
     users = UsersToday.objects.all()
@@ -952,7 +952,7 @@ def printed_form_two_lp(request):
             for product in all_products:
                 flag = True
                 for un_product in unique_products:
-                    if product != None and un_product != None:
+                    if product != None or un_product != None:
                         if product['id'] == un_product['id']:
                             flag = False
                 if flag == True:
