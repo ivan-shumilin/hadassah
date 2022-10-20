@@ -937,15 +937,15 @@ def printed_form_two_lp(request):
     meal = 'lunch'
     catalog = {}
 
-    users = CustomUser.objects.all()
-    users = users.filter(status='patient').filter(receipt_date__lte=date.today())
+    users = UsersToday.objects.all()
+    # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
     for category in ['main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad']:
         list_whith_unique_products = []
         for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД']:
             users_with_diet = users.filter(type_of_diet=diet)
             all_products = []
             for user in users_with_diet:
-                menu_all = MenuByDay.objects.filter(user_id=user.id)
+                menu_all = MenuByDay.objects.filter(user_id=user.user_id)
                 all_products.append(check_value_two(menu_all, str(date.today()), meal, category))
             # составляем список с уникальными продуктами
             unique_products = []
