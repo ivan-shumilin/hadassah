@@ -9,7 +9,7 @@ from django.db.models.functions import Lower
 import logging, random
 import telepot
 from nutritionist.models import BotChatId
-from doctor.functions.bot import check_change, formatting_full_name
+from doctor.functions.bot import check_change, formatting_full_name, do_messang_send
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes
 
@@ -605,14 +605,16 @@ def create_user(user_form):
     add_default_menu(user)
     add_menu_three_days_ahead()
 
-    if check_change(user): # Если время больше 17 не отправляем сообщения, изменения идут на завтра
-        if parse(user.receipt_date).date() <= date.today():
-            if check_time():
-                update_UsersToday(user)
-            else:
-                update_СhangesUsersToday(user)
-        # applies_changes() # накатываем изменения
-            attention = u'\u2757\ufe0f'  # Code: 600's snowflake
+    date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
+    # после 19 в заказ добавляем пользователей с датой госпитализации на след день
+    if parse(user.receipt_date).date() <= date_order:
+        if check_time():
+            update_UsersToday(user)
+        else:
+            update_СhangesUsersToday(user)
+
+        if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+            attention = u'\u2757\ufe0f'
             TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
             bot = telepot.Bot(TOKEN)
             # все номера chat_id
@@ -662,23 +664,26 @@ def edit_user(user_form):
     user.save()
     logging.info(f'Пациент отредактирован {user_form.data["full_name"]}')
 
-    if parse(user.receipt_date).date() <= date.today() or flag == True:
+    date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
+    # после 19 в заказ добавляем пользователей с датой госпитализации на след день
+    if parse(user.receipt_date).date() <= date_order or flag == True:
         if check_time():
             update_UsersToday(user)
         else:
             update_СhangesUsersToday(user)
-    # applies_changes() # накатываем изменения
-        attention = u'\u2757\ufe0f'  # Code: 600's snowflake
-        TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-        bot = telepot.Bot(TOKEN)
-        # все номера chat_id
-        messang = ''
-        messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-        messang += f'Отредактирован профиль пациетна <b>{user.full_name}</b>.\n\n'
-        for change in changes:
-            messang += f'-{change}\n'
-        for item in BotChatId.objects.all():
-            bot.sendMessage(item.chat_id, messang, parse_mode="html")
+        # отрпавить сообщение
+        if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+            TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+            attention = u'\u2757\ufe0f'
+            bot = telepot.Bot(TOKEN)
+            # все номера chat_id
+            messang = ''
+            messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
+            messang += f'Отредактирован профиль пациетна <b>{user.full_name}</b>.\n\n'
+            for change in changes:
+                messang += f'-{change}\n'
+            for item in BotChatId.objects.all():
+                bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
 
 def counting_diets(users):
@@ -732,7 +737,7 @@ def creates_dict_test(id, date_show, lp_or_cafe, meal):
     return menu_list
 
 
-def create_list_users_on_floor(users, start, end, meal):
+def create_list_users_on_floor(users, start, end, meal, date_create):
     users = [user for user in users if (int(user.room_number) >= start) \
                                   and (int(user.room_number) <= end)]
     users_on_floor = []
@@ -742,18 +747,20 @@ def create_list_users_on_floor(users, start, end, meal):
              'number': '',
              'room_number': user.room_number,
              'diet': user.type_of_diet,
-             'products_lp': creates_dict_test(user.user_id, str(date.today()), 'lp', meal),
-             'products_cafe': creates_dict_test(user.user_id, str(date.today()), 'cafe', meal),
+             'products_lp': creates_dict_test(user.user_id, str(date_create), 'lp', meal),
+             'products_cafe': creates_dict_test(user.user_id, str(date_create), 'cafe', meal),
              }
         )
     return users_on_floor
 
 def what_meal():
-    if datetime.today().time().hour > 19 or datetime.today().time().hour < 9:
-        return 'breakfast'
+    if datetime.today().time().hour < 9:
+        return 'breakfast', None
     if datetime.today().time().hour >= 9 and datetime.today().time().hour < 12:
-        return 'lunch'
+        return 'lunch', None
     if datetime.today().time().hour >= 12 and datetime.today().time().hour < 16:
-        return 'afternoon'
+        return 'afternoon', None
     if datetime.today().time().hour >= 16 and datetime.today().time().hour < 19:
-        return 'dinner'
+        return 'dinner', None
+    if datetime.today().time().hour >= 19:
+        return 'breakfast', 'tomorrow'

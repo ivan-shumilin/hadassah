@@ -11,7 +11,7 @@ from django_apscheduler import util
 
 import telepot
 from nutritionist.models import BotChatId
-from doctor.functions.for_print_forms import create_user_today, applies_changes
+from doctor.functions.for_print_forms import create_user_today, applies_changes, create_user_tomorrow
 
 logger = logging.getLogger(__name__)
 
@@ -49,8 +49,8 @@ def my_job_create_user_today():
 
 def my_job_create_user_tomorrow():
     """ Создаем таблицу с пользователями на завтра """
-    create_user_tomorrow() # создаем таблицу с пользователями на сегодня
-    applies_changes()
+    create_user_tomorrow()  # создаем таблицу с пользователями на завтра
+    # applies_changes()
     send_messang('завтра')
 
 

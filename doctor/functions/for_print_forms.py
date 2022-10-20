@@ -1,6 +1,6 @@
 from nutritionist.models import CustomUser, UsersToday, СhangesUsersToday
 import datetime
-from datetime import date, datetime
+from datetime import datetime, date, timedelta
 from django.db import transaction
 
 

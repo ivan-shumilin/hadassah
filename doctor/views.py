@@ -17,7 +17,7 @@ from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_w
     creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two
-from doctor.functions.bot import check_change
+from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes
 from django.db.models import Q
@@ -149,23 +149,25 @@ def doctor(request):
         user = CustomUser.objects.get(id=id_user)
         user.status = 'patient_archive'
         user.save()
-
-        if user.receipt_date <= date.today():
+        # дата на которую создаеться заказ
+        date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
+        # после 19 в заказ добавляем пользователей с датой госпитализации на след день
+        if user.receipt_date <= date_order:
             if check_time():
                 update_UsersToday(user)
             else:
                 update_СhangesUsersToday(user)
-        # applies_changes() # накатываем изменения
-        if date.today() >= user.receipt_date:
-            attention = u'\u2757\ufe0f'  # Code: 600's snowflake
-            TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-            bot = telepot.Bot(TOKEN)
-            # все номера chat_id
-            messang = ''
-            messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-            messang += f'Пациента <u><b>{user.full_name}({user.type_of_diet})</b></u> выписали\n'
-            for item in BotChatId.objects.all():
-                bot.sendMessage(item.chat_id, messang)
+
+            if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+                attention = u'\u2757\ufe0f'
+                TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+                bot = telepot.Bot(TOKEN)
+                # все номера chat_id
+                messang = ''
+                messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
+                messang += f'Пациента <u><b>{formatting_full_name(user.full_name)}({user.type_of_diet})</b></u> выписали\n'
+                for item in BotChatId.objects.all():
+                    bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
         user_form = PatientRegistrationForm(request.POST)
         formset = CustomUserFormSet(queryset=queryset)

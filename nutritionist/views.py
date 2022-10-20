@@ -897,14 +897,15 @@ def printed_form_one(request):
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
-    meal = what_meal()
+    meal, day = what_meal() # после return 'breakfast', 'tomorrow'
+    date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
     users = UsersToday.objects.all()
-    users = users.filter(status='patient').filter(receipt_date__lte=date.today())
+    # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
     catalog = {'meal': translate_meal(meal),
                'count': len(users),
                'count_diet': counting_diets(users),
-               'users_2nd_floor': create_list_users_on_floor(users, 200, 299, meal),
-               'users_3nd_floor': create_list_users_on_floor(users, 300, 399, meal)
+               'users_2nd_floor': create_list_users_on_floor(users, 200, 299, meal, date_create),
+               'users_3nd_floor': create_list_users_on_floor(users, 300, 399, meal, date_create)
                }
     number = 0
     count_users_with_cafe_prod = 0
@@ -924,7 +925,9 @@ def printed_form_one(request):
         'formatted_date': formatted_date_now,
         'time_now': time_now,
         'catalog': catalog,
-        'count_users_with_cafe_prod': count_users_with_cafe_prod
+        'count_users_with_cafe_prod': count_users_with_cafe_prod,
+        'day': day,
+        'date_create': dateformat.format(date.fromisoformat(str(date_create)), 'd E')
     }
     return render(request, 'printed_form1.html', context=data)
 
