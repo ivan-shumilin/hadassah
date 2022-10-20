@@ -16,7 +16,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import CheckboxInput, Textarea
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
-from .models import Base, Product, Timetable, CustomUser, Barcodes
+from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
+    UsersToday
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import ProductSerializer
 from rest_framework import generics
@@ -28,6 +29,17 @@ from datetime import datetime, date
 from django.core import management
 from django.core.management.commands import dumpdata
 from django.contrib.auth.models import Group
+from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, add_default_menu, \
+    creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe, \
+    creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
+    create_list_users_on_floor, what_meal, translate_meal, check_value_two
+from doctor.functions.bot import check_change
+from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
+    applies_changes
+import random, calendar, datetime, logging, json
+from datetime import datetime, date, timedelta
+from django.utils import dateformat
+
 
 def group_nutritionists_check(user):
     return user.groups.filter(name='nutritionists').exists()
@@ -876,3 +888,164 @@ def password_reset(request):
     else:
         user_form = UserPasswordResetForm()
     return render(request, 'nutritionist/registration/password_reset_email.html', {'user_form': user_form, 'errors': errors})
+
+def manager(request):
+    data = {}
+    return render(request, 'admin.html', context=data)
+
+def printed_form_one(request):
+    formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
+    time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
+    # какой прием пищи
+    meal = what_meal()
+    users = UsersToday.objects.all()
+    users = users.filter(status='patient').filter(receipt_date__lte=date.today())
+    catalog = {'meal': translate_meal(meal),
+               'count': len(users),
+               'count_diet': counting_diets(users),
+               'users_2nd_floor': create_list_users_on_floor(users, 200, 299, meal),
+               'users_3nd_floor': create_list_users_on_floor(users, 300, 399, meal)
+               }
+    number = 0
+    count_users_with_cafe_prod = 0
+    # расставляем порядковые номера и считаем кол-во пациетнов с блюдами с кафе
+    for user in catalog['users_2nd_floor']:
+        number += 1
+        user['number'] = str(number)
+        if len(user['products_cafe']) > 0:
+            count_users_with_cafe_prod += 1
+    for user in catalog['users_3nd_floor']:
+        number += 1
+        user['number'] = str(number)
+        if len(user['products_cafe']) > 0:
+            count_users_with_cafe_prod += 1
+
+    data = {
+        'formatted_date': formatted_date_now,
+        'time_now': time_now,
+        'catalog': catalog,
+        'count_users_with_cafe_prod': count_users_with_cafe_prod
+    }
+    return render(request, 'printed_form1.html', context=data)
+
+
+def printed_form_two_lp(request):
+    formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
+    time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
+    # какой прием пищи
+    # meal = what_meal()
+    meal = 'lunch'
+    catalog = {}
+
+    users = CustomUser.objects.all()
+    users = users.filter(status='patient').filter(receipt_date__lte=date.today())
+    for category in ['main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad']:
+        list_whith_unique_products = []
+        for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД']:
+            users_with_diet = users.filter(type_of_diet=diet)
+            all_products = []
+            for user in users_with_diet:
+                menu_all = MenuByDay.objects.filter(user_id=user.id)
+                all_products.append(check_value_two(menu_all, str(date.today()), meal, category))
+            # составляем список с уникальными продуктами
+            unique_products = []
+            for product in all_products:
+                flag = True
+                for un_product in unique_products:
+                    if product != None or un_product != None:
+                        if product['id'] == un_product['id']:
+                            flag = False
+                if flag == True:
+                    if product:
+                        if 'cafe' not in product['id']:
+                            unique_products.append(product)
+            # добавляем элеметны списока с уникальными продуктами, кол-вом(сколько продуктов всего)
+            # типом диеты
+            for un_product in unique_products:
+                count = 0
+                for product in all_products:
+                    if product['id'] == un_product['id']:
+                        count += 1
+                un_product['count'] = str(count)
+                un_product['diet'] = diet
+            # list_whith_unique_products.append(unique_products)
+            [list_whith_unique_products.append(item) for item in unique_products]
+        catalog[category] = list_whith_unique_products
+
+    for cat in catalog.values():
+        for i, pr in enumerate(cat):
+            for ii in range(i + 1, len(cat)):
+                if pr != None and cat[ii] != None:
+                    if pr['id'] == cat[ii]['id']:
+                        pr['count'] = str(int(pr['count']) + int(cat[ii]['count']))
+                        pr['diet'] = pr['diet'] + ', ' + cat[ii]['diet']
+                        cat[ii] = None
+
+    data = {
+        'formatted_date': formatted_date_now,
+        'time_now': time_now,
+        'catalog': catalog,
+        'meal': translate_meal(meal)
+    }
+    return render(request, 'printed_form2_lp.html', context=data)
+
+
+def printed_form_two_cafe(request):
+    formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
+    time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
+    # какой прием пищи
+    # meal = what_meal()
+    meal = 'lunch'
+    catalog = {}
+
+    users = CustomUser.objects.all()
+    users = users.filter(status='patient').filter(receipt_date__lte=date.today())
+    for category in ['main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad']:
+        list_whith_unique_products = []
+        for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД']:
+            users_with_diet = users.filter(type_of_diet=diet)
+            all_products = []
+            for user in users_with_diet:
+                menu_all = MenuByDay.objects.filter(user_id=user.id)
+                all_products.append(check_value_two(menu_all, str(date.today()), meal, category))
+            # составляем список с уникальными продуктами
+            unique_products = []
+            for product in all_products:
+                flag = True
+                for un_product in unique_products:
+                    if product != None or un_product != None:
+                        if product['id'] == un_product['id']:
+                            flag = False
+                if flag == True:
+                    if product:
+                        if 'cafe' in product['id']:
+                            unique_products.append(product)
+            # добавляем элеметны списока с уникальными продуктами, кол-вом(сколько продуктов всего)
+            # типом диеты
+            for un_product in unique_products:
+                count = 0
+                for product in all_products:
+                    if product['id'] == un_product['id']:
+                        count += 1
+                un_product['count'] = str(count)
+                un_product['diet'] = diet
+            # list_whith_unique_products.append(unique_products)
+            [list_whith_unique_products.append(item) for item in unique_products]
+        catalog[category] = list_whith_unique_products
+
+    for cat in catalog.values():
+        for i, pr in enumerate(cat):
+            for ii in range(i + 1, len(cat)):
+                if pr != None and cat[ii] != None:
+                    if pr['id'] == cat[ii]['id']:
+                        pr['count'] = str(int(pr['count']) + int(cat[ii]['count']))
+                        pr['diet'] = pr['diet'] + ', ' + cat[ii]['diet']
+                        cat[ii] = None
+
+    data = {
+        'formatted_date': formatted_date_now,
+        'time_now': time_now,
+        'catalog': catalog,
+        'meal': translate_meal(meal)
+    }
+    return render(request, 'printed_form2_cafe.html', context=data)

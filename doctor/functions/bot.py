@@ -12,4 +12,20 @@ def check_change(user):
         return 'полдника'
     if datetime.today().time().hour >= 14 and datetime.today().time().hour < 17:
         return 'ужина'
-    return
+    return None
+
+
+def formatting_full_name(full_name):
+    list = full_name.split()
+    res = ''
+    for index, value in enumerate(list):
+        print(index, len(list))
+        if index == 0:
+            res += value.capitalize() + ' '
+            continue
+        if index == len(list) - 1:
+            res += value[0:1].capitalize()
+            continue
+        else:
+            res += value[0:1].capitalize() + '.'
+    return res

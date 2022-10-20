@@ -10,6 +10,4 @@ urlpatterns = [
     path('catalog/main_dishes/<page>', views.catalog_main_dishes, name='main_dishes'),
     path('catalog/side_dishes/<page>', views.catalog_side_dishes, name='side_dishes'),
     path('backup/', views.backup, name='backup'),
-
-
 ]

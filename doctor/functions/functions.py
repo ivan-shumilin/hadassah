@@ -9,7 +9,7 @@ from django.db.models.functions import Lower
 import logging, random
 import telepot
 from nutritionist.models import BotChatId
-from doctor.functions.bot import check_change
+from doctor.functions.bot import check_change, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes
 
@@ -605,34 +605,38 @@ def create_user(user_form):
     add_default_menu(user)
     add_menu_three_days_ahead()
 
-    if parse(user.receipt_date).date() <= date.today():
-        if check_time():
-            update_UsersToday(user)
-        else:
-            update_СhangesUsersToday(user)
-    # applies_changes() # накатываем изменения
-        snowflake = u'\u2757\ufe0f'  # Code: 600's snowflake
-        TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-        bot = telepot.Bot(TOKEN)
-        # все номера chat_id
-        messang = ''
-        messang += f'{snowflake} Изменение с {check_change(user)}\n'
-        messang += f'Поступил пациент {user.full_name}({user.type_of_diet})\n'
-        if user.comment:
-            messang += f'Комментарий: "[{user.comment}"'
-        for item in BotChatId.objects.all():
-            bot.sendMessage(item.chat_id, messang)
+    if check_change(user): # Если время больше 17 не отправляем сообщения, изменения идут на завтра
+        if parse(user.receipt_date).date() <= date.today():
+            if check_time():
+                update_UsersToday(user)
+            else:
+                update_СhangesUsersToday(user)
+        # applies_changes() # накатываем изменения
+            attention = u'\u2757\ufe0f'  # Code: 600's snowflake
+            TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+            bot = telepot.Bot(TOKEN)
+            # все номера chat_id
+            messang = ''
+            messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
+            messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)}({user.type_of_diet})</b></u>\n'
+            if user.comment:
+                messang += f'Комментарий: "{user.comment}"'
+            for item in BotChatId.objects.all():
+                bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
 
 def edit_user(user_form):
     changes = []
+    flag = False
     user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
     if user.full_name != user_form.data['full_name1']:
         changes.append(f"ФИО <b>{user.full_name}</b> заменили на <u><b>{user_form.data['full_name1']}</b></u>")
     user.full_name = user_form.data['full_name1']
-
-    # user.receipt_date = parse(user_form.data['receipt_date1']).strftime('%Y-%m-%d')
     if user.receipt_date != datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date():
+        # проверяем если дату из прошлого поренесли в будущее
+        if user.receipt_date <= date.today() and \
+           datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date() > date.today():
+            flag = True
         changes.append(f"дату поступления <b>{user.receipt_date}</b> заменили на <u><b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b></u>")
     user.receipt_date = datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')
 
@@ -658,18 +662,18 @@ def edit_user(user_form):
     user.save()
     logging.info(f'Пациент отредактирован {user_form.data["full_name"]}')
 
-    if parse(user.receipt_date).date() <= date.today():
+    if parse(user.receipt_date).date() <= date.today() or flag == True:
         if check_time():
             update_UsersToday(user)
         else:
             update_СhangesUsersToday(user)
     # applies_changes() # накатываем изменения
-        snowflake = u'\u2757\ufe0f'  # Code: 600's snowflake
+        attention = u'\u2757\ufe0f'  # Code: 600's snowflake
         TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
         bot = telepot.Bot(TOKEN)
         # все номера chat_id
         messang = ''
-        messang += f'{snowflake} Изменение с <u><b>{check_change(user)}</b></u>{snowflake}\n'
+        messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
         messang += f'Отредактирован профиль пациетна <b>{user.full_name}</b>.\n\n'
         for change in changes:
             messang += f'-{change}\n'

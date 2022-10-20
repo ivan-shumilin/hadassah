@@ -27,6 +27,30 @@ def create_user_today():
             ))
     UsersToday.objects.bulk_create(to_create)
 
+
+@transaction.atomic
+def create_user_tomorrow():
+    """Создает таблицу со всеми пользователями,
+       которые уже поступили или поступят завтра."""
+    to_create = []
+    tomorrow = date.today() + timedelta(days=1)
+    users = CustomUser.objects.filter(status='patient').filter(receipt_date__lte=tomorrow)
+    UsersToday.objects.all().delete()
+    for user in users:
+        to_create.append(UsersToday(
+            user_id=user.id,
+            date_create=date.today(),
+            full_name=user.full_name,
+            receipt_date=user.receipt_date,
+            receipt_time=user.receipt_time,
+            department=user.department,
+            room_number=user.room_number,
+            type_of_diet=user.type_of_diet,
+            comment=user.comment,
+            status=user.status,
+            ))
+    UsersToday.objects.bulk_create(to_create)
+
 def check_time():
     """
     Проверяет время, есть два варианта:
@@ -106,7 +130,7 @@ def applies_changes():
     for user in users_changes:
         try:
             user_today = users_today.get(user_id=user.user_id)
-            if user.status == 'patient_archive':
+            if user.status == 'patient_archive' or user.receipt_date > date.today():
                 user_today.delete()
                 continue
             user_today.user_id = user.user_id

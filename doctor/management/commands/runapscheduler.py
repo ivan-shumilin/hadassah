@@ -24,7 +24,7 @@ def send_messang(meal):
     for item in BotChatId.objects.all():
         bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
-def my_job_applies_changes():
+def my_job_applies_changes_():
     applies_changes()
 
 def my_job_applies_changes_breakfast():
@@ -45,6 +45,13 @@ def my_job_applies_changes_dinner():
 
 def my_job_create_user_today():
     create_user_today() # создаем таблицу с пользователями на сегодня
+
+
+def my_job_create_user_tomorrow():
+    """ Создаем таблицу с пользователями на завтра """
+    create_user_tomorrow() # создаем таблицу с пользователями на сегодня
+    applies_changes()
+    send_messang('завтра')
 
 
 
@@ -115,6 +122,15 @@ class Command(BaseCommand):
             replace_existing=True,
         )
         logger.info("Added job 'my_job_applies_changes_dinner'.")
+        
+        scheduler.add_job(
+            my_job_create_user_tomorrow,
+            trigger=CronTrigger(hour='19', minute='00'),
+            id="my_job_create_user_tomorrow",
+            max_instances=1,
+            replace_existing=True,
+        )
+        logger.info("Added job 'my_job_create_user_tomorrow'.")
 
 
         scheduler.add_job(
