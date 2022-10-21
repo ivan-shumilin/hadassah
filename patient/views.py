@@ -31,6 +31,7 @@ def group_patient_check(user):
 def patient(request, id):
     import datetime
     page = 'menu-menu'
+    is_have = 'ok'
     date_menu = {
         'today': str(date.today()),
         'tomorrow': str(date.today() + datetime.timedelta(days=1)),
@@ -48,8 +49,11 @@ def patient(request, id):
     else:
         date_get = request.GET['date']
 
-    # если дата показа меньше даты госпитализации is_have = false
-    is_have = parse(date_get).date() >= user.receipt_date
+    # если дата показа меньше даты госпитализации is_have = False
+    if len(user.comment) >= 2:
+        is_have = 'comment'
+    if parse(date_get).date() < user.receipt_date:
+        is_have = 'date'  # выводим сообщение об ошибке
 
     day_of_the_week = get_day_of_the_week(date_get)
 

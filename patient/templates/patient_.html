@@ -40,7 +40,7 @@
 </form>
 
 
-{% if is_have %}
+{% if is_have == 'ok' %}
                 <div class="eat-menu-block">
                     <div class="menu">
                         <a class="active" data-tab="breakfast">Завтрак</a>
@@ -985,11 +985,17 @@
             </div>
         </div>
     </div>
-
 {% else %}
-<div>
-    <p>Выбранная дата раньше даты госпитализации, данные недоступны</p>
-</div>
+    {% if is_have == 'date' %}
+        <div>
+            <p>Выбранная дата раньше даты госпитализации, данные недоступны</p>
+        </div>
+    {% endif %}
+    {% if is_have == 'comment' %}
+        <div>
+            <p>Данные недоступны</p>
+        </div>
+    {% endif %}
 {% endif %}
 <script>
 // отмечаем день

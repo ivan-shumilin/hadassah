@@ -253,7 +253,11 @@ async function displayInfoPatient(full_name, receipt_date, receipt_time, departm
     document.getElementById("type_of_diet_field").innerHTML = type_of_diet;
     document.getElementById("room_number_field").innerHTML = room_number;
     document.getElementById("comment_field").innerHTML = comment;
-    document.getElementById("link_lk_patient").innerHTML = '<a href="https://sk.petrushkagroup.com/patient/' + id + '">ЛК пациента</a>';
+    if (comment.length == 0) {
+        document.getElementById("link_lk_patient").innerHTML = '<a href="https://sk.petrushkagroup.com/patient/' + id + '">ЛК пациента</a>';
+    } else {
+        document.getElementById("link_lk_patient").innerHTML = ''
+    }
     document.getElementById("modal_field").setAttribute('data-modal-link', 'modal-start'+id);
     document.getElementById("archive_field").setAttribute('data-modal-link', 'patient-archive'+id); 
     document.getElementById("receipt_datetime_field_hidden").innerHTML = receipt_date;
