@@ -984,6 +984,15 @@ def printed_form_two_lp(request):
                         pr['diet'] = pr['diet'] + ', ' + cat[ii]['diet']
                         cat[ii] = None
 
+    number = 1
+    for item in catalog.values():
+        for product in item:
+            if product != None:
+                product['number'] = number
+                number += 1
+
+
+
     data = {
         'formatted_date': formatted_date_now,
         'time_now': time_now,
@@ -1044,6 +1053,13 @@ def printed_form_two_cafe(request):
                         pr['count'] = str(int(pr['count']) + int(cat[ii]['count']))
                         pr['diet'] = pr['diet'] + ', ' + cat[ii]['diet']
                         cat[ii] = None
+
+    number = 1
+    for item in catalog.values():
+        for product in item:
+            if product != None:
+                product['number'] = number
+                number += 1
 
     data = {
         'formatted_date': formatted_date_now,

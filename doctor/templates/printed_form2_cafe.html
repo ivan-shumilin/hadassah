@@ -18,7 +18,7 @@
 <p class="bold underline">{{ meal }}</p>
 
 
-<table id='table2' width="95%">
+<table id='table2' width="100%">
     <tr>
         <td>№</td>
         <td>Диета</td>
@@ -37,7 +37,7 @@
         {% for product in catalog.salad %}
             {% if product %}
                 <tr class='dashed'>
-                    <td></td>
+                    <td>{{ product.number }}</td>
                     <td>{{ product.diet }}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.count }}</td>
@@ -57,7 +57,7 @@
         {% for product in catalog.soup %}
             {% if product %}
                 <tr class='dashed'>
-                    <td></td>
+                    <td>{{ product.number }}</td>
                     <td>{{ product.diet }}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.count }}</td>
@@ -77,7 +77,7 @@
         {% for product in catalog.main %}
             {% if product %}
                 <tr class='dashed'>
-                    <td></td>
+                    <td>{{ product.number }}</td>
                     <td>{{ product.diet }}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.count }}</td>
@@ -97,7 +97,7 @@
         {% for product in catalog.garnish %}
             {% if product %}
                 <tr class='dashed'>
-                    <td></td>
+                    <td>{{ product.number }}</td>
                     <td>{{ product.diet }}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.count }}</td>
@@ -117,7 +117,7 @@
         {% for product in catalog.dessert %}
             {% if product %}
                 <tr class='dashed'>
-                    <td></td>
+                    <td>{{ product.number }}</td>
                     <td>{{ product.diet }}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.count }}</td>
@@ -137,7 +137,7 @@
         {% for product in catalog.fruit %}
             {% if product %}
                 <tr class='dashed'>
-                    <td></td>
+                    <td>{{ product.number }}</td>
                     <td>{{ product.diet }}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.count }}</td>
@@ -157,7 +157,7 @@
         {% for product in catalog.drink %}
             {% if product %}
                 <tr class='dashed'>
-                    <td></td>
+                    <td>{{ product.number }}</td>
                     <td>{{ product.diet }}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.count }}</td>
