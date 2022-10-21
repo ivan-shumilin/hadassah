@@ -997,7 +997,7 @@ def printed_form_two_cafe(request):
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
-    meal = what_meal()
+    meal, day = what_meal()
     # meal = 'lunch'
     catalog = {}
 
