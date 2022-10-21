@@ -695,7 +695,7 @@ def edit_user(user_form, type):
             if type == 'edit':
                 messang = ''
                 messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-                messang += f'Отредактирован профиль пациетна <b>{user.full_name}</b>.\n\n'
+                messang += f'Отредактирован профиль пациента <b>{user.full_name}</b>.\n\n'
                 for change in changes:
                     messang += f'-{change}\n'
             if type == 'restore':
