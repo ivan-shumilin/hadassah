@@ -28,8 +28,8 @@
         <tr>
             <td>Всего пациентов</td>
             <td>{{ catalog.count }}</td>
-            <td>2</td>
-            <td>1</td>
+            <td>{{ catalog.count_2nd_floor }}</td>
+            <td>{{ catalog.count_3nd_floor }}</td>
         </tr>
         {% for diet in catalog.count_diet %}
             <tr>

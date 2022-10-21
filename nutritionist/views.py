@@ -903,6 +903,10 @@ def printed_form_one(request):
     # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
     catalog = {'meal': translate_meal(meal),
                'count': len(users),
+               'count_2nd_floor': len([user for user in users if (int(user.room_number) >= 200) \
+                                  and (int(user.room_number) <= 299)]),
+               'count_3nd_floor': len([user for user in users if (int(user.room_number) >= 300) \
+                                  and (int(user.room_number) <= 399)]),
                'count_diet': counting_diets(users),
                'users_2nd_floor': create_list_users_on_floor(users, 200, 299, meal, date_create),
                'users_3nd_floor': create_list_users_on_floor(users, 300, 399, meal, date_create)
@@ -950,7 +954,7 @@ def printed_form_two_lp(request):
             all_products = []
             for user in users_with_diet:
                 menu_all = MenuByDay.objects.filter(user_id=user.user_id)
-                all_products.append(check_value_two(menu_all, str(date.today()), meal, category))
+                all_products.append(check_value_two(menu_all, str((date_create)), meal, category))
             # составляем список с уникальными продуктами
             unique_products = []
             for product in all_products:

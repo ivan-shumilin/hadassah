@@ -721,10 +721,10 @@ def counting_diets(users):
             diets_count.append({
                 "name": diet,
                 "total": str(len(users_diet)),
-                "2nd_floor": len([users_floor for users_floor in users_diet if (int(users_floor.room_number) > start_2nd_floor) \
-                                  and (int(users_floor.room_number) < end_2nd_floor)]),
-                "3nd_floor": len([users_floor for users_floor in users_diet if (int(users_floor.room_number) > start_3nd_floor) \
-                                  and (int(users_floor.room_number) < end_3nd_floor)])
+                "2nd_floor": len([users_floor for users_floor in users_diet if (int(users_floor.room_number) >= start_2nd_floor) \
+                                  and (int(users_floor.room_number) <= end_2nd_floor)]),
+                "3nd_floor": len([users_floor for users_floor in users_diet if (int(users_floor.room_number) >= start_3nd_floor) \
+                                  and (int(users_floor.room_number) <= end_3nd_floor)])
             })
     return diets_count
 
