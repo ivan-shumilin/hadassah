@@ -572,7 +572,9 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
 
     receiptDateOld = new Date(receiptDateListOld[0], receiptDateListOld[1] - 1, receiptDateListOld[2])
     if (!moment(receiptDateNew).isSame(receiptDateOld, 'days')) {
-        if ((moment(receiptDateOld).isBefore(todayDate, 'day')) || (moment(receiptDateOld).isSame(todayDate, 'day'))) {
+        if ((moment(receiptDateOld).isBefore(todayDate, 'day')) ||
+         (moment(receiptDateOld).isSame(todayDate, 'day')) ||
+         (moment(receiptDateNew).isBefore(todayDate, 'day'))) {
             document.getElementById('error_receipt_date').innerHTML = 'Нельзя менять дату, если пациент уже госпитализирован'
             document.getElementById('error_receipt_date').classList.add('error')
             document.getElementById('receipt_date_edit').classList.add('error')
