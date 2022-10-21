@@ -26,6 +26,23 @@
         <td>Кол-во порций, шт.</td>
 
     </tr>
+    {% if catalog.porridge %}
+        <tr class='light-blue'>
+            <td colspan="4">Кашы</td> 
+        </tr>
+    
+        {% for product in catalog.porridge %}
+            {% if product %}
+                <tr class='dashed'>
+                    <td>{{ product.number }}</td>
+                    <td>{{ product.diet }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.count }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
     {% if catalog.salad %}
         <tr class='light-blue'>
             <td>Салаты</td>
