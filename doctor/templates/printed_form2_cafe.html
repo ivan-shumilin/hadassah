@@ -15,7 +15,7 @@
 <body>
 <h1>Производственный отчет<span class="cafe ex-bold">Линия раздачи</span></h1>
 <p class="bold">{{ formatted_date }}, {{ time_now }}</p>
-<p class="bold underline">{{ meal }}</p>
+<p class="bold underline">{{ catalog.meal }} {% if day %}<span>(Заказ на завтра, {{ date_create }})</span> {% endif %}</p>
 
 
 <table id='table2' width="100%">

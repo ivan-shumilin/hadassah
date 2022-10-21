@@ -936,7 +936,8 @@ def printed_form_two_lp(request):
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
-    meal, day = what_meal()
+    meal, day = what_meal() # после return 'breakfast', 'tomorrow'
+    date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
     # meal = 'lunch'
     catalog = {}
 
@@ -997,6 +998,8 @@ def printed_form_two_lp(request):
         'formatted_date': formatted_date_now,
         'time_now': time_now,
         'catalog': catalog,
+        'day': day,
+        'date_create': date_create,
         'meal': translate_meal(meal)
     }
     return render(request, 'printed_form2_lp.html', context=data)
@@ -1006,7 +1009,8 @@ def printed_form_two_cafe(request):
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
-    meal, day = what_meal()
+    meal, day = what_meal() # после return 'breakfast', 'tomorrow'
+    date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
     # meal = 'lunch'
     catalog = {}
 
@@ -1065,6 +1069,8 @@ def printed_form_two_cafe(request):
         'formatted_date': formatted_date_now,
         'time_now': time_now,
         'catalog': catalog,
+        'day': day,
+        'date_create': date_create,
         'meal': translate_meal(meal)
     }
     return render(request, 'printed_form2_cafe.html', context=data)
