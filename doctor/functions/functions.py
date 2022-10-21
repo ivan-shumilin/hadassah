@@ -627,17 +627,19 @@ def create_user(user_form):
                 bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
 
-def edit_user(user_form):
+def edit_user(user_form, type):
     changes = []
     flag = False
+    is_change_diet = False
     user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
     if user.full_name != user_form.data['full_name1']:
         changes.append(f"ФИО <b>{user.full_name}</b> заменили на <u><b>{user_form.data['full_name1']}</b></u>")
     user.full_name = user_form.data['full_name1']
     if user.receipt_date != datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date():
         # проверяем если дату из прошлого поренесли в будущее
-        if user.receipt_date <= date.today() and \
-           datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date() > date.today():
+        if type == 'edit' and \
+            user.receipt_date <= date.today() and \
+            datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date() > date.today():
             flag = True
         changes.append(f"дату поступления <b>{user.receipt_date}</b> заменили на <u><b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b></u>")
     user.receipt_date = datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')
@@ -656,13 +658,26 @@ def edit_user(user_form):
 
     if user.type_of_diet != user_form.data['type_of_diet1']:
         changes.append(f"тип диеты <b>{user.type_of_diet}</b> заменили на <u><b>{user_form.data['type_of_diet1']}</b></u>")
+        if type == 'edit':
+            is_change_diet = True
+
     user.type_of_diet = user_form.data['type_of_diet1']
 
     if user.comment != user_form.data['comment1']:
         changes.append(f'комметнарий "{user.comment if user.comment else "нет комментария"}" заменили на <u><b>"{user_form.data["comment1"]}"</b></u>')
     user.comment = user_form.data['comment1']
+    # если надо восстановить учетную запись пациента
+    if type == 'restore':
+        user.status = 'patient'
     user.save()
     logging.info(f'Пациент отредактирован {user_form.data["full_name"]}')
+
+    # Если поменяли тип диеты обновляем меню у пациента с сегодня
+    if is_change_diet:
+        MenuByDay.objects.filter(date__gte=date.today()).delete()
+        check_have_menu()
+        add_menu_three_days_ahead()
+
 
     date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
     # после 19 в заказ добавляем пользователей с датой госпитализации на след день
@@ -671,17 +686,24 @@ def edit_user(user_form):
             update_UsersToday(user)
         else:
             update_СhangesUsersToday(user)
-        # отрпавить сообщение
+        # отправить сообщение
         if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
             TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
             attention = u'\u2757\ufe0f'
             bot = telepot.Bot(TOKEN)
             # все номера chat_id
-            messang = ''
-            messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-            messang += f'Отредактирован профиль пациетна <b>{user.full_name}</b>.\n\n'
-            for change in changes:
-                messang += f'-{change}\n'
+            if type == 'edit':
+                messang = ''
+                messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
+                messang += f'Отредактирован профиль пациетна <b>{user.full_name}</b>.\n\n'
+                for change in changes:
+                    messang += f'-{change}\n'
+            if type == 'restore':
+                messang = ''
+                messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
+                messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)}({user.type_of_diet})</b></u>\n'
+                messang += f'Комментарий: "{user.comment}"' if user.comment else ''
+
             for item in BotChatId.objects.all():
                 bot.sendMessage(item.chat_id, messang, parse_mode="html")
 

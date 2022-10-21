@@ -194,6 +194,10 @@
                                         <div class="label">Дата госпитализации</div>
                                         <div id="receipt_datetime_field" class="value"></div>
                                     </div>
+                                    <div class="field" style="display: none;">
+                                        <div class="label">Дата госпитализации</div>
+                                        <div id="receipt_datetime_field_hidden" class="value"></div>
+                                    </div>
                                     <div class="field">
                                         <div class="label">Отделение</div>
                                         <div id="department_field" class="value"></div>
@@ -251,7 +255,8 @@ async function displayInfoPatient(full_name, receipt_date, receipt_time, departm
     document.getElementById("comment_field").innerHTML = comment;
     document.getElementById("link_lk_patient").innerHTML = '<a href="https://sk.petrushkagroup.com/patient/' + id + '">ЛК пациента</a>';
     document.getElementById("modal_field").setAttribute('data-modal-link', 'modal-start'+id);
-    document.getElementById("archive_field").setAttribute('data-modal-link', 'patient-archive'+id);
+    document.getElementById("archive_field").setAttribute('data-modal-link', 'patient-archive'+id); 
+    document.getElementById("receipt_datetime_field_hidden").innerHTML = receipt_date;
     let receiptDate = receipt_date
     let res = await getMenuForPatient(id)
     var obj = JSON.parse(res);
@@ -291,16 +296,18 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
 // проверяем, если дата раньше даты госпитализации, выводим сообщение
     if (Date.parse(obj[day].date) >= Date.parse(receiptDate)) {
         for (var meal in meals ) {        
-            result += '<div class="box"><div id="test" class="title">' + meals[meal] + '</div><div id="products-list" class="products-list">'
+            result += `<div class="box"><div id="test" class="title">${meals[meal]}</div><div id="products-list" class="products-list">`
             for (var key in obj[day][meal]) {
                 if (obj[day][meal][key] != null) {
                     product = obj[day][meal][key]
                     isNotProducts = false
-                    result += '<div class="item">'
-    
+                    result += '<div class="item">'    
                     if (product.image == null) {
-                        result += '<div class="img"><img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
-                        result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
+                        result += 
+`<div class="img">`+
+`<img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt="">`+
+`</div>`+
+'<div class="info"><div class="img"><img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
                     } else {
                         result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
                         result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
@@ -553,6 +560,24 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
         document.getElementById('receipt_date_edit').classList.add('error')
 
         error = error + 1
+    }
+
+    let nowDate = new Date();
+    let todayDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+    let receiptDateListNew = (receipt_date.value).split(".");
+    receiptDateNew = new Date(receiptDateListNew[2], receiptDateListNew[1] - 1, receiptDateListNew[0])
+
+    let receiptDateOld = document.getElementById("receipt_datetime_field_hidden").innerHTML
+    let receiptDateListOld = (receiptDateOld).split(".");
+
+    receiptDateOld = new Date(receiptDateListOld[0], receiptDateListOld[1] - 1, receiptDateListOld[2])
+    if (receiptDateNew != receiptDateOld) {
+        if (receiptDateOld <= todayDate) {
+            document.getElementById('error_receipt_date').innerHTML = 'Нельзя менять дату, если пациент уже госпитализирован'
+            document.getElementById('error_receipt_date').classList.add('error')
+            document.getElementById('receipt_date_edit').classList.add('error')
+            error = error + 1
+        }
     }
 
 

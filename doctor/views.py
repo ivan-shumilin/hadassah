@@ -129,7 +129,7 @@ def doctor(request):
         return render(request, 'doctor.html', context=data)
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        edit_user(user_form)
+        edit_user(user_form, 'edit')
 
         formset = CustomUserFormSet(queryset=queryset)
         data = {
@@ -149,6 +149,8 @@ def doctor(request):
         user = CustomUser.objects.get(id=id_user)
         user.status = 'patient_archive'
         user.save()
+        # тут надо удалить меню пациента
+        MenuByDay.objects.filter(user_id=user.id).delete()
         # дата на которую создаеться заказ
         date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
         # после 19 в заказ добавляем пользователей с датой госпитализации на след день
@@ -250,6 +252,23 @@ def archive(request):
         else:
             queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
 
+    if request.method == 'POST' and 'archive' in request.POST:
+        user_form = PatientRegistrationForm(request.POST)
+        edit_user(user_form, 'restore')
+
+        formset = CustomUserFormSet(queryset=queryset)
+        data = {
+            'id_edited_user': user_form.data['id_edit_user'],
+            'formset': formset,
+            'page': page,
+            'sorting': sorting,
+            'modal': 'patient-restored',
+            'user_form': user_form,
+            'filter_by': filter_by
+        }
+        return render(request, 'archive.html', context=data)
+
+
     if request.method == 'POST' and 'change-email' in request.POST:
         # сhange_password(request.POST['changed-email'], request)
         user_form = PatientRegistrationForm()
@@ -286,37 +305,37 @@ def archive(request):
             }
             return render(request, 'doctor.html', context=data)
 
-    if request.method == 'POST' and 'archive' in request.POST:
-        id_user = request.POST.getlist('id_edit_user')[0]
-        user = CustomUser.objects.get(id=id_user)
-        user.status = 'patient'
-        user.save()
-        user_form = PatientRegistrationForm(request.POST)
-        formset = \
-            CustomUserFormSet(queryset=queryset)
-        if not formset.is_valid():
-            data = {
-                'sorting': sorting,
-                'formset': formset,
-                'page': page,
-                'modal': 'patient-restored',
-                'user_form': user_form,
-                'filter_by': filter_by,
-            }
-            return render(request, 'archive.html', context=data)
-        else:
-            formset.save()
-            queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
-            formset = CustomUserFormSet(queryset=queryset)
-            data = {
-                'sorting': sorting,
-                'formset': formset,
-                'user_form': user_form,
-                'page': page,
-                'modal': 'patient-restored',
-                'filter_by': filter_by,
-            }
-        return render(request, 'archive.html', context=data)
+    # if request.method == 'POST' and 'archive' in request.POST:
+    #     id_user = request.POST.getlist('id_edit_user')[0]
+    #     user = CustomUser.objects.get(id=id_user)
+    #     user.status = 'patient'
+    #     user.save()
+    #     user_form = PatientRegistrationForm(request.POST)
+    #     formset = \
+    #         CustomUserFormSet(queryset=queryset)
+    #     if not formset.is_valid():
+    #         data = {
+    #             'sorting': sorting,
+    #             'formset': formset,
+    #             'page': page,
+    #             'modal': 'patient-restored',
+    #             'user_form': user_form,
+    #             'filter_by': filter_by,
+    #         }
+    #         return render(request, 'archive.html', context=data)
+    #     else:
+    #         formset.save()
+    #         queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
+    #         formset = CustomUserFormSet(queryset=queryset)
+    #         data = {
+    #             'sorting': sorting,
+    #             'formset': formset,
+    #             'user_form': user_form,
+    #             'page': page,
+    #             'modal': 'patient-restored',
+    #             'filter_by': filter_by,
+    #         }
+    #     return render(request, 'archive.html', context=data)
 
     user_form = PatientRegistrationForm()
     formset = CustomUserFormSet(queryset=queryset)

@@ -96,16 +96,78 @@
                     </div>
                 </div>
 
-                <div id="patient-restore{{ form.id.value }}" data-modal="patient-restore{{ form.id.value }}" data-modal-width="400">
-                <div class="title align-center">Восстановить учётную запись пациента?</div>
-                <div class="confirm-block">
-                    <div class="text">Данные пациента вновь появятся в списке активных учётных записей, для него активируется личный кабинет</div>
-                    <div class="buttons">
-                        <a class="button" onclick="patientRestore('{{ form.id.value }}')">Восстановить</a>
-                        <a class="button white" data-modal-close>Отменить</a>
+                <div id="patient-restore{{ form.id.value }}" data-modal="patient-restore{{ form.id.value }}" data-modal-width="480">
+                    <div class="title">Восстановление учетной записи</div>
+                        <div id ='full_name_edit' class="form-group">
+                            <label>ФИО пациента</label>
+                            <input id="{{ form.full_name.id_for_label }}" type="text" value="{{ form.full_name.value }}">
+                            <div id ='error_full_name' class="error-field"></div>
+                        </div>
+                        <div id='receipt_date_edit' class="form-group">
+                            {% load widget_tweaks %}
+                            <label>Дата госпитализации</label>
+                            <input type="text" placeholder="01.01.2022" data-datepicker id="{{ form.receipt_date.id_for_label }}">
+                            <div id ='error_receipt_date' class="error-field"></div>
+                        </div>
+                        <div id='receipt_time_edit' class="form-group">
+                            <label>Время госпитализации</label>
+                            <input type="text" placeholder="12:00" data-timemask id="{{ form.receipt_time.id_for_label }}">
+                            <div id ='error_receipt_time' class="error-field"></div>
+                        </div>
+                        <div id='department_edit' class="form-group">
+                            <label>Отделение</label>
+                            {{ form.department }}
+                            <div id ='error_department' class="error-field"></div>
+                        </div>
+                        <div id='type_of_diet_edit' class="form-group">
+                            <label>Диета</label>
+                            {{ form.type_of_diet }}
+                            <div id ='error_type_of_diet' class="error-field"></div>
+                        </div>
+                        <div id='room_number_edit' class="form-group">
+                    <label for="id_form-0-room_number">Номер палаты</label>
+                    <select name="form-0-room_number" class="form-control" id='{{ form.room_number.id_for_label }}'>
+                        <option value="Не выбрано" selected>Не выбрано</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                            <div id ='error_room_number' class="error-field"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Комментарий</label>
+                            {{ form.comment|attr:"rows='4'" }}
+                            <p id ='error_comment' class="error-field"></p>
+                        </div>
+
+
+
+                        <div class="form-group item-actions flex flex-center">
+                            <button name="add_patient" onclick="validationEditForm('{{ form.full_name.id_for_label }}', '{{ form.receipt_date.id_for_label }}', '{{ form.receipt_time.id_for_label }}', '{{ form.department.id_for_label }}', '{{ form.type_of_diet.id_for_label }}', '{{ form.room_number.id_for_label }}', '{{ form.comment.id_for_label }}', '{{ form.id.value }}')">Сохранить</button>
+                            <a class="button white" data-modal-close>Отменить</a>
+                        </div>
+
+            </div>
+
+
+
+
+                <!-- <div id="patient-restore{{ form.id.value }}" data-modal="patient-restore{{ form.id.value }}" data-modal-width="400">
+                    <div class="title align-center">Восстановить учётную запись пациента?</div>
+                    <div class="confirm-block">
+                        <div class="text">Данные пациента вновь появятся в списке активных учётных записей, для него активируется личный кабинет</div>
+                        <div class="buttons">
+                            <a class="button" onclick="patientRestore('{{ form.id.value }}')">Восстановить</a>
+                            <a class="button white" data-modal-close>Отменить</a>
+                        </div>
                     </div>
-                </div>
-                </div>
+                </div> -->
             {% endfor %}
         </div>
     </div>
@@ -283,62 +345,6 @@ function filtration() {
 
 
 
-function validationForm() {
-    var form = document.getElementById('main-form');
-    var div_form = document.querySelector('.form-group');
-    var fields = form.querySelectorAll('.field')
-    var full_name = document.getElementById('id_full_name')
-    var receipt_date = document.getElementById('id_receipt_date')
-    var receipt_time = document.getElementById('id_receipt_time')
-    var department = document.getElementById('id_department')
-    var type_of_diet = document.getElementById('id_type_of_diet')
-    var room_number = document.getElementById('id_room_number')
-    var comment = document.getElementById('id_comment')
-    var errors = document.querySelectorAll('.error-field')
-    for (var i = 0; i < errors.length; i++) {
-    errors[i].innerHTML = '';
-    }
-    var error = 0
-    if (!full_name.value) {
-        document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
-        error = error + 1
-    }
-    if (!receipt_date.value) {
-        document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
-        error = error + 1
-    }
-    if (!receipt_time.value) {
-        document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
-        error = error + 1
-    }
-    if (department.value == 'Не выбрано') {
-        document.getElementById('error_department').innerHTML = 'Обязательное поле'
-        error = error + 1
-    }
-
-    if (type_of_diet.value == 'Не выбрано') {
-        document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
-        error = error + 1
-    }
-    if (room_number.value == 'Не выбрано') {
-        document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
-        error = error + 1
-    }
-
-    if (error == 0) {
-        document.getElementById('add_patient_flag').setAttribute('checked', 'true');
-        document.getElementById('test_full_name').value = full_name.value
-        document.getElementById('test_receipt_date').value = receipt_date.value
-        document.getElementById('test_receipt_time').value = receipt_time.value
-        document.getElementById('test_department').value = department.value
-        document.getElementById('test_type_of_diet').value = type_of_diet.value
-        document.getElementById('test_room_number').value = room_number.value
-        document.getElementById('test_comment').value = id_comment.value
-        form.submit();
-    }
-}
-
-
 function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_department, id_type_of_diet, id_room_number, id_comment, id) {
     var form = document.getElementById('main-form');
     var full_name = document.getElementById(id_full_name)
@@ -349,36 +355,74 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
     var room_number = document.getElementById(id_room_number)
     var comment = document.getElementById(id_comment)
 
-
     var errors = document.querySelectorAll('.error-field')
+    var formGroup = document.querySelectorAll('.form-group')
     for (var i = 0; i < errors.length; i++) {
-    errors[i].innerHTML = '';
+        errors[i].innerHTML = '';
+        errors[i].classList.remove('error');
+        formGroup[i].classList.remove('error');
     }
     var error = 0
+    var st = new RegExp("[^а-яА-Яa-zA-Z0-9ёЁ+/)/(/-/'/ /./,-]+");
     if (!full_name.value) {
         document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
+        document.getElementById('error_full_name').classList.add('error')
+        document.getElementById('full_name_edit').classList.add('error')
+        error = error + 1
+    }
+    if (st.test(full_name.value)) {
+        document.getElementById('error_full_name').innerHTML = "Поле может содержать только буквы и символы ()-,'."
+        document.getElementById('error_full_name').classList.add('error')
+        document.getElementById('full_name_edit').classList.add('error')
         error = error + 1
     }
     if (!receipt_date.value) {
         document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
+        document.getElementById('error_receipt_date').classList.add('error')
+        document.getElementById('receipt_date_edit').classList.add('error')
+
         error = error + 1
     }
+
+    let nowDate = new Date();
+    let todayDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+    let receiptDateList = (receipt_date.value).split(".");
+    receiptDate = new Date(receiptDateList[2], receiptDateList[1] - 1, receiptDateList[0])
+
+    if (receiptDate < todayDate) {
+        document.getElementById('error_receipt_date').innerHTML = 'Дата не может быть раньше текущей'
+        document.getElementById('error_receipt_date').classList.add('error')
+        document.getElementById('receipt_date_edit').classList.add('error')
+        error = error + 1
+    }
+
+
     if (!receipt_time.value) {
         document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
+        document.getElementById('error_receipt_time').classList.add('error')
+        document.getElementById('receipt_time_edit').classList.add('error')        
         error = error + 1
     }
     if (department.value == 'Не выбрано') {
         document.getElementById('error_department').innerHTML = 'Обязательное поле'
+        document.getElementById('error_department').classList.add('error')
+        document.getElementById('department_edit').classList.add('error')
         error = error + 1
     }
+
     if (type_of_diet.value == 'Не выбрано') {
         document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
+        document.getElementById('error_type_of_diet').classList.add('error')
+        document.getElementById('type_of_diet_edit').classList.add('error')
         error = error + 1
     }
     if (room_number.value == 'Не выбрано') {
         document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
+        document.getElementById('error_room_number').classList.add('error')
+        document.getElementById('room_number_edit').classList.add('error')
         error = error + 1
     }
+
     if (error == 0) {
         document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
         document.getElementById('id_edit_user').value = id
@@ -389,9 +433,9 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
         document.getElementById('test1_type_of_diet').value = type_of_diet.value
         document.getElementById('test1_room_number').value = room_number.value
         document.getElementById('test1_comment').value = comment.value
-        document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
+        document.getElementById('archive').setAttribute('checked', 'true');
         form.submit()
-        //form.submit();
+
     }
  }
 
@@ -400,9 +444,6 @@ function patientArchive(id) {
     document.getElementById('id_edit_user').value = id;
     document.getElementById('archive').setAttribute('checked', 'true');
     form.submit()
-    // document.getElementById('close'+id).click()
-    // document.getElementById('archived').click()
-    //setTimeout(() => { form.submit();}, 500);
 }
 
 function patientRestore(id) {
@@ -410,9 +451,6 @@ function patientRestore(id) {
     document.getElementById('id_edit_user').value = id;
     document.getElementById('archive').setAttribute('checked', 'true');
     form.submit()
-    // document.getElementById('close'+id).click()
-    // document.getElementById('archived').click()
-    //setTimeout(() => { form.submit();}, 500);
 }
 
 

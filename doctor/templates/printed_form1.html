@@ -49,7 +49,7 @@
 </div>
 <br>
 <br>
-<table id='table2' width="95%">
+<table id='table2' width="100%">
     <tr>
         <td>№</td>
         <td>Фамилия и имя пациента</td>
@@ -59,12 +59,8 @@
         <td>Цех линии раздачи</td>
     </tr>
     <tr class='light-blue'>
-        <td>Этаж</td>
-        <td>2</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td colspan="6">Этаж 2</td>
+
     </tr>
     {% for user in catalog.users_2nd_floor %}
         <tr class='dashed'>
@@ -90,12 +86,8 @@
     {% endfor %}
 
     <tr class='light-blue'>
-        <td>Этаж</td>
-        <td>3</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td colspan="6">Этаж 3</td>
+   
     </tr>
     {% for user in catalog.users_3nd_floor %}
     <tr class='dashed'>
