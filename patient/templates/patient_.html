@@ -7,41 +7,42 @@
 <div style="display: none;" id="status">{{ modal }}</div>
 
 
-            <div id="center" data-simplebar>
-                <div class="header-block">
-                    <div class="menu-link-and-name">
-                        <a class="menu-link" data-sidebar-toggle>
-                            <div class="i i-menu"></div>
-                        </a>
-                        <div class="title">Меню</div>
-                    </div>
+        <div id="center" data-simplebar>
+            <div id="header">
+                    <div class="header-block">
+                        <div class="menu-link-and-name">
+                            <a class="menu-link" data-sidebar-toggle>
+                                <div class="i i-menu"></div>
+                            </a>
+                            <div class="title">Меню</div>
+                        </div>
 
-                    <div class="menu">
-                        <div class="switch">
-                            <a id='{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
-                            <a id='{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
-                            <a id='{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+                        <div class="menu">
+                            <div class="switch">
+                                <a id='{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
+                                <a id='{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
+                                <a id='{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+                            </div>
+                        </div>
+
+                        <div id='diet-menu' class="green-menu">
+                            <a data-modal-link="diet">Диета</a>
+                            <a id='diet_name' class="active" data-modal-link="diet">{{ user.type_of_diet }}</a>
                         </div>
                     </div>
 
-                    <div id='diet-menu' class="green-menu">
-                        <a data-modal-link="diet">Диета</a>
-                        <a id='diet_name' class="active" data-modal-link="diet">{{ user.type_of_diet }}</a>
+                    <div class="day-switch-block">
+                        <div class="switch">
+                            <a id='test{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
+                            <a id='test{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
+                            <a id='test{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+                        </div>
                     </div>
-                </div>
-
-                <div class="day-switch-block">
-                    <div class="switch">
-                        <a id='test{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
-                        <a id='test{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
-                        <a id='test{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
-                    </div>
-                </div>
 </form>
 
 
 {% if is_have == 'ok' %}
-                <div class="eat-menu-block">
+                    <div class="eat-menu-block">
                     <div class="menu">
                         <a class="active" data-tab="breakfast">Завтрак</a>
                         <a data-tab="lunch">Обед</a>
@@ -49,109 +50,18 @@
                         <a data-tab="dinner">Ужин</a>
                     </div>
                     <div class="date">{{ formatted_date|lower  }}</div>
-                </div>
-                
-
-            <div id="breakfast" data-eat-menu-tab-content="breakfast" class="active">
-                <div class="eat-choose-block">
-                    {% for product in products.breakfast.lp.main %}
-                        <div class="category">
-                            <div class="name">Основное блюдо</div>
-                            <div class="info">Это блюдо нельзя заменить</div>
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            <div class="item active" data-item>
-                                <div class="info">
-                                    {% if today %}
-                                        <div class="name">{{ product.name }}</div>
-                                    {% else %}
-                                        <div class="name" data-choose>{{ product.name }}</div>
-                                    {% endif %}
-                                    <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
- 
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                    <div class="text" data-toggle>
-                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                    </div>
-                                    {% if not today %}
-                                        <div class="choose" data-choose>
-                                            <a href="#">
-                                                Уже выбрано блюдо из этой категории.
-                                                Нажмите, чтобы заменить его.
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                {% if product.image %}
-                                    <div class="img">
-                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                    </div>
-                                {% else %}
-                                    <div class="img"></div>
-                                {% endif %}
-                                <div class="toggle" data-toggle>
-                                    <a href="#">Состав</a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-
-
-                    {% for product in products.breakfast.lp.porridge %}
-                        <div class="category">
-                            <div class="name">Каша</div>
-                            <div class="info">Это блюдо нельзя заменить</div>
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            <div class="item active" data-item>
-                                <div class="info">
-                                    {% if today %}
-                                        <div class="name">{{ product.name }}</div>
-                                    {% else %}
-                                        <div class="name" data-choose>{{ product.name }}</div>
-                                    {% endif %}
-                                    <div class="id" style="display: none;">lp-porridge-{{ product.id }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                    <div class="text" data-toggle>
-                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                    </div>
-                                    {% if not today %}
-                                        <div class="choose" data-choose>
-                                            <a href="#">
-                                                Уже выбрано блюдо из этой категории.
-                                                Нажмите, чтобы заменить его.
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                {% if product.image %}
-                                    <div class="img">
-                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                    </div>
-                                {% else %}
-                                    <div class="img"></div>
-                                {% endif %}
-                                <div class="toggle" data-toggle>
-                                    <a href="#">Состав</a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                    </div>
             </div>
-
-            <div id ='lunch' data-eat-menu-tab-content="lunch">
-                <div class="eat-choose-block">
-                    {% if products.lunch.lp.salad %}
-                        <div class="category">
-                            <div class="name">Салат</div>
-                            {% if not products.lunch.cafe.salad %}
+                
+            <div id="content" data-simplebar>
+                <div id="breakfast" data-eat-menu-tab-content="breakfast" class="active">
+                    <div class="eat-choose-block">
+                        {% for product in products.breakfast.lp.main %}
+                            <div class="category">
+                                <div class="name">Основное блюдо</div>
                                 <div class="info">Это блюдо нельзя заменить</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            {% for product in products.lunch.lp.salad %}
+                            </div>
+                            <div class="eat-choose-grid" data-eat-choose-grid>
                                 <div class="item active" data-item>
                                     <div class="info">
                                         {% if today %}
@@ -159,43 +69,8 @@
                                         {% else %}
                                             <div class="name" data-choose>{{ product.name }}</div>
                                         {% endif %}
-                                        <div class="id" style="display: none;">lp-salad-{{ product.id }}</div>
-                                        <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                        <div class="text" data-toggle>
-                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                        </div>
-                                        {% if not today %}
-                                            <div class="choose" data-choose>
-                                                <a href="#">
-                                                    Уже выбрано блюдо из этой категории.
-                                                    Нажмите, чтобы заменить его.
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img">
-
-                                        </div>
-                                    {% endif %}
-                                    <div class="toggle" data-toggle>
-                                        <a href="#">Состав</a>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                            {% for product in products.lunch.cafe.salad %}
-                                <div class="item" data-item>
-                                    <div class="info">
-                                        {% if today %}
-                                            <div class="name">{{ product.name }}</div>
-                                        {% else %}
-                                            <div class="name" data-choose>{{ product.name }}</div>
-                                        {% endif %}
-                                        <div class="id" style="display: none;">cafe-salad-{{ product.id }}</div>
+                                        <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
+    
                                         <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                         <div class="text" data-toggle>
                                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -220,19 +95,16 @@
                                         <a href="#">Состав</a>
                                     </div>
                                 </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                            </div>
+                        {% endfor %}
 
-                    {% if products.lunch.lp.soup %}
-                        <div class="category">
-                            <div class="name">Суп</div>
-                            {% if not products.lunch.cafe.soup %}
+
+                        {% for product in products.breakfast.lp.porridge %}
+                            <div class="category">
+                                <div class="name">Каша</div>
                                 <div class="info">Это блюдо нельзя заменить</div>
-                            {% endif %}
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            {% for product in products.lunch.lp.soup %}
+                            </div>
+                            <div class="eat-choose-grid" data-eat-choose-grid>
                                 <div class="item active" data-item>
                                     <div class="info">
                                         {% if today %}
@@ -240,7 +112,7 @@
                                         {% else %}
                                             <div class="name" data-choose>{{ product.name }}</div>
                                         {% endif %}
-                                        <div class="id" style="display: none;">lp-soup-{{ product.id }}</div>
+                                        <div class="id" style="display: none;">lp-porridge-{{ product.id }}</div>
                                         <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                         <div class="text" data-toggle>
                                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -265,53 +137,422 @@
                                         <a href="#">Состав</a>
                                     </div>
                                 </div>
-                            {% endfor %}
-                            {% for product in products.lunch.cafe.soup %}
-                                <div class="item" data-item>
-                                    <div class="info">
-                                        {% if today %}
-                                            <div class="name">{{ product.name }}</div>
-                                        {% else %}
-                                            <div class="name" data-choose>{{ product.name }}</div>
-                                        {% endif %}
-                                        <div class="id" style="display: none;">cafe-soup-{{ product.id }}</div>
-                                        <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                        <div class="text" data-toggle>
-                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                        </div>
-                                        {% if not today %}
-                                            <div class="choose" data-choose>
-                                                <a href="#">
-                                                    Уже выбрано блюдо из этой категории.
-                                                    Нажмите, чтобы заменить его.
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img"></div>
-                                    {% endif %}
-                                    <div class="toggle" data-toggle>
-                                        <a href="#">Состав</a>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
 
-                    {% if products.lunch.lp.main %}
-                        <div class="category">
-                            <div class="name">Основное блюдо</div>
-                            {% if not products.lunch.cafe.main %}
+                <div id ='lunch' data-eat-menu-tab-content="lunch">
+                    <div class="eat-choose-block">
+                        {% if products.lunch.lp.salad %}
+                            <div class="category">
+                                <div class="name">Салат</div>
+                                {% if not products.lunch.cafe.salad %}
+                                    <div class="info">Это блюдо нельзя заменить</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="eat-choose-grid" data-eat-choose-grid>
+                                {% for product in products.lunch.lp.salad %}
+                                    <div class="item active" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">lp-salad-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img">
+
+                                            </div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% for product in products.lunch.cafe.salad %}
+                                    <div class="item" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">cafe-salad-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if products.lunch.lp.soup %}
+                            <div class="category">
+                                <div class="name">Суп</div>
+                                {% if not products.lunch.cafe.soup %}
+                                    <div class="info">Это блюдо нельзя заменить</div>
+                                {% endif %}
+                            </div>
+                            <div class="eat-choose-grid" data-eat-choose-grid>
+                                {% for product in products.lunch.lp.soup %}
+                                    <div class="item active" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">lp-soup-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% for product in products.lunch.cafe.soup %}
+                                    <div class="item" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">cafe-soup-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if products.lunch.lp.main %}
+                            <div class="category">
+                                <div class="name">Основное блюдо</div>
+                                {% if not products.lunch.cafe.main %}
+                                    <div class="info">Это блюдо нельзя заменить</div>
+                                {% endif %}
+                            </div>
+                            <div class="eat-choose-grid" data-eat-choose-grid>
+                                {% for product in products.lunch.lp.main %}
+                                    <div class="item active" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% for product in products.lunch.cafe.main %}
+                                    <div class="item" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if products.lunch.lp.garnish %}
+                            <div class="category">
+                                <div class="name">Гарнир</div>
+                                {% if not products.lunch.cafe.garnish %}
+                                    <div class="info">Это блюдо нельзя заменить</div>
+                                {% endif %}
+                            </div>
+                            <div class="eat-choose-grid" data-eat-choose-grid>
+                                {% for product in products.lunch.lp.garnish %}
+                                    <div class="item active" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% for product in products.lunch.cafe.garnish %}
+                                    <div class="item" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if products.lunch.lp.drink %}
+                            <div class="category">
+                                <div class="name">Напиток</div>
+                                {% if not products.lunch.cafe.drink %}
+                                    <div class="info">Это блюдо нельзя заменить</div>
+                                {% endif %}
+                            </div>
+                            <div class="eat-choose-grid" data-eat-choose-grid>
+                                {% for product in products.lunch.lp.drink %}
+                                    <div class="item active" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">lp-drink-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% for product in products.lunch.cafe.drink %}
+                                    <div class="item" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">cafe-drink-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div id="afternoon" data-eat-menu-tab-content="afternoon-tea">
+                    <div class="eat-choose-block">
+                        {% for product in products.afternoon.lp.main %}
+                            <div class="category">
+                                <div class="name">Основное блюдо</div>
                                 <div class="info">Это блюдо нельзя заменить</div>
-                            {% endif %}
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            {% for product in products.lunch.lp.main %}
+                            </div>
+                            <div class="eat-choose-grid" data-eat-choose-grid>
                                 <div class="item active" data-item>
                                     <div class="info">
                                         {% if today %}
@@ -344,54 +585,14 @@
                                         <a href="#">Состав</a>
                                     </div>
                                 </div>
-                            {% endfor %}
-                            {% for product in products.lunch.cafe.main %}
-                                <div class="item" data-item>
-                                    <div class="info">
-                                        {% if today %}
-                                            <div class="name">{{ product.name }}</div>
-                                        {% else %}
-                                            <div class="name" data-choose>{{ product.name }}</div>
-                                        {% endif %}
-                                        <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
-                                        <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                        <div class="text" data-toggle>
-                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                        </div>
-                                        {% if not today %}
-                                            <div class="choose" data-choose>
-                                                <a href="#">
-                                                    Уже выбрано блюдо из этой категории.
-                                                    Нажмите, чтобы заменить его.
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img"></div>
-                                    {% endif %}
-                                    <div class="toggle" data-toggle>
-                                        <a href="#">Состав</a>
-                                    </div>
-                                </div>
-
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {% if products.lunch.lp.garnish %}
-                        <div class="category">
-                            <div class="name">Гарнир</div>
-                            {% if not products.lunch.cafe.garnish %}
+                            </div>
+                        {% endfor %}
+                        {% for product in products.afternoon.lp.dessert %}
+                            <div class="category">
+                                <div class="name">Десерт</div>
                                 <div class="info">Это блюдо нельзя заменить</div>
-                            {% endif %}
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            {% for product in products.lunch.lp.garnish %}
+                            </div>
+                            <div class="eat-choose-grid" data-eat-choose-grid>
                                 <div class="item active" data-item>
                                     <div class="info">
                                         {% if today %}
@@ -399,7 +600,7 @@
                                         {% else %}
                                             <div class="name" data-choose>{{ product.name }}</div>
                                         {% endif %}
-                                        <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
+                                        <div class="id" style="display: none;">lp-dessert-{{ product.id }}</div>
                                         <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                         <div class="text" data-toggle>
                                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -424,16 +625,23 @@
                                         <a href="#">Состав</a>
                                     </div>
                                 </div>
-                            {% endfor %}
-                            {% for product in products.lunch.cafe.garnish %}
-                                <div class="item" data-item>
+                            </div>
+                        {% endfor %}
+
+                        {% for product in products.afternoon.lp.fruit %}
+                            <div class="category">
+                                <div class="name">Фрукт</div>
+                                <div class="info">Это блюдо нельзя заменить</div>
+                            </div>
+                            <div class="eat-choose-grid" data-eat-choose-grid>
+                                <div class="item active" data-item>
                                     <div class="info">
                                         {% if today %}
                                             <div class="name">{{ product.name }}</div>
                                         {% else %}
                                             <div class="name" data-choose>{{ product.name }}</div>
                                         {% endif %}
-                                        <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
+                                        <div class="id" style="display: none;">lp-fruit-{{ product.id }}</div>
                                         <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
                                         <div class="text" data-toggle>
                                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -458,19 +666,14 @@
                                         <a href="#">Состав</a>
                                     </div>
                                 </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {% if products.lunch.lp.drink %}
-                        <div class="category">
-                            <div class="name">Напиток</div>
-                            {% if not products.lunch.cafe.drink %}
+                            </div>
+                        {% endfor %}
+                        {% for product in products.afternoon.lp.drink %}
+                            <div class="category">
+                                <div class="name">Напиток</div>
                                 <div class="info">Это блюдо нельзя заменить</div>
-                            {% endif %}
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            {% for product in products.lunch.lp.drink %}
+                            </div>
+                            <div class="eat-choose-grid" data-eat-choose-grid>                            
                                 <div class="item active" data-item>
                                     <div class="info">
                                         {% if today %}
@@ -503,388 +706,188 @@
                                         <a href="#">Состав</a>
                                     </div>
                                 </div>
-                            {% endfor %}
-                            {% for product in products.lunch.cafe.drink %}
-                                <div class="item" data-item>
-                                    <div class="info">
-                                        {% if today %}
-                                            <div class="name">{{ product.name }}</div>
-                                        {% else %}
-                                            <div class="name" data-choose>{{ product.name }}</div>
-                                        {% endif %}
-                                        <div class="id" style="display: none;">cafe-drink-{{ product.id }}</div>
-                                        <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                        <div class="text" data-toggle>
-                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                        </div>
-                                        {% if not today %}
-                                            <div class="choose" data-choose>
-                                                <a href="#">
-                                                    Уже выбрано блюдо из этой категории.
-                                                    Нажмите, чтобы заменить его.
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img"></div>
-                                    {% endif %}
-                                    <div class="toggle" data-toggle>
-                                        <a href="#">Состав</a>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
 
-            <div id="afternoon" data-eat-menu-tab-content="afternoon-tea">
-                <div class="eat-choose-block">
-                    {% for product in products.afternoon.lp.main %}
-                        <div class="category">
-                            <div class="name">Основное блюдо</div>
-                            <div class="info">Это блюдо нельзя заменить</div>
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            <div class="item active" data-item>
-                                <div class="info">
-                                    {% if today %}
-                                        <div class="name">{{ product.name }}</div>
-                                    {% else %}
-                                        <div class="name" data-choose>{{ product.name }}</div>
-                                    {% endif %}
-                                    <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                    <div class="text" data-toggle>
-                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                    </div>
-                                    {% if not today %}
-                                        <div class="choose" data-choose>
-                                            <a href="#">
-                                                Уже выбрано блюдо из этой категории.
-                                                Нажмите, чтобы заменить его.
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                {% if product.image %}
-                                    <div class="img">
-                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                    </div>
-                                {% else %}
-                                    <div class="img"></div>
+                <div id="dinner" data-eat-menu-tab-content="dinner">
+                    <div class="eat-choose-block">
+                        {% if products.lunch.lp.main %}
+                            <div class="category">
+                                <div class="name">Основное блюдо</div>
+                                {% if not products.dinner.cafe.main %}
+                                    <div class="info">Это блюдо нельзя заменить</div>
                                 {% endif %}
-                                <div class="toggle" data-toggle>
-                                    <a href="#">Состав</a>
-                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                    {% for product in products.afternoon.lp.dessert %}
-                        <div class="category">
-                            <div class="name">Десерт</div>
-                            <div class="info">Это блюдо нельзя заменить</div>
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            <div class="item active" data-item>
-                                <div class="info">
-                                    {% if today %}
-                                        <div class="name">{{ product.name }}</div>
-                                    {% else %}
-                                        <div class="name" data-choose>{{ product.name }}</div>
-                                    {% endif %}
-                                    <div class="id" style="display: none;">lp-dessert-{{ product.id }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                    <div class="text" data-toggle>
-                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                    </div>
-                                    {% if not today %}
-                                        <div class="choose" data-choose>
-                                            <a href="#">
-                                                Уже выбрано блюдо из этой категории.
-                                                Нажмите, чтобы заменить его.
-                                            </a>
+                            <div class="eat-choose-grid" data-eat-choose-grid>
+                                {% for product in products.dinner.lp.main %}
+                                    <div class="item active" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
                                         </div>
-                                    {% endif %}
-                                </div>
-                                {% if product.image %}
-                                    <div class="img">
-                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
                                     </div>
-                                {% else %}
-                                    <div class="img"></div>
-                                {% endif %}
-                                <div class="toggle" data-toggle>
-                                    <a href="#">Состав</a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+                                {% endfor %}
+                                {% for product in products.dinner.cafe.main %}
+                                    <div class="item" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
 
-                    {% for product in products.afternoon.lp.fruit %}
-                        <div class="category">
-                            <div class="name">Фрукт</div>
-                            <div class="info">Это блюдо нельзя заменить</div>
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            <div class="item active" data-item>
-                                <div class="info">
-                                    {% if today %}
-                                        <div class="name">{{ product.name }}</div>
-                                    {% else %}
-                                        <div class="name" data-choose>{{ product.name }}</div>
-                                    {% endif %}
-                                    <div class="id" style="display: none;">lp-fruit-{{ product.id }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                    <div class="text" data-toggle>
-                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                    </div>
-                                    {% if not today %}
-                                        <div class="choose" data-choose>
-                                            <a href="#">
-                                                Уже выбрано блюдо из этой категории.
-                                                Нажмите, чтобы заменить его.
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                {% if product.image %}
-                                    <div class="img">
-                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                    </div>
-                                {% else %}
-                                    <div class="img"></div>
-                                {% endif %}
-                                <div class="toggle" data-toggle>
-                                    <a href="#">Состав</a>
-                                </div>
+                                {% endfor %}
                             </div>
-                        </div>
-                    {% endfor %}
-                    {% for product in products.afternoon.lp.drink %}
-                        <div class="category">
-                            <div class="name">Напиток</div>
-                            <div class="info">Это блюдо нельзя заменить</div>
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>                            
-                            <div class="item active" data-item>
-                                <div class="info">
-                                    {% if today %}
-                                        <div class="name">{{ product.name }}</div>
-                                    {% else %}
-                                        <div class="name" data-choose>{{ product.name }}</div>
-                                    {% endif %}
-                                    <div class="id" style="display: none;">lp-drink-{{ product.id }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                    <div class="text" data-toggle>
-                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                    </div>
-                                    {% if not today %}
-                                        <div class="choose" data-choose>
-                                            <a href="#">
-                                                Уже выбрано блюдо из этой категории.
-                                                Нажмите, чтобы заменить его.
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                {% if product.image %}
-                                    <div class="img">
-                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                    </div>
-                                {% else %}
-                                    <div class="img"></div>
+                        {% endif %}
+
+                        {% if products.dinner.cafe.garnish %}
+                            <div class="category">
+                                <div class="name">Гарнир</div>
+                                {% if not products.dinner.cafe.garnish %}
+                                    <div class="info">Это блюдо нельзя заменить</div>
                                 {% endif %}
-                                <div class="toggle" data-toggle>
-                                    <a href="#">Состав</a>
-                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                            <div class="eat-choose-grid" data-eat-choose-grid>
+                                {% for product in products.dinner.lp.garnish %}
+                                    <div class="item active" data-item>
+                                        <div class="info">
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% for product in products.dinner.cafe.garnish %}
+                                    <div class="item" data-item>
+                                        <div class="info">
+                                            {% if today %}
+                                                <div class="name">{{ product.name }}</div>
+                                            {% else %}
+                                                <div class="name" data-choose>{{ product.name }}</div>
+                                            {% endif %}
+                                            <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
+                                            <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                            <div class="text" data-toggle>
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                            {% if not today %}
+                                                <div class="choose" data-choose>
+                                                    <a href="#">
+                                                        Уже выбрано блюдо из этой категории.
+                                                        Нажмите, чтобы заменить его.
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img"></div>
+                                        {% endif %}
+                                        <div class="toggle" data-toggle>
+                                            <a href="#">Состав</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
 
-            <div id="dinner" data-eat-menu-tab-content="dinner">
-                <div class="eat-choose-block">
-                    {% if products.lunch.lp.main %}
-                        <div class="category">
-                            <div class="name">Основное блюдо</div>
-                            {% if not products.dinner.cafe.main %}
-                                <div class="info">Это блюдо нельзя заменить</div>
-                            {% endif %}
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            {% for product in products.dinner.lp.main %}
-                                <div class="item active" data-item>
-                                    <div class="info">
-                                        {% if today %}
-                                            <div class="name">{{ product.name }}</div>
-                                        {% else %}
-                                            <div class="name" data-choose>{{ product.name }}</div>
-                                        {% endif %}
-                                        <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
-                                        <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                        <div class="text" data-toggle>
-                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                        </div>
-                                        {% if not today %}
-                                            <div class="choose" data-choose>
-                                                <a href="#">
-                                                    Уже выбрано блюдо из этой категории.
-                                                    Нажмите, чтобы заменить его.
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img"></div>
-                                    {% endif %}
-                                    <div class="toggle" data-toggle>
-                                        <a href="#">Состав</a>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                            {% for product in products.dinner.cafe.main %}
-                                <div class="item" data-item>
-                                    <div class="info">
-                                        {% if today %}
-                                            <div class="name">{{ product.name }}</div>
-                                        {% else %}
-                                            <div class="name" data-choose>{{ product.name }}</div>
-                                        {% endif %}
-                                        <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
-                                        <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                        <div class="text" data-toggle>
-                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                        </div>
-                                        {% if not today %}
-                                            <div class="choose" data-choose>
-                                                <a href="#">
-                                                    Уже выбрано блюдо из этой категории.
-                                                    Нажмите, чтобы заменить его.
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img"></div>
-                                    {% endif %}
-                                    <div class="toggle" data-toggle>
-                                        <a href="#">Состав</a>
-                                    </div>
-                                </div>
-
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {% if products.dinner.cafe.garnish %}
-                        <div class="category">
-                            <div class="name">Гарнир</div>
-                            {% if not products.dinner.cafe.garnish %}
-                                <div class="info">Это блюдо нельзя заменить</div>
-                            {% endif %}
-                        </div>
-                        <div class="eat-choose-grid" data-eat-choose-grid>
-                            {% for product in products.dinner.lp.garnish %}
-                                <div class="item active" data-item>
-                                    <div class="info">
-                                        {% if not today %}
-                                            <div class="choose" data-choose>
-                                                <a href="#">
-                                                    Уже выбрано блюдо из этой категории.
-                                                    Нажмите, чтобы заменить его.
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                        {% if today %}
-                                            <div class="name">{{ product.name }}</div>
-                                        {% else %}
-                                            <div class="name" data-choose>{{ product.name }}</div>
-                                        {% endif %}
-                                        <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
-                                        <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                        <div class="text" data-toggle>
-                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                        </div>
-                                        {% if not today %}
-                                            <div class="choose" data-choose>
-                                                <a href="#">
-                                                    Уже выбрано блюдо из этой категории.
-                                                    Нажмите, чтобы заменить его.
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img"></div>
-                                    {% endif %}
-                                    <div class="toggle" data-toggle>
-                                        <a href="#">Состав</a>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                            {% for product in products.dinner.cafe.garnish %}
-                                <div class="item" data-item>
-                                    <div class="info">
-                                        {% if today %}
-                                            <div class="name">{{ product.name }}</div>
-                                        {% else %}
-                                            <div class="name" data-choose>{{ product.name }}</div>
-                                        {% endif %}
-                                        <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
-                                        <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
-                                        <div class="text" data-toggle>
-                                            {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                        </div>
-                                        {% if not today %}
-                                            <div class="choose" data-choose>
-                                                <a href="#">
-                                                    Уже выбрано блюдо из этой категории.
-                                                    Нажмите, чтобы заменить его.
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    {% if product.image %}
-                                        <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        <div class="img"></div>
-                                    {% endif %}
-                                    <div class="toggle" data-toggle>
-                                        <a href="#">Состав</a>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                <div class="order-toggle-block">
+                    <a href="#" data-order-toggle>
+                        <span class="i i-arrow"></span>
+                        <span>Ваш заказ</span>
+                    </a>
                 </div>
-            </div>
-
-            <div class="order-toggle-block">
-                <a href="#" data-order-toggle>
-                    <span class="i i-arrow"></span>
-                    <span>Ваш заказ</span>
-                </a>
             </div>
         </div>
 
