@@ -220,7 +220,7 @@ def formatting_full_name(full_name):
             res += value.capitalize() + ' '
             continue
         if index == len(list) - 1:
-            res += value[0:1].capitalize()
+            res += value[0:1].capitalize() + '.'
             continue
         else:
             res += value[0:1].capitalize() + '.'
@@ -619,8 +619,8 @@ def create_user(user_form):
             bot = telepot.Bot(TOKEN)
             # все номера chat_id
             messang = ''
-            messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-            messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)}({user.type_of_diet})</b></u>\n'
+            messang += f'{attention}Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
+            messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
             if user.comment:
                 messang += f'Комментарий: "{user.comment}"'
             for item in BotChatId.objects.all():
@@ -633,7 +633,7 @@ def edit_user(user_form, type):
     is_change_diet = False
     user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
     if user.full_name != user_form.data['full_name1']:
-        changes.append(f"ФИО <b>{user.full_name}</b> заменили на <u><b>{user_form.data['full_name1']}</b></u>")
+        changes.append(f"ФИО <b>{user.full_name}</b> изменена на <u><b>{user_form.data['full_name1']}</b></u>")
     user.full_name = user_form.data['full_name1']
     if user.receipt_date != datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date():
         # проверяем если дату из прошлого поренесли в будущее
@@ -641,30 +641,30 @@ def edit_user(user_form, type):
             user.receipt_date <= date.today() and \
             datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date() > date.today():
             flag = True
-        changes.append(f"дату поступления <b>{user.receipt_date}</b> заменили на <u><b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b></u>")
+        changes.append(f"дату поступления <b>{user.receipt_date}</b> изменена на <u><b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b></u>")
     user.receipt_date = datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')
 
     if (user.receipt_time).strftime('%H:%M') != user_form.data['receipt_time1']:
-        changes.append(f"время поступления <b>{(user.receipt_time).strftime('%H:%M')}</b> заменили на <u><b>{user_form.data['receipt_time1']}</b></u>")
+        changes.append(f"время поступления <b>{(user.receipt_time).strftime('%H:%M')}</b> изменено на <u><b>{user_form.data['receipt_time1']}</b></u>")
     user.receipt_time = user_form.data['receipt_time1']
 
     if user.department != user_form.data['department1']:
-        changes.append(f"отделение <b>{user.department}</b> заменили на <u><b>{user_form.data['department1']}</b></u>")
+        changes.append(f"отделение <b>{user.department}</b> изменено на <u><b>{user_form.data['department1']}</b></u>")
     user.department = user_form.data['department1']
 
     if user.room_number != user_form.data['room_number1']:
-        changes.append(f"номер палаты <b>{user.room_number}</b> заменили на <u><b>{user_form.data['room_number1']}</b></u>")
+        changes.append(f"номер палаты <b>{user.room_number}</b> изменен на <u><b>{user_form.data['room_number1']}</b></u>")
     user.room_number = user_form.data['room_number1']
 
     if user.type_of_diet != user_form.data['type_of_diet1']:
-        changes.append(f"тип диеты <b>{user.type_of_diet}</b> заменили на <u><b>{user_form.data['type_of_diet1']}</b></u>")
+        changes.append(f"тип диеты <b>{user.type_of_diet}</b> изменен на <u><b>{user_form.data['type_of_diet1']}</b></u>")
         if type == 'edit':
             is_change_diet = True
 
     user.type_of_diet = user_form.data['type_of_diet1']
 
     if user.comment != user_form.data['comment1']:
-        changes.append(f'комметнарий "{user.comment if user.comment else "нет комментария"}" заменили на <u><b>"{user_form.data["comment1"]}"</b></u>')
+        changes.append(f'комметнарий "{user.comment if user.comment else "нет комментария"}" изменен на <u><b>"{user_form.data["comment1"]}"</b></u>')
     user.comment = user_form.data['comment1']
     # если надо восстановить учетную запись пациента
     if type == 'restore':
@@ -694,14 +694,14 @@ def edit_user(user_form, type):
             # все номера chat_id
             if type == 'edit':
                 messang = ''
-                messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-                messang += f'Отредактирован профиль пациента <b>{user.full_name}</b>.\n\n'
+                messang += f'{attention}Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
+                messang += f'Отредактирован профиль пациента <b>{formatting_full_name(user.full_name)}</b>.\n\n'
                 for change in changes:
                     messang += f'-{change}\n'
             if type == 'restore':
                 messang = ''
                 messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-                messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)}({user.type_of_diet})</b></u>\n'
+                messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
                 messang += f'Комментарий: "{user.comment}"' if user.comment else ''
 
             for item in BotChatId.objects.all():

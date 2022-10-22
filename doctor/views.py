@@ -167,7 +167,7 @@ def doctor(request):
                 # все номера chat_id
                 messang = ''
                 messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-                messang += f'Пациента <u><b>{formatting_full_name(user.full_name)}({user.type_of_diet})</b></u> выписали\n'
+                messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
                 for item in BotChatId.objects.all():
                     bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
