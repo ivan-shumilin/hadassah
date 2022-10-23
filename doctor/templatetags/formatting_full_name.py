@@ -14,7 +14,7 @@ def formatting_full_name(full_name):
             res += value.capitalize() + ' '
             continue
         if index == len(list) - 1:
-            res += value[0:1].capitalize()
+            res += value[0:1].capitalize() + '.'
             continue
         else:
             res += value[0:1].capitalize() + '.'
