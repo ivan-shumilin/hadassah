@@ -93,7 +93,7 @@
     {% for user in catalog.users_3nd_floor %}
     <tr class='dashed'>
         <td>{{ user.number }}</td>
-        <td>{{ user.name }}</td>
+        <td>{{ user.name|formatting_full_name}}</td>
         <td>{{ user.room_number }}</td>
         <td>{{ user.diet }}</td>
         <td>
