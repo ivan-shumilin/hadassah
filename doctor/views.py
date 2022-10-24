@@ -51,7 +51,7 @@ def doctor(request):
                                              },
                                              extra=0, )
     # create_user_today() # создаем таблицу с пользователями на сегодня
-    send_messang.delay()
+    # send_messang.delay()
     applies_changes() # накатить изменения
     CustomUserFormSet = delete_choices(CustomUserFormSet)
 
