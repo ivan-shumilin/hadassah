@@ -242,6 +242,7 @@
                     </div>
                 </div>
             </div>
+<!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script> -->
 <script>
 filtration()
 
@@ -341,8 +342,8 @@ function formattingFFC(value) {
 
 
 const getMenuForPatient = async function(userId) {
-    // let url = 'https://bc64-146-120-93-199.eu.ngrok.io/doctor/api/v1/patient/menu'
-    let url = 'https://www.sk.petrushkagroup.com/doctor/api/v1/patient/menu'
+    let url = 'https://9dff-146-120-93-183.eu.ngrok.io/doctor/api/v1/patient/menu'
+    // let url = 'https://www.sk.petrushkagroup.com/doctor/api/v1/patient/menu'
     let body = {
         "id_user": userId
     };
@@ -590,7 +591,7 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
     if (!receipt_time.value) {
         document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
         document.getElementById('error_receipt_time').classList.add('error')
-        document.getElementById('receipt_time_edit').classList.add('error')        
+        document.getElementById('receipt_time_edit').classList.add('error')
         error = error + 1
     }
     if (department.value == 'Не выбрано') {
