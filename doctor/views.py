@@ -25,6 +25,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core import management
 import telepot
+from doctor.tasks import send_messang
 
 
 def group_doctors_check(user):
@@ -50,6 +51,7 @@ def doctor(request):
                                              },
                                              extra=0, )
     # create_user_today() # создаем таблицу с пользователями на сегодня
+    send_messang.delay()
     applies_changes() # накатить изменения
     CustomUserFormSet = delete_choices(CustomUserFormSet)
 

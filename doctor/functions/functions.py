@@ -1,4 +1,4 @@
-from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product
+from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId
 from django.db import transaction
 from dateutil.parser import parse
 from django.db.models import Q
@@ -6,9 +6,7 @@ from typing import List
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from django.db.models.functions import Lower
-import logging, random
-import telepot
-from nutritionist.models import BotChatId
+import logging, random, telepot
 from doctor.functions.bot import check_change, formatting_full_name, do_messang_send
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes

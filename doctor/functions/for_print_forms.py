@@ -4,13 +4,33 @@ from datetime import datetime, date, timedelta
 from django.db import transaction
 
 
+def check_change_time(user):
+    """Проверка с какого приема пищи изменения вступят в силу"""
+    if datetime.today().time().hour >= 0 and datetime.today().time().hour < 10:
+        return 'зактрака'
+    if datetime.today().time().hour >= 10 and datetime.today().time().hour < 13:
+        return 'обеда'
+    if datetime.today().time().hour >= 13 and datetime.today().time().hour < 17:
+        return 'полдника'
+    if datetime.today().time().hour >= 17 and datetime.today().time().hour < 21:
+        return 'ужина'
+    return None
+
+
 @transaction.atomic
 def create_user_today():
     # сделать в 00:00 каждый день
     """Создает таблицу со всеми пользователями,
-       которые уже поступили или поступят сегодня."""
+       которые уже поступили или поступят сегодня.
+       В 7, 9, 12, 16
+       0 - 10 поступает с завтрака,
+       10 - 13 поступает с обеда,
+       13 - 17 поступает с полдника,
+       17 - 00 поступает с ужина """
     to_create = []
-    users = CustomUser.objects.filter(status='patient').filter(receipt_date__lte=date.today())
+    users = CustomUser.objects.filter(status='patient')\
+        .filter(receipt_date__lte=date.today())\
+        .filter(receipt_time__lte=check_change_time())
     UsersToday.objects.all().delete()
     for user in users:
         to_create.append(UsersToday(
