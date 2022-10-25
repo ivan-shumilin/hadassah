@@ -60,8 +60,8 @@ class MenuByDayAdmin(admin.ModelAdmin):
 
 @admin.register(UsersToday)
 class UsersTodayAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'receipt_date', 'type_of_diet', 'status')
-    fields = ('full_name', 'receipt_date', 'type_of_diet', 'status')
+    list_display = ('full_name', 'receipt_date', 'receipt_time', 'type_of_diet', 'status')
+    fields = ('full_name', 'receipt_date', 'receipt_time', 'type_of_diet', 'status')
     list_per_page = 200
 
 @admin.register(СhangesUsersToday)

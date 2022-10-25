@@ -2,7 +2,7 @@ from nutritionist.models import CustomUser, UsersToday, СhangesUsersToday
 import datetime
 from datetime import datetime, date, timedelta
 from django.db import transaction
-
+from django.db.models import Q
 
 def check_change_time(user):
     """Проверка с какого приема пищи изменения вступят в силу"""
@@ -18,7 +18,7 @@ def check_change_time(user):
 
 
 @transaction.atomic
-def create_user_today():
+def create_user_today(meal):
     # сделать в 00:00 каждый день
     """Создает таблицу со всеми пользователями,
        которые уже поступили или поступят сегодня.
@@ -28,9 +28,37 @@ def create_user_today():
        13 - 17 поступает с полдника,
        17 - 00 поступает с ужина """
     to_create = []
-    users = CustomUser.objects.filter(status='patient')\
-        .filter(receipt_date__lte=date.today())\
-        .filter(receipt_time__lte=check_change_time())
+    # В зависимости от приема пищи добавляем разных пациентов в UsersToday
+    if meal == 'breakfast':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(receipt_date__lte=date.today()) \
+            .filter(receipt_time__lte='10:00')
+
+    if meal == 'lunch':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(receipt_date__lte=date.today()) \
+            .filter(receipt_time__lte='14:00')
+
+    if meal == 'afternoon':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(receipt_date__lte=date.today()) \
+            .filter(receipt_time__lte='17:00')
+
+    if meal == 'dinner':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(receipt_date__lte=date.today()) \
+            .filter(receipt_time__lte='21:00')
+
+    if meal == 'tomorrow':
+        tomorrow = date.today() + timedelta(days=1)
+        users = CustomUser.objects.filter(status='patient').\
+            filter(Q(receipt_date__lte=date.today()) | Q(receipt_date__lte=tomorrow) & Q(receipt_time__lte='10:00'))
+
+
+
+    # users = CustomUser.objects.filter(status='patient')\
+    #     .filter(receipt_date__lte=date.today())\
+    #     .filter(receipt_time__lte=check_change_time())
     UsersToday.objects.all().delete()
     for user in users:
         to_create.append(UsersToday(
@@ -55,6 +83,7 @@ def create_user_tomorrow():
     to_create = []
     tomorrow = date.today() + timedelta(days=1)
     users = CustomUser.objects.filter(status='patient').filter(receipt_date__lte=tomorrow)
+    users = users.filter(receipt_time__lte='10:00')
     UsersToday.objects.all().delete()
     for user in users:
         to_create.append(UsersToday(

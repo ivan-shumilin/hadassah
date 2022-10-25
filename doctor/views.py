@@ -19,7 +19,7 @@ from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_w
     create_list_users_on_floor, what_meal, translate_meal, check_value_two
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
-    applies_changes
+    applies_changes, create_user_tomorrow
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -52,7 +52,8 @@ def doctor(request):
                                              extra=0, )
     # create_user_today() # создаем таблицу с пользователями на сегодня
     # send_messang.delay()
-    applies_changes() # накатить изменения
+    # create_user_today('tomorrow')
+    # applies_changes() # накатить изменения
     CustomUserFormSet = delete_choices(CustomUserFormSet)
 
     page = 'menu-doctor'
