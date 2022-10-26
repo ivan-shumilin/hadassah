@@ -54,7 +54,7 @@ def doctor(request):
     # send_messang.delay()
     # create_user_today('tomorrow')
     # applies_changes() # накатить изменения
-    create_user_today('lunch')
+    # create_user_today('lunch')
     CustomUserFormSet = delete_choices(CustomUserFormSet)
 
     page = 'menu-doctor'
