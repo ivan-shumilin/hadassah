@@ -81,10 +81,10 @@ h1 {
 
 }
 
-#table2 td {
+/* #table2 td {
     padding: 3px;
     padding-left: 5px;
-}
+} */
 
 
 #table2 tr:first-child {
@@ -109,9 +109,9 @@ td ul {
     padding: 0;
 }
 
-td li {
+/* td li {
     list-style-type: none;
-}
+} */
 
 .dashed td {
     border-bottom: 1px dashed #1a1b1c;
@@ -120,6 +120,13 @@ td li {
 
 .dashed td:nth-child(5) {
     background: rgb(236, 240, 243);
+    padding-left: 15px;
+    width: 460px;
+}
+
+.dashed td:nth-child(6) {
+    padding-left: 15px;
+    width: 460px;
 }
 
 .lp {
