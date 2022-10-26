@@ -40,13 +40,11 @@ def create_user_today(meal):
 
     if meal == 'afternoon':
         users = CustomUser.objects.filter(status='patient') \
-            .filter(receipt_date__lte=date.today()) \
-            .filter(receipt_time__lte='17:00')
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='17:00'))
 
     if meal == 'dinner':
         users = CustomUser.objects.filter(status='patient') \
-            .filter(receipt_date__lte=date.today()) \
-            .filter(receipt_time__lte='21:00')
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='21:00'))
 
     if meal == 'tomorrow':
         tomorrow = date.today() + timedelta(days=1)
