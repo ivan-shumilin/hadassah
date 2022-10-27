@@ -31,12 +31,11 @@ def create_user_today(meal):
     # В зависимости от приема пищи добавляем разных пациентов в UsersToday
     if meal == 'breakfast':
         users = CustomUser.objects.filter(status='patient') \
-            .filter(receipt_date__lte=date.today()) \
-            .filter(receipt_time__lte='10:00')
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='10:00'))
 
     if meal == 'lunch':
         users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='10:00'))
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='14:00'))
 
     if meal == 'afternoon':
         users = CustomUser.objects.filter(status='patient') \
