@@ -205,6 +205,85 @@ class MenuByDay(models.Model):
             blank=True,
             default='',
         )
+    type_of_diet = models.CharField(
+        max_length=100,
+        choices=TYPE_DIET,
+        blank=True,
+        default='ОВД',
+        help_text='Выбор диеты')
+    main = models.CharField(max_length=100, null=True)
+    garnish = models.CharField(max_length=100, null=True)
+    porridge = models.CharField(max_length=100, null=True)
+    soup = models.CharField(max_length=100, null=True)
+    dessert = models.CharField(max_length=100, null=True)
+    fruit = models.CharField(max_length=100, null=True)
+    drink = models.CharField(max_length=100, null=True)
+    salad = models.CharField(max_length=100, null=True)
+
+    def __str__(self):
+        return f'{self.user_id} {self.date}'
+
+class UsersReadyOrder(models.Model):
+    user_id = models.CharField(max_length=200, null=True)
+    date_create = models.DateField(default=date.today)
+    full_name = models.CharField(max_length=200, null=True)
+    receipt_date = models.DateField(null=True)
+    receipt_time = models.TimeField(null=True)
+
+    department = models.CharField(
+        max_length=100,
+        choices=TYPE_DEPARTMENT,
+        blank=True,
+        default='Не выбрано',
+        help_text='Выбор отделения')
+
+    room_number = models.CharField(
+        max_length=100,
+        choices=ROOM_NUMBERS,
+        blank=True,
+        default='200',
+        help_text='Выбор номера палаты')
+
+    type_of_diet = models.CharField(
+        max_length=100,
+        choices=TYPE_DIET,
+        blank=True,
+        default='ОВД',
+        help_text='Выбор диеты')
+
+    comment = models.CharField(
+        max_length=1000,
+        null=True,
+        blank=True)
+
+    status = models.CharField(
+        max_length=100,
+        choices=STATUS_PATIENT,
+        blank=True,
+        default='',
+        help_text='Выбор диеты')
+
+
+    def __str__(self):
+        return f'{self.full_name}'
+
+
+class MenuByDayReadyOrder(models.Model):
+    user_id = models.ForeignKey('UsersReadyOrder', on_delete=models.CASCADE, null=True)
+    date_create = models.DateField(default=date.today)
+    date = models.DateField()
+    meal = models.CharField(
+            max_length=100,
+            choices=MEALS,
+            blank=True,
+            default='',
+        )
+    type_of_diet = models.CharField(
+        max_length=100,
+        choices=TYPE_DIET,
+        blank=True,
+        default='ОВД',
+        help_text='Выбор диеты')
     main = models.CharField(max_length=100, null=True)
     garnish = models.CharField(max_length=100, null=True)
     porridge = models.CharField(max_length=100, null=True)

@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp, MenuByDay, Barcodes, CommentProduct, \
-    BotChatId, UsersToday, СhangesUsersToday
+    BotChatId, UsersToday, СhangesUsersToday, UsersReadyOrder, MenuByDayReadyOrder
 
 
 admin.site.register(Base)
@@ -54,8 +54,8 @@ class CommentProductAdmin(admin.ModelAdmin):
 
 @admin.register(MenuByDay)
 class MenuByDayAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'date', 'meal')
-    fields = ('user_id', 'date', 'meal', 'main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad')
+    list_display = ('user_id', 'date', 'meal', 'type_of_diet')
+    fields = ('user_id', 'date', 'type_of_diet', 'meal', 'main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad')
     list_per_page = 200
 
 @admin.register(UsersToday)
@@ -80,6 +80,21 @@ class BarcodesAdmin(admin.ModelAdmin):
 class BotChatIdAdmin(admin.ModelAdmin):
     list_display = ('chat_id',)
     fields = ('chat_id',)
+    list_per_page = 200
+
+
+
+@admin.register(MenuByDayReadyOrder)
+class MenuByDayReadyOrderAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'date', 'meal')
+    fields = ('user_id', 'date', 'meal', 'main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad')
+    list_per_page = 200
+
+
+@admin.register(UsersReadyOrder)
+class UsersReadyOrderAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'receipt_date', 'receipt_time', 'type_of_diet', 'status')
+    fields = ('full_name', 'receipt_date', 'receipt_time', 'type_of_diet', 'status')
     list_per_page = 200
 
 

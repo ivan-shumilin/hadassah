@@ -1,4 +1,5 @@
-from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId
+from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId,\
+    UsersToday, MenuByDayReadyOrder, UsersReadyOrder
 from django.db import transaction
 from dateutil.parser import parse
 from django.db.models import Q
@@ -10,6 +11,7 @@ import logging, random, telepot
 from doctor.functions.bot import check_change, formatting_full_name, do_messang_send
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes
+from doctor.tasks import my_job_send_messang_changes
 
 
 def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup):
@@ -390,7 +392,7 @@ def creates_dict_with_menu_patients(id):
     }
     for day, date_str in day_date.items():
         menu[day] = {}
-        for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+        for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
             menu[day][meal] = {
                 'main': check_value_two(menu_all, date_str, meal, "main"),
                 'garnish': check_value_two(menu_all, date_str, meal, "garnish"),
@@ -411,7 +413,7 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
     menu_all = MenuByDay.objects.filter(user_id=id)
     menu = {}
 
-    for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         menu[meal] = {
             'main': check_value_two(menu_all, date_show, meal, "main"),
             'garnish': check_value_two(menu_all, date_show, meal, "garnish"),
@@ -429,7 +431,7 @@ def add_default_menu(user):
     # генератор списка return даты на след 3 дня
     days = [parse(user.receipt_date) + timedelta(days=delta) for delta in [0, 1, 2]]
     for day_of_the_week in days:
-        for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+        for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
             translated_diet = user.type_of_diet
             products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=get_day_of_the_week(str(day_of_the_week))) &
                                                 Q(timetablelp__type_of_diet=translated_diet) &
@@ -439,6 +441,7 @@ def add_default_menu(user):
                 user_id=user,
                 date=day_of_the_week,
                 meal=meal,
+                type_of_diet=user.type_of_diet,
                 main=check_value('основной', products),
                 garnish=check_value('гарнир', products),
                 porridge=check_value('каша', products),
@@ -452,7 +455,7 @@ def add_default_menu(user):
     return
 
 def add_default_menu_on_one_day(day_of_the_week, user):
-    for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         translated_diet = user.type_of_diet
         products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=get_day_of_the_week(str(day_of_the_week))) &
                                             Q(timetablelp__type_of_diet=translated_diet) &
@@ -462,6 +465,7 @@ def add_default_menu_on_one_day(day_of_the_week, user):
             user_id=user,
             date=day_of_the_week,
             meal=meal,
+            type_of_diet=user.type_of_diet,
             main=check_value('основной', products),
             garnish=check_value('гарнир', products),
             porridge=check_value('каша', products),
@@ -578,6 +582,38 @@ logging.basicConfig(
 )
 
 
+def check_meal_user(user, type):
+    """ Вернет на какой прием пищи успевает пациент. """
+    if type == 'archiving':
+        receipt_time = parse(str(user.receipt_date) + ' ' + str(user.receipt_time)).time()
+    else:
+        receipt_time = parse(user.receipt_date + ' ' + user.receipt_time).time()
+    if receipt_time.hour > 0 and receipt_time.hour < 10:
+        return 'зактрака', 0
+    if receipt_time.hour >= 10 and receipt_time.hour < 14:
+        return 'обеда', 1
+    if receipt_time.hour >= 14 and receipt_time.hour < 17:
+        return 'полдника', 2
+    if receipt_time.hour >= 17 and receipt_time.hour < 21:
+        return 'ужина', 3
+    return 'завтра', 4
+
+def get_now_show_meal():
+    """ Вернет след прием пищи. """
+    time = datetime.today().time()
+    if time.hour > 0 and time.hour < 9:
+        return 'зактрака'
+    if time.hour >= 9 and time.hour < 12:
+        return 'обеда'
+    if time.hour >= 12 and time.hour < 16:
+        return 'полдника'
+    if time.hour >= 16 and time.hour < 19:
+        return 'ужина'
+    return 'завтра'
+
+
+
+
 def create_user(user_form):
     # генерируем уникальный логин
     while True:
@@ -603,42 +639,116 @@ def create_user(user_form):
     add_default_menu(user)
     add_menu_three_days_ahead()
 
-    date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
-    # после 19 в заказ добавляем пользователей с датой госпитализации на след день
-    if parse(user.receipt_date).date() <= date_order:
-        if check_time():
-            update_UsersToday(user)
+    if datetime.today().time().hour >= 19:
+        if parse(user.receipt_date).date() == (date.today() + timedelta(days=1)) and \
+            (parse(user.receipt_date + ' ' + user.receipt_time).time() <= parse(user.receipt_date + ' ' + '10:00').time()):
+                update_UsersToday(user)
         else:
-            update_СhangesUsersToday(user)
+            if parse(user.receipt_date).date() == date.today():
+                update_UsersToday(user)
+    else:  # время меньше 19
+        if parse(user.receipt_date).date() == date.today():
+            # Проверяем с какого приема пищи мы можем накормить пациента.
+            meal_permissible, weight_meal_permissible = check_change('True')
+            # Проверяем на какой прием пищи успевает пациент пациента.
+            meal_user, weight_meal_user = check_meal_user(user, 'creating')
+            # Прием пищи с которого пациент будет добавлен в заказ.
+            meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
+            # Определяем, какой след прием пищи.
+            now_show_meal = get_now_show_meal()
+            if meal_order == now_show_meal and meal_order != 'завтра':
+                update_UsersToday(user)
+            if do_messang_send() and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
+                attention = u'\u2757\ufe0f'
+                messang = f'{attention}Изменение с <u><b>{meal_order}</b></u>{attention}\n'
+                messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
+                if user.comment:
+                    messang += f'Комментарий: "{user.comment}"'
+                my_job_send_messang_changes.delay(messang)
 
-        if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
-            attention = u'\u2757\ufe0f'
-            TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-            bot = telepot.Bot(TOKEN)
-            # все номера chat_id
-            messang = ''
-            messang += f'{attention}Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-            messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
-            if user.comment:
-                messang += f'Комментарий: "{user.comment}"'
-            for item in BotChatId.objects.all():
-                bot.sendMessage(item.chat_id, messang, parse_mode="html")
+
+def get_next_meals():
+    """ Вернет след прием пищи. """
+    time = datetime.today().time()
+    if time.hour > 0 and time.hour < 7:
+        return ['breakfast', 'lunch', 'afternoon', 'dinner']
+    if time.hour >= 7 and time.hour < 11:
+        return ['lunch', 'afternoon', 'dinner']
+    if time.hour >= 11 and time.hour < 14:
+        return ['afternoon', 'dinner']
+    if time.hour >= 14 and time.hour < 17:
+        return ['dinner']
+    return []
+
+@transaction.atomic
+def load_menu_for_future(user, meal, change_day):
+    to_create = []
+    translated_diet = user.type_of_diet
+    products = ProductLp.objects.filter(
+        Q(timetablelp__day_of_the_week=get_day_of_the_week(str(change_day))) &
+        Q(timetablelp__type_of_diet=translated_diet) &
+        Q(timetablelp__meals=meal))
+    to_create.append(MenuByDay(
+        user_id=user,
+        date=change_day,
+        meal=meal,
+        type_of_diet=user.type_of_diet,
+        main=check_value('основной', products),
+        garnish=check_value('гарнир', products),
+        porridge=check_value('каша', products),
+        soup=check_value('суп', products),
+        dessert=check_value('десерт', products),
+        fruit=check_value('фрукты', products),
+        drink=check_value('напиток', products),
+        salad=check_value('салат', products),
+    ))
+    MenuByDay.objects.bulk_create(to_create)
+
+def delete_menu_for_future(user, days, next_meals):
+    for index, change_day in enumerate(days):
+        next_meals = next_meals if index == 0 else ['breakfast', 'lunch', 'afternoon', 'dinner']
+        for meal in next_meals:
+            set_menu_del = MenuByDay.objects.filter(user_id=user.id).filter(date=str(change_day)).filter(meal=meal)
+            for menu_del in set_menu_del:
+                menu_del.delete()
+
+def update_menu_for_future(user, flag_is_change_diet):
+    """ Если поменялась диета или добавили комментарий.
+        Удаляем все меню в будущем и добавляем новое.
+     """
+    try:
+        if flag_is_change_diet:
+            UsersReadyOrder.objects.get(user_id=user.id)
+        next_meals = get_next_meals()
+        days = [date.today() + timedelta(days=delta) for delta in [0, 1, 2]]
+        delete_menu_for_future(user, days, next_meals)
+
+        for index, change_day in enumerate(days):
+            next_meals = next_meals if index == 0 else ['breakfast', 'lunch', 'afternoon', 'dinner']
+            for meal in next_meals:
+                load_menu_for_future(user, meal, change_day)
+    except:
+        MenuByDay.objects.filter(user_id=user.id).delete()
+        add_default_menu(user)
+        add_menu_three_days_ahead()
 
 
 def edit_user(user_form, type):
     changes = []
-    flag = False
+    # flag = False
     is_change_diet = False
+    flag_add_comment = False
     user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
+    # обравляем CustomUser и состовляем список изменений
     if user.full_name != user_form.data['full_name1']:
         changes.append(f"ФИО <b>{user.full_name}</b> изменена на <u><b>{user_form.data['full_name1']}</b></u>")
     user.full_name = user_form.data['full_name1']
     if user.receipt_date != datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date():
-        # проверяем если дату из прошлого поренесли в будущее
-        if type == 'edit' and \
-            user.receipt_date <= date.today() and \
-            datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date() > date.today():
-            flag = True
+        # # проверяем если дату из прошлого поренесли в будущее
+        # if type == 'edit' and \
+        #     user.receipt_date <= date.today() and \
+        #     datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date() > date.today():
+        #     flag = True
         changes.append(f"дату поступления <b>{user.receipt_date}</b> изменена на <u><b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b></u>")
     user.receipt_date = datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')
 
@@ -658,10 +768,13 @@ def edit_user(user_form, type):
         changes.append(f"тип диеты <b>{user.type_of_diet}</b> изменен на <u><b>{user_form.data['type_of_diet1']}</b></u>")
         if type == 'edit':
             is_change_diet = True
-
     user.type_of_diet = user_form.data['type_of_diet1']
 
     if user.comment != user_form.data['comment1']:
+        # Если добавили коментарий, рашьше было без комментария
+        flag_add_comment = True if len(user.comment) < 2 and\
+                                   len(user_form.data['comment1']) > 2 else False
+
         changes.append(f'комметнарий "{user.comment if user.comment else "нет комментария"}" изменен на <u><b>"{user_form.data["comment1"]}"</b></u>')
     user.comment = user_form.data['comment1']
     # если надо восстановить учетную запись пациента
@@ -669,41 +782,124 @@ def edit_user(user_form, type):
         user.status = 'patient'
     user.save()
     logging.info(f'Пациент отредактирован {user_form.data["full_name"]}')
-
-    # Если поменяли тип диеты обновляем меню у пациента с сегодня
-    if is_change_diet:
-        MenuByDay.objects.filter(date__gte=date.today()).delete()
-        check_have_menu()
+    flag_is_change_diet = is_change_diet
+    if type == 'restore':
+        # ПОМЕНЯТЬ ФУНКЦИЮ
+        add_default_menu(user)
         add_menu_three_days_ahead()
+    elif flag_is_change_diet or flag_add_comment:
+        update_menu_for_future(user, flag_is_change_diet)
 
+    # date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
+    # # после 19 в заказ добавляем пользователей с датой госпитализации на след день
+    # if parse(user.receipt_date).date() <= date_order or flag == True:
+    #     if check_time():
+    #         update_UsersToday(user)
+    #     else:
+    #         update_СhangesUsersToday(user)
+    #     # отправить сообщение
 
-    date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
-    # после 19 в заказ добавляем пользователей с датой госпитализации на след день
-    if parse(user.receipt_date).date() <= date_order or flag == True:
-        if check_time():
+    if datetime.today().time().hour >= 19:
+        if parse(user.receipt_date).date() == (date.today() + timedelta(days=1)) and \
+                (parse(user.receipt_date + ' ' + user.receipt_time).time() <= parse(
+                    user.receipt_date + ' ' + '10:00').time()):
             update_UsersToday(user)
         else:
-            update_СhangesUsersToday(user)
-        # отправить сообщение
-        if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
-            TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-            attention = u'\u2757\ufe0f'
-            bot = telepot.Bot(TOKEN)
-            # все номера chat_id
-            if type == 'edit':
-                messang = ''
-                messang += f'{attention}Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-                messang += f'Отредактирован профиль пациента <b>{formatting_full_name(user.full_name)}</b>.\n\n'
-                for change in changes:
-                    messang += f'-{change}\n'
-            if type == 'restore':
-                messang = ''
-                messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-                messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
-                messang += f'Комментарий: "{user.comment}"' if user.comment else ''
+            if parse(user.receipt_date).date() == date.today():
+                update_UsersToday(user)
+    else:  # время меньше 19
+        if parse(user.receipt_date).date() <= date.today():
+            # Проверяем с какого приема пищи мы можем накормить пациента.
+            meal_permissible, weight_meal_permissible = check_change('True')
+            # Проверяем на какой прием пищи успевает пациент пациента.
+            meal_user, weight_meal_user = check_meal_user(user, 'editing')
+            # Прием пищи с которого пациент будет добавлен в заказ.
+            meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
+            # Определяем, какой след прием пищи сейчас в печатных формах.
+            now_show_meal = get_now_show_meal()
+            if meal_order == now_show_meal and meal_order != 'завтра':
+                update_UsersToday(user)
+    if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+        # TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+        attention = u'\u2757\ufe0f'
+        # bot = telepot.Bot(TOKEN)
+        # все номера chat_id
+        if type == 'edit':
+            messang = ''
+            messang += f'{attention}Изменение с <u><b>{meal_order}</b></u>{attention}\n'
+            messang += f'Отредактирован профиль пациента <b>{formatting_full_name(user.full_name)}</b>.\n\n'
+            for change in changes:
+                messang += f'-{change}\n'
+        if type == 'restore':
+            messang = ''
+            messang += f'{attention} Изменение с <u><b>{meal_order}</b></u>{attention}\n'
+            messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
+            messang += f'Комментарий: "{user.comment}"' if user.comment else ''
 
-            for item in BotChatId.objects.all():
-                bot.sendMessage(item.chat_id, messang, parse_mode="html")
+        # for item in BotChatId.objects.all():
+        #     bot.sendMessage(item.chat_id, messang, parse_mode="html")
+        my_job_send_messang_changes.delay(messang)
+
+
+def archiving_user(user):
+    user.status = 'patient_archive'
+    user.save()
+    update_UsersToday(user)
+    MenuByDay.objects.filter(user_id=user.id).delete()
+    if user.receipt_date == date.today():
+        # Проверяем с какого приема пищи мы можем накормить пациента.
+        meal_permissible, weight_meal_permissible = check_change('True')
+        # Проверяем на какой прием пищи успевает пациент пациента.
+        meal_user, weight_meal_user = check_meal_user(user, 'archiving')
+        # Прием пищи с которого пациент будет добавлен в заказ.
+        meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
+
+    if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+        attention = u'\u2757\ufe0f'
+        messang = ''
+        messang += f'{attention} Изменение с <u><b>{meal_order}</b></u>{attention}\n'
+        messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
+        return my_job_send_messang_changes.delay(messang)
+
+
+
+    # дата на которую создается заказ
+    # receipt_date = str(user.receipt_date)
+    # receipt_time = str(user.receipt_time)
+    # if datetime.today().time().hour >= 19:
+    #     if parse(receipt_date).date() == (date.today() + timedelta(days=1)) and \
+    #             (parse(receipt_date + ' ' + receipt_time).time() <= parse(
+    #                 receipt_date + ' ' + '10:00').time()):
+    #         update_UsersToday(user)
+    #     else:
+    #         if parse(receipt_date).date() == date.today():
+    #             update_UsersToday(user)
+    # else:  # время меньше 19
+    #     if parse(receipt_date).date() == date.today():
+    #         # Проверяем с какого приема пищи мы можем накормить пациента.
+    #         meal_permissible, weight_meal_permissible = check_change('True')
+    #         # Проверяем на какой прием пищи успевает пациент пациента.
+    #         meal_user, weight_meal_user = check_meal_user(user, 'archiving')
+    #         # Прием пищи с которого пациент будет добавлен в заказ.
+    #         meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
+    #         # Определяем, какой след прием пищи.
+    #         now_show_meal = get_now_show_meal()
+    #         if meal_order == now_show_meal and meal_order != 'завтра':
+    #             update_UsersToday(user)
+    #         if do_messang_send() and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
+    #             attention = u'\u2757\ufe0f'
+    #             TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+    #             bot = telepot.Bot(TOKEN)
+    #             # все номера chat_id
+    #             messang = ''
+    #             messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
+    #             messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
+    #             for item in BotChatId.objects.all():
+    #                 bot.sendMessage(item.chat_id, messang, parse_mode="html")
+
+
+
+
 
 
 def counting_diets(users):
@@ -728,12 +924,15 @@ def counting_diets(users):
 
 
 
-def creates_dict_test(id, date_show, lp_or_cafe, meal):
+def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order):
     """ Создаем словарь с блюдами на конкретный прием пищи для пациента """
-    menu_all = MenuByDay.objects.filter(user_id=id)
+    if type_order == 'flex-order':
+        menu_all = MenuByDay.objects.filter(user_id=id)
+    else:
+        menu_all = MenuByDayReadyOrder.objects.filter(user_id=id_fix_user)
     menu = {}
     menu_list = []
-    # for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+    # for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
     menu = {
         'main': check_value_two(menu_all, date_show, meal, "main"),
         'garnish': check_value_two(menu_all, date_show, meal, "garnish"),
@@ -757,7 +956,7 @@ def creates_dict_test(id, date_show, lp_or_cafe, meal):
     return menu_list
 
 
-def create_list_users_on_floor(users, start, end, meal, date_create):
+def create_list_users_on_floor(users, start, end, meal, date_create, type_order):
     users = [user for user in users if (int(user.room_number) >= start) \
                                   and (int(user.room_number) <= end)]
     users_on_floor = []
@@ -767,8 +966,8 @@ def create_list_users_on_floor(users, start, end, meal, date_create):
              'number': '',
              'room_number': user.room_number,
              'diet': user.type_of_diet,
-             'products_lp': creates_dict_test(user.user_id, str(date_create), 'lp', meal),
-             'products_cafe': creates_dict_test(user.user_id, str(date_create), 'cafe', meal),
+             'products_lp': creates_dict_test(user.user_id, user.id, str(date_create), 'lp', meal, type_order),
+             'products_cafe': creates_dict_test(user.user_id, user.id, str(date_create), 'cafe', meal, type_order),
              }
         )
     return users_on_floor
@@ -784,3 +983,12 @@ def what_meal():
         return 'dinner', None
     if datetime.today().time().hour >= 19:
         return 'breakfast', 'tomorrow'
+
+
+def what_type_order():
+    if (datetime.today().time().hour >= 7  and datetime.today().time().hour < 9)\
+        or (datetime.today().time().hour >= 11  and datetime.today().time().hour < 12) \
+        or (datetime.today().time().hour >= 14 and datetime.today().time().hour < 16) \
+        or (datetime.today().time().hour >= 17 and datetime.today().time().hour < 19):
+        return 'fix-order'
+    return 'flex-order'

@@ -1,4 +1,5 @@
-from nutritionist.models import CustomUser, UsersToday, СhangesUsersToday
+from nutritionist.models import CustomUser, UsersToday, СhangesUsersToday, UsersReadyOrder,\
+    MenuByDayReadyOrder, MenuByDay
 import datetime
 from datetime import datetime, date, timedelta
 from django.db import transaction
@@ -71,6 +72,65 @@ def create_user_today(meal):
             ))
     UsersToday.objects.bulk_create(to_create)
 
+@transaction.atomic
+def create_ready_order(meal):
+    to_create = []
+    # В зависимости от приема пищи добавляем разных пациентов в UsersToday
+    if meal == 'breakfast':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='10:00'))
+
+    if meal == 'lunch':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='14:00'))
+
+    if meal == 'afternoon':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='17:00'))
+
+    if meal == 'dinner':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='21:00'))
+
+    if meal == 'tomorrow':
+        tomorrow = date.today() + timedelta(days=1)
+        users = CustomUser.objects.filter(status='patient').\
+            filter(Q(receipt_date__lte=date.today()) | Q(receipt_date__lte=tomorrow) & Q(receipt_time__lte='10:00'))
+
+
+    UsersReadyOrder.objects.all().delete()
+    for user in users:
+        to_create.append(UsersReadyOrder(
+            user_id=user.id,
+            date_create=date.today(),
+            full_name=user.full_name,
+            receipt_date=user.receipt_date,
+            receipt_time=user.receipt_time,
+            department=user.department,
+            room_number=user.room_number,
+            type_of_diet=user.type_of_diet,
+            comment=user.comment,
+            status=user.status,
+            ))
+    UsersReadyOrder.objects.bulk_create(to_create)
+    to_create = []
+    for user in users:
+        menu = MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
+        to_create.append(MenuByDayReadyOrder(user_id=UsersReadyOrder.objects.get(user_id=user.id),
+                                date_create=date.today(),
+                                date=menu[0].date,
+                                meal=menu[0].meal,
+                                main=menu[0].main,
+                                garnish=menu[0].garnish,
+                                porridge=menu[0].porridge,
+                                soup=menu[0].soup,
+                                dessert=menu[0].dessert,
+                                fruit=menu[0].fruit,
+                                drink=menu[0].drink,
+                                salad=menu[0].salad))
+    MenuByDayReadyOrder.objects.bulk_create(to_create)
+
+
 
 @transaction.atomic
 def create_user_tomorrow():
@@ -121,8 +181,11 @@ def check_time():
 
 def update_UsersToday(user):
     if user.status == 'patient_archive':
-        user_today = UsersToday.objects.get(user_id=user.id)
-        user_today.delete()
+        try:
+            user_today = UsersToday.objects.get(user_id=user.id)
+            user_today.delete()
+        except:
+            pass
     else:
         try:
             user_today = UsersToday.objects.get(user_id=user.id)

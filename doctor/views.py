@@ -16,10 +16,10 @@ from django.db.models.functions import Lower
 from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, add_default_menu, \
     creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
-    create_list_users_on_floor, what_meal, translate_meal, check_value_two
+    create_list_users_on_floor, what_meal, translate_meal, check_value_two, archiving_user
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
-    applies_changes, create_user_tomorrow
+    applies_changes, create_user_tomorrow, create_ready_order
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -52,8 +52,9 @@ def doctor(request):
                                              extra=0, )
     # create_user_today() # создаем таблицу с пользователями на сегодня
     # send_messang.delay()
-    # create_user_today('tomorrow')
-    # applies_changes() # накатить изменения
+    # create_user_today('afternoon')
+    # create_ready_order('afternoon')
+
 
     CustomUserFormSet = delete_choices(CustomUserFormSet)
 
@@ -62,8 +63,8 @@ def doctor(request):
     sorting = 'top'
     today = date.today().strftime("%d.%m.%Y")
 
-    check_have_menu()
-    add_menu_three_days_ahead()
+    # check_have_menu()
+    # add_menu_three_days_ahead()
 
     queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
     if request.method == 'POST' and 'filter_by_flag' in request.POST:
@@ -151,29 +152,27 @@ def doctor(request):
     if request.method == 'POST' and 'archive' in request.POST:
         id_user = request.POST.getlist('id_edit_user')[0]
         user = CustomUser.objects.get(id=id_user)
-        user.status = 'patient_archive'
-        user.save()
-        # тут надо удалить меню пациента
-        MenuByDay.objects.filter(user_id=user.id).delete()
-        # дата на которую создаеться заказ
-        date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
-        # после 19 в заказ добавляем пользователей с датой госпитализации на след день
-        if user.receipt_date <= date_order:
-            if check_time():
-                update_UsersToday(user)
-            else:
-                update_СhangesUsersToday(user)
-
-            if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
-                attention = u'\u2757\ufe0f'
-                TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-                bot = telepot.Bot(TOKEN)
-                # все номера chat_id
-                messang = ''
-                messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-                messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
-                for item in BotChatId.objects.all():
-                    bot.sendMessage(item.chat_id, messang, parse_mode="html")
+        archiving_user(user)
+        # user.status = 'patient_archive'
+        # user.save()
+        # # тут надо удалить меню пациента
+        # MenuByDay.objects.filter(user_id=user.id).delete()
+        # # дата на которую создаеться заказ
+        # date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
+        # # после 19 в заказ добавляем пользователей с датой госпитализации на след день
+        # if user.receipt_date <= date_order:
+        #     if check_time():
+        #         update_UsersToday(user)
+        #     if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+        #         attention = u'\u2757\ufe0f'
+        #         TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+        #         bot = telepot.Bot(TOKEN)
+        #         # все номера chat_id
+        #         messang = ''
+        #         messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
+        #         messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
+        #         for item in BotChatId.objects.all():
+        #             bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
         user_form = PatientRegistrationForm(request.POST)
         formset = CustomUserFormSet(queryset=queryset)

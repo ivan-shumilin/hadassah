@@ -30,6 +30,27 @@ app.conf.beat_schedule = {
         'task': 'doctor.tasks.my_job_create_user_tomorrow',
         'schedule': crontab(minute=0, hour='19'),
     },
+
+    'my_job_create_ready_order_breakfast': {
+        'task': 'doctor.tasks.my_job_create_ready_order_breakfast',
+        'schedule': crontab(minute=0, hour='7'),
+    },
+    'my_job_create_ready_order_lunch': {
+        'task': 'doctor.tasks.my_job_create_ready_order_lunch',
+        'schedule': crontab(minute=0, hour='11'),
+    },
+    'my_job_create_ready_order_afternoon': {
+        'task': 'doctor.tasks.my_job_create_ready_order_afternoon',
+        'schedule': crontab(minute=0, hour='14'),
+    },
+    'my_job_create_ready_order_dinner': {
+        'task': 'doctor.tasks.my_job_create_ready_order_dinner',
+        'schedule': crontab(minute=0, hour='17'),
+    },
+    # 'my_job_create_menu': {
+    #     'task': 'doctor.tasks.my_job_create_menu',
+    #     'schedule': crontab(minute=0, hour='0'),
+    # }
 }
 
 

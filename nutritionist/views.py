@@ -17,7 +17,7 @@ from django.forms import CheckboxInput, Textarea
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
-    UsersToday
+    UsersToday, UsersReadyOrder, MenuByDayReadyOrder
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import ProductSerializer
 from rest_framework import generics
@@ -32,7 +32,7 @@ from django.contrib.auth.models import Group
 from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, add_default_menu, \
     creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
-    create_list_users_on_floor, what_meal, translate_meal, check_value_two
+    create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order
 from doctor.functions.bot import check_change
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes
@@ -898,9 +898,13 @@ def printed_form_one(request):
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
     meal, day = what_meal() # после return 'breakfast', 'tomorrow'
+    type_order = what_type_order()
     date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
-    users = UsersToday.objects.all()
-    # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
+    if type_order == 'flex-order':
+        users = UsersToday.objects.all()
+    else:
+        users = UsersReadyOrder.objects.all()
+
     catalog = {'meal': translate_meal(meal),
                'count': len(users),
                'count_2nd_floor': len([user for user in users if (int(user.room_number) >= 200) \
@@ -908,8 +912,8 @@ def printed_form_one(request):
                'count_3nd_floor': len([user for user in users if (int(user.room_number) >= 300) \
                                   and (int(user.room_number) <= 399)]),
                'count_diet': counting_diets(users),
-               'users_2nd_floor': create_list_users_on_floor(users, 200, 299, meal, date_create),
-               'users_3nd_floor': create_list_users_on_floor(users, 300, 399, meal, date_create)
+               'users_2nd_floor': create_list_users_on_floor(users, 200, 299, meal, date_create, type_order),
+               'users_3nd_floor': create_list_users_on_floor(users, 300, 399, meal, date_create, type_order)
                }
     number = 0
     count_users_with_cafe_prod = 0
@@ -941,11 +945,14 @@ def printed_form_two_lp(request):
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
     meal, day = what_meal() # после return 'breakfast', 'tomorrow'
+    type_order = what_type_order()
     date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
-    # meal = 'lunch'
     catalog = {}
 
-    users = UsersToday.objects.all()
+    if type_order == 'flex-order':
+        users = UsersToday.objects.all()
+    else:
+        users = UsersReadyOrder.objects.all()
     # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
     for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink']:
         list_whith_unique_products = []
@@ -953,7 +960,10 @@ def printed_form_two_lp(request):
             users_with_diet = users.filter(type_of_diet=diet)
             all_products = []
             for user in users_with_diet:
-                menu_all = MenuByDay.objects.filter(user_id=user.user_id)
+                if type_order == 'flex-order':
+                    menu_all = MenuByDay.objects.filter(user_id=user.user_id)
+                else:
+                    menu_all = MenuByDayReadyOrder.objects.filter(user_id=user.id)
                 all_products.append(check_value_two(menu_all, str((date_create)), meal, category))
             # составляем список с уникальными продуктами
             unique_products = []
@@ -1014,19 +1024,28 @@ def printed_form_two_cafe(request):
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
     meal, day = what_meal() # после return 'breakfast', 'tomorrow'
+    type_order = what_type_order()
+    # type_order = 'fix-order'
     date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
     # meal = 'lunch'
     catalog = {}
 
-    users = CustomUser.objects.all()
-    users = users.filter(status='patient').filter(receipt_date__lte=date.today())
+    # users = CustomUser.objects.all()
+    # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
+    if type_order == 'flex-order':
+        users = UsersToday.objects.all()
+    else:
+        users = UsersReadyOrder.objects.all()
     for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink']:
         list_whith_unique_products = []
         for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД']:
             users_with_diet = users.filter(type_of_diet=diet)
             all_products = []
             for user in users_with_diet:
-                menu_all = MenuByDay.objects.filter(user_id=user.id)
+                if type_order == 'flex-order':
+                    menu_all = MenuByDay.objects.filter(user_id=user.user_id)
+                else:
+                    menu_all = MenuByDayReadyOrder.objects.filter(user_id=user.id)
                 all_products.append(check_value_two(menu_all, str(date.today()), meal, category))
             # составляем список с уникальными продуктами
             unique_products = []

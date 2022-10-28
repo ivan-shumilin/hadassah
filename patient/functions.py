@@ -49,7 +49,7 @@ def creates_dict_with_menu_patients_for_patient(user):
     # }
     # for day, date_str in day_date.items():
     #     menu[day] = {}
-    #     for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+    #     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
     #         menu[day][meal] = {
     #             'main': check_value_two(menu_all, date_str, meal, "main"),
     #             'garnish': check_value_two(menu_all, date_str, meal, "garnish"),
@@ -85,7 +85,7 @@ def creating_menu_for_lk_patient(date_get, diet, meal_, day_of_the_week, transla
     """ Создаем словарь со всеми вариантами блюд для пациента, и с отмеченными блюдами
         которые выбрал пациент. """
     menu = {}
-    for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
         products_lp: tuple = creating_meal_menu_lp(day_of_the_week, translated_diet, meal)
         # menu[meal] = {}
@@ -176,7 +176,7 @@ def create_patient_select(id, date_get):
         return ''
 
     patient_select = {}
-    for meal in ['breakfast', 'afternoon', 'lunch', 'dinner']:
+    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         menu_item = menu.get(meal=meal)
         patient_select[meal] = {
             'main': menu_item.main,
