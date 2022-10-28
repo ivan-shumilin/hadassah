@@ -383,15 +383,25 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
     }
 
     let nowDate = new Date();
-    let todayDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
-    let receiptDateList = (receipt_date.value).split(".");
-    receiptDate = new Date(receiptDateList[2], receiptDateList[1] - 1, receiptDateList[0])
+    let todayDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), nowDate.getHours(), nowDate.getMinutes());
+    let receiptDateListNew = (receipt_date.value).split(".");
+    let receiptTimeListNew = (receipt_time.value).split(":");
+    receiptDateNew = new Date(receiptDateListNew[2], receiptDateListNew[1] - 1, receiptDateListNew[0], receiptTimeListNew[0], receiptTimeListNew[1])
 
-    if (receiptDate < todayDate) {
-        document.getElementById('error_receipt_date').innerHTML = 'Дата не может быть раньше текущей'
-        document.getElementById('error_receipt_date').classList.add('error')
-        document.getElementById('receipt_date_edit').classList.add('error')
-        error = error + 1
+    if (moment(receiptDateNew).isBefore(todayDate, 'day')) {
+            document.getElementById('error_receipt_date').innerHTML = 'Дата госпитализации не может быть раньше текущей даты';
+            document.getElementById('error_receipt_date').classList.add('error');
+            document.getElementById('receipt_date_edit').classList.add('error');
+            error = error + 1
+        }
+    if (moment(receiptDateNew).isSame(todayDate, 'day')) {
+        if (moment(receiptDateNew).isBefore(todayDate, 'minute')) {
+            document.getElementById('error_receipt_time').innerHTML = 'Время госпитализации не может быть раньше текущего времени';
+            document.getElementById('error_receipt_time').classList.add('error')
+            document.getElementById('receipt_time_edit').classList.add('error');
+            error = error + 1
+            
+        }
     }
 
 
