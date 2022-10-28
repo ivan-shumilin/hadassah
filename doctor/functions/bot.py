@@ -2,17 +2,20 @@ import datetime
 from datetime import datetime, date, timedelta
 
 
-def check_change(user):
+def check_change(flag):
     """Проверка с какого приема пищи изменения вступят в силу"""
-    if datetime.today().time().hour > 0 and datetime.today().time().hour < 7:
-        return 'зактрака'
-    if datetime.today().time().hour >= 7 and datetime.today().time().hour < 11:
-        return 'обеда'
-    if datetime.today().time().hour >= 11 and datetime.today().time().hour < 14:
-        return 'полдника'
-    if datetime.today().time().hour >= 14 and datetime.today().time().hour < 17:
-        return 'ужина'
-    return None
+    time = datetime.today().time()
+    if time.hour > 0 and time.hour < 7:
+        return ('зактрака', 0) if flag == 'True' else 'зактрака'
+    if time.hour >= 7 and time.hour < 11:
+        return ('обеда', 1) if flag == 'True' else 'обеда'
+    if time.hour >= 11 and time.hour < 14:
+        return ('полдника', 2) if flag == 'True' else 'полдника'
+    if time.hour >= 14 and time.hour < 17:
+        return ('ужина', 3) if flag == 'True' else 'ужина'
+    if time.hour >= 17:
+        return ('завтра', 4) if flag == 'True' else 'ужина'
+    return ('завтра', 4) if flag == 'True' else 'завтра'
 
 
 def formatting_full_name(full_name):
