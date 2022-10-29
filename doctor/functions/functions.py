@@ -846,7 +846,7 @@ def archiving_user(user):
     user.save()
     update_UsersToday(user)
     MenuByDay.objects.filter(user_id=user.id).delete()
-    if user.receipt_date == date.today():
+    if user.receipt_date <= date.today():
         # Проверяем с какого приема пищи мы можем накормить пациента.
         meal_permissible, weight_meal_permissible = check_change('True')
         # Проверяем на какой прием пищи успевает пациент пациента.
