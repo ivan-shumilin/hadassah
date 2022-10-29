@@ -167,6 +167,6 @@ EMAIL_PORT = 465
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'info@petrushkagroup.com'
-EMAIL_HOST_PASSWORD = 'dhacsfxtrzjhdxce'
+EMAIL_HOST_PASSWORD = 'sswmlhpfnbooozkb'
 
 AUTH_USER_MODEL = 'nutritionist.CustomUser'
