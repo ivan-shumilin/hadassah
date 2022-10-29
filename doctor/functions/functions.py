@@ -854,12 +854,12 @@ def archiving_user(user):
         # Прием пищи с которого пациент будет добавлен в заказ.
         meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
 
-    if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
-        attention = u'\u2757\ufe0f'
-        messang = ''
-        messang += f'{attention} Изменение с <u><b>{meal_order}</b></u>{attention}\n'
-        messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
-        return my_job_send_messang_changes.delay(messang)
+        if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+            attention = u'\u2757\ufe0f'
+            messang = ''
+            messang += f'{attention} Изменение с <u><b>{meal_order}</b></u>{attention}\n'
+            messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
+            return my_job_send_messang_changes.delay(messang)
 
 
 
