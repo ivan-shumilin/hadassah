@@ -658,13 +658,13 @@ def create_user(user_form):
             now_show_meal = get_now_show_meal()
             if meal_order == now_show_meal and meal_order != 'завтра':
                 update_UsersToday(user)
-            if do_messang_send() and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
-                attention = u'\u2757\ufe0f'
-                messang = f'{attention}Изменение с <u><b>{meal_order}</b></u>{attention}\n'
-                messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
-                if user.comment:
-                    messang += f'Комментарий: "{user.comment}"'
-                my_job_send_messang_changes.delay(messang)
+            # if do_messang_send() and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
+            #     attention = u'\u2757\ufe0f'
+            #     messang = f'{attention}Изменение с <u><b>{meal_order}</b></u>{attention}\n'
+            #     messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
+            #     if user.comment:
+            #         messang += f'Комментарий: "{user.comment}"'
+            #     my_job_send_messang_changes.delay(messang)
 
 
 def get_next_meals():
@@ -819,26 +819,26 @@ def edit_user(user_form, type):
             now_show_meal = get_now_show_meal()
             if meal_order == now_show_meal and meal_order != 'завтра':
                 update_UsersToday(user)
-    if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
-        # TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-        attention = u'\u2757\ufe0f'
-        # bot = telepot.Bot(TOKEN)
-        # все номера chat_id
-        if type == 'edit':
-            messang = ''
-            messang += f'{attention}Изменение с <u><b>{meal_order}</b></u>{attention}\n'
-            messang += f'Отредактирован профиль пациента <b>{formatting_full_name(user.full_name)}</b>.\n\n'
-            for change in changes:
-                messang += f'-{change}\n'
-        if type == 'restore':
-            messang = ''
-            messang += f'{attention} Изменение с <u><b>{meal_order}</b></u>{attention}\n'
-            messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
-            messang += f'Комментарий: "{user.comment}"' if user.comment else ''
-
-        # for item in BotChatId.objects.all():
-        #     bot.sendMessage(item.chat_id, messang, parse_mode="html")
-        my_job_send_messang_changes.delay(messang)
+    # if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+    #     # TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+    #     attention = u'\u2757\ufe0f'
+    #     # bot = telepot.Bot(TOKEN)
+    #     # все номера chat_id
+    #     if type == 'edit':
+    #         messang = ''
+    #         messang += f'{attention}Изменение с <u><b>{meal_order}</b></u>{attention}\n'
+    #         messang += f'Отредактирован профиль пациента <b>{formatting_full_name(user.full_name)}</b>.\n\n'
+    #         for change in changes:
+    #             messang += f'-{change}\n'
+    #     if type == 'restore':
+    #         messang = ''
+    #         messang += f'{attention} Изменение с <u><b>{meal_order}</b></u>{attention}\n'
+    #         messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
+    #         messang += f'Комментарий: "{user.comment}"' if user.comment else ''
+    #
+    #     # for item in BotChatId.objects.all():
+    #     #     bot.sendMessage(item.chat_id, messang, parse_mode="html")
+    #     my_job_send_messang_changes.delay(messang)
 
 
 def archiving_user(user):
@@ -854,12 +854,12 @@ def archiving_user(user):
         # Прием пищи с которого пациент будет добавлен в заказ.
         meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
 
-        if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
-            attention = u'\u2757\ufe0f'
-            messang = ''
-            messang += f'{attention} Изменение с <u><b>{meal_order}</b></u>{attention}\n'
-            messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
-            return my_job_send_messang_changes.delay(messang)
+        # if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+        #     attention = u'\u2757\ufe0f'
+        #     messang = ''
+        #     messang += f'{attention} Изменение с <u><b>{meal_order}</b></u>{attention}\n'
+        #     messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
+            # return my_job_send_messang_changes.delay(messang)
 
 
 
