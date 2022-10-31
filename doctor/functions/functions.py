@@ -591,7 +591,7 @@ def check_meal_user(user, type):
         receipt_time = parse(user.receipt_date + ' ' + user.receipt_time).time()
         receipt_date = parse(user.receipt_date)
     # Если пользователь есть в UsersReadyOrder, тогда вернем "завтрак".
-    if receipt_date < date.today():
+    if receipt_date.date() >= date.today():
         if receipt_time.hour > 0 and receipt_time.hour < 10:
             return 'зактрака', 0
         if receipt_time.hour >= 10 and receipt_time.hour < 14:
