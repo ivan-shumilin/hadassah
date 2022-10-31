@@ -4461,3 +4461,7 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
     padding: 3px 12px
   }
 }
+
+  .not-active .td {
+    color: #A7BBC7;
+}

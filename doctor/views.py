@@ -16,7 +16,7 @@ from django.db.models.functions import Lower
 from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, add_default_menu, \
     creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
-    create_list_users_on_floor, what_meal, translate_meal, check_value_two, archiving_user
+    create_list_users_on_floor, what_meal, translate_meal, check_value_two, archiving_user, get_not_active_users_set
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes, create_user_tomorrow, create_ready_order
@@ -54,6 +54,7 @@ def doctor(request):
     # send_messang.delay()
     # create_user_today('afternoon')
     # create_ready_order('afternoon')
+    not_active_users_set = get_not_active_users_set()
 
 
     CustomUserFormSet = delete_choices(CustomUserFormSet)
@@ -211,7 +212,7 @@ def doctor(request):
         'sorting': sorting,
         'user_form': user_form,
         'filter_by': filter_by,
-        'list': ['204', '205', '205']
+        'not_active_users_set': not_active_users_set
     }
     return render(request, 'doctor.html', context=data)
 

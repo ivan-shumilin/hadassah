@@ -826,24 +826,24 @@ def edit_user(user_form, type):
             now_show_meal = get_now_show_meal()
             if meal_order == now_show_meal and meal_order != 'завтра':
                 update_UsersToday(user)
-    if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
-        # TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-        attention = u'\u2757\ufe0f'
-        regard = u'\u26a0\ufe0f'
-        # bot = telepot.Bot(TOKEN)
-        # все номера chat_id
-        if type == 'edit':
-            messang = ''
-            messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
-            messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
-            for change in changes:
-                messang += f'- {change}\n'
-        if type == 'restore':
-            messang = ''
-            messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
-            messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
-            messang += f'Комментарий: "{user.comment}"' if user.comment else ''
-        my_job_send_messang_changes.delay(messang)
+            if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+                # TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
+                attention = u'\u2757\ufe0f'
+                regard = u'\u26a0\ufe0f'
+                # bot = telepot.Bot(TOKEN)
+                # все номера chat_id
+                if type == 'edit':
+                    messang = ''
+                    messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+                    messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
+                    for change in changes:
+                        messang += f'- {change}\n'
+                if type == 'restore':
+                    messang = ''
+                    messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+                    messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
+                    messang += f'Комментарий: "{user.comment}"' if user.comment else ''
+                my_job_send_messang_changes.delay(messang)
 
 
 def archiving_user(user):
@@ -997,3 +997,32 @@ def what_type_order():
         or (datetime.today().time().hour >= 17 and datetime.today().time().hour < 19):
         return 'fix-order'
     return 'flex-order'
+
+
+def is_active_user(user):
+    receipt_datetime = parse(str(user.receipt_date) + ' ' + str(user.receipt_time))
+    datetime_today = datetime.today()
+    if receipt_datetime.date() > datetime_today.date():
+        return user.id
+    if datetime_today.hour >= 0 and datetime_today.hour < 9 and\
+            receipt_datetime.time() >= datetime(1, 1, 1, 11, 0).time():
+            return user.id
+    if datetime_today.hour >= 9 and datetime_today.hour < 12 and\
+            receipt_datetime.time() >= datetime(1, 1, 1, 14, 0).time():
+            return user.id
+    if datetime_today.hour >= 12 and datetime_today.hour < 16 and\
+            receipt_datetime.time() >= datetime(1, 1, 1, 17, 0).time():
+            return user.id
+    if datetime_today.hour >= 16 and datetime_today.hour <= 24 and \
+            receipt_datetime.time() >= datetime(1, 1, 1, 21, 0).time():
+            return user.id
+
+
+
+def get_not_active_users_set():
+    users = CustomUser.objects.filter(receipt_date__gte=date.today())
+    not_active_users_set = ''
+    for user in users:
+        if is_active_user(user):
+            not_active_users_set += str(user.id) + ','
+    return not_active_users_set[:-1]
