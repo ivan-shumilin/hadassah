@@ -95,7 +95,9 @@ def doctor(request):
                        'today': today,
                        'sorting': sorting,
                        'user_form': user_form,
-                       'filter_by': filter_by})
+                       'filter_by': filter_by,
+                       'not_active_users_set': not_active_users_set
+                       })
 
     if request.method == 'POST' and 'change-email' in request.POST:
         user_form = PatientRegistrationForm()
@@ -112,7 +114,8 @@ def doctor(request):
             'modal': 'profile-edited',
             'sorting': sorting,
             'user_form': user_form,
-            'filter_by': filter_by
+            'filter_by': filter_by,
+            'not_active_users_set': not_active_users_set
         }
         return render(request, 'doctor.html', context=data)
 
@@ -130,7 +133,8 @@ def doctor(request):
                 'modal': 'password-edited',
                 'sorting': sorting,
                 'user_form': user_form,
-                'filter_by': filter_by
+                'filter_by': filter_by,
+                'not_active_users_set': not_active_users_set
             }
         return render(request, 'doctor.html', context=data)
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
@@ -146,7 +150,8 @@ def doctor(request):
             'sorting': sorting,
             'modal': 'edited',
             'user_form': user_form,
-            'filter_by': filter_by
+            'filter_by': filter_by,
+            'not_active_users_set': not_active_users_set
         }
         return render(request, 'doctor.html', context=data)
 
@@ -185,7 +190,8 @@ def doctor(request):
                 'today': today,
                 'sorting': sorting,
                 'user_form': user_form,
-                'filter_by': filter_by
+                'filter_by': filter_by,
+                'not_active_users_set': not_active_users_set
             }
             return render(request, 'doctor.html', context=data)
         else:
@@ -199,7 +205,8 @@ def doctor(request):
                 'formset': formset,
                 'sorting': sorting,
                 'user_form': user_form,
-                'filter_by': filter_by
+                'filter_by': filter_by,
+                'not_active_users_set': not_active_users_set
             }
         return render(request, 'doctor.html', context=data)
     user_form = PatientRegistrationForm()
