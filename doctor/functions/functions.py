@@ -667,8 +667,8 @@ def create_user(user_form):
                 update_UsersToday(user)
             if do_messang_send() and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
                 regard = u'\u26a0\ufe0f'
-                messang = f'{regard}Изменение с <u><b>{meal_order}</b></u>\n'
-                messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
+                messang = f'{regard} <b>Изменение с {meal_order}</b>\n'
+                messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
                 if user.comment:
                     messang += f'Комментарий: "{user.comment}"'
                 my_job_send_messang_changes.delay(messang)
@@ -834,14 +834,14 @@ def edit_user(user_form, type):
         # все номера chat_id
         if type == 'edit':
             messang = ''
-            messang += f'{attention}Изменение с <u><b>{meal_order}</b></u>\n'
-            messang += f'Отредактирован профиль пациента <b>{formatting_full_name(user.full_name)}</b>:\n\n'
+            messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+            messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
             for change in changes:
                 messang += f'-{change}\n'
         if type == 'restore':
             messang = ''
-            messang += f'{regard} Изменение с <u><b>{meal_order}</b></u>\n'
-            messang += f'Поступил пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u>\n'
+            messang += f'{regard} <b>Изменение с {meal_order}</b></u>\n'
+            messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
             messang += f'Комментарий: "{user.comment}"' if user.comment else ''
         my_job_send_messang_changes.delay(messang)
 
@@ -862,8 +862,8 @@ def archiving_user(user):
         if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
             attention = u'\u26a0\ufe0f'
             messang = ''
-            messang += f'{attention} Изменение с <u><b>{meal_order}</b></u>\n'
-            messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
+            messang += f'{attention} <b>Изменение с {meal_order}</b>\n'
+            messang += f'Пациент {formatting_full_name(user.full_name)} ({user.type_of_diet}) выписан\n'
             return my_job_send_messang_changes.delay(messang)
 
 
