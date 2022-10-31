@@ -63,8 +63,8 @@ def doctor(request):
     sorting = 'top'
     today = date.today().strftime("%d.%m.%Y")
 
-    # check_have_menu()
-    # add_menu_three_days_ahead()
+    check_have_menu()
+    add_menu_three_days_ahead()
 
     queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
     if request.method == 'POST' and 'filter_by_flag' in request.POST:

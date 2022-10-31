@@ -586,13 +586,12 @@ def check_meal_user(user, type):
     """ Вернет на какой прием пищи успевает пациент. """
     if type == 'archiving':
         receipt_time = parse(str(user.receipt_date) + ' ' + str(user.receipt_time)).time()
+        receipt_date = parse(str(user.receipt_date))
     else:
         receipt_time = parse(user.receipt_date + ' ' + user.receipt_time).time()
+        receipt_date = parse(user.receipt_date)
     # Если пользователь есть в UsersReadyOrder, тогда вернем "завтрак".
-    try:
-        UsersReadyOrder.objects.get(user_id=user.id)
-        return 'зактрака', 0
-    except:
+    if receipt_date < date.today():
         if receipt_time.hour > 0 and receipt_time.hour < 10:
             return 'зактрака', 0
         if receipt_time.hour >= 10 and receipt_time.hour < 14:
@@ -601,7 +600,10 @@ def check_meal_user(user, type):
             return 'полдника', 2
         if receipt_time.hour >= 17 and receipt_time.hour < 21:
             return 'ужина', 3
-    return 'завтра', 4
+        if receipt_time.hour >= 21:
+            return 'завтра', 4
+    else:
+        return 'зактрака', 0
 
 def get_now_show_meal():
     """ Вернет след прием пищи. """
