@@ -42,7 +42,7 @@ def my_job_applies_changes_breakfast():
     messang = f'{check} Заказ на <u><b>завтрак</b></u> сформирован.'
     delete_menu_by_arhived_users()
     create_user_today('breakfast')
-    send_messang(messang)
+    # send_messang(messang)
 
 @shared_task()
 def my_job_applies_changes_lunch():
@@ -50,7 +50,7 @@ def my_job_applies_changes_lunch():
     messang = f'{check} Заказ на <u><b>обед</b></u> сформирован.'
     delete_menu_by_arhived_users()
     create_user_today('lunch')
-    send_messang(messang)
+    # send_messang(messang)
 
 @shared_task()
 def my_job_applies_changes_afternoon():
@@ -58,7 +58,7 @@ def my_job_applies_changes_afternoon():
     messang = f'{check} Заказ на <u><b>полдник</b></u> сформирован.'
     delete_menu_by_arhived_users()
     create_user_today('afternoon')
-    send_messang(messang)
+    # send_messang(messang)
 
 @shared_task()
 def my_job_applies_changes_dinner():
@@ -66,7 +66,7 @@ def my_job_applies_changes_dinner():
     messang = f'{check} Заказ на <u><b>ужин</b></u> сформирован.'
     delete_menu_by_arhived_users()
     create_user_today('dinner')
-    send_messang(messang)
+    # send_messang(messang)
 
 
 
@@ -75,28 +75,28 @@ def my_job_create_ready_order_breakfast():
     check = '\u2705'
     messang = f'{check} Изменения на <u><b>завтрак</b></u> не принимаются.'
     create_ready_order('breakfast')
-    send_messang(messang)
+    # send_messang(messang)
 
 @shared_task()
 def my_job_create_ready_order_lunch():
     check = '\u2705'
     messang = f'{check} Изменения на <u><b>обед</b></u> не принимаются.'
     create_ready_order('lunch')
-    send_messang(messang)
+    # send_messang(messang)
 
 @shared_task()
 def my_job_create_ready_order_afternoon():
     check = '\u2705'
     messang = f'{check} Изменения на <u><b>полдник</b></u> не принимаются.'
     create_ready_order('afternoon')
-    send_messang(messang)
+    # send_messang(messang)
 
 @shared_task()
 def my_job_applies_changes_dinner():
     check = '\u2705'
     messang = f'{check} Изменения на <u><b>ужин</b></u> не принимаются.'
     create_ready_order('dinner')
-    send_messang(messang)
+    # send_messang(messang)
 
 @shared_task()
 def my_job_create_user_today():
@@ -107,7 +107,7 @@ def my_job_create_user_tomorrow():
     """ Создаем таблицу с пользователями на завтра """
     delele_menu_by_arhived_users()
     create_user_today('tomorrow')
-    send_messang('завтра')
+    # send_messang('завтра')
 
 @shared_task()
 def my_job_send_messang_changes(messang):
