@@ -837,7 +837,7 @@ def edit_user(user_form, type):
             messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
             messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
             for change in changes:
-                messang += f'-{change}\n'
+                messang += f'- {change}\n'
         if type == 'restore':
             messang = ''
             messang += f'{regard} <b>Изменение с {meal_order}</b>\n'

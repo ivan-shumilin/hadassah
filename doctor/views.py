@@ -210,7 +210,8 @@ def doctor(request):
         'today': today,
         'sorting': sorting,
         'user_form': user_form,
-        'filter_by': filter_by
+        'filter_by': filter_by,
+        'list': ['204', '205', '205']
     }
     return render(request, 'doctor.html', context=data)
 
