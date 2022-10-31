@@ -840,7 +840,7 @@ def edit_user(user_form, type):
                 messang += f'-{change}\n'
         if type == 'restore':
             messang = ''
-            messang += f'{regard} <b>Изменение с {meal_order}</b></u>\n'
+            messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
             messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
             messang += f'Комментарий: "{user.comment}"' if user.comment else ''
         my_job_send_messang_changes.delay(messang)
