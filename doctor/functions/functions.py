@@ -834,8 +834,8 @@ def edit_user(user_form, type):
         # все номера chat_id
         if type == 'edit':
             messang = ''
-            messang += f'{attention}Изменение с <u><b>{meal_order}</b></u>{attention}\n'
-            messang += f'Отредактирован профиль пациента <b>{formatting_full_name(user.full_name)}</b>.\n\n'
+            messang += f'{attention}Изменение с <u><b>{meal_order}</b></u>\n'
+            messang += f'Отредактирован профиль пациента <b>{formatting_full_name(user.full_name)}</b>:\n\n'
             for change in changes:
                 messang += f'-{change}\n'
         if type == 'restore':
