@@ -1020,7 +1020,7 @@ def is_active_user(user):
 
 
 def get_not_active_users_set():
-    users = CustomUser.objects.filter(receipt_date__gte=date.today())
+    users = CustomUser.objects.filter(status='active').filter(receipt_date__gte=date.today())
     not_active_users_set = ''
     for user in users:
         if is_active_user(user):
