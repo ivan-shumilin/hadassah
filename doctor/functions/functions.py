@@ -1020,9 +1020,9 @@ def is_active_user(user):
 
 
 def get_not_active_users_set():
-    users = CustomUser.objects.filter(status='active').filter(receipt_date__gte=date.today())
+    users = CustomUser.objects.filter(status='patient').filter(receipt_date__gte=date.today())
     not_active_users_set = ''
     for user in users:
         if is_active_user(user):
             not_active_users_set += str(user.id) + ','
-    return not_active_users_set[:-1]
+    return not_active_users_set[:-1] if len(not_active_users_set) != 0 else 'none'

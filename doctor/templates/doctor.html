@@ -249,9 +249,11 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script> -->
 <script>
 let not_active_users_set = '{{not_active_users_set}}'.split(",");
-for (var index in not_active_users_set ) {
-    document.getElementById(not_active_users_set[index]).classList.add('not-active')
-    }
+if (not_active_users_set[0] != 'none') {
+    for (var index in not_active_users_set ) {
+        document.getElementById(not_active_users_set[index]).classList.add('not-active')
+        }
+}
 filtration()
 
 

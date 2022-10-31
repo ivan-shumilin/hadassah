@@ -57,6 +57,7 @@ def doctor(request):
     not_active_users_set = get_not_active_users_set()
 
 
+
     CustomUserFormSet = delete_choices(CustomUserFormSet)
 
     page = 'menu-doctor'
