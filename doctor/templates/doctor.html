@@ -307,7 +307,7 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
     }
     result = '';
     result += '<div class="date">' + obj[day].date_human_style + '</div>'
-    console.log('day.date-', Date.parse(obj[day].date))
+    console.log(obj)
     console.log('receipt_date-', Date.parse(receiptDate))
 // проверяем, если дата раньше даты госпитализации, выводим сообщение
     if (Date.parse(obj[day].date) >= Date.parse(receiptDate)) {
@@ -319,11 +319,33 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
                     isNotProducts = false
                     result += '<div class="item">'    
                     if (product.image == null) {
-                        result += 
-`<div class="img">`+
-`<img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt="">`+
-`</div>`+
-'<div class="info"><div class="img"><img width="96" height="96" src="https://hadmed.icanall10.ru/img/eat.jpg" alt=""></div>'
+                        result += '<div class="img">'                            
+                        if (key == 'main') {
+                            result +='<img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt="">'
+                        }
+                        if (key == 'salad') {
+                            result +='<img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt="">'
+                        }
+                        if (key == 'soup') {
+                            result +='<img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt="">'
+                        }
+                        if (key == 'dessert') {
+                            result +='<img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt="">'
+                        }
+                        if (key == 'porridge') {
+                            result +='<img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt="">'
+                        }
+                        if (key == 'fruit') {
+                            result +='<img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt="">'
+                        }
+                        if (key == 'drink') {
+                            result +='<img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt="">'
+                        }
+                        if (key == 'garnish') {
+                            result +='<img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt="">'
+                        }
+                        result +='</div>'
+                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/main.png" %}" alt=""></div>'
                     } else {
                         result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
                         result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
