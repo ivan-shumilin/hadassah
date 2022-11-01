@@ -748,7 +748,7 @@ def edit_user(user_form, type):
     user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
     # обравляем CustomUser и состовляем список изменений
     if user.full_name != user_form.data['full_name1']:
-        changes.append(f"ФИО <b>{user.full_name}</b> изменена на <u><b>{user_form.data['full_name1']}</b></u>")
+        changes.append(f"ФИО <b>{user.full_name}</b> изменена на <b>{user_form.data['full_name1']}</b>")
     user.full_name = user_form.data['full_name1']
     if user.receipt_date != datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date():
         # # проверяем если дату из прошлого поренесли в будущее
@@ -756,23 +756,23 @@ def edit_user(user_form, type):
         #     user.receipt_date <= date.today() and \
         #     datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date() > date.today():
         #     flag = True
-        changes.append(f"дату поступления <b>{user.receipt_date}</b> изменена на <u><b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b></u>")
+        changes.append(f"дату поступления <b>{user.receipt_date}</b> изменена на <b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b>")
     user.receipt_date = datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')
 
     if (user.receipt_time).strftime('%H:%M') != user_form.data['receipt_time1']:
-        changes.append(f"время поступления <b>{(user.receipt_time).strftime('%H:%M')}</b> изменено на <u><b>{user_form.data['receipt_time1']}</b></u>")
+        changes.append(f"время поступления <b>{(user.receipt_time).strftime('%H:%M')}</b> изменено на <b>{user_form.data['receipt_time1']}</b>")
     user.receipt_time = user_form.data['receipt_time1']
 
     if user.department != user_form.data['department1']:
-        changes.append(f"отделение <b>{user.department}</b> изменено на <u><b>{user_form.data['department1']}</b></u>")
+        changes.append(f"отделение <b>{user.department}</b> изменено на <b>{user_form.data['department1']}</b>")
     user.department = user_form.data['department1']
 
     if user.room_number != user_form.data['room_number1']:
-        changes.append(f"номер палаты <b>{user.room_number}</b> изменен на <u><b>{user_form.data['room_number1']}</b></u>")
+        changes.append(f"номер палаты <b>{user.room_number}</b> изменен на <b>{user_form.data['room_number1']}</b>")
     user.room_number = user_form.data['room_number1']
 
     if user.type_of_diet != user_form.data['type_of_diet1']:
-        changes.append(f"тип диеты <b>{user.type_of_diet}</b> изменен на <u><b>{user_form.data['type_of_diet1']}</b></u>")
+        changes.append(f"тип диеты <b>{user.type_of_diet}</b> изменен на <b>{user_form.data['type_of_diet1']}</b>")
         if type == 'edit':
             is_change_diet = True
     user.type_of_diet = user_form.data['type_of_diet1']
@@ -782,7 +782,7 @@ def edit_user(user_form, type):
         flag_add_comment = True if len(user.comment) < 2 and\
                                    len(user_form.data['comment1']) > 2 else False
 
-        changes.append(f'комметнарий "{user.comment if user.comment else "нет комментария"}" изменен на <u><b>"{user_form.data["comment1"]}"</b></u>')
+        changes.append(f'комментарий <b>"{user.comment if user.comment else "нет комментария"}"</b> изменен на <b>"{user_form.data["comment1"]}"</b>')
     user.comment = user_form.data['comment1']
     # если надо восстановить учетную запись пациента
     if type == 'restore':
