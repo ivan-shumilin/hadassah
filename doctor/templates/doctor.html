@@ -351,7 +351,7 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
                         result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
                     }
                     result += '<div id="name_today" class="name">' + product.name + '</div>'
-                    result += '<div class="value">' + 'К' + formattingFFC(product.energy) +  ', Б '+ formattingFFC(product.fiber) +  ', Ж '+ formattingFFC(product.fat) +  ', У '+ formattingFFC(product.carbohydrate) +'</div>'
+                    result += '<div class="value">' + 'Б - '+ formattingFFC(product.fiber) +  ', Ж -  '+ formattingFFC(product.fat) +  ', У -  '+ formattingFFC(product.carbohydrate) + ', Ккал - ' + formattingFFC(product.energy) +  '</div>'
                     result += '<div class="text">' + product.description + '</div>' 
                     result += '</div></div>'
                 }
