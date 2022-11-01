@@ -89,8 +89,12 @@
                                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                         </div>
                                     {% else %}
-                                        <div class="img"></div>
-                                    {% endif %}
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/main.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
                                     <div class="toggle" data-toggle>
                                         <a href="#">Состав</a>
                                     </div>
@@ -131,7 +135,11 @@
                                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                         </div>
                                     {% else %}
-                                        <div class="img"></div>
+                                        <div class="img">
+                                            {% load static %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                            <img src="{% static 'doctor/css/img/porridge.png' %}" alt="">
+                                        </div>
                                     {% endif %}
                                     <div class="toggle" data-toggle>
                                         <a href="#">Состав</a>
@@ -181,7 +189,9 @@
                                             </div>
                                         {% else %}
                                             <div class="img">
-
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/salad.png' %}" alt="">
                                             </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
@@ -216,7 +226,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/salad.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -261,7 +275,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/soup.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -295,7 +313,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/soup.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -340,7 +362,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/main.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -374,7 +400,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/main.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -420,7 +450,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/garnish.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -454,7 +488,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/garnish.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -499,7 +537,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/drink.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -533,7 +575,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/drink.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -579,8 +625,12 @@
                                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                         </div>
                                     {% else %}
-                                        <div class="img"></div>
-                                    {% endif %}
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/main.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
                                     <div class="toggle" data-toggle>
                                         <a href="#">Состав</a>
                                     </div>
@@ -619,7 +669,11 @@
                                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                         </div>
                                     {% else %}
-                                        <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/dessert.png' %}" alt="">
+                                            </div>
                                     {% endif %}
                                     <div class="toggle" data-toggle>
                                         <a href="#">Состав</a>
@@ -660,7 +714,11 @@
                                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                         </div>
                                     {% else %}
-                                        <div class="img"></div>
+                                        <div class="img">
+                                            {% load static %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                            <img src="{% static 'doctor/css/img/fruit.png' %}" alt="">
+                                        </div>
                                     {% endif %}
                                     <div class="toggle" data-toggle>
                                         <a href="#">Состав</a>
@@ -700,8 +758,12 @@
                                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                         </div>
                                     {% else %}
-                                        <div class="img"></div>
-                                    {% endif %}
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/drink.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
                                     <div class="toggle" data-toggle>
                                         <a href="#">Состав</a>
                                     </div>
@@ -748,7 +810,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/main.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -782,7 +848,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/main.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -836,7 +906,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/garnish.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -870,7 +944,11 @@
                                                 <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
                                         {% else %}
-                                            <div class="img"></div>
+                                            <div class="img">
+                                                {% load static %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                <img src="{% static 'doctor/css/img/garnish.png' %}" alt="">
+                                            </div>
                                         {% endif %}
                                         <div class="toggle" data-toggle>
                                             <a href="#">Состав</a>
@@ -1046,8 +1124,8 @@ function submitPatientSelection() {
 
 
 const submitApiPatientSelection = async function(menu) {
-    // let url = 'https://78d2-212-96-69-65.eu.ngrok.io/patient/api/v1/submitselection'
-    let url = 'https://www.sk.petrushkagroup.com/patient/api/v1/submitselection'
+    let url = 'https://9dff-146-120-93-183.eu.ngrok.io/patient/api/v1/submitselection'
+    // let url = 'https://www.sk.petrushkagroup.com/patient/api/v1/submitselection'
     let body = {
         "menu": menu,
         "date": "{{ date|date:'Y-m-d' }}",
