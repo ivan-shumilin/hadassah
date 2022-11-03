@@ -124,7 +124,7 @@ function checkPatronymic(value)  {
         if (countAttempts == 1) {
             console.log('Yes all!')
         } else if (countAttempts > 1) {
-                patronymicError.innerHTML = "Больше одного пациента с одинаковыми ФИО.";
+                patronymicError.innerHTML = "Простите, возникла ошибка. Обратитесь к мед. персоналу.";
                 patronymicError.classList.add('error')
                 divPatronymic.classList.add('error')
         } else if (value.length != 0) {
