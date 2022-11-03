@@ -1,0 +1,275 @@
+{% extends "base_generic_login.html" %}
+
+{% block content %}
+<div class="right">
+    <div class="content">
+        <div class="segment">
+            <div class="title">Авторизация</div>
+            <form id='register-form' class="login-form" method="post" novalidate>
+                {% csrf_token %}
+                <div id="last-name" class="form-group">
+                    <label for="#">Фамилия</label>
+                    <input class="test text" id="last-name-input" type="text" name="last-name">
+                    <div id="error-last-name" class=""></div>
+                </div>
+                <div id="name" class="form-group">
+                    <label for="#">Имя</label>
+                    <input class="text" id="name-input" type="text" name="name">
+                    <div id="error-name" class="error"></div>
+                </div>
+                <div id="patronymic" class="form-group">
+                    <label for="#">Отчество</label>
+                    <input class="text" id="patronymic-input" type="text" name="patronymic">
+                    <div id="error-patronymic" class="error"></div>
+                </div>                
+
+                <div class="form-group item-actions flex flex-center">
+                    <button type="button" onclick="validationForm();">Войти</button>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+
+var FLAG_L_NAME = 'false'
+var FLAG_NAME = 'false'
+let error = "{{ errors }}";
+var lastNameInput = document.getElementById('last-name-input')
+var nameInput = document.getElementById('name-input')
+var patronymicInput = document.getElementById('patronymic-input')
+let lastNameError = document.getElementById('error-last-name')
+let divLastName = document.getElementById('last-name')
+let nameError = document.getElementById('error-name')
+let divName = document.getElementById('name')
+let patronymicError = document.getElementById('error-patronymic')
+let divPatronymic = document.getElementById('patronymic')
+if (error != 'None') {
+    itemError.innerHTML = error;
+    itemError.classList.add('error')
+    divLastName.classList.add('error')
+}
+let strPatientDate = '{{str_patient_id_name}}'
+let patientDate = strPatientDate.split('$')
+let objPatintDate = {}
+for (var index in patientDate) {
+    console.log(patientDate[index])
+    let listPatientDate = patientDate[index].split('=')
+    objPatintDate[listPatientDate[0]] = {
+        'last-name': listPatientDate[1],
+        'name': listPatientDate[2],
+        'patronymic': listPatientDate[3],
+    }
+}
+
+
+function checkLastName(value) {
+    let countAttempts = 0
+    for (var key in objPatintDate) {
+        if (objPatintDate[key]['last-name'] == value ) {
+            countAttempts += 1;
+            var name = objPatintDate[key]['name'];
+            var patronymic = objPatintDate[key]['patronymic'];
+        }
+    }
+    if (countAttempts == 1) {
+        console.log('Yes!')
+        document.getElementById('name-input').value = name
+        document.getElementById('patronymic-input').value = patronymic
+    } else if ((value.length != 0) && (countAttempts == 0)) {
+            let itemError = document.getElementById('error-last-name')
+            let divLastName = document.getElementById('last-name')
+            itemError.innerHTML = "Пацинта с такой фамилией нет.";
+            itemError.classList.add('error')
+            divLastName.classList.add('error')
+    } else if (countAttempts > 1) {
+        FLAG_L_NAME = 'true'
+    }
+}
+
+function checkName(value) {
+    if (FLAG_L_NAME == 'true') {
+        let countAttempts = 0
+        for (var key in objPatintDate) {
+            if ((objPatintDate[key]['name'] == value ) && (objPatintDate[key]['last-name'] == lastNameInput.value)) {
+                countAttempts += 1;
+                var patronymic = objPatintDate[key]['patronymic'];
+            }
+        }
+        if (countAttempts == 1) {
+            console.log('Yes name!')
+            document.getElementById('patronymic-input').value = patronymic
+        } else if (countAttempts > 1) {
+            FLAG_NAME = 'true'
+
+        } else if (value.length != 0) {
+                nameError.innerHTML = "Пацинта с таким именем нет.";
+                nameError.classList.add('error')
+                divName.classList.add('error')
+        }  
+    }  
+}
+
+function checkPatronymic(value)  {
+    if (FLAG_NAME == 'true') {
+        let countAttempts = 0
+        for (var key in objPatintDate) {
+            if ((objPatintDate[key]['patronymic'] == value )
+                && (objPatintDate[key]['last-name'] == lastNameInput.value)
+                && (objPatintDate[key]['name'] == nameInput.value)) {
+                countAttempts += 1;
+            }
+        }
+        if (countAttempts == 1) {
+            console.log('Yes all!')
+        } else if (countAttempts > 1) {
+                patronymicError.innerHTML = "Больше одного пациента с одинаковыми ФИО.";
+                patronymicError.classList.add('error')
+                divPatronymic.classList.add('error')
+        } else if (value.length != 0) {
+                patronymicError.innerHTML = "Пацинта с таким отчеством нет.";
+                patronymicError.classList.add('error')
+                divPatronymic.classList.add('error')
+        }  
+    }  
+}
+
+function clearLastNameError() {
+    lastNameError.innerHTML = "";
+    lastNameError.classList.remove('error')
+    divLastName.classList.remove('error')
+    nameInput.value = ''
+    patronymicInput.value = ''
+}
+
+
+function clearNameError() {
+    nameError.innerHTML = "";
+    nameError.classList.remove('error')
+    divName.classList.remove('error')
+    patronymicInput.value = ''
+}
+
+function clearPatronymicError() {
+    patronymicError.innerHTML = "";
+    patronymicError.classList.remove('error')
+    divPatronymic.classList.remove('error')
+}
+
+
+
+lastNameInput.addEventListener("input", function() {
+  this.value = this.value.toUpperCase();
+})
+
+nameInput.addEventListener("input", function() {
+  this.value = this.value.toUpperCase();
+})
+
+patronymicInput.addEventListener("input", function() {
+  this.value = this.value.toUpperCase();
+})
+
+$( document ).ready(function() {
+var inputLastNameCheck = $( '#last-name-input' ), timeOut;
+    inputLastNameCheck.on( 'keyup', function () {
+        clearTimeout( timeOut );
+        clearLastNameError();
+        timeOut = setTimeout( myfunc, 1000, $( this ).val() );
+    });
+
+    inputLastNameCheck.on( 'keydown', function () {
+        clearTimeout( timeOut );
+    });
+
+    function myfunc( value ) {
+        console.log(value);
+        checkLastName(value);
+    }
+// });
+
+var inputNameCheck = $( '#name-input' ), timeOut;
+    inputNameCheck.on( 'keyup', function () {
+        clearTimeout( timeOut );
+        clearNameError();
+        timeOut = setTimeout( myfunc1, 1000, $( this ).val() );
+    });
+
+    inputNameCheck.on( 'keydown', function () {
+        clearTimeout( timeOut );
+    });
+
+    function myfunc1( value2 ) {
+        console.log(value2);
+        checkName(value2);
+    }
+
+var inputPatronymic = $( '#patronymic-input' ), timeOut;
+    inputPatronymic.on( 'keyup', function () {
+        clearPatronymicError();
+        clearTimeout( timeOut );
+        timeOut = setTimeout( myfunc2, 1000, $( this ).val() );
+    });
+
+    inputPatronymic.on( 'keydown', function () {
+        clearTimeout( timeOut );
+    });
+
+    function myfunc2( value3 ) {
+        console.log(value3);
+        checkPatronymic(value3);
+    }
+});
+
+
+
+// check()
+// async function check() {
+//     // let lastNameInput = document.getElementById('last-name-input')
+//     while (true) {
+//     if (document.querySelector('test') == document.activeElement) {
+//         console.log('Yes!')
+//     }
+//     }
+// }
+
+
+
+    function validationForm() {
+        var form = document.getElementById('register-form');
+        form.submit()
+        // var username = document.getElementById('id_username');
+        // var password = document.getElementById('id_password');
+
+        // var errors = document.querySelectorAll('.error-field');
+        // var formGroup = document.querySelectorAll('.form-group');
+
+        // for (var i = 0; i < errors.length; i++) {
+        //     errors[i].innerHTML = '';
+        //     errors[i].classList.remove('error');
+        //     formGroup[i].classList.remove('error');
+        // }
+
+        // var error = 0;
+        // var st = new RegExp("[^а-яА-Яa-zA-Z0-9ёЁ+/)/(/-/'/ /./,-]+");
+        // var stEmail = new RegExp("[^a-zA-Z0-9/-/./@/_-]+");
+        // if (!username.value) {
+        //     document.getElementById('error-username').innerHTML = 'Обязательное поле'
+        //     document.getElementById('error-username').classList.add('error')
+        //     document.getElementById('form-group-username').classList.add('error')
+        //     error = error + 1
+        // }
+
+        // if (!password.value) {
+        //     document.getElementById('error-password').innerHTML = 'Обязательное поле'
+        //     document.getElementById('error-password').classList.add('error')
+        //     document.getElementById('form-group-password').classList.add('error')
+        //     error = error + 1
+        // }
+
+        // if (error == 0) { form.submit(); }
+    }
+    </script>
+
+{% endblock %}

@@ -19,7 +19,10 @@ from patient.functions import formation_menu, creating_menu_for_lk_patient, crea
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
-import telepot
+import telepot, json
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 
 
 def group_patient_check(user):
@@ -194,9 +197,73 @@ class SubmitPatientSelectionAPIView(APIView):
             menu_item.drink = drink
             menu_item.salad = salad
             menu_item.save()
-
-
-
-
         return Response('Ok')
 
+def decompose_full_name(full_name):
+    """Возвращает отдельно фамилию, имя, отчество"""
+    full_name = full_name.split(' ')
+    if len(full_name) == 1:
+        return full_name[0], '', ''
+    if len(full_name) == 2:
+        return full_name[0], full_name[1], ''
+    if len(full_name) >= 3:
+        return full_name[0], full_name[1], full_name[2]
+
+def create_patient_id_name():
+    """Возвращает словарь с ключем id и значением ФИО """
+    users = CustomUser.objects.filter(status="patient")
+    patient_id_name = {}
+    str_patient_id_name = ''
+    for user in users:
+        last_name, name, patronymic = decompose_full_name(user.full_name)
+        str_patient_id_name +=f'${user.id}={last_name.upper()}={name.upper()}={patronymic.upper()}'
+        patient_id_name[user.id] = {
+            "last_name": last_name,
+            "name": name,
+            "patronymic": patronymic,
+        }
+    return patient_id_name, str_patient_id_name[1:]
+
+
+def have_user(last_name, name, patronymic, patient_id_name):
+    count_id = 0
+    id = None
+    for key, item in patient_id_name.items():
+        if item['last_name'].lower() == last_name.lower() and\
+                item['name'].lower() == name.lower() and\
+                item['patronymic'].lower() == patronymic.lower():
+            id = key
+            count_id += 1
+    if count_id == 1:
+        return None, id
+    if count_id == 0:
+        return "Пользователь с такими данными не найден", None
+    if count_id > 1:
+        return f"{count_id} пациента с таким ФИО", None
+
+
+def user_login(request):
+    errors = None
+    patient_id_name, str_patient_id_name = create_patient_id_name()
+    if request.method == 'POST':
+        # user_form = UserloginForm(request.POST)
+        last_name, name, patronymic = request.POST['last-name'], request.POST['name'], request.POST['patronymic']
+        errors, id = have_user(last_name, name, patronymic, patient_id_name)
+        if errors is None:
+            user = CustomUser.objects.get(id=id)
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect(reverse('patient:patient', kwargs={'id': id}))
+            else:
+                errors = 'Пользователя с такими данными не существует'
+    else:
+        pass
+    return render(request, 'nutritionist/registration/login_patient.html', {'errors': errors, 'str_patient_id_name': str_patient_id_name})
+
+
+class GetPatientDataAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        response = create_patient_id_name()
+        response = json.dumps(response)
+        return Response(response)
