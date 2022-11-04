@@ -4495,3 +4495,7 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
   .not-active .td {
     color: #A7BBC7;
 }
+
+.login-form .hidden {
+  display: none;
+}

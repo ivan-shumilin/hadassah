@@ -45,6 +45,9 @@ let nameError = document.getElementById('error-name')
 let divName = document.getElementById('name')
 let patronymicError = document.getElementById('error-patronymic')
 let divPatronymic = document.getElementById('patronymic')
+
+divName.classList.add('hidden')
+divPatronymic.classList.add('hidden')
 if (error != 'None') {
     itemError.innerHTML = error;
     itemError.classList.add('error')
@@ -65,6 +68,13 @@ for (var index in patientDate) {
 
 
 function checkLastName(value) {
+    if (value.charCodeAt(0) == 32) {
+        value = value.slice(1)
+    }
+    if (value.charCodeAt(value.length-1) == 32) {
+        value = value.slice(0, -1)
+    }
+    console.log(value)
     let countAttempts = 0
     for (var key in objPatintDate) {
         if (objPatintDate[key]['last-name'] == value ) {
@@ -74,9 +84,11 @@ function checkLastName(value) {
         }
     }
     if (countAttempts == 1) {
-        console.log('Yes!')
         document.getElementById('name-input').value = name
         document.getElementById('patronymic-input').value = patronymic
+        var form = document.getElementById('register-form');
+        form.submit()
+        
     } else if ((value.length != 0) && (countAttempts == 0)) {
             let itemError = document.getElementById('error-last-name')
             let divLastName = document.getElementById('last-name')
@@ -84,12 +96,21 @@ function checkLastName(value) {
             itemError.classList.add('error')
             divLastName.classList.add('error')
     } else if (countAttempts > 1) {
+        divName.classList.remove('hidden')
         FLAG_L_NAME = 'true'
     }
 }
 
+
 function checkName(value) {
     if (FLAG_L_NAME == 'true') {
+        if (value.charCodeAt(0) == 32) {
+        value = value.slice(1)
+        }
+        if (value.charCodeAt(value.length-1) == 32) {
+            value = value.slice(0, -1)
+        }
+
         let countAttempts = 0
         for (var key in objPatintDate) {
             if ((objPatintDate[key]['name'] == value ) && (objPatintDate[key]['last-name'] == lastNameInput.value)) {
@@ -98,9 +119,11 @@ function checkName(value) {
             }
         }
         if (countAttempts == 1) {
-            console.log('Yes name!')
             document.getElementById('patronymic-input').value = patronymic
+            var form = document.getElementById('register-form');
+            form.submit()
         } else if (countAttempts > 1) {
+            divPatronymic.classList.remove('hidden')
             FLAG_NAME = 'true'
 
         } else if (value.length != 0) {
@@ -113,6 +136,12 @@ function checkName(value) {
 
 function checkPatronymic(value)  {
     if (FLAG_NAME == 'true') {
+        if (value.charCodeAt(0) == 32) {
+        value = value.slice(1)
+        }
+        if (value.charCodeAt(value.length-1) == 32) {
+            value = value.slice(0, -1)
+        }
         let countAttempts = 0
         for (var key in objPatintDate) {
             if ((objPatintDate[key]['patronymic'] == value )
@@ -122,7 +151,8 @@ function checkPatronymic(value)  {
             }
         }
         if (countAttempts == 1) {
-            console.log('Yes all!')
+            var form = document.getElementById('register-form');
+            form.submit()
         } else if (countAttempts > 1) {
                 patronymicError.innerHTML = "Простите, возникла ошибка. Обратитесь к мед. персоналу.";
                 patronymicError.classList.add('error')
@@ -141,6 +171,8 @@ function clearLastNameError() {
     divLastName.classList.remove('error')
     nameInput.value = ''
     patronymicInput.value = ''
+    divName.classList.add('hidden')
+
 }
 
 
@@ -149,6 +181,7 @@ function clearNameError() {
     nameError.classList.remove('error')
     divName.classList.remove('error')
     patronymicInput.value = ''
+    divPatronymic.classList.add('hidden')
 }
 
 function clearPatronymicError() {
@@ -160,15 +193,40 @@ function clearPatronymicError() {
 
 
 lastNameInput.addEventListener("input", function() {
-  this.value = this.value.toUpperCase();
+    if (this.value.charCodeAt(this.value.length - 1) == 1105) {
+        this.value = this.value.slice(0, -1) + 'е';
+    }
+    if (this.value.charCodeAt(this.value.length - 1) == 1025) {
+        this.value = this.value.slice(0, -1) + 'Е';
+    }
+    if (this.value.charCodeAt(0) == 32) {
+        this.value = this.value[1].toUpperCase() + this.value.slice(2).toLowerCase();
+    }
+    if (this.value.charCodeAt(this.value.length - 1) == 32) {
+        this.value = this.value.slice(0, -1).toLowerCase();
+    }
+
+    this.value = this.value[0].toUpperCase() + this.value.slice(1).toLowerCase();
 })
 
 nameInput.addEventListener("input", function() {
-  this.value = this.value.toUpperCase();
+    if (this.value.charCodeAt(0) == 32) {
+        this.value = this.value[1].toUpperCase() + this.value.slice(2).toLowerCase();
+    }
+    if (this.value.charCodeAt(this.value.length - 1) == 32) {
+        this.value = this.value.slice(0, -1).toLowerCase();
+    }
+    this.value = this.value[0].toUpperCase() + this.value.slice(1).toLowerCase();
 })
 
 patronymicInput.addEventListener("input", function() {
-  this.value = this.value.toUpperCase();
+    if (this.value.charCodeAt(0) == 32) {
+        this.value = this.value[1].toUpperCase() + this.value.slice(2).toLowerCase();
+    }
+    if (this.value.charCodeAt(this.value.length - 1) == 32) {
+        this.value = this.value.slice(0, -1).toLowerCase();
+    }
+    this.value = this.value[0].toUpperCase() + this.value.slice(1).toLowerCase();
 })
 
 $( document ).ready(function() {

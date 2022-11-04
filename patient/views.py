@@ -216,7 +216,7 @@ def create_patient_id_name():
     str_patient_id_name = ''
     for user in users:
         last_name, name, patronymic = decompose_full_name(user.full_name)
-        str_patient_id_name +=f'${user.id}={last_name.upper()}={name.upper()}={patronymic.upper()}'
+        str_patient_id_name +=f'${user.id}={last_name.lower().capitalize()}={name.lower().capitalize()}={patronymic.lower().capitalize()}'
         patient_id_name[user.id] = {
             "last_name": last_name,
             "name": name,
