@@ -45,6 +45,7 @@ let nameError = document.getElementById('error-name')
 let divName = document.getElementById('name')
 let patronymicError = document.getElementById('error-patronymic')
 let divPatronymic = document.getElementById('patronymic')
+lastNameInput.focus()
 
 divName.classList.add('hidden')
 divPatronymic.classList.add('hidden')
@@ -96,8 +97,9 @@ function checkLastName(value) {
             itemError.classList.add('error')
             divLastName.classList.add('error')
     } else if (countAttempts > 1) {
-        divName.classList.remove('hidden')
-        FLAG_L_NAME = 'true'
+        divName.classList.remove('hidden');
+        nameInput.focus();
+        FLAG_L_NAME = 'true';
     }
 }
 
@@ -123,8 +125,9 @@ function checkName(value) {
             var form = document.getElementById('register-form');
             form.submit()
         } else if (countAttempts > 1) {
-            divPatronymic.classList.remove('hidden')
-            FLAG_NAME = 'true'
+            divPatronymic.classList.remove('hidden');
+            patronymicInput.focus();
+            FLAG_NAME = 'true';
 
         } else if (value.length != 0) {
                 nameError.innerHTML = "Пацинта с таким именем нет.";
