@@ -210,6 +210,12 @@ lastNameInput.addEventListener("input", function() {
 })
 
 nameInput.addEventListener("input", function() {
+    if (this.value.charCodeAt(this.value.length - 1) == 1105) {
+        this.value = this.value.slice(0, -1) + 'е';
+    }
+    if (this.value.charCodeAt(this.value.length - 1) == 1025) {
+        this.value = this.value.slice(0, -1) + 'Е';
+    }
     if (this.value.charCodeAt(0) == 32) {
         this.value = this.value[1].toUpperCase() + this.value.slice(2).toLowerCase();
     }
@@ -220,6 +226,12 @@ nameInput.addEventListener("input", function() {
 })
 
 patronymicInput.addEventListener("input", function() {
+    if (this.value.charCodeAt(this.value.length - 1) == 1105) {
+        this.value = this.value.slice(0, -1) + 'е';
+    }
+    if (this.value.charCodeAt(this.value.length - 1) == 1025) {
+        this.value = this.value.slice(0, -1) + 'Е';
+    }
     if (this.value.charCodeAt(0) == 32) {
         this.value = this.value[1].toUpperCase() + this.value.slice(2).toLowerCase();
     }
