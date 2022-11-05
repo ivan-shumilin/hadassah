@@ -3152,7 +3152,7 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
   position: absolute;
 }
 /* added code */
-@media (max-width: 480px) {
+@media (min-width: 480px) {
   .eat-choose-grid .item .img svg {
     z-index: 1;
     position: absolute;
@@ -3162,7 +3162,7 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
 }
 
 /* added code */
-@media (min-width: 480px) {
+@media (max-width: 480px) {
   .hidden {
     display: none;
   }
