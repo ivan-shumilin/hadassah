@@ -3161,6 +3161,13 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
   }
 }
 
+/* added code */
+@media (min-width: 480px) {
+  .hidden {
+    display: none;
+  }
+}
+
 .eat-choose-grid .item .toggle {
   bottom: 12px;
   left: 12px;
