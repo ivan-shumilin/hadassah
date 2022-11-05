@@ -37,7 +37,7 @@
             <div class="date-form-block">
                 <form class="date-form">
                     <div class="form-group">
-                        <select name="date" class="optionValue">
+                        <select name="date" class="optionValue2">
                             {% for date in day_history %}
                                 <option  value="{{ date.number}}">{{ date.word }}</option>
                             {% endfor %}
@@ -308,9 +308,24 @@ function getValueFromSelect() {
             console.log("Yes");
             option[i].selected = true
         }
-
         }
         option.onchange= function(){
+            console.log(this.value);
+            formSubmit()
+        };
+}
+
+getValueFromSelect2()
+function getValueFromSelect2() {
+    var option2 = document.querySelector('.optionValue2');
+    for (var i = 0; i < option2.length; i++) {
+         console.log(option2[i].value)
+        if (option2[i].value == '{{ date_get }}') {
+            console.log("Yes");
+            option2[i].selected = true
+        }
+        }
+        option2.onchange= function(){
             console.log(this.value);
             formSubmit()
         };
