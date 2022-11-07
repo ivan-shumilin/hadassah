@@ -14,7 +14,8 @@
                 <div class="title">История заказов</div>
             </div>
             {% if day_history %}
-                <form class="date-form">
+                <form id='form-mobile' class="date-form" method="get" novalidate>
+                    {{ formset.management_form }}
                     <div class="form-group hidden">
                         <select name="date" class="optionValue">
                             {% for date in day_history %}
@@ -35,7 +36,8 @@
     <div id="content" data-simplebar>
         {% if day_history %}
             <div class="date-form-block">
-                <form class="date-form">
+                <form id='form-desk' class="date-form" method="get" novalidate>
+                    {{ formset.management_form }}
                     <div class="form-group">
                         <select name="date" class="optionValue2">
                             {% for date in day_history %}
@@ -56,7 +58,7 @@
                             <div id="{{ product.id }}" class="item" data-item>
                                 <div class="info">
                                     <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                 </div>
                                 <div class="img">
                                     {% if product.image %}
@@ -64,12 +66,47 @@
                                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                         </div>
                                     {% else %}
-                                        <div class="img">
-                                            <img src="{% static 'nutritionist/css/img/bg-none.png' %}" alt=""> 
-                                        </div>
+                                        {% if product.category == 'основной' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/main-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'салат' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/salad-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'суп' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/soup-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'каша' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'фрукт' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'десерт' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}                                        
+                                        {% if product.category == 'напиток' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/drink-f.png' %}" alt=""> 
+                                            </div>
+                                            {% endif %}
+                                        {% if product.category == 'гарнир' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
                                     {% endif %}
-                                    
-                                    
                                 </div>
                                 <div class="review">
                                     <form  id="form-id-{{ product.id }}" method="POST" class="review-form">
@@ -115,7 +152,7 @@
                         <div id="{{ product.id }}" class="item" data-item>
                                 <div class="info">
                                     <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                 </div>
                                 <div class="img">
                                     {% if product.image %}
@@ -123,12 +160,47 @@
                                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                         </div>
                                     {% else %}
-                                        <div class="img">
-                                            <img src="{% static 'nutritionist/css/img/bg-none.png' %}" alt=""> 
-                                        </div>
+                                        {% if product.category == 'основной' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/main-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'салат' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/salad-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'суп' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/soup-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'каша' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'фрукт' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'десерт' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'напиток' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/drink-f.png' %}" alt=""> 
+                                            </div>
+                                            {% endif %}
+                                        {% if product.category == 'гарнир' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
                                     {% endif %}
-                                    
-                                    
                                 </div>
                                 <div class="review">
                                     <form  id="form-id-{{ product.id }}" method="POST" class="review-form">
@@ -174,7 +246,7 @@
                             <div id="{{ product.id }}" class="item" data-item>
                                 <div class="info">
                                     <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                 </div>
                                 <div class="img">
                                     {% if product.image %}
@@ -182,12 +254,47 @@
                                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                         </div>
                                     {% else %}
-                                        <div class="img">
-                                            <img src="{% static 'nutritionist/css/img/bg-none.png' %}" alt=""> 
-                                        </div>
+                                        {% if product.category == 'основной' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/main-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'салат' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/salad-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'суп' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/soup-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'каша' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'фрукты' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'десерт' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'напиток' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/drink-f.png' %}" alt=""> 
+                                            </div>
+                                            {% endif %}
+                                        {% if product.category == 'гарнир' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
                                     {% endif %}
-                                    
-                                    
                                 </div>
                                 <div class="review">
                                     <form  id="form-id-{{ product.id }}" method="POST" class="review-form" novalidate>
@@ -234,7 +341,7 @@
                             <div id="{{ product.id }}" class="item" data-item>
                                 <div class="info">
                                     <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б {{ product.fiber|floatformat  }}, Ж {{ product.fat|floatformat  }}, У {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}.</div>
+                                    <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                 </div>
                                 <div class="img">
                                     {% if product.image %}
@@ -242,12 +349,47 @@
                                             <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                         </div>
                                     {% else %}
-                                        <div class="img">
-                                            <img src="{% static 'nutritionist/css/img/bg-none.png' %}" alt=""> 
-                                        </div>
+                                        {% if product.category == 'основной' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/main-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'салат' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/salad-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'суп' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/soup-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'каша' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'фрукты' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'десерт' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
+                                        {% if product.category == 'напиток' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/drink-f.png' %}" alt=""> 
+                                            </div>
+                                            {% endif %}
+                                        {% if product.category == 'гарнир' %}
+                                            <div class="img">
+                                                <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt=""> 
+                                            </div>
+                                        {% endif %}
                                     {% endif %}
-                                    
-                                    
                                 </div>
                                 <div class="review">
                                     <form  id="form-id-{{ product.id }}" method="POST" class="review-form">
@@ -311,7 +453,7 @@ function getValueFromSelect() {
         }
         option.onchange= function(){
             console.log(this.value);
-            formSubmit()
+            formSubmit1()
         };
 }
 
@@ -327,12 +469,17 @@ function getValueFromSelect2() {
         }
         option2.onchange= function(){
             console.log(this.value);
-            formSubmit()
+            formSubmit2()
         };
 }
 
-function formSubmit() {
-    var form = document.getElementById('form-get');
+function formSubmit2() {
+    var form = document.getElementById('form-desk');
+    form.submit()
+}
+
+function formSubmit1() {
+    var form = document.getElementById('form-mobile');
     form.submit()
 }
 

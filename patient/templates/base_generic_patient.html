@@ -30,12 +30,12 @@
     <body class="small-left">
 {% else %}
     <body class="has-right small-left">
-
-{% endif %}
     <form id='form-get' style='padding-left: 0px; padding-right: 0px;' method="get" novalidate>
+    {{ formset.management_form }}
+{% endif %}
 
 
-        {{ formset.management_form }}
+        
         <div id="wrapper">
             <div id="left">
                 <div class="sidebar">

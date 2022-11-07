@@ -3388,9 +3388,9 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
   border-radius: 100px;
   color: var(--color-main);
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  padding: 4px 16px
+  padding: 3px 14px
 }
 
 .eat-history-grid .item .reviewed span, .eat-history-grid .item .toggle span {
