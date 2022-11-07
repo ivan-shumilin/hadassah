@@ -23,6 +23,8 @@ import telepot, json
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from doctor.tasks import my_job_send_messang_changes
+from doctor.functions.bot import formatting_full_name
 
 
 def group_patient_check(user):
@@ -120,19 +122,16 @@ def patient_history(request, id):
         comment.rating = request.POST['rating']
         comment.save()
 
-        TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-        bot = telepot.Bot(TOKEN)
-        # все номера chat_id
         messang = ''
         messang += f'Отзыв на заказ от {request.POST["date"]}\n'
-        messang += f'{user.full_name}\n'
+        messang += f'{formatting_full_name(user.full_name)}\n'
         messang += f'{request.POST["product_name"]}\n'
         messang += f'{request.POST["rating"]}/5\n'
         messang += f'{request.POST["text"]}\n'
-        for item in BotChatId.objects.all():
-            bot.sendMessage(item.chat_id, messang)
-        date_get = request.POST['date']
 
+        my_job_send_messang_changes.delay(messang)
+
+        date_get = request.POST['date']
     # сформоровать строку с блюдами, которые пользователь уже оценил
     products_marked = []
     for item in CommentProduct.objects.filter(user_id=id):
