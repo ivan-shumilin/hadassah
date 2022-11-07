@@ -1125,8 +1125,8 @@ function submitPatientSelection() {
 
 
 const submitApiPatientSelection = async function(menu) {
-    let url = 'https://b467-146-120-93-183.eu.ngrok.io/patient/api/v1/submitselection'
-    // let url = 'https://www.sk.petrushkagroup.com/patient/api/v1/submitselection'
+    // let url = 'https://b467-146-120-93-183.eu.ngrok.io/patient/api/v1/submitselection'
+    let url = 'https://www.sk.petrushkagroup.com/patient/api/v1/submitselection'
     let body = {
         "menu": menu,
         "date": "{{ date|date:'Y-m-d' }}",
