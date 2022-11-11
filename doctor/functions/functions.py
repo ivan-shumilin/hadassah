@@ -633,11 +633,13 @@ def create_user(user_form):
 
     user = CustomUser.objects.create_user(login)
     user.full_name = user_form.data['full_name']
+    user.birthdate = datetime.strptime(user_form.data['birthdate'], '%d.%m.%Y').strftime('%Y-%m-%d')
     user.receipt_date = datetime.strptime(user_form.data['receipt_date'], '%d.%m.%Y').strftime('%Y-%m-%d')
-    user.receipt_time = parse(user_form.data['receipt_time']).strftime('%h:%m')
-    user.receipt_time = user_form.data['receipt_time']
+    user.receipt_time = parse(user_form.data['receipt_time']).strftime('%H:%m')
+    user.floor = user_form.data['floor']
     user.department = user_form.data['department']
     user.room_number = user_form.data['room_number']
+    user.bed = user_form.data['bed']
     user.type_of_diet = user_form.data['type_of_diet']
     user.comment = user_form.data['comment']
     user.status = 'patient'
@@ -759,6 +761,8 @@ def edit_user(user_form, type):
         changes.append(f"дату поступления <b>{user.receipt_date}</b> изменена на <b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b>")
     user.receipt_date = datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')
 
+    user.birthdate = datetime.strptime(user_form.data['birthdate1'], '%d.%m.%Y').strftime('%Y-%m-%d')
+
     if (user.receipt_time).strftime('%H:%M') != user_form.data['receipt_time1']:
         changes.append(f"время поступления <b>{(user.receipt_time).strftime('%H:%M')}</b> изменено на <b>{user_form.data['receipt_time1']}</b>")
     user.receipt_time = user_form.data['receipt_time1']
@@ -767,9 +771,15 @@ def edit_user(user_form, type):
         changes.append(f"отделение <b>{user.department}</b> изменено на <b>{user_form.data['department1']}</b>")
     user.department = user_form.data['department1']
 
+    user.floor = user_form.data['floor1']
+
     if user.room_number != user_form.data['room_number1']:
         changes.append(f"номер палаты <b>{user.room_number}</b> изменен на <b>{user_form.data['room_number1']}</b>")
     user.room_number = user_form.data['room_number1']
+
+    if user.bed != user_form.data['bed1']:
+        changes.append(f"номер койко-места<b>{user.bed}</b> изменен на <b>{user_form.data['bed1']}</b>")
+    user.bed = user_form.data['bed1']
 
     if user.type_of_diet != user_form.data['type_of_diet1']:
         changes.append(f"тип диеты <b>{user.type_of_diet}</b> изменен на <b>{user_form.data['type_of_diet1']}</b>")
@@ -827,10 +837,7 @@ def edit_user(user_form, type):
             if meal_order == now_show_meal and meal_order != 'завтра':
                 update_UsersToday(user)
             if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
-                # TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-                attention = u'\u2757\ufe0f'
                 regard = u'\u26a0\ufe0f'
-                # bot = telepot.Bot(TOKEN)
                 # все номера chat_id
                 if type == 'edit':
                     messang = ''
@@ -1026,3 +1033,31 @@ def get_not_active_users_set():
         if is_active_user(user):
             not_active_users_set += str(user.id) + ','
     return not_active_users_set[:-1] if len(not_active_users_set) != 0 else 'none'
+
+
+def get_occupied_rooms(user_script):
+    """ Возвращает список с занятыми палатами """
+    double_rooms = ['2а-2', '2а-3', '2а-4', '2а-16', '2а-17', '3а-2',
+                    '3а-3', '3а-4', '3а-16', '3а-17', '4а-2', '4а-3',
+                    '4а-4', '4а-5', '4а-15', '4а-16']
+    users = CustomUser.objects.filter(status='patient')
+    not_active_users = get_not_active_users_set()
+    not_active_users = not_active_users.split(',')
+    # словарь с занятыми комнатами и койками
+    occupied_rooms = {}
+    for user in users:
+        occupied_rooms.setdefault(user.room_number, []).append(user.bed)
+
+     # словарь с double rooms с одной свободной койкой
+    one_bed_free = {}
+    for key, value in occupied_rooms.items():
+        if key in double_rooms and len(value) == 1:
+            one_bed_free[key] = 'К1' if value[0] == 'К2' else 'К2'
+
+    for key in one_bed_free.keys():
+        occupied_rooms.pop(key)
+
+    if user_script == 'departments':
+        return list(occupied_rooms.keys())
+    if user_script == 'rooms':
+        return one_bed_free
