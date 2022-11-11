@@ -9,8 +9,10 @@ from patient.choices import *
 
 class CustomUser(AbstractUser):
     full_name = models.CharField(max_length=200, null=True)
+    birthdate = models.DateField(null=True)
     receipt_date = models.DateField(null=True)
     receipt_time = models.TimeField(null=True)
+    floor = models.CharField(max_length=200, null=True)
 
     department = models.CharField(
         max_length=100,
@@ -25,6 +27,14 @@ class CustomUser(AbstractUser):
         blank=True,
         default='200',
         help_text='Выбор номера палаты')
+
+
+    bed = models.CharField(
+        max_length=100,
+        choices=BED,
+        blank=True,
+        default='200',
+        help_text='Выбор койко-места')
 
     type_of_diet = models.CharField(
         max_length=100,
@@ -71,6 +81,13 @@ class UsersToday(models.Model):
         blank=True,
         default='200',
         help_text='Выбор номера палаты')
+
+    bed = models.CharField(
+        max_length=100,
+        choices=BED,
+        blank=True,
+        default='200',
+        help_text='Выбор койко-места')
 
     type_of_diet = models.CharField(
         max_length=100,
@@ -123,6 +140,13 @@ class СhangesUsersToday(models.Model):
         blank=True,
         default='200',
         help_text='Выбор номера палаты')
+
+    bed = models.CharField(
+        max_length=100,
+        choices=BED,
+        blank=True,
+        default='200',
+        help_text='Выбор койко-места')
 
     type_of_diet = models.CharField(
         max_length=100,

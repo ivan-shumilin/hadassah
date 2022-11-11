@@ -81,7 +81,7 @@
             </div>
             {% load formatting_full_name %}
             {% for form in formset %}
-                <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
+                <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.bed.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
                     <div class="td">
                         <div class="name ellipsis">{{ form.full_name.value|formatting_full_name }}</div>
                     </div>
@@ -103,6 +103,12 @@
                             <input id="{{ form.full_name.id_for_label }}" type="text" value="{{ form.full_name.value }}">
                             <div id ='error_full_name' class="error-field"></div>
                         </div>
+                        <div id='birthdate_edit' class="form-group">
+                            {% load widget_tweaks %}
+                            <label>Дата рождения</label>
+                            <input type="text" placeholder="01.01.2000" data-datepicker id="{{ form.birthdate.id_for_label }}" value="{{ form.birthdate.value }}">
+                            <div id ='error_birthdate' class="error-field"></div>
+                        </div>
                         <div id='receipt_date_edit' class="form-group">
                             {% load widget_tweaks %}
                             <label>Дата госпитализации</label>
@@ -114,29 +120,37 @@
                             <input type="text" placeholder="12:00" data-timemask id="{{ form.receipt_time.id_for_label }}">
                             <div id ='error_receipt_time' class="error-field"></div>
                         </div>
-                        <div id='department_edit' class="form-group">
-                            <label>Отделение</label>
-                            {{ form.department }}
-                            <div id ='error_department' class="error-field"></div>
-                        </div>
                         <div id='type_of_diet_edit' class="form-group">
                             <label>Диета</label>
                             {{ form.type_of_diet }}
                             <div id ='error_type_of_diet' class="error-field"></div>
                         </div>
-                        <div id='room_number_edit' class="form-group">
-                    <label for="id_form-0-room_number">Номер палаты</label>
-                    <select name="form-0-room_number" class="form-control" id='{{ form.room_number.id_for_label }}'>
-                        <option value="Не выбрано" selected>Не выбрано</option>
-                        <option value="200">200</option>
-                        <option value="201">201</option>
-                        <option value="202">202</option>
-                        <option value="203">203</option>
-                        <option value="301">301</option>
-                        <option value="302">302</option>
-                        <option value="303">303</option>
-                    </select>
+                        <div id='department_edit' class="form-group">
+                            <label>Отделение</label>
+                            {{ form.department }}
+                            <div id ='error_department' class="error-field"></div>
+                        </div>
+                        <div id='floor_edit' class="form-group">
+                            <label>Этаж</label>
+                            <select onchange="addRoomNumber(this.value, '{{ form.room_number.id_for_label }}', 'room_number_edit-{{ form.id.value }}', 'bed_edit-{{ form.id.value }}')" id='{{ form.floor.id_for_label }}'>
+                                <option selected value="Не выбрано">Не выбрано</option>
+                                <option value="2">2 этаж</option>
+                                <option value="3">3 этаж</option>
+                                <option value="4">4 этаж</option>
+                             </select>
+                            <div id ='error_floor' class="error-field"></div>
+                        </div>
+                        <div id='room_number_edit-{{ form.id.value }}' class="form-group hidden-edit">
+                            <label>Номер палаты</label>
+                            <select onchange="addBed(this.value, '{{ form.bed.id_for_label }}', 'bed_edit-{{ form.id.value }}')" class="form-control" id='{{ form.room_number.id_for_label }}'>
+                             </select>
                             <div id ='error_room_number' class="error-field"></div>
+                        </div>
+                        <div id='bed_edit-{{ form.id.value }}' class="form-group hidden-edit">
+                            <label>Номер койки</label>
+                            <select class="form-control" id='{{ form.bed.id_for_label }}'>
+                            </select>
+                            <div id ='error_bed' class="error-field"></div>
                         </div>
                         <div class="form-group">
                             <label>Комментарий</label>
@@ -147,7 +161,14 @@
 
 
                         <div class="form-group item-actions flex flex-center">
-                            <button name="add_patient" onclick="validationEditForm('{{ form.full_name.id_for_label }}', '{{ form.receipt_date.id_for_label }}', '{{ form.receipt_time.id_for_label }}', '{{ form.department.id_for_label }}', '{{ form.type_of_diet.id_for_label }}', '{{ form.room_number.id_for_label }}', '{{ form.comment.id_for_label }}', '{{ form.id.value }}')">Сохранить</button>
+                            <button name="add_patient"
+                             onclick="validationEditForm('{{ form.full_name.id_for_label }}',
+                             '{{ form.birthdate.id_for_label }}',
+                              '{{ form.receipt_date.id_for_label }}',
+                              '{{ form.receipt_time.id_for_label }}', '{{ form.department.id_for_label }}',
+                               '{{ form.type_of_diet.id_for_label }}', '{{ form.room_number.id_for_label }}',
+                                '{{ form.bed.id_for_label }}', '{{ form.comment.id_for_label }}', '{{ form.id.value }}',
+                                 '{{ form.floor.id_for_label }}')">Сохранить</button>
                             <a class="button white" data-modal-close>Отменить</a>
                         </div>
 
@@ -200,6 +221,10 @@
                                     <div class="label">Номер палаты</div>
                                     <div id="room_number_field" class="value"></div>
                                 </div>
+                                <div class="field">
+                                    <div class="label">Койко-место</div>
+                                    <div id="bed_field" class="value"></div>
+                                </div>
                             </div>
                             <div id="comment_field" class="help"></div>
                             <div class="actions">
@@ -251,19 +276,152 @@
                 </div>
             </div>
 <script>
+const getOccupiedRooms = async function(userScript) {
+    let url = 'api/v1/get/occupiedrooms'
+    let body = {'user_script': userScript};
+
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;',
+        },
+        body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+
+async function addRoomNumber(value, idRoomNumber , idDivRoomNumber, idDivBed) {
+    selectRoomNumber = document.getElementById(idRoomNumber);
+    let secondFloor = ['2а-1',  '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13', '2а-14', '2а-15', '2а-16', '2а-17'];
+    let thirdFloor = ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11', '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17'];
+    let fourthFloor = ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'];
+
+    let divRoomNumber = document.getElementById(idDivRoomNumber);
+    let divBed = document.getElementById(idDivBed);
+    let res = await getOccupiedRooms('departments');
+    var occupiedRooms = JSON.parse(res);
+    var occupiedRooms = JSON.parse(occupiedRooms);
+    console.log(occupiedRooms)
+
+    let result = ''
+    result += `<option value="Не выбрано">Не выбрано</option>`;
+// удаляем все варианты select
+    while (selectRoomNumber.firstChild) {
+        selectRoomNumber.removeChild(selectRoomNumber.firstChild);
+    }
+
+    if (value == "2") {
+        secondFloor.forEach(function(roomNumber, i, arr) {
+            if (!occupiedRooms.includes(roomNumber)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+
+    if (value == "3") {
+        thirdFloor.forEach(function(roomNumber, i, arr) {
+            if (!occupiedRooms.includes(roomNumber)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+
+    if (value == "4") {
+        fourthFloor.forEach(function(roomNumber, i, arr) {
+            if (!occupiedRooms.includes(roomNumber)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+
+    if (value == "Не выбрано") {
+        roomNumberOncology.forEach(function(roomNumber, i, arr) {
+            result += `<option value="${roomNumber}">${roomNumber}</option>`;
+        });
+        divRoomNumber.classList.add('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+    selectRoomNumber.insertAdjacentHTML("beforeend", result);
+}
+
+async function addBed(value, idSelectBed, idDivBed) {
+    selectBed = document.getElementById(idSelectBed);
+    let singleRooms = ['2а-1', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13',
+                       '2а-14', '2а-15', '3а-1', '3а-5', '3а-6', '3а-7',
+                       '3а-8', '3а-9', '3а-10', '3а-11', '3а-12', '3а-13',
+                       '3а-14', '3а-15','4а-1', '4а-6', '4а-7', '4а-8',
+                       '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14'];
+    let doubleRooms = ['2а-2', '2а-3', '2а-4', '2а-16', '2а-17', '3а-2',
+                        '3а-3', '3а-4', '3а-16', '3а-17', '4а-2', '4а-3',
+                        '4а-4', '4а-5', '4а-15', '4а-16'];
+    let divRoomNumber = document.getElementById(idDivBed);
+
+
+    while (selectBed.firstChild) {
+        selectBed.removeChild(selectBed.firstChild);
+    }
+    let result = '';
+// получаем список двухместных номеров с одной свободной койкой (номер номера: свободная койка)
+    let res = await getOccupiedRooms('rooms');
+    var occupiedRooms = JSON.parse(res);
+    var occupiedRooms = JSON.parse(occupiedRooms);
+    let querySelectorSelection = `#${idDivBed} .selection .select2-selection__arrow`
+
+    if (singleRooms.includes(value)) {
+        selectBed.setAttribute("disabled", "disabled");
+        result += `<option value="K1">K1</option>`;
+        divRoomNumber.classList.remove('hidden-edit')
+        document.querySelector('#bed_add .selection .select2-selection__arrow').classList.add('hidden-edit')
+        selectBed.insertAdjacentHTML("beforeend", result);
+    }
+
+    if (doubleRooms.includes(value)) {
+        if (typeof occupiedRooms[value] !== "undefined") {
+            selectBed.setAttribute("disabled", "disabled");
+            if (occupiedRooms[value] === 'К1') {
+                result += `<option value="K1">K1</option>`;
+            } else {
+                result += `<option value="K2">K2</option>`;
+            }
+            divRoomNumber.classList.remove('hidden-edit')
+            document.querySelector(querySelectorSelection).classList.add('hidden-edit')
+            selectBed.insertAdjacentHTML("beforeend", result);
+        } else {
+            selectBed.removeAttribute("disabled");
+            result += `<option value="Не выбрано">Не выбрано</option>`;
+            result += `<option value="K1">K1</option>`;
+            result += `<option value="K2">K2</option>`;
+            divRoomNumber.classList.remove('hidden-edit')
+            document.querySelector(querySelectorSelection).classList.remove('hidden-edit')
+            selectBed.insertAdjacentHTML("beforeend", result);
+        }
+    }
+    if (value == "Не выбрано") {
+        divRoomNumber.classList.add('hidden-edit');
+    }
+}
+
 
 filtration()
 
 
-function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, comment, id) {
+function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, bed, comment, id) {
     document.getElementById("full_name_field").innerHTML = full_name;
     document.getElementById("receipt_datetime_field").innerHTML = receipt_date + ' ' + receipt_time;
     document.getElementById("department_field").innerHTML = department;
     document.getElementById("type_of_diet_field").innerHTML = type_of_diet;
     document.getElementById("room_number_field").innerHTML = room_number;
+    document.getElementById("bed_field").innerHTML = bed;
     document.getElementById("comment_field").innerHTML = comment;
     document.getElementById("recovery").setAttribute('data-modal-link', 'patient-restore'+id);
-
 }
 
 
@@ -343,18 +501,21 @@ function filtration() {
 
 
 
-function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_department, id_type_of_diet, id_room_number, id_comment, id) {
+function validationEditForm(id_full_name, birthdate, id_receipt_date, id_receipt_time, id_department, id_type_of_diet, id_room_number, id_bed, id_comment, id, id_floor) {
     var form = document.getElementById('main-form');
-    var full_name = document.getElementById(id_full_name)
-    var receipt_date = document.getElementById(id_receipt_date)
-    var receipt_time = document.getElementById(id_receipt_time)
-    var department = document.getElementById(id_department)
-    var type_of_diet = document.getElementById(id_type_of_diet)
-    var room_number = document.getElementById(id_room_number)
-    var comment = document.getElementById(id_comment)
+    var full_name = document.getElementById(id_full_name);
+    var birthdate = document.getElementById(birthdate);
+    var receipt_date = document.getElementById(id_receipt_date);
+    var receipt_time = document.getElementById(id_receipt_time);
+    var type_of_diet = document.getElementById(id_type_of_diet);
+    var department = document.getElementById(id_department);
+    var floor = document.getElementById(id_floor);
+    var bed = document.getElementById(id_bed);
+    var room_number = document.getElementById(id_room_number);
+    var comment = document.getElementById(id_comment);
 
-    var errors = document.querySelectorAll('.error-field')
-    var formGroup = document.querySelectorAll('.form-group')
+    var errors = document.querySelectorAll('.error-field');
+    var formGroup = document.querySelectorAll('.form-group');
     for (var i = 0; i < errors.length; i++) {
         errors[i].innerHTML = '';
         errors[i].classList.remove('error');
@@ -372,6 +533,13 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
         document.getElementById('error_full_name').innerHTML = "Поле может содержать только буквы и символы ()-,'."
         document.getElementById('error_full_name').classList.add('error')
         document.getElementById('full_name_edit').classList.add('error')
+        error = error + 1
+    }
+
+    if (!birthdate.value) {
+        document.getElementById('error_birthdate').innerHTML = 'Обязательное поле';
+        document.getElementById('error_birthdate').classList.add('error');
+        document.getElementById('birthdate_edit').classList.add('error');
         error = error + 1
     }
     if (!receipt_date.value) {
@@ -408,9 +576,17 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
     if (!receipt_time.value) {
         document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
         document.getElementById('error_receipt_time').classList.add('error')
-        document.getElementById('receipt_time_edit').classList.add('error')        
+        document.getElementById('receipt_time_edit').classList.add('error')
         error = error + 1
     }
+    
+    if (type_of_diet.value == 'Не выбрано') {
+        document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
+        document.getElementById('error_type_of_diet').classList.add('error')
+        document.getElementById('type_of_diet_edit').classList.add('error')
+        error = error + 1
+    }
+
     if (department.value == 'Не выбрано') {
         document.getElementById('error_department').innerHTML = 'Обязательное поле'
         document.getElementById('error_department').classList.add('error')
@@ -418,12 +594,13 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
         error = error + 1
     }
 
-    if (type_of_diet.value == 'Не выбрано') {
-        document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
-        document.getElementById('error_type_of_diet').classList.add('error')
-        document.getElementById('type_of_diet_edit').classList.add('error')
+    if (floor.value == 'Не выбрано') {
+        document.getElementById('error_floor').innerHTML = 'Обязательное поле'
+        document.getElementById('error_floor').classList.add('error')
+        document.getElementById('floor_edit').classList.add('error')
         error = error + 1
     }
+
     if (room_number.value == 'Не выбрано') {
         document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
         document.getElementById('error_room_number').classList.add('error')
@@ -431,19 +608,28 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
         error = error + 1
     }
 
+    if (bed.value == 'Не выбрано') {
+        document.getElementById('error_bed').innerHTML = 'Обязательное поле'
+        document.getElementById('error_bed').classList.add('error')
+        document.getElementById('bed_edit').classList.add('error')
+        error = error + 1
+    }
+
     if (error == 0) {
         document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
         document.getElementById('id_edit_user').value = id
         document.getElementById('test1_full_name').value = full_name.value
+        document.getElementById('test1_birthdate').value = birthdate.value
         document.getElementById('test1_receipt_date').value = receipt_date.value
         document.getElementById('test1_receipt_time').value = receipt_time.value
         document.getElementById('test1_department').value = department.value
+        document.getElementById('test1_floor').value = floor.value
         document.getElementById('test1_type_of_diet').value = type_of_diet.value
         document.getElementById('test1_room_number').value = room_number.value
+        document.getElementById('test1_bed').value = bed.value
         document.getElementById('test1_comment').value = comment.value
         document.getElementById('archive').setAttribute('checked', 'true');
         form.submit()
-
     }
  }
 

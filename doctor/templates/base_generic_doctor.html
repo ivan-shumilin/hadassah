@@ -85,7 +85,7 @@
         <input style="display: none;"
                type="checkbox"
                id="change-password_flag"
-               name="change-password_flag">                    
+               name="change-password_flag">
     </form>
     </div>
     <form id='main-form' style='padding-left: 0px; padding-right: 0px;' method="post" novalidate>
@@ -218,22 +218,28 @@
         </div>
 
         <div data-modal="patient-add-test" data-modal-width="480">
-                    <input id="test_full_name" type="text" name="full_name" value="Смирнова Антонина Сергеевна">
-                    <input id="test_receipt_date" type="text" name="receipt_date" value="12.07.2022" data-datepicker>
-                    <input id="test_receipt_time" type="text" name="receipt_time" value="14:00" data-timemask>
-                    <input id="test_department" name="department">
-                    <input id="test_type_of_diet" name="type_of_diet">
-                    <input id="test_room_number" name="room_number">
-                    <input id="test_comment" name="comment">
+            <input id="test_full_name" type="text" name="full_name" value="">
+            <input id="test_birthdate" type="text" name="birthdate" value="">
+            <input id="test_floor" type="text" name="floor" value="">
+            <input id="test_receipt_date" type="text" name="receipt_date" value="">
+            <input id="test_receipt_time" type="text" name="receipt_time" value="">
+            <input id="test_department" name="department">
+            <input id="test_type_of_diet" name="type_of_diet">
+            <input id="test_room_number" name="room_number">
+            <input id="test_bed" name="bed">
+            <input id="test_comment" name="comment">
         </div>
-            <div data-modal="patient-add-test1" data-modal-width="480">
-                    <input id="test1_full_name" type="text" name="full_name1">
-                    <input id="test1_receipt_date" type="text" name="receipt_date1">
-                    <input id="test1_receipt_time" type="text" name="receipt_time1">
-                    <input id="test1_department" type="text" name="department1">
-                    <input id="test1_type_of_diet" type="text" name="type_of_diet1">
-                    <input id="test1_room_number" type="text" name="room_number1">
-                    <input id="test1_comment" type="text" name="comment1">
+        <div data-modal="patient-add-test1" data-modal-width="480">
+            <input id="test1_full_name" type="text" name="full_name1">
+            <input id="test1_birthdate" type="text" name="birthdate1">
+            <input id="test1_floor" type="text" name="floor1">
+            <input id="test1_receipt_date" type="text" name="receipt_date1">
+            <input id="test1_receipt_time" type="text" name="receipt_time1">
+            <input id="test1_department" type="text" name="department1">
+            <input id="test1_type_of_diet" type="text" name="type_of_diet1">
+            <input id="test1_room_number" type="text" name="room_number1">
+            <input id="test1_bed" type="text" name="bed1">
+            <input id="test1_comment" type="text" name="comment1">
         </div>
 
         <div  data-modal="patient-edited" data-modal-width="400">
@@ -245,12 +251,18 @@
             </div>
         </div>
 
-        <div data-modal="patient-add" data-modal-width="480">
+        <div class="patient-add" data-modal="patient-add" data-modal-width="480">
             <div class="title">Добавить нового пациента</div>
                 <div id ='full_name_add' class="form-group">
                     {{ user_form.full_name.label }}
                     {{ user_form.full_name }}
                     <div id ='error_full_name' class="error-field"></div>
+                </div>
+                <div id='birthdate_add' class="form-group">
+                    {% load widget_tweaks %}
+                    {{ user_form.birthdate.label }}
+                    {{ user_form.birthdate|attr:"data-datepicker" }}
+                    <div id ='error_birthdate' class="error-field"></div>
                 </div>
                 <div id='receipt_date_add' class="form-group">
                     {% load widget_tweaks %}
@@ -263,20 +275,43 @@
                     {{ user_form.receipt_time|attr:"data-timemask" }}
                     <div id ='error_receipt_time' class="error-field"></div>
                 </div>
-                <div id='department_add' class="form-group">
-                    {{ user_form.department.label }}
-                    {{ user_form.department }}
-                    <div id ='error_department' class="error-field"></div>
-                </div>
                 <div id='type_of_diet_add' class="form-group">
                     {{ user_form.type_of_diet.label }}
                     {{ user_form.type_of_diet }}
                     <div id ='error_type_of_diet' class="error-field"></div>
                 </div>
-                <div id='room_number_add' class="form-group">
+                <div id='department_add' class="form-group">
+                    {{ user_form.department.label }}
+                    <select name="department" id="id_department">
+                        <option value="Не выбрано">Не выбрано</option>
+                        <option value="Онкология">Онкология</option>
+                        <option value="Хирургия">Хирургия</option>
+                        <option value="Реанимация">Реанимация</option>
+                        <option value="Интенсивная терапия">Интенсивная терапия</option>
+                     </select>
+                    <div id ='error_department' class="error-field"></div>
+                </div>
+                <div id='floor_add' class="form-group">
+                    <label>Этаж</label>
+                    <select onchange="addRoomNumber(this.value, 'id_room_number')" name="floor" id="id_floor">
+                        <option value="Не выбрано">Не выбрано</option>
+                        <option value="2">2 этаж</option>
+                        <option value="3">3 этаж</option>
+                        <option value="4">4 этаж</option>
+                     </select>
+                    <div id ='error_floor' class="error-field"></div>
+                </div>
+                <div id='room_number_add' class="form-group hidden-edit">
                     {{ user_form.room_number.label }}
-                    {{ user_form.room_number }}
+                    <select  onchange="addBed(this.value)" name="room_number" id="id_room_number">
+                    </select>
                     <div id ='error_room_number' class="error-field"></div>
+                </div>
+                <div id='bed_add' class="form-group hidden-edit">
+                    {{ user_form.bed.label }}
+                    <select  name="bed" id="id_bed">
+                    </select>
+                    <div id ='error_bed' class="error-field"></div>
                 </div>
                 <div class="form-group">
                     {{ user_form.comment.label }}

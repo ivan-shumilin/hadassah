@@ -4506,3 +4506,11 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
 .login-form .hidden {
   display: none;
 }
+
+.patient-add .hidden {
+  display: none;
+}
+
+.hidden-edit {
+  display: none;
+} 

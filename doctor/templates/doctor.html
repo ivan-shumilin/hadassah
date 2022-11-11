@@ -96,7 +96,23 @@
                         </div>
                         {% load formatting_full_name %}
                         {% for form in formset %}
-                        <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"Y.m.d" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
+                        <div style="display: none;">
+                            <input type="text" class="floor-list" value="{{ form.floor.value }}">
+                            <input type="text" class="room-list" value="{{ form.room_number.value }}">
+                            <input type="text" class="id-list" value="{{ form.id.value }}">
+                        </div>
+                        <div id="{{ form.id.value }}"
+                            class="tr product" data-patient-card-show 
+                            onclick="displayInfoPatient('{{ form.full_name.value }}',
+                             '{{ form.birthdate.value|date:"Y.m.d" }}',
+                              '{{ form.receipt_date.value|date:"Y.m.d" }}',
+                               '{{ form.receipt_time.value|time:"H:i" }}',
+                                '{{ form.department.value }}',
+                                 '{{ form.type_of_diet.value }}',
+                                  '{{ form.room_number.value }}',
+                                   '{{ form.bed.value }}',
+                                    '{{ form.comment.value|cut:"None"  }}',
+                                     '{{ form.id.value }}', '{{ form.floor.value }}')">
                             <div class="td">
                                 <div class="name ellipsis">{{ form.full_name.value|formatting_full_name }}</div>
                             </div>
@@ -118,6 +134,12 @@
                                         <input id="{{ form.full_name.id_for_label }}" type="text" value="{{ form.full_name.value }}">
                                         <div id ='error_full_name' class="error-field"></div>
                                     </div>
+                                    <div id='birthdate_edit' class="form-group">
+                                        {% load widget_tweaks %}
+                                        <label>Дата рождения</label>
+                                        {{ form.birthdate|attr:"data-datepicker" }}
+                                        <div id ='error_birthdate' class="error-field"></div>
+                                    </div>
                                     <div id='receipt_date_edit' class="form-group">
                                         {% load widget_tweaks %}
                                         <label>Дата госпитализации</label>
@@ -129,31 +151,73 @@
                                         <input type="text" value="{{ form.receipt_time.value|date:'H:i' }}" data-timemask id="{{ form.receipt_time.id_for_label }}">
                                         <div id ='error_receipt_time' class="error-field"></div>
                                     </div>
-                                    <div id='department_edit' class="form-group">
-                                        <label>Отделение</label>
-                                        {{ form.department }}
-                                        <div id ='error_department' class="error-field"></div>
-                                    </div>
                                     <div id='type_of_diet_edit' class="form-group">
                                         <label>Диета</label>
                                         {{ form.type_of_diet }}
                                         <div id ='error_type_of_diet' class="error-field"></div>
                                     </div>
+                                    <div id='department_edit' class="form-group">
+                                        <label>Отделение</label>
+                                        <!-- <select onchange="addRoomNumberEditForm(this.value, 'id-room-number-{{ form.id.value }}', '{{ form.department.value }}', '{{ form.room_number.value }}', 'id_bed-{{ form.id.value }}')" name="department" id="id-department-{{ form.id.value }}">
+                                            <option class="optionValue" value="Онкология">Онкология</option>
+                                            <option class="optionValue" value="Хирургия">Хирургия</option>
+                                         </select> -->
+                                         <!-- <select name="department" id="id_department">
+                                            <option value="Не выбрано">Не выбрано</option>
+                                            <option value="Онкология">Онкология</option>
+                                            <option value="Хирургия">Хирургия</option>
+                                            <option value="Реанимация">Реанимация</option>
+                                            <option value="Интенсивная терапия">Интенсивная терапия</option>
+                                         </select> -->
+                                         {{ form.department }}
+                                        <div id ='error_department' class="error-field"></div>
+                                    </div>
+                                    <div id='floor_edit' class="form-group">
+                                        <label>Этаж</label>
+                                        <select 
+                                        onchange="addRoomNumberEditForm(this.value,
+                                         'id-room-number-{{ form.id.value }}',
+                                          '{{ form.floor.value }}',
+                                          '{{ form.room_number.value }}',
+                                          '{{ form.bed.value }}' )" name="floor" id="id-floor-{{ form.id.value }}">
+                                            <option class="optionValue" value="Не выбрано">Не выбрано</option>
+                                            <option class="optionValue" value="2">2 этаж</option>
+                                            <option class="optionValue" value="3">3 этаж</option>
+                                            <option class="optionValue" value="4">4 этаж</option>
+                                         </select>
+                                        <div id ='error_floor' class="error-field"></div>
+                                    </div>
+                                    
                                     <div id='room_number_edit' class="form-group">
                                         <label>Номер палаты</label>
-                                        {{ form.room_number }}
+                                        <select  onchange="addBedEditForm(this.value, 'id_bed-{{ form.id.value }}', '{{ form.room_number.value }}', '{{ form.bed.value }}')" name="room_number" id='id-room-number-{{ form.id.value }}'>
+                                            <option class="optionValue" value="{{ form.room_number.value }}">{{ form.id.value }}</option>
+                                        </select>
                                         <div id ='error_room_number' class="error-field"></div>
+                                    </div>
+                                    <div id='bed_edit' class="form-group">
+                                        <label>Койко-место</label>
+                                        <select  name="bed" id="id_bed-{{ form.id.value }}">
+                                        </select>
+                                        <div id ='error_bed' class="error-field"></div>
                                     </div>
                                     <div class="form-group">
                                         <label>Комментарий</label>
                                         {{ form.comment|attr:"rows='4'" }}
                                         <p id ='error_comment' class="error-field"></p>
                                     </div>
-
-
-
                                     <div class="form-group item-actions flex flex-center">
-                                        <button name="add_patient" onclick="validationEditForm('{{ form.full_name.id_for_label }}', '{{ form.receipt_date.id_for_label }}', '{{ form.receipt_time.id_for_label }}', '{{ form.department.id_for_label }}', '{{ form.type_of_diet.id_for_label }}', '{{ form.room_number.id_for_label }}', '{{ form.comment.id_for_label }}', '{{ form.id.value }}')">Сохранить</button>
+                                        <button name="add_patient"
+                                         onclick="validationEditForm('{{ form.full_name.id_for_label }}',
+                                         '{{ form.birthdate.id_for_label }}',
+                                          '{{ form.receipt_date.id_for_label }}',
+                                           '{{ form.receipt_time.id_for_label }}',
+                                            '{{ form.department.id_for_label }}',
+                                             '{{ form.type_of_diet.id_for_label }}',
+                                              'id-room-number-{{ form.id.value }}',
+                                               'id_bed-{{ form.id.value }}',
+                                                '{{ form.comment.id_for_label }}',
+                                                 '{{ form.id.value }}')">Сохранить</button>
                                         <a class="button white" data-modal-close>Отменить</a>
                                     </div>
 
@@ -191,6 +255,10 @@
                                 <div id="full_name_field" class="name"></div>
                                 <div class="fields">
                                     <div class="field">
+                                        <div class="label">Дата рождения</div>
+                                        <div id="birthdate_field" class="value"></div>
+                                    </div>
+                                    <div class="field">
                                         <div class="label">Дата госпитализации</div>
                                         <div id="receipt_datetime_field" class="value"></div>
                                     </div>
@@ -215,12 +283,22 @@
                                         <div id="room_number_field" class="value"></div>
                                     </div>
                                     <div class="field">
+                                        <div class="label">Койко-место</div>
+                                        <div id="bed_field" class="value"></div>
+                                    </div>
+                                    <div class="field">
                                         <div id="link_lk_patient" class="label"></div>
                                         <div class="value"></div>
                                     </div>
+                                    <div class="field">
+                                        <input id="card-user-id" class="hidden-edit" type="text">
+                                        <input id="card-floor" class="hidden-edit" type="text">
+                                        <input id="card-room" class="hidden-edit" type="text">
+                                        <input id="card-bed" class="hidden-edit" type="text">
+                                    </div>
                                 </div>
                                 <div id="comment_field" class="help"></div>
-                                <div class="actions">
+                                <div id="patient-card-button" class="actions">
                                     <a id="modal_field" class="button">Редактировать</a>
                                     <a id="archive_field" class="button white">Архивировать</a>
                                 </div>
@@ -248,6 +326,436 @@
             </div>
 <!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script> -->
 <script>
+document.getElementById("modal_field").onclick = function() {testTest()};
+
+async function testTest() {
+    var userId = document.getElementById("card-user-id").value
+    var userFloor = document.getElementById("card-floor").value
+    var userRoom = document.getElementById("card-room").value
+    var userBed = document.getElementById("card-bed").value
+    var userRoomId = `id-room-number-${userId}`
+    item = document.getElementById(userRoomId);
+    while (item.firstChild) {
+        item.removeChild(item.firstChild);
+    }
+    let secondFloor = ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13', '2а-14', '2а-15', '2а-16', '2а-17'];
+    let thirdFloor = ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11', '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17'];
+    let fourthFloor = ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'];
+    let divRoomNumber = document.getElementById('room_number_edit');
+    let divBed = document.getElementById('bed_edit');
+
+    let res = await getOccupiedRooms('departments');
+    var occupiedRooms = JSON.parse(res);
+    var occupiedRooms = JSON.parse(occupiedRooms);
+    console.log(occupiedRooms)
+
+    let result = '' 
+    result += `<option selected value="${userRoom}">${userRoom}</option>`
+
+    if (userFloor == "2") {
+        secondFloor.forEach(function(roomNumber, i, arr) {
+            if ((!occupiedRooms.includes(roomNumber)) && (roomNumber !== userRoom)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit');
+    }
+
+    if (userFloor == "3") {
+        thirdFloor.forEach(function(roomNumber, i, arr) {
+            if ((!occupiedRooms.includes(roomNumber)) && (roomNumber !== userRoom)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit');
+    }
+
+    if (userFloor == "4") {
+        fourthFloor.forEach(function(roomNumber, i, arr) {
+            if ((!occupiedRooms.includes(roomNumber)) && (roomNumber !== userRoom)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit');
+    }
+
+    if (userFloor == "Не выбрано") {
+        roomNumberOncology.forEach(function(roomNumber, i, arr) {
+            result += `<option value="${roomNumber}">${roomNumber}</option>`;
+        });
+        divRoomNumber.classList.add('hidden-edit');
+    }
+    item.insertAdjacentHTML("beforeend", result);
+
+
+
+    var userBedId = `id_bed-${userId}`
+    item = document.getElementById(userBedId);
+    console.log(userBedId)
+    let singleRooms = ['2а-1', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13',
+                       '2а-14', '2а-15', '3а-1', '3а-5', '3а-6', '3а-7',
+                       '3а-8', '3а-9', '3а-10', '3а-11', '3а-12', '3а-13',
+                       '3а-14', '3а-15','4а-1', '4а-6', '4а-7', '4а-8',
+                       '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14'];
+    let doubleRooms = ['2а-2', '2а-3', '2а-4', '2а-16', '2а-17', '3а-2',
+                        '3а-3', '3а-4', '3а-16', '3а-17', '4а-2', '4а-3',
+                        '4а-4', '4а-5', '4а-15', '4а-16'];
+    divRoomNumber = document.getElementById('bed_edit');
+
+
+    while (item.firstChild) {
+        item.removeChild(item.firstChild);
+    }
+    result = '';
+
+    res = await getOccupiedRooms('rooms');
+    occupiedRooms1 = JSON.parse(res);
+    occupiedRooms1 = JSON.parse(occupiedRooms1);
+    console.log(occupiedRooms1)
+
+    if (singleRooms.includes(userRoom)) {
+        item.setAttribute("disabled", "disabled");
+        result += `<option value="K1">K1</option>`;
+        document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.add('hidden-edit')
+        item.insertAdjacentHTML("beforeend", result);
+    }
+
+    if (doubleRooms.includes(userRoom)) {
+        if (occupiedRooms.includes(userRoom)) {
+            item.setAttribute("disabled", "disabled");
+            result += `<option value="${userBed}">${userBed}</option>`;
+            document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.add('hidden-edit')
+            item.insertAdjacentHTML("beforeend", result);
+        } else {
+            item.removeAttribute("disabled");
+            result += `<option selected value="${userBed}">${userBed}</option>`;
+            if (userBed === 'K1') {
+                result += `<option value="K2">K2</option>`;
+            } else {
+                result += `<option value="K1">K1</option>`;
+            }
+            // document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.remove('hidden-edit')
+            item.insertAdjacentHTML("beforeend", result);
+        }
+    }
+
+    // if (value == "Не выбрано") {
+    //     divRoomNumber.classList.add('hidden-edit');
+    // }
+}
+
+var depList = document.querySelectorAll('.floor-list');
+var roomList = document.querySelectorAll('.room-list');
+var idList = document.querySelectorAll('.id-list');
+
+for (var ii = 0; ii < depList.length; ii++) {
+    let selectDepartmentId = `#id-floor-${idList[ii].value} .optionValue`
+    var optionDepartment = document.querySelectorAll(selectDepartmentId);
+    let selectRoomId = `#id-room-number-${idList[ii].value} .optionValue`
+    var optionRoom = document.querySelectorAll(selectRoomId);
+    for (var i = 0; i < optionDepartment.length; i++) {
+         console.log(optionDepartment[i].value)
+        if (optionDepartment[i].value == depList[ii].value) {
+            console.log("Yes");
+            optionDepartment[i].selected = true
+    }
+    // for (var i = 0; i < optionRoom.length; i++) {
+    //      console.log(optionRoom[i].value)
+    //     if (optionRoom[i].value == depList[ii].value) {
+    //         console.log("Yes");
+    //         optionRoom[i].selected = true
+    //     }
+    // }
+}
+}
+
+const getOccupiedRooms = async function(userScript) {
+    let url = 'api/v1/get/occupiedrooms'
+    let body = {'user_script': userScript};
+
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;',
+        },
+        body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+
+async function addRoomNumber(value, idRoomNumber) {
+    selectRoomNumber = document.getElementById(idRoomNumber);
+    let secondFloor = ['2а-1',  '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13', '2а-14', '2а-15', '2а-16', '2а-17'];
+    let thirdFloor = ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11', '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17'];
+    let fourthFloor = ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'];
+
+    let divRoomNumber = document.getElementById('room_number_add');
+    let divBed = document.getElementById('bed_add');
+    let res = await getOccupiedRooms('departments');
+    var occupiedRooms = JSON.parse(res);
+    var occupiedRooms = JSON.parse(occupiedRooms);
+    console.log(occupiedRooms)
+
+    let result = ''
+    result += `<option value="Не выбрано">Не выбрано</option>`;
+// удаляем все варианты select
+    while (selectRoomNumber.firstChild) {
+        selectRoomNumber.removeChild(selectRoomNumber.firstChild);
+    }
+
+    if (value == "2") {
+        secondFloor.forEach(function(roomNumber, i, arr) {
+            if (!occupiedRooms.includes(roomNumber)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+
+    if (value == "3") {
+        thirdFloor.forEach(function(roomNumber, i, arr) {
+            if (!occupiedRooms.includes(roomNumber)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+
+    if (value == "4") {
+        fourthFloor.forEach(function(roomNumber, i, arr) {
+            if (!occupiedRooms.includes(roomNumber)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+
+    if (value == "Не выбрано") {
+        roomNumberOncology.forEach(function(roomNumber, i, arr) {
+            result += `<option value="${roomNumber}">${roomNumber}</option>`;
+        });
+        divRoomNumber.classList.add('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+    selectRoomNumber.insertAdjacentHTML("beforeend", result);
+}
+
+async function addRoomNumberEditForm(value, idRoomNumber, floor, room, bed) {
+    selectRoomNumber = document.getElementById(idRoomNumber);
+    document.getElementById('bed_edit').classList.add('hidden-edit');
+    let secondFloor = ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13', '2а-14', '2а-15', '2а-16', '2а-17'];
+    let thirdFloor = ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11', '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17'];
+    let fourthFloor = ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'];
+
+    let divRoomNumber = document.getElementById('room_number_edit');
+    let divBed = document.getElementById('bed_edit');
+    let res = await getOccupiedRooms('departments');
+    var occupiedRooms = JSON.parse(res);
+    var occupiedRooms = JSON.parse(occupiedRooms);
+    console.log(occupiedRooms)
+
+    let result = ''
+    result += `<option selected value="Не выбрано">Не выбрано</option>`;
+// удаляем все варианты select
+    while (selectRoomNumber.firstChild) {
+        selectRoomNumber.removeChild(selectRoomNumber.firstChild);
+    }
+
+    if (value == floor) {
+        result += `<option value="${room}">${room}</option>`;
+    }
+
+    if (value == "2") {
+        secondFloor.forEach(function(roomNumber, i, arr) {
+            if ((!occupiedRooms.includes(roomNumber)) && (roomNumber !== room)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+
+    if (value == "3") {
+        thirdFloor.forEach(function(roomNumber, i, arr) {
+            if ((!occupiedRooms.includes(roomNumber)) && (roomNumber !== room)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+
+    if (value == "4") {
+        fourthFloor.forEach(function(roomNumber, i, arr) {
+            if ((!occupiedRooms.includes(roomNumber)) && (roomNumber !== room)) {
+                result += `<option value="${roomNumber}">${roomNumber}</option>`;
+            };
+        });
+        divRoomNumber.classList.remove('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+
+    if (value == "Не выбрано") {
+        divRoomNumber.classList.add('hidden-edit')
+        divBed.classList.add('hidden-edit')
+    }
+    selectRoomNumber.insertAdjacentHTML("beforeend", result);
+}
+
+
+async function addBed(value) {
+    selectBed = document.getElementById('id_bed');
+    let singleRooms = ['2а-1', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13',
+                       '2а-14', '2а-15', '3а-1', '3а-5', '3а-6', '3а-7',
+                       '3а-8', '3а-9', '3а-10', '3а-11', '3а-12', '3а-13',
+                       '3а-14', '3а-15','4а-1', '4а-6', '4а-7', '4а-8',
+                       '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14'];
+    let doubleRooms = ['2а-2', '2а-3', '2а-4', '2а-16', '2а-17', '3а-2',
+                        '3а-3', '3а-4', '3а-16', '3а-17', '4а-2', '4а-3',
+                        '4а-4', '4а-5', '4а-15', '4а-16'];
+    let divRoomNumber = document.getElementById('bed_add');
+
+
+    while (selectBed.firstChild) {
+        selectBed.removeChild(selectBed.firstChild);
+    }
+    let result = '';
+// получаем список двухместных номеров с одной свободной койкой (номер номера: свободная койка)
+    let res = await getOccupiedRooms('rooms');
+    var occupiedRooms = JSON.parse(res);
+    var occupiedRooms = JSON.parse(occupiedRooms);
+
+    if (singleRooms.includes(value)) {
+        selectBed.setAttribute("disabled", "disabled");
+        result += `<option value="K1">K1</option>`;
+        divRoomNumber.classList.remove('hidden-edit')
+        document.querySelector('#bed_add .selection .select2-selection__arrow').classList.add('hidden-edit')
+        selectBed.insertAdjacentHTML("beforeend", result);
+    }
+
+    if (doubleRooms.includes(value)) {
+        if (typeof occupiedRooms[value] !== "undefined") {
+            selectBed.setAttribute("disabled", "disabled");
+            if (occupiedRooms[value] === 'К1') {
+                result += `<option value="K1">K1</option>`;
+            } else {
+                result += `<option value="K2">K2</option>`;
+            }
+            divRoomNumber.classList.remove('hidden-edit')
+            document.querySelector('#bed_add .selection .select2-selection__arrow').classList.add('hidden-edit')
+            selectBed.insertAdjacentHTML("beforeend", result);
+        } else {
+            selectBed.removeAttribute("disabled");
+            result += `<option value="Не выбрано">Не выбрано</option>`;
+            result += `<option value="K1">K1</option>`;
+            result += `<option value="K2">K2</option>`;
+            divRoomNumber.classList.remove('hidden-edit')
+            document.querySelector('#bed_add .selection .select2-selection__arrow').classList.remove('hidden-edit')
+            selectBed.insertAdjacentHTML("beforeend", result);
+        }
+    }
+    if (value == "Не выбрано") {
+        divRoomNumber.classList.add('hidden-edit');
+    }
+}
+
+async function addBedEditForm(value, idBed, userRoom, userBed) {
+    selectBed = document.getElementById(idBed);
+    let singleRooms = ['2а-1', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13',
+                       '2а-14', '2а-15', '3а-1', '3а-5', '3а-6', '3а-7',
+                       '3а-8', '3а-9', '3а-10', '3а-11', '3а-12', '3а-13',
+                       '3а-14', '3а-15','4а-1', '4а-6', '4а-7', '4а-8',
+                       '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14'];
+    let doubleRooms = ['2а-2', '2а-3', '2а-4', '2а-16', '2а-17', '3а-2',
+                        '3а-3', '3а-4', '3а-16', '3а-17', '4а-2', '4а-3',
+                        '4а-4', '4а-5', '4а-15', '4а-16'];
+    let divRoomNumber = document.getElementById('bed_edit');
+
+
+    while (selectBed.firstChild) {
+        selectBed.removeChild(selectBed.firstChild);
+    }
+    let result = '';
+// получаем список двухместных номеров с одной свободной койкой (номер номера: свободная койка)
+    let res = await getOccupiedRooms('departments');
+    var occupiedRooms = JSON.parse(res);
+    var occupiedRooms = JSON.parse(occupiedRooms);
+    console.log(occupiedRooms)
+
+
+    res = await getOccupiedRooms('rooms');
+    occupiedRooms1 = JSON.parse(res);
+    occupiedRooms1 = JSON.parse(occupiedRooms1);
+
+    if (value === userRoom) {
+        if (singleRooms.includes(userRoom)) {
+            selectBed.setAttribute("disabled", "disabled");
+            result += `<option value="K1">K1</option>`;
+            document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.add('hidden-edit')
+            selectBed.insertAdjacentHTML("beforeend", result);
+        }
+
+        if (doubleRooms.includes(userRoom)) {
+            if (occupiedRooms.includes(userRoom)) {
+                selectBed.setAttribute("disabled", "disabled");
+                result += `<option value="${userBed}">${userBed}</option>`;
+                document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.add('hidden-edit')
+                selectBed.insertAdjacentHTML("beforeend", result);
+            } else {
+                selectBed.removeAttribute("disabled");
+                result += `<option selected value="${userBed}">${userBed}</option>`;
+                if (userBed === 'K1') {
+                    result += `<option value="K2">K2</option>`;
+                } else {
+                    result += `<option value="K1">K1</option>`;
+                }
+                // document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.remove('hidden-edit')
+                selectBed.insertAdjacentHTML("beforeend", result);
+            }
+        }
+    } else {
+        if (singleRooms.includes(value)) {
+            selectBed.setAttribute("disabled", "disabled");
+            result += `<option value="K1">K1</option>`;
+            divRoomNumber.classList.remove('hidden-edit')
+            document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.add('hidden-edit')
+            selectBed.insertAdjacentHTML("beforeend", result);
+        }
+
+        if (doubleRooms.includes(value)) {
+            if (typeof occupiedRooms[value] !== "undefined") {
+                selectBed.setAttribute("disabled", "disabled");
+                if (occupiedRooms[value] === 'К1') {
+                    result += `<option value="K1">K1</option>`;
+                } else {
+                    result += `<option value="K2">K2</option>`;
+                }
+                divRoomNumber.classList.remove('hidden-edit')
+                document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.add('hidden-edit')
+                selectBed.insertAdjacentHTML("beforeend", result);
+            } else {
+                selectBed.removeAttribute("disabled");
+                result += `<option value="Не выбрано">Не выбрано</option>`;
+                result += `<option value="K1">K1</option>`;
+                result += `<option value="K2">K2</option>`;
+                divRoomNumber.classList.remove('hidden-edit')
+                document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.remove('hidden-edit')
+                selectBed.insertAdjacentHTML("beforeend", result);
+            }
+        }
+        if (value == "Не выбрано") {
+            divRoomNumber.classList.add('hidden-edit');
+        }
+        }
+    divRoomNumber.classList.remove('hidden-edit')
+}
+
+
 let not_active_users_set = '{{not_active_users_set}}'.split(",");
 if (not_active_users_set[0] != 'none') {
     for (var index in not_active_users_set ) {
@@ -257,22 +765,38 @@ if (not_active_users_set[0] != 'none') {
 filtration()
 
 
-async function displayInfoPatient(full_name, receipt_date, receipt_time, department, type_of_diet, room_number, comment, id) {
+async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_time, department, type_of_diet, room_number, bed, comment, id, floor) {
     document.getElementById("full_name_field").innerHTML = full_name;
+    document.getElementById("birthdate_field").innerHTML = birthdate;
     document.getElementById("receipt_datetime_field").innerHTML = receipt_date + ', ' + receipt_time;
     document.getElementById("department_field").innerHTML = department;
+    document.getElementById("card-floor").value = floor;
     document.getElementById("type_of_diet_field").innerHTML = type_of_diet;
     document.getElementById("room_number_field").innerHTML = room_number;
+    document.getElementById("card-room").value = room_number;
+    document.getElementById("card-bed").value = bed;
+    document.getElementById("bed_field").innerHTML = bed;
     document.getElementById("comment_field").innerHTML = comment;
+    document.getElementById("card-user-id").value = id;
     if (comment.length == 0) {
         document.getElementById("link_lk_patient").innerHTML = '<a href="https://sk.petrushkagroup.com/patient/' + id + '">ЛК пациента</a>';
     } else {
         document.getElementById("link_lk_patient").innerHTML = ''
     }
+    // var d = document.getElementById("patient-card-button");
+    // var d_nested = document.getElementById("modal_field");
+    // var throwawayNode = d.removeChild(d_nested);
+    // document.getElementById("patient-card-button").insertAdjacentHTML("afterbegin", `<a id="modal_field"  class="button">Редактировать</a>`);
+
     document.getElementById("modal_field").setAttribute('data-modal-link', 'modal-start'+id);
+    // document.getElementById("modal_field").classList.add("modal-link-processed");
     document.getElementById("archive_field").setAttribute('data-modal-link', 'patient-archive'+id); 
     document.getElementById("receipt_date_field_hidden").innerHTML = receipt_date;
     document.getElementById("receipt_time_field_hidden").innerHTML = receipt_time;
+    
+    
+    
+
     let receiptDate = receipt_date
     let res = await getMenuForPatient(id)
     var obj = JSON.parse(res);
@@ -322,30 +846,44 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
                         result += '<div class="img">'                            
                         if (key == 'main') {
                             result +='<img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt="">'
+                            result +='</div>'
+                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt=""></div>'
                         }
                         if (key == 'salad') {
                             result +='<img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt="">'
+                            result +='</div>'
+                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt=""></div>'
                         }
                         if (key == 'soup') {
                             result +='<img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt="">'
+                            result +='</div>'
+                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt=""></div>'
                         }
                         if (key == 'dessert') {
                             result +='<img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt="">'
+                            result +='</div>'
+                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt=""></div>'
                         }
                         if (key == 'porridge') {
                             result +='<img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt="">'
+                            result +='</div>'
+                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt=""></div>'
                         }
                         if (key == 'fruit') {
                             result +='<img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt="">'
+                            result +='</div>'
+                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt=""></div>'
                         }
                         if (key == 'drink') {
                             result +='<img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt="">'
+                            result +='</div>'
+                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt=""></div>'
                         }
                         if (key == 'garnish') {
                             result +='<img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt="">'
+                            result +='</div>'
+                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt=""></div>'
                         }
-                        result +='</div>'
-                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/main.png" %}" alt=""></div>'
                     } else {
                         result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
                         result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
@@ -473,16 +1011,20 @@ function filtration() {
 
 function validationForm() {
     var form = document.getElementById('main-form');
-    var fields = form.querySelectorAll('.field')
-    var full_name = document.getElementById('id_full_name')
-    var receipt_date = document.getElementById('id_receipt_date')
-    var receipt_time = document.getElementById('id_receipt_time')
-    var department = document.getElementById('id_department')
-    var type_of_diet = document.getElementById('id_type_of_diet')
-    var room_number = document.getElementById('id_room_number')
-    var comment = document.getElementById('id_comment')
-    var errors = document.querySelectorAll('.error-field')
-    var formGroup = document.querySelectorAll('.form-group')
+    var fields = form.querySelectorAll('.field');
+    var full_name = document.getElementById('id_full_name');
+    var floor = document.getElementById('id_floor');
+    var birthdate = document.getElementById('id_birthdate');
+    var receipt_date = document.getElementById('id_receipt_date');
+    var receipt_time = document.getElementById('id_receipt_time');
+    var department = document.getElementById('id_department');
+    var type_of_diet = document.getElementById('id_type_of_diet');
+    var floor = document.getElementById('id_floor');
+    var room_number = document.getElementById('id_room_number');
+    var bed = document.getElementById('id_bed');
+    var comment = document.getElementById('id_comment');
+    var errors = document.querySelectorAll('.error-field');
+    var formGroup = document.querySelectorAll('.form-group');
     for (var i = 0; i < errors.length; i++) {
         errors[i].innerHTML = '';
         errors[i].classList.remove('error');
@@ -491,21 +1033,27 @@ function validationForm() {
     var error = 0
     var st = new RegExp("[^а-яА-Яa-zA-Z0-9ёЁ+/)/(/-/'/ /./,-]+");
     if (!full_name.value) {
-        document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
-        document.getElementById('error_full_name').classList.add('error')
-        document.getElementById('full_name_add').classList.add('error')
-        error = error + 1
+        document.getElementById('error_full_name').innerHTML = 'Обязательное поле';
+        document.getElementById('error_full_name').classList.add('error');
+        document.getElementById('full_name_add').classList.add('error');
+        error = error + 1;
     }
     if (st.test(full_name.value)) {
-        document.getElementById('error_full_name').innerHTML = "Поле может содержать только буквы и символы ()-,'."
-        document.getElementById('error_full_name').classList.add('error')
-        document.getElementById('full_name_add').classList.add('error')
+        document.getElementById('error_full_name').innerHTML = "Поле может содержать только буквы и символы ()-,'.";
+        document.getElementById('error_full_name').classList.add('error');
+        document.getElementById('full_name_add').classList.add('error');
+        error = error + 1
+    }
+    if (!birthdate.value) {
+        document.getElementById('error_birthdate').innerHTML = 'Обязательное поле';
+        document.getElementById('error_birthdate').classList.add('error');
+        document.getElementById('birthdate_add').classList.add('error');
         error = error + 1
     }
     if (!receipt_date.value) {
-        document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
-        document.getElementById('error_receipt_date').classList.add('error')
-        document.getElementById('receipt_date_add').classList.add('error')
+        document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле';
+        document.getElementById('error_receipt_date').classList.add('error');
+        document.getElementById('receipt_date_add').classList.add('error');
         error = error + 1
     }
 
@@ -538,6 +1086,14 @@ function validationForm() {
         document.getElementById('receipt_time_add').classList.add('error')
         error = error + 1
     }
+
+    if (floor.value == 'Не выбрано') {
+        document.getElementById('error_floor').innerHTML = 'Обязательное поле'
+        document.getElementById('error_floor').classList.add('error')
+        document.getElementById('floor_add').classList.add('error')
+        error = error + 1
+    }
+
     if (department.value == 'Не выбрано') {
         document.getElementById('error_department').innerHTML = 'Обязательное поле'
         document.getElementById('error_department').classList.add('error')
@@ -551,6 +1107,14 @@ function validationForm() {
         document.getElementById('type_of_diet_add').classList.add('error')
         error = error + 1
     }
+
+    if (floor.value == 'Не выбрано') {
+        document.getElementById('error_floor').innerHTML = 'Обязательное поле'
+        document.getElementById('error_floor').classList.add('error')
+        document.getElementById('floor_add').classList.add('error')
+        error = error + 1
+    }
+
     if (room_number.value == 'Не выбрано') {
         document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
         document.getElementById('error_room_number').classList.add('error')
@@ -558,28 +1122,40 @@ function validationForm() {
         error = error + 1
     }
 
+    if (bed.value == 'Не выбрано') {
+        document.getElementById('error_bed').innerHTML = 'Обязательное поле'
+        document.getElementById('error_bed').classList.add('error')
+        document.getElementById('bed_add').classList.add('error')
+        error = error + 1
+    }
+
     if (error == 0) {
         document.getElementById('add_patient_flag').setAttribute('checked', 'true');
         document.getElementById('test_full_name').value = full_name.value
+        document.getElementById('test_birthdate').value = birthdate.value
+        document.getElementById('test_floor').value = floor.value
         document.getElementById('test_receipt_date').value = receipt_date.value
         document.getElementById('test_receipt_time').value = receipt_time.value
         document.getElementById('test_department').value = department.value
         document.getElementById('test_type_of_diet').value = type_of_diet.value
         document.getElementById('test_room_number').value = room_number.value
+        document.getElementById('test_bed').value = bed.value
         document.getElementById('test_comment').value = id_comment.value
         form.submit();
     }
 }
 
 
-function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_department, id_type_of_diet, id_room_number, id_comment, id) {
+function validationEditForm(id_full_name, id_birthdate, id_receipt_date, id_receipt_time, id_department, id_type_of_diet, id_room_number, id_bed, id_comment, id) {
     var form = document.getElementById('main-form');
     var full_name = document.getElementById(id_full_name)
+    var birthdate = document.getElementById(id_birthdate)
     var receipt_date = document.getElementById(id_receipt_date)
     var receipt_time = document.getElementById(id_receipt_time)
     var department = document.getElementById(id_department)
     var type_of_diet = document.getElementById(id_type_of_diet)
     var room_number = document.getElementById(id_room_number)
+    var bed = document.getElementById(id_bed)
     var comment = document.getElementById(id_comment)
 
     var errors = document.querySelectorAll('.error-field')
@@ -597,6 +1173,14 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
         document.getElementById('full_name_edit').classList.add('error')
         error = error + 1
     }
+
+    if (!birthdate.value) {
+        document.getElementById('error_birthdate').innerHTML = 'Обязательное поле';
+        document.getElementById('error_birthdate').classList.add('error');
+        document.getElementById('birthdate_edit').classList.add('error');
+        error = error + 1
+    }
+
     if (st.test(full_name.value)) {
         document.getElementById('error_full_name').innerHTML = "Поле может содержать только буквы и символы ()-,'."
         document.getElementById('error_full_name').classList.add('error')
@@ -695,11 +1279,13 @@ function validationEditForm(id_full_name, id_receipt_date, id_receipt_time, id_d
         document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
         document.getElementById('id_edit_user').value = id
         document.getElementById('test1_full_name').value = full_name.value
+        document.getElementById('test1_birthdate').value = birthdate.value
         document.getElementById('test1_receipt_date').value = receipt_date.value
         document.getElementById('test1_receipt_time').value = receipt_time.value
         document.getElementById('test1_department').value = department.value
         document.getElementById('test1_type_of_diet').value = type_of_diet.value
         document.getElementById('test1_room_number').value = room_number.value
+        document.getElementById('test1_bed').value = bed.value
         document.getElementById('test1_comment').value = comment.value
         document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
         form.submit()

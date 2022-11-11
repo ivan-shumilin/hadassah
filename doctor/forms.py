@@ -12,6 +12,10 @@ class DietChoiceForm(forms.Form):
 class PatientRegistrationForm(forms.ModelForm):
     full_name = forms.CharField(label='ФИО пациента', widget=forms.TextInput(
         attrs={'class': 'field', 'placeholder': 'Иванов Виктор Иванович'}))
+    birthdate = forms.CharField(label='Дата рождения', widget=forms.TextInput(
+        attrs={'class': 'field', 'type': 'text', 'name': 'date', 'placeholder': '01.01.2000'}))
+    floor = forms.CharField(label='Этаж', widget=forms.TextInput(
+        attrs={'class': 'field', 'placeholder': '2 этаж'}))
     receipt_date = forms.CharField(label='Дата госпитализации', widget=forms.TextInput(
         attrs={'class': 'field', 'type': 'text', 'name': 'date', 'placeholder': '01.01.2022'}))
     receipt_time = forms.CharField(label='Время госпитализации', widget=forms.TimeInput(
@@ -24,6 +28,11 @@ class PatientRegistrationForm(forms.ModelForm):
                                               'placeholder': 'Не выбрано'})
                                    )
     room_number = forms.ChoiceField(label='Номер палаты', choices=ROOM_NUMBERS,
+                                   widget=forms.Select(
+                                       attrs={'class': 'field',
+                                              'placeholder': 'Не выбрано'})
+                                   )
+    bed = forms.ChoiceField(label='Койко-место', choices=BED,
                                    widget=forms.Select(
                                        attrs={'class': 'field',
                                               'placeholder': 'Не выбрано'})

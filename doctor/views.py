@@ -16,7 +16,8 @@ from django.db.models.functions import Lower
 from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, add_default_menu, \
     creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
-    create_list_users_on_floor, what_meal, translate_meal, check_value_two, archiving_user, get_not_active_users_set
+    create_list_users_on_floor, what_meal, translate_meal, check_value_two, archiving_user, get_not_active_users_set, \
+    get_occupied_rooms
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes, create_user_tomorrow, create_ready_order
@@ -37,11 +38,14 @@ def group_doctors_check(user):
 def doctor(request):
     CustomUserFormSet = modelformset_factory(CustomUser,
                                              fields=(
-                                                 'full_name', 'receipt_date', 'receipt_time', 'department',
-                                                 'room_number', 'type_of_diet', 'comment', 'id'),
+                                                 'full_name', 'birthdate', 'receipt_date', 'receipt_time', 'department',
+                                                 'floor', 'room_number', 'bed', 'type_of_diet', 'comment', 'id'),
                                              widgets={
                                                  'full_name': TextInput(attrs={'required': "True"}),
+                                                 'birthdate': TextInput(),
                                                  'room_number': Select(attrs={}),
+                                                 'floor': TextInput(),
+                                                 'bed': Select(attrs={}),
                                                  'department': Select(attrs={}),
                                                  'type_of_diet': Select(attrs={}),
                                                  'receipt_date': TextInput(),
@@ -86,6 +90,7 @@ def doctor(request):
         # formset = \
         #     CustomUserFormSet(request.POST, request.FILES, queryset=queryset)
         create_user(user_form)
+        not_active_users_set = get_not_active_users_set()
         queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
         formset = CustomUserFormSet(queryset=queryset)
         return render(request,
@@ -160,27 +165,7 @@ def doctor(request):
         id_user = request.POST.getlist('id_edit_user')[0]
         user = CustomUser.objects.get(id=id_user)
         archiving_user(user)
-        # user.status = 'patient_archive'
-        # user.save()
-        # # тут надо удалить меню пациента
-        # MenuByDay.objects.filter(user_id=user.id).delete()
-        # # дата на которую создаеться заказ
-        # date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
-        # # после 19 в заказ добавляем пользователей с датой госпитализации на след день
-        # if user.receipt_date <= date_order:
-        #     if check_time():
-        #         update_UsersToday(user)
-        #     if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
-        #         attention = u'\u2757\ufe0f'
-        #         TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-        #         bot = telepot.Bot(TOKEN)
-        #         # все номера chat_id
-        #         messang = ''
-        #         messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-        #         messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
-        #         for item in BotChatId.objects.all():
-        #             bot.sendMessage(item.chat_id, messang, parse_mode="html")
-
+        not_active_users_set = get_not_active_users_set()
         user_form = PatientRegistrationForm(request.POST)
         formset = CustomUserFormSet(queryset=queryset)
         if not formset.is_valid():
@@ -230,12 +215,17 @@ def doctor(request):
 def archive(request):
     CustomUserFormSet = modelformset_factory(CustomUser,
                                              fields=(
-                                                 'full_name', 'receipt_date', 'receipt_time', 'department',
-                                                 'room_number', 'type_of_diet', 'comment', 'id'),
+                                                 'full_name','birthdate', 'receipt_date', 'receipt_time', 'department',
+                                                 'floor', 'room_number', 'bed', 'type_of_diet', 'comment', 'id'),
                                              widgets={
                                                  'full_name': TextInput(attrs={'class': 'form-control'}),
+                                                 'birthdate': DateInput(format='%Y-%m-%d',
+                                                                           attrs={'class': 'form-control',
+                                                                                  'type': 'date'}),
                                                  'room_number': Select(attrs={'class': 'form-control'}),
+                                                 'bed': Select(attrs={'class': 'form-control'}),
                                                  'department': Select(attrs={'class': 'form-control'}),
+                                                 'floor': TextInput(attrs={'class': 'form-control'}),
                                                  'type_of_diet': Select(attrs={'class': 'form-control'}),
                                                  'receipt_date': DateInput(format='%Y-%m-%d',
                                                                            attrs={'class': 'form-control',
@@ -248,6 +238,7 @@ def archive(request):
                                              },
                                              extra=0, )
 
+    CustomUserFormSet = delete_choices(CustomUserFormSet)
     page = 'menu-archive'
     filter_by = 'full_name'  # дефолтная фильтрация
     sorting = 'top'
@@ -487,6 +478,14 @@ class GetPatientMenuAPIView(APIView):
     def post(self, request):
         data = request.data
         response = creates_dict_with_menu_patients(data['id_user'])
+        response = json.dumps(response)
+        return Response(response)
+
+
+class GetOccupiedRoomsAPIView(APIView):
+    def post(self, request):
+        user_script = request.data
+        response = get_occupied_rooms(user_script['user_script'])
         response = json.dumps(response)
         return Response(response)
 
