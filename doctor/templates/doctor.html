@@ -104,8 +104,8 @@
                         <div id="{{ form.id.value }}"
                             class="tr product" data-patient-card-show 
                             onclick="displayInfoPatient('{{ form.full_name.value }}',
-                             '{{ form.birthdate.value|date:"Y.m.d" }}',
-                              '{{ form.receipt_date.value|date:"Y.m.d" }}',
+                             '{{ form.birthdate.value|date:"d.m.Y" }}',
+                              '{{ form.receipt_date.value|date:"d.m.Y" }}',
                                '{{ form.receipt_time.value|time:"H:i" }}',
                                 '{{ form.department.value }}',
                                  '{{ form.type_of_diet.value }}',
@@ -137,13 +137,13 @@
                                     <div id='birthdate_edit' class="form-group">
                                         {% load widget_tweaks %}
                                         <label>Дата рождения</label>
-                                        {{ form.birthdate|attr:"data-datepicker" }}
+                                        <input type="text" value="{{ form.birthdate.value|date:'d.m.Y' }}" data-datepicker id="{{ form.birthdate.id_for_label }}">
                                         <div id ='error_birthdate' class="error-field"></div>
                                     </div>
                                     <div id='receipt_date_edit' class="form-group">
                                         {% load widget_tweaks %}
                                         <label>Дата госпитализации</label>
-                                        <input type="text" value="{{ form.receipt_date.value|date:'d.m.y' }}" data-datepicker id="{{ form.receipt_date.id_for_label }}">
+                                        <input type="text" value="{{ form.receipt_date.value|date:'d.m.Y' }}" data-datepicker id="{{ form.receipt_date.id_for_label }}">
                                         <div id ='error_receipt_date' class="error-field"></div>
                                     </div>
                                     <div id='receipt_time_edit' class="form-group">
