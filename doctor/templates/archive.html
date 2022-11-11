@@ -379,7 +379,7 @@ async function addBed(value, idSelectBed, idDivBed) {
         selectBed.setAttribute("disabled", "disabled");
         result += `<option value="K1">K1</option>`;
         divRoomNumber.classList.remove('hidden-edit')
-        document.querySelector('#bed_add .selection .select2-selection__arrow').classList.add('hidden-edit')
+        document.querySelector(querySelectorSelection).classList.add('hidden-edit')
         selectBed.insertAdjacentHTML("beforeend", result);
     }
 
