@@ -100,7 +100,7 @@
                     <div class="title">Восстановление учетной записи</div>
                         <div id ='full_name_edit' class="form-group">
                             <label>ФИО пациента</label>
-                            <input id="{{ form.full_name.id_for_label }}" type="text" value="{{ form.full_name.value }}">
+                            <input id="full_name_{{ form.id.value }}" type="text" value="{{ form.full_name.value }}">
                             <div id ='error_full_name' class="error-field"></div>
                         </div>
                         <div id='birthdate_edit' class="form-group">
@@ -160,9 +160,9 @@
 
 
 
-                        <div class="form-group item-actions flex flex-center">
+                        <div class="form-group item-actions flex flex-center last_form_group">
                             <button name="add_patient"
-                             onclick="validationEditForm('{{ form.full_name.id_for_label }}',
+                             onclick="validationEditForm('full_name_{{ form.id.value }}',
                              '{{ form.birthdate.id_for_label }}',
                               '{{ form.receipt_date.id_for_label }}',
                               '{{ form.receipt_time.id_for_label }}', '{{ form.department.id_for_label }}',
@@ -173,20 +173,6 @@
                         </div>
 
             </div>
-
-
-
-
-                <!-- <div id="patient-restore{{ form.id.value }}" data-modal="patient-restore{{ form.id.value }}" data-modal-width="400">
-                    <div class="title align-center">Восстановить учётную запись пациента?</div>
-                    <div class="confirm-block">
-                        <div class="text">Данные пациента вновь появятся в списке активных учётных записей, для него активируется личный кабинет</div>
-                        <div class="buttons">
-                            <a class="button" onclick="patientRestore('{{ form.id.value }}')">Восстановить</a>
-                            <a class="button white" data-modal-close>Отменить</a>
-                        </div>
-                    </div>
-                </div> -->
             {% endfor %}
         </div>
     </div>
@@ -422,6 +408,20 @@ function displayInfoPatient(full_name, receipt_date, receipt_time, department, t
     document.getElementById("bed_field").innerHTML = bed;
     document.getElementById("comment_field").innerHTML = comment;
     document.getElementById("recovery").setAttribute('data-modal-link', 'patient-restore'+id);
+    var userNameId = `full_name_${id}`;
+    changeSymbol(userNameId);
+}
+
+function changeSymbol(id) {
+    let nameInput = document.getElementById(id);
+    nameInput.addEventListener("input", function() {
+        if (this.value.charCodeAt(this.value.length - 1) == 1105) {
+            this.value = this.value.slice(0, -1) + 'е';
+        }
+        if (this.value.charCodeAt(this.value.length - 1) == 1025) {
+            this.value = this.value.slice(0, -1) + 'Е';
+        }
+})
 }
 
 

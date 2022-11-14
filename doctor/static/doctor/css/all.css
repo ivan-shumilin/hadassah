@@ -4514,3 +4514,8 @@ body .flatpickr-months .flatpickr-next-month.flatpickr-next-month, body .flatpic
 .hidden-edit {
   display: none;
 } 
+
+/* added code */
+.last_form_group {
+  margin-bottom: 0px;
+}

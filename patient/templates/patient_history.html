@@ -19,7 +19,7 @@
                     <div class="form-group hidden">
                         <select name="date" class="optionValue">
                             {% for date in day_history %}
-                                <option  value="{{ date.number}}">{{ date.word }}</option>
+                                <option  value="{{ date.number}}">{{ date.word|lower }}</option>
                             {% endfor %}
                         </select>
                     </div>

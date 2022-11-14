@@ -60,7 +60,7 @@ class UserloginForm(forms.ModelForm):
     username = forms.CharField(label='Email', widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'mail@example.com'}))
     password = forms.CharField(label='Пароль',
-                               widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Пароль', 'style': 'margin-top: 10px;'}))
+                               widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Пароль'}))
 
     # attrs = {'class': 'form-control'}
     class Meta:
