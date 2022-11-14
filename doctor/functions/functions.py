@@ -403,7 +403,7 @@ def creates_dict_with_menu_patients(id):
                 'drink': check_value_two(menu_all, date_str, meal, "drink"),
                 'salad': check_value_two(menu_all, date_str, meal, "salad"),
             }
-        menu[day]['date_human_style'] = dateformat.format(date.fromisoformat(date_str), 'd E, l')
+        menu[day]['date_human_style'] = dateformat.format(date.fromisoformat(date_str), 'd E, l').lower()
         menu[day]['date'] = dateformat.format(date.fromisoformat(date_str), 'Y-m-d')
     return menu
 

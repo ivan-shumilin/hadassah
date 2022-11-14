@@ -425,14 +425,9 @@ async function clickEditForm() {
             } else {
                 result += `<option value="K1">K1</option>`;
             }
-            // document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.remove('hidden-edit')
             item.insertAdjacentHTML("beforeend", result);
         }
     }
-
-    // if (value == "Не выбрано") {
-    //     divRoomNumber.classList.add('hidden-edit');
-    // }
 }
 
 var depList = document.querySelectorAll('.floor-list');
@@ -450,13 +445,6 @@ for (var ii = 0; ii < depList.length; ii++) {
             console.log("Yes");
             optionDepartment[i].selected = true
     }
-    // for (var i = 0; i < optionRoom.length; i++) {
-    //      console.log(optionRoom[i].value)
-    //     if (optionRoom[i].value == depList[ii].value) {
-    //         console.log("Yes");
-    //         optionRoom[i].selected = true
-    //     }
-    // }
 }
 }
 
@@ -784,9 +772,6 @@ async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_ti
     document.getElementById("archive_field").setAttribute('data-modal-link', 'patient-archive'+id); 
     document.getElementById("receipt_date_field_hidden").innerHTML = receipt_date;
     document.getElementById("receipt_time_field_hidden").innerHTML = receipt_time;
-    
-    
-    
 
     let receiptDate = receipt_date
     let res = await getMenuForPatient(id)
@@ -798,7 +783,6 @@ async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_ti
         tomorrow: {"name": "tomorrow", "date": ""},
         day_after_tomorrow: {"name": "day_after_tomorrow", "date": ""}
     }
-    console.log(Date.parse("2019-01-01"))
     let meals = {
         breakfast: "Завтрак", 
         lunch: "Обед", 
@@ -809,7 +793,6 @@ async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_ti
     for (day in days) {
         addHtml(day, obj, meals, item, result, product, receiptDate);
     }
-
 }
 
 
@@ -825,16 +808,24 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
     console.log(obj)
     console.log('receipt_date-', Date.parse(receiptDate))
 // проверяем, если дата раньше даты госпитализации, выводим сообщение
-    if (Date.parse(obj[day].date) >= Date.parse(receiptDate)) {
-        for (var meal in meals ) {        
+    receiptDate = receiptDate.split(".");
+    receiptDate = new Date(receiptDate[2], receiptDate[1] - 1, receiptDate[0]);
+
+    let menuDate = obj[day].date
+    menuDate = menuDate.split("-");
+    menuDate = new Date(menuDate[0], menuDate[1] - 1, menuDate[2]);
+
+
+    if (moment(receiptDate).isBefore(menuDate, 'days') || moment(receiptDate).isSame(menuDate, 'days')) {
+        for (var meal in meals ) {
             result += `<div class="box"><div id="test" class="title">${meals[meal]}</div><div id="products-list" class="products-list">`
             for (var key in obj[day][meal]) {
                 if (obj[day][meal][key] != null) {
                     product = obj[day][meal][key]
                     isNotProducts = false
-                    result += '<div class="item">'    
+                    result += '<div class="item">'
                     if (product.image == null) {
-                        result += '<div class="img">'                            
+                        result += '<div class="img">'
                         if (key == 'main') {
                             result +='<img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt="">'
                             result +='</div>'
@@ -904,7 +895,6 @@ function formattingFFC(value) {
 
 
 const getMenuForPatient = async function(userId) {
-    // let url = 'https://b467-146-120-93-183.eu.ngrok.io/doctor/api/v1/patient/menu'
     let url = '/doctor/api/v1/patient/menu'
     let body = {
         "id_user": userId
@@ -1289,9 +1279,6 @@ function patientArchive(id) {
     document.getElementById('id_edit_user').value = id;
     document.getElementById('archive').setAttribute('checked', 'true');
     form.submit()
-    // document.getElementById('close'+id).click()
-    // document.getElementById('archived').click()
-    //setTimeout(() => { form.submit();}, 500);
 }
 
 async function validationChangeEmailForm() {
