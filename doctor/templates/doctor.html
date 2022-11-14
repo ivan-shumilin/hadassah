@@ -1205,7 +1205,7 @@ function validationEditForm(id_full_name, id_birthdate, id_receipt_date, id_rece
     let receiptTimeOld = document.getElementById("receipt_time_field_hidden").innerHTML
     let receiptDateListOld = (receiptDateOld).split(".");
     let receiptTimeListOld = (receiptTimeOld).split(":");
-    receiptDateOld = new Date(receiptDateListOld[0], receiptDateListOld[1] - 1, receiptDateListOld[2], receiptTimeListOld[0], receiptTimeListOld[1])
+    receiptDateOld = new Date(receiptDateListOld[2], receiptDateListOld[1] - 1, receiptDateListOld[0], receiptTimeListOld[0], receiptTimeListOld[1])
     receiptTimeNew = new Date(receiptDateListOld[0], receiptDateListOld[1] - 1, receiptDateListOld[2], receiptTimeListNew[0], receiptTimeListNew[1])
     if ((!moment(receiptDateNew).isSame(receiptDateOld, 'minute')) && 
     (!document.getElementById(id).classList.contains('not-active'))) {

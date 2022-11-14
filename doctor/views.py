@@ -59,6 +59,7 @@ def doctor(request):
     # create_user_today('afternoon')
     # create_ready_order('afternoon')
     not_active_users_set = get_not_active_users_set()
+    create_user_today('lunch')
 
 
 

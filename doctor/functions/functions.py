@@ -914,7 +914,7 @@ def archiving_user(user):
 
 
 
-def counting_diets(users):
+def counting_diets(users, floors):
     diets_name = ['ОВД', 'ОВД без сахара', 'ЩД', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД']
     diets_count = []
     for diet in diets_name:
@@ -927,10 +927,12 @@ def counting_diets(users):
             diets_count.append({
                 "name": diet,
                 "total": str(len(users_diet)),
-                "2nd_floor": len([users_floor for users_floor in users_diet if (int(users_floor.room_number) >= start_2nd_floor) \
-                                  and (int(users_floor.room_number) <= end_2nd_floor)]),
-                "3nd_floor": len([users_floor for users_floor in users_diet if (int(users_floor.room_number) >= start_3nd_floor) \
-                                  and (int(users_floor.room_number) <= end_3nd_floor)])
+                "2nd_floor": len([users_floor for users_floor in users_diet \
+                                  if users_floor.room_number in floors['second']]),
+                "3nd_floor": len([users_floor for users_floor in users_diet \
+                                  if users_floor.room_number in floors['third']]),
+                "4nd_floor": len([users_floor for users_floor in users_diet \
+                                  if users_floor.room_number in floors['fourtha']])
             })
     return diets_count
 
@@ -968,9 +970,8 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order):
     return menu_list
 
 
-def create_list_users_on_floor(users, start, end, meal, date_create, type_order):
-    users = [user for user in users if (int(user.room_number) >= start) \
-                                  and (int(user.room_number) <= end)]
+def create_list_users_on_floor(users, floors, meal, date_create, type_order):
+    users = [user for user in users if user.room_number in floors]
     users_on_floor = []
     for user in users:
         users_on_floor.append(

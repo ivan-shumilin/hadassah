@@ -895,6 +895,14 @@ def manager(request):
 
 def printed_form_one(request):
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
+    floors = {
+    'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13', '2а-14', '2а-15',
+                     '2а-16', '2а-17'],
+    'third': ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
+                    '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17'],
+    'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
+                      '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
+    }
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
     meal, day = what_meal() # после return 'breakfast', 'tomorrow'
@@ -907,13 +915,13 @@ def printed_form_one(request):
 
     catalog = {'meal': translate_meal(meal),
                'count': len(users),
-               'count_2nd_floor': len([user for user in users if (int(user.room_number) >= 200) \
-                                  and (int(user.room_number) <= 299)]),
-               'count_3nd_floor': len([user for user in users if (int(user.room_number) >= 300) \
-                                  and (int(user.room_number) <= 399)]),
-               'count_diet': counting_diets(users),
-               'users_2nd_floor': create_list_users_on_floor(users, 200, 299, meal, date_create, type_order),
-               'users_3nd_floor': create_list_users_on_floor(users, 300, 399, meal, date_create, type_order)
+               'count_2nd_floor': len([user for user in users if user.room_number in floors['second']]),
+               'count_3nd_floor': len([user for user in users if user.room_number in floors['third']]),
+               'count_4nd_floor': len([user for user in users if user.room_number in floors['fourtha']]),
+               'count_diet': counting_diets(users, floors),
+               'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order),
+               'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order),
+               'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order),
                }
     number = 0
     count_users_with_cafe_prod = 0
@@ -924,6 +932,11 @@ def printed_form_one(request):
         if len(user['products_cafe']) > 0:
             count_users_with_cafe_prod += 1
     for user in catalog['users_3nd_floor']:
+        number += 1
+        user['number'] = str(number)
+        if len(user['products_cafe']) > 0:
+            count_users_with_cafe_prod += 1
+    for user in catalog['users_4nd_floor']:
         number += 1
         user['number'] = str(number)
         if len(user['products_cafe']) > 0:
