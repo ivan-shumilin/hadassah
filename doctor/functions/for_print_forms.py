@@ -1,5 +1,5 @@
 from nutritionist.models import CustomUser, UsersToday, СhangesUsersToday, UsersReadyOrder,\
-    MenuByDayReadyOrder, MenuByDay
+    MenuByDayReadyOrder, MenuByDay, Report
 import datetime
 from datetime import datetime, date, timedelta
 from django.db import transaction
@@ -129,6 +129,51 @@ def create_ready_order(meal):
                                 drink=menu[0].drink,
                                 salad=menu[0].salad))
     MenuByDayReadyOrder.objects.bulk_create(to_create)
+
+
+@transaction.atomic
+def create_report(meal):
+    """
+    Принимает: название приема пищи.
+    Создает отчет по проданным блюдам.
+    """
+    to_create = []
+    # В зависимости от приема пищи добавляем разных пациентов в UsersToday
+    if meal == 'breakfast':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='10:00'))
+
+    if meal == 'lunch':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='14:00'))
+
+    if meal == 'afternoon':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='17:00'))
+
+    if meal == 'dinner':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='21:00'))
+
+    report_dict = {}
+    for user in users:
+        menu = MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
+        products = [menu[0].main, menu[0].garnish, menu[0].porridge, menu[0].soup, menu[0].dessert, menu[0].fruit, menu[0].drink, menu[0].salad]
+        products = [product for product in products if product not in ['', None, 'None']]
+        report_dict[user.id] = {'type_of_diet': user.type_of_diet,
+                                  'meal': meal,
+                                  'products': products}
+
+    to_create = []
+    for user, value in report_dict.items():
+        for product in value['products']:
+            to_create.append(Report(user_id=CustomUser.objects.get(id=user),
+                                    date_create=date.today(),
+                                    meal=value['meal'],
+                                    product_id=product,
+                                    type_of_diet=value['type_of_diet']))
+    Report.objects.bulk_create(to_create)
+
 
 
 

@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp, MenuByDay, Barcodes, CommentProduct, \
-    BotChatId, UsersToday, СhangesUsersToday, UsersReadyOrder, MenuByDayReadyOrder
+    BotChatId, UsersToday, СhangesUsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report
 
 
 admin.site.register(Base)
@@ -95,6 +95,13 @@ class MenuByDayReadyOrderAdmin(admin.ModelAdmin):
 class UsersReadyOrderAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'receipt_date', 'receipt_time', 'type_of_diet', 'status')
     fields = ('full_name', 'receipt_date', 'receipt_time', 'type_of_diet', 'status')
+    list_per_page = 200
+
+
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'product_id', 'date_create', 'meal', 'type_of_diet')
+    fields = ('user_id', 'product_id', 'date_create', 'meal', 'type_of_diet')
     list_per_page = 200
 
 

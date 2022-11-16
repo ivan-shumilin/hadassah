@@ -20,7 +20,7 @@ from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_w
     get_occupied_rooms
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
-    applies_changes, create_user_tomorrow, create_ready_order
+    applies_changes, create_user_tomorrow, create_ready_order, create_report
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -58,8 +58,9 @@ def doctor(request):
     # send_messang.delay()
     # create_user_today('afternoon')
     # create_ready_order('afternoon')
+    # create_report('lunch')
     not_active_users_set = get_not_active_users_set()
-    create_user_today('lunch')
+    # create_user_today('lunch')
 
 
 

@@ -388,3 +388,24 @@ class BotChatId(models.Model):
 
     def __str__(self):
         return f'{self.chat_id}'
+
+
+class Report(models.Model):
+    user_id = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True)
+    product_id = models.CharField(max_length=200, null=True)
+    date_create = models.DateField(default=date.today)
+    meal = models.CharField(
+            max_length=100,
+            choices=MEALS,
+            blank=True,
+            default='',
+        )
+    type_of_diet = models.CharField(
+        max_length=100,
+        choices=TYPE_DIET,
+        blank=True,
+        default='ОВД',
+        help_text='Выбор диеты')
+
+    def __str__(self):
+        return f'{self.user_id} {self.date_create} {self.meal}'

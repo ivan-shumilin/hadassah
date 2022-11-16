@@ -1,4 +1,5 @@
-import json, os, requests, random, math, calendar, datetime, re
+import json, os, requests, random, math, calendar, datetime, re, operator
+from dateutil.parser import parse
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
@@ -17,7 +18,7 @@ from django.forms import CheckboxInput, Textarea
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
-    UsersToday, UsersReadyOrder, MenuByDayReadyOrder
+    UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import ProductSerializer
 from rest_framework import generics
@@ -1110,3 +1111,48 @@ def printed_form_two_cafe(request):
         'meal': translate_meal(meal)
     }
     return render(request, 'printed_form2_cafe.html', context=data)
+
+def report(request):
+    if request.method == 'GET' and request.GET != {}:
+        date_start = parse(request.GET['start'])
+        date_finish = parse(request.GET['finish'])
+    else:
+        date_start = datetime(datetime.today().year, datetime.today().month, 1).date()
+        date_finish = datetime.today().date()
+    filtered_report = Report.objects.filter(date_create__gte=date_start, date_create__lte=date_finish)
+    report = {}
+    for index, item in enumerate(filtered_report):
+        if 'cafe' in item.product_id:
+            product = Product.objects.get(id=item.product_id.split('-')[2])
+        else:
+            product = ProductLp.objects.get(id=item.product_id)
+        report.setdefault(item.product_id, []).append(
+            {'category': product.category,
+            'name': product.name,
+        })
+
+    temporary_report = []
+    for item in report.values():
+        item[0]['count'] = len(item)
+        temporary_report.append(item[0])
+
+
+    temporary_report.sort(key=operator.itemgetter('category'))
+    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты']
+    intermediate_option = []
+    report = []
+    for cat in category:
+        for item in temporary_report:
+            if item['category'] == cat:
+                intermediate_option.append(item)
+        intermediate_option.sort(key=operator.itemgetter('name'))
+        report += intermediate_option
+        intermediate_option = []
+    for index, item in enumerate(report):
+        item['category'] = item['category'] if item['category'] != 'основной' else 'основное'
+        item['number'] = index + 1
+
+    date = {'report': report,
+            'date_start': date_start,
+            'date_finish': date_finish}
+    return render(request, 'report.html', context=date)

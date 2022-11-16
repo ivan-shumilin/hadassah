@@ -2,9 +2,8 @@ from celery import shared_task
 import telepot
 from nutritionist.models import BotChatId, CustomUser, MenuByDay, UsersReadyOrder
 from doctor.functions.for_print_forms import create_user_today, applies_changes, create_user_tomorrow,\
-    create_ready_order
+    create_ready_order, create_report
 from doctor.functions.bot import check_change, formatting_full_name
-
 
 
 def send_messang(messang):
@@ -39,64 +38,72 @@ def my_job_applies_changes_():
 @shared_task()
 def my_job_applies_changes_breakfast():
     check = '\u2705'
-    messang = f'{check} Заказ на <u><b>завтрак</b></u> сформирован.'
+    # messang = f'{check} Заказ на <u><b>завтрак</b></u> сформирован.'
+    # send_messang(messang)
     delete_menu_by_arhived_users()
     create_user_today('breakfast')
-    # send_messang(messang)
+
 
 @shared_task()
 def my_job_applies_changes_lunch():
     check = '\u2705'
-    messang = f'{check} Заказ на <u><b>обед</b></u> сформирован.'
+    # messang = f'{check} Заказ на <u><b>обед</b></u> сформирован.'
+    # send_messang(messang)
     delete_menu_by_arhived_users()
     create_user_today('lunch')
-    # send_messang(messang)
+
 
 @shared_task()
 def my_job_applies_changes_afternoon():
     check = '\u2705'
-    messang = f'{check} Заказ на <u><b>полдник</b></u> сформирован.'
+    # messang = f'{check} Заказ на <u><b>полдник</b></u> сформирован.'
+    # send_messang(messang)
     delete_menu_by_arhived_users()
     create_user_today('afternoon')
-    # send_messang(messang)
+
 
 @shared_task()
 def my_job_applies_changes_dinner():
-    check = '\u2705'
-    messang = f'{check} Заказ на <u><b>ужин</b></u> сформирован.'
+    # check = '\u2705'
+    # messang = f'{check} Заказ на <u><b>ужин</b></u> сформирован.'
+    # send_messang(messang)
     delete_menu_by_arhived_users()
     create_user_today('dinner')
-    # send_messang(messang)
-
 
 
 @shared_task()
 def my_job_create_ready_order_breakfast():
-    check = '\u2705'
-    messang = f'{check} Изменения на <u><b>завтрак</b></u> не принимаются.'
-    create_ready_order('breakfast')
+    # check = '\u2705'
+    # messang = f'{check} Изменения на <u><b>завтрак</b></u> не принимаются.'
     # send_messang(messang)
+    create_ready_order('breakfast')
+    create_report('breakfast')
+
 
 @shared_task()
 def my_job_create_ready_order_lunch():
-    check = '\u2705'
-    messang = f'{check} Изменения на <u><b>обед</b></u> не принимаются.'
-    create_ready_order('lunch')
+    # check = '\u2705'
+    # messang = f'{check} Изменения на <u><b>обед</b></u> не принимаются.'
     # send_messang(messang)
+    create_ready_order('lunch')
+    create_report('lunch')
+
 
 @shared_task()
 def my_job_create_ready_order_afternoon():
-    check = '\u2705'
-    messang = f'{check} Изменения на <u><b>полдник</b></u> не принимаются.'
-    create_ready_order('afternoon')
+    # check = '\u2705'
+    # messang = f'{check} Изменения на <u><b>полдник</b></u> не принимаются.'
     # send_messang(messang)
+    create_ready_order('afternoon')
+    create_report('afternoon')
 
 @shared_task()
 def my_job_applies_changes_dinner():
-    check = '\u2705'
-    messang = f'{check} Изменения на <u><b>ужин</b></u> не принимаются.'
-    create_ready_order('dinner')
+    # check = '\u2705'
+    # messang = f'{check} Изменения на <u><b>ужин</b></u> не принимаются.'
     # send_messang(messang)
+    create_ready_order('dinner')
+    create_report('dinner')
 
 @shared_task()
 def my_job_create_user_today():
@@ -112,9 +119,3 @@ def my_job_create_user_tomorrow():
 @shared_task()
 def my_job_send_messang_changes(messang):
     return f'попытка - {send_messang_changes(messang)}'
-
-# @shared_task()
-# def my_job_create_menu():
-#     check_have_menu()
-#     add_menu_three_days_ahead()
-

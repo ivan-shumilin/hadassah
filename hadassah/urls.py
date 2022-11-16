@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/v1/barcode/verify', VerifyAPIView.as_view()),
     path('api/v1/barcode/deactivate', DeactivateAPIView.as_view()),
     path('login/', views.user_login, name='login'),
+    path('report/', views.report, name='report'),
     path('manager/', views.manager, name='manager'),
     path('manager/printed_form_one', views.printed_form_one, name='printed_form_one'),
     path('manager/printed_form_two_lp', views.printed_form_two_lp, name='printed_form_two'),
