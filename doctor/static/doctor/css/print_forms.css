@@ -251,4 +251,12 @@ label {
     margin-top: 10px;
 }
 
+.error-field {
+    color:red;
+}
+
+.error {
+    border: 1px solid red;
+}
+
 

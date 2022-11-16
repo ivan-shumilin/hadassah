@@ -24,15 +24,16 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body"> 
-                  
+                        <div class="modal-body">
                                 <label for="data-start" class="form-label">Дата начала отчетного периода</label>
-                                <input id="data-start" type="date" class="form-control" name='start'>
+                                <input onclick="removeError('data-start', 'data-start-error')" id="data-start" type="date" class="form-control" name='start'>
+                                <div id="data-start-error" class="error-field"></div>
                                 <label for="date-finish" class="form-label">Дата конца отчетного периода</label>
-                                <input id="date-finish" type="date" class="form-control" name='finish'>
+                                <input onclick="removeError('date-finish', 'data-finish-error')" id="date-finish" type="date" class="form-control" name='finish'>
+                                <div id="data-finish-error" class="error-field"></div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn-close btn btn-secondary">Сформировать</button>
+                            <button type="button" onclick="checkForm()" class="btn-close btn btn-secondary">Сформировать</button>
                         </div>
                     </form>
                 </div>
@@ -69,6 +70,55 @@
         </tr>
     {% endfor %}
 </table>
+<script>
+function checkForm() {
+    let form = document.querySelector('form')
+    let start = document.getElementById('data-start');
+    let finish = document.getElementById('date-finish');
+    let error = 0;
+
+    let input = document.querySelectorAll('.form-control')
+    var errors = document.querySelectorAll('.error-field');
+    for (var i = 0; i < errors.length; i++) {
+        errors[i].innerHTML = '';
+        input[i].classList.remove('error');
+    }
+
+    if (start.value == '') {
+        document.getElementById('data-start-error').innerHTML = 'Обязательное поле'
+        start.classList.add('error')
+        error = error + 1
+    }
+    if (finish.value == '') {
+        document.getElementById('data-finish-error').innerHTML = 'Обязательное поле'
+        finish.classList.add('error')
+        error = error + 1
+    }
+    if (error == 0) {
+        let dateStart = (start.value).split("-");
+        let dateFinish = (finish.value).split("-");
+        dateStart = new Date(dateStart[0], dateStart[1] - 1, dateStart[2]);
+        dateFinish = new Date(dateFinish[0], dateFinish[1] - 1, dateFinish[2]);
+
+        if (moment(dateFinish).isBefore(dateStart, 'day')) {
+            document.getElementById('data-start-error').innerHTML = 'Дата конца не может быть раньше даты начала';
+            start.classList.add('error')
+            error = error + 1;
+            }
+    }
+
+    if (error == 0) {
+        form.submit();
+    }
+
+}
+
+function removeError(idInput, idDivError) {
+    document.getElementById(idInput).classList.remove('error');
+    document.getElementById(idDivError).innerHTML = '';
+}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src="{% static 'doctor/js/moment.js' %}"></script>
 </body>
 </html>
