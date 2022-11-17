@@ -26,7 +26,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core import management
 import telepot
-from doctor.tasks import send_messang
+from doctor.tasks import send_messang, my_job_create_ready_order_dinner
 
 
 def group_doctors_check(user):
@@ -55,10 +55,13 @@ def doctor(request):
                                              },
                                              extra=0, )
     # create_user_today() # создаем таблицу с пользователями на сегодня
-    # send_messang.delay()
+    my_job_create_ready_order_dinner.delay()
     # create_user_today('afternoon')
     # create_ready_order('afternoon')
+    # create_report('breakfast')
     # create_report('lunch')
+    # create_report('afternoon')
+    # create_report('dinner')
     not_active_users_set = get_not_active_users_set()
     # create_user_today('lunch')
 
