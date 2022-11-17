@@ -98,7 +98,7 @@ def my_job_create_ready_order_afternoon():
     create_report('afternoon')
 
 @shared_task()
-def my_job_applies_changes_dinner():
+def my_job_create_ready_order_dinner():
     # check = '\u2705'
     # messang = f'{check} Изменения на <u><b>ужин</b></u> не принимаются.'
     # send_messang(messang)
