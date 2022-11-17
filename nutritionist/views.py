@@ -1,4 +1,4 @@
-import json, os, requests, random, math, calendar, datetime, re, operator
+import json, os, requests, random, math, calendar, datetime, re, operator, openpyxl
 from dateutil.parser import parse
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -1112,7 +1112,178 @@ def printed_form_two_cafe(request):
     }
     return render(request, 'printed_form2_cafe.html', context=data)
 
+
+def create_external_report(filtered_report):
+    report = {}
+    report_ = {}
+    for index, item in enumerate(filtered_report):
+        report.setdefault(str(item.date_create), []).append(item)
+
+    for key, value in report.items():
+        report_[key] = {}
+        for index, item in enumerate(value):
+            report_[key].setdefault(str(item.meal), []).append(item)
+
+    for key1, value1 in report_.items():
+        report[key1] = {}
+        count = 0
+        for key2, value2 in value1.items():
+            report[key1][key2] = {}
+            for index, item in enumerate(value2):
+                report[key1][key2].setdefault(str(item.type_of_diet), []).append(item)
+            for key3, value3 in report[key1][key2].items():
+                report[key1][key2][key3] = len(report[key1][key2][key3])
+                count += report[key1][key2][key3]
+        report[key1]['Всего'] = {'count': count}
+    return report
+
+
+def get_report(report):
+    from openpyxl.utils import get_column_letter
+    from openpyxl.styles import Border, Side, PatternFill, Font, GradientFill, Alignment
+    from openpyxl import Workbook
+
+    wb = Workbook()
+    ws = wb.active
+    font = Font(name='Arial',
+                size=10,
+                bold=False,
+                italic=False,
+                vertAlign=None,
+                underline='none',
+                strike=False,
+                color='000000')
+    font_white = Font(name='Arial',
+                size=10,
+                bold=True,
+                italic=False,
+                vertAlign=None,
+                underline='none',
+                strike=False,
+                color='ffffff')
+    font_10_bold = Font(name='Arial',
+                size=10,
+                bold=True,
+                italic=False,
+                vertAlign=None,
+                underline='none',
+                strike=False,
+                color='000000')
+    ws['A1'].font = font
+    ws['A2'].font = font
+    ws['A3'].font = font
+    ws['A5'].font = font
+    ws['B5'].font = font
+    ws['C5'].font = font
+    ws['D5'].font = font
+    ws['E5'].font = font
+    ws.merge_cells('A1:E1')
+    ws.merge_cells('A2:E2')
+    ws.merge_cells('A3:E3')
+    ws.merge_cells('A4:E4')
+    ws.column_dimensions['A'].width = 15
+    ws.column_dimensions['B'].width = 15
+    ws.column_dimensions['C'].width = 15
+    ws.column_dimensions['D'].width = 15
+    ws.column_dimensions['E'].width = 15
+    ws.row_dimensions[5].height = 30
+    ws['A1'].value = 'Отчет по лечебному питанию'
+    ws['A1'].font = Font(name='Arial',
+                         size=14,
+                         bold=False,
+                         italic=False,
+                         vertAlign=None,
+                         underline='none',
+                         strike=False,
+                         color='000000')
+    ws['A2'].value = 'Круглосуточный стационар, Hadassah Medical Moscow'
+    ws['A2'].font = Font(name='Arial',
+                         size=11,
+                         bold=True,
+                         italic=False,
+                         vertAlign=None,
+                         underline='none',
+                         strike=False,
+                         color='000000')
+    ws['A3'].value = 'Дата'
+    ws['A3'].font = Font(name='Arial',
+                         size=11,
+                         bold=True,
+                         italic=False,
+                         vertAlign=None,
+                         underline='none',
+                         strike=False,
+                         color='000000')
+
+    ws['A5'].value = 'Учетный день'
+    ws['B5'].value = 'Прием пищи'
+    ws['C5'].value = 'Рацион'
+    ws['D5'].value = 'Количество'
+    ws['E5'].value = 'Сумма, руб.'
+    ws['A5'].alignment = Alignment(horizontal="left", vertical="center")
+    ws['B5'].alignment = Alignment(horizontal="left", vertical="center")
+    ws['C5'].alignment = Alignment(horizontal="left", vertical="center")
+    ws['D5'].alignment = Alignment(horizontal="left", vertical="center")
+    ws['E5'].alignment = Alignment(horizontal="left", vertical="center")
+
+    dotted = Side(border_style="dotted", color="383636")
+    thick = Side(border_style="thin", color="383636")
+    row = 5
+    for key1, item1 in report.items():
+        row += 1
+        _ = ws.cell(column=1, row=row, value=key1).font = font
+        for key2, item2 in item1.items():
+            if key2 == 'Всего':
+                _ = ws.cell(column=2, row=row, value=key2).font = font_10_bold
+            if key2 == 'breakfast':
+                _ = ws.cell(column=2, row=row, value='Завтрак').font = font
+            if key2 == 'lunch':
+                _ = ws.cell(column=2, row=row, value='Обед').font = font
+            if key2 == 'afternoon':
+                _ = ws.cell(column=2, row=row, value='Полдник').font = font
+            if key2 == 'dinner':
+                _ = ws.cell(column=2, row=row, value='Ужин').font = font
+            for key3, item3 in item2.items():
+                if key2 == 'Всего':
+                    _ = ws.cell(column=3, row=row, value='').font = font_10_bold
+                    _ = ws.cell(column=4, row=row, value=str(item3)).font = font_10_bold
+                    _ = ws.cell(column=5, row=row, value=f'{item3 * 750}.00').font = font_10_bold
+                else:
+                    _ = ws.cell(column=3, row=row, value=key3).font = font
+                    _ = ws.cell(column=4, row=row, value=str(item3)).font = font
+                    _ = ws.cell(column=5, row=row, value=f'{item3 * 750}.00').font = font
+                    row += 1
+            ws[row-1][0].border = Border(bottom=dotted)
+            ws[row-1][1].border = Border(bottom=dotted)
+            ws[row-1][2].border = Border(bottom=dotted)
+            ws[row-1][3].border = Border(bottom=dotted)
+            ws[row-1][4].border = Border(bottom=dotted)
+        ws[row][0].border = Border(bottom=thick)
+        ws[row][1].border = Border(bottom=thick)
+        ws[row][2].border = Border(bottom=thick)
+        ws[row][3].border = Border(bottom=thick)
+        ws[row][4].border = Border(bottom=thick)
+
+    for row in range(1, row+300):
+        for col in range(1, 50):
+            ws.cell(column=col, row=row).fill = PatternFill('solid', fgColor="ffffff")
+
+    ws['A5'].fill = PatternFill('solid', fgColor="203864")
+    ws['B5'].fill = PatternFill('solid', fgColor="203864")
+    ws['C5'].fill = PatternFill('solid', fgColor="203864")
+    ws['D5'].fill = PatternFill('solid', fgColor="203864")
+    ws['E5'].fill = PatternFill('solid', fgColor="203864")
+    ws['A5'].font = font_white
+    ws['B5'].font = font_white
+    ws['C5'].font = font_white
+    ws['D5'].font = font_white
+    ws['E5'].font = font_white
+    wb.save("styled.xlsx")
+    return
+
+
 def report(request):
+
     if request.method == 'GET' and request.GET != {}:
         date_start = parse(request.GET['start'])
         date_finish = parse(request.GET['finish'])
@@ -1120,6 +1291,8 @@ def report(request):
         date_start = datetime(datetime.today().year, datetime.today().month, 1).date()
         date_finish = datetime.today().date()
     filtered_report = Report.objects.filter(date_create__gte=date_start, date_create__lte=date_finish)
+    report = create_external_report(filtered_report)
+    get_report(report)
     report = {}
     for index, item in enumerate(filtered_report):
         if 'cafe' in item.product_id:
@@ -1138,7 +1311,7 @@ def report(request):
 
 
     temporary_report.sort(key=operator.itemgetter('category'))
-    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты']
+    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша']
     intermediate_option = []
     report = []
     for cat in category:
