@@ -1133,7 +1133,7 @@ def create_external_report(filtered_report):
                 report[key1][key2].setdefault(str(item.type_of_diet), []).append(item)
                 test_dict = {}
             for key3, value3 in report[key1][key2].items():
-                report[key1][key2][key3] = len(report[key1][key2][key3])
+                report[key1][key2][key3] = len(set([user.user_id for user in (report[key1][key2][key3])]))
                 count += report[key1][key2][key3]
         report[key1]['Всего'] = {'count': count}
 
@@ -1309,7 +1309,7 @@ def get_report(report, report_detailing, date_start, date_finish):
     ws1.column_dimensions['A'].width = 15
     ws1.column_dimensions['B'].width = 15
     ws1.column_dimensions['C'].width = 15
-    ws1.column_dimensions['D'].width = 15
+    ws1.column_dimensions['D'].width = 22
     ws1.column_dimensions['E'].width = 15
     ws1.row_dimensions[5].height = 30
     ws1['A1'].value = 'Детализация к отчету по лечебному питанию'
