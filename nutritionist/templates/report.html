@@ -215,7 +215,7 @@ async function checkFormDownload() {
         span1.classList.add('spinner-border')
         span1.classList.add('spinner-border-sm')
         button.setAttribute('disabled', '')
-        span2.innerHTML = "Загрузка ..."
+        span2.innerHTML = "Формируем отчет ..."
         let res = await downloadReport(start.value, finish.value);
         res = JSON.parse(res);
         if (res.response == 'yes') {
