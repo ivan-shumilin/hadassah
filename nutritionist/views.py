@@ -1131,20 +1131,25 @@ def create_external_report(filtered_report):
             report[key1][key2] = {}
             for index, item in enumerate(value2):
                 report[key1][key2].setdefault(str(item.type_of_diet), []).append(item)
+                test_dict = {}
             for key3, value3 in report[key1][key2].items():
                 report[key1][key2][key3] = len(report[key1][key2][key3])
                 count += report[key1][key2][key3]
         report[key1]['Всего'] = {'count': count}
+
+
     return report
 
 
-def get_report(report):
+def get_report(report, report_detailing, date_start, date_finish):
+    """ Создаёт excel фаил с отчетом по блюдам """
     from openpyxl.utils import get_column_letter
     from openpyxl.styles import Border, Side, PatternFill, Font, GradientFill, Alignment
     from openpyxl import Workbook
 
     wb = Workbook()
     ws = wb.active
+    ws.title = "Отчет"
     font = Font(name='Arial',
                 size=10,
                 bold=False,
@@ -1205,7 +1210,7 @@ def get_report(report):
                          underline='none',
                          strike=False,
                          color='000000')
-    ws['A3'].value = 'Дата'
+    ws['A3'].value = f'{date_start.day}.{date_start.month}.{date_start.year} - {date_finish.day}.{date_finish.month}.{date_finish.year}'
     ws['A3'].font = Font(name='Arial',
                          size=11,
                          bold=True,
@@ -1278,12 +1283,140 @@ def get_report(report):
     ws['C5'].font = font_white
     ws['D5'].font = font_white
     ws['E5'].font = font_white
-    wb.save("styled.xlsx")
+
+    ws1 = wb.create_sheet("Детальный")
+
+    font = Font(name='Arial',
+                size=10,
+                bold=False,
+                italic=False,
+                vertAlign=None,
+                underline='none',
+                strike=False,
+                color='000000')
+    ws1['A1'].font = font
+    ws1['A2'].font = font
+    ws1['A3'].font = font
+    ws1['A5'].font = font
+    ws1['B5'].font = font
+    ws1['C5'].font = font
+    ws1['D5'].font = font
+    ws1['E5'].font = font
+    ws1.merge_cells('A1:E1')
+    ws1.merge_cells('A2:E2')
+    ws1.merge_cells('A3:E3')
+    ws1.merge_cells('A4:E4')
+    ws1.column_dimensions['A'].width = 15
+    ws1.column_dimensions['B'].width = 15
+    ws1.column_dimensions['C'].width = 15
+    ws1.column_dimensions['D'].width = 15
+    ws1.column_dimensions['E'].width = 15
+    ws1.row_dimensions[5].height = 30
+    ws1['A1'].value = 'Детализация к отчету по лечебному питанию'
+    ws1['A1'].font = Font(name='Arial',
+                         size=14,
+                         bold=False,
+                         italic=False,
+                         vertAlign=None,
+                         underline='none',
+                         strike=False,
+                         color='000000')
+    ws1['A2'].value = 'Круглосуточный стационар, Hadassah Medical Moscow'
+    ws1['A2'].font = Font(name='Arial',
+                         size=11,
+                         bold=True,
+                         italic=False,
+                         vertAlign=None,
+                         underline='none',
+                         strike=False,
+                         color='000000')
+    ws1['A3'].value = f'{date_start.day}.{date_start.month}.{date_start.year} - {date_finish.day}.{date_finish.month}.{date_finish.year}'
+    ws1['A3'].font = Font(name='Arial',
+                         size=11,
+                         bold=True,
+                         italic=False,
+                         vertAlign=None,
+                         underline='none',
+                         strike=False,
+                         color='000000')
+
+    ws1['A5'].value = 'Учетный день'
+    ws1['B5'].value = 'Прием пищи'
+    ws1['C5'].value = 'Рацион'
+    ws1['D5'].value = 'ФИО'
+    ws1['E5'].value = '№ палаты'
+    ws1['A5'].alignment = Alignment(horizontal="left", vertical="center")
+    ws1['B5'].alignment = Alignment(horizontal="left", vertical="center")
+    ws1['C5'].alignment = Alignment(horizontal="left", vertical="center")
+    ws1['D5'].alignment = Alignment(horizontal="left", vertical="center")
+    ws1['E5'].alignment = Alignment(horizontal="left", vertical="center")
+    row = 6
+    for key1, item1 in report_detailing.items():
+        for key2, item2 in item1.items():
+            for key3, item3 in item2.items():
+                for key4, value4 in item3.items():
+                    _ = ws1.cell(column=1, row=row, value=key1).font = font
+                    _ = ws1.cell(column=1, row=row, value=key1).font = font
+                    if key2 == 'breakfast':
+                        _ = ws1.cell(column=2, row=row, value='Завтрак').font = font
+                    if key2 == 'lunch':
+                        _ = ws1.cell(column=2, row=row, value='Обед').font = font
+                    if key2 == 'afternoon':
+                        _ = ws1.cell(column=2, row=row, value='Полдник').font = font
+                    if key2 == 'dinner':
+                        _ = ws1.cell(column=2, row=row, value='Ужин').font = font
+                    _ = ws1.cell(column=3, row=row, value=key3).font = font
+                    _ = ws1.cell(column=4, row=row, value=key4).font = font
+                    _ = ws1.cell(column=5, row=row, value=value4).font = font
+                    row += 1
+
+
+    for row in range(1, row+300):
+        for col in range(1, 50):
+            ws1.cell(column=col, row=row).fill = PatternFill('solid', fgColor="ffffff")
+
+
+    ws1['A5'].fill = PatternFill('solid', fgColor="203864")
+    ws1['B5'].fill = PatternFill('solid', fgColor="203864")
+    ws1['C5'].fill = PatternFill('solid', fgColor="203864")
+    ws1['D5'].fill = PatternFill('solid', fgColor="203864")
+    ws1['E5'].fill = PatternFill('solid', fgColor="203864")
+    ws1['A5'].font = font_white
+    ws1['B5'].font = font_white
+    ws1['C5'].font = font_white
+    ws1['D5'].font = font_white
+    ws1['E5'].font = font_white
+    wb.save("nutritionist/static/report.xlsx")
     return
+
+def create_external_report_detailing(filtered_report):
+    report = {}
+    report_ = {}
+    for index, item in enumerate(filtered_report):
+        report.setdefault(str(item.date_create), []).append(item)
+
+    for key, value in report.items():
+        report_[key] = {}
+        for index, item in enumerate(value):
+            report_[key].setdefault(str(item.meal), []).append(item)
+
+    for key1, value1 in report_.items():
+        report[key1] = {}
+
+        for key2, value2 in value1.items():
+            report[key1][key2] = {}
+            for index, item in enumerate(value2):
+                report[key1][key2].setdefault(str(item.type_of_diet), []).append(item)
+            for key3, value3 in report[key1][key2].items():
+                test = {}
+                for item in report[key1][key2][key3]:
+                    test[item.user_id.full_name] = item.user_id.room_number
+                report[key1][key2][key3] = test
+    return report
+
 
 
 def report(request):
-
     if request.method == 'GET' and request.GET != {}:
         date_start = parse(request.GET['start'])
         date_finish = parse(request.GET['finish'])
@@ -1291,8 +1424,7 @@ def report(request):
         date_start = datetime(datetime.today().year, datetime.today().month, 1).date()
         date_finish = datetime.today().date()
     filtered_report = Report.objects.filter(date_create__gte=date_start, date_create__lte=date_finish)
-    report = create_external_report(filtered_report)
-    get_report(report)
+
     report = {}
     for index, item in enumerate(filtered_report):
         if 'cafe' in item.product_id:
@@ -1329,3 +1461,18 @@ def report(request):
             'date_start': date_start,
             'date_finish': date_finish}
     return render(request, 'report.html', context=date)
+
+
+class DownloadReportAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        date_start = parse(data['start'])
+        date_finish = parse(data['finish'])
+
+        filtered_report = Report.objects.filter(date_create__gte=date_start, date_create__lte=date_finish)
+        report = create_external_report(filtered_report)
+        report_detailing = create_external_report_detailing(filtered_report)
+        get_report(report, report_detailing, date_start, date_finish)
+        response = {"response": "yes"}
+        response = json.dumps(response)
+        return Response(response)

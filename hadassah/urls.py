@@ -39,6 +39,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('password_reset/', views.password_reset, name='reset_password'),
     path('logout/', views.user_logout, name='logout'),
+    path('report/api/v1/get/downloadreport', views.DownloadReportAPIView.as_view()),
 ]
 
 

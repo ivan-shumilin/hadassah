@@ -237,15 +237,19 @@ td ul {
     text-align: center;
 }
 
-.container {
+/* .container {
     margin: 0 0 10px 0;
     padding: 0;
-}
+} */
 
 
-.row .col-sm-9 {
+/* .row .col-sm-6 {
     padding-top: 10px;
-}
+} */
+
+/* .row .col-sm-3 {
+    padding-left: 60px;
+} */
 
 label {
     margin-top: 10px;
@@ -259,4 +263,16 @@ label {
     border: 1px solid red;
 }
 
+/* .col-sm-3 button {
+    margin: 5px;
+} */
+
+.digit
+{
+    float: none;
+}
+
+.container-fluid {
+    margin-bottom: 10px;
+}
 
