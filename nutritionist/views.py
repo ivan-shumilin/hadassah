@@ -1386,7 +1386,7 @@ def get_report(report, report_detailing, date_start, date_finish):
     ws1['C5'].font = font_white
     ws1['D5'].font = font_white
     ws1['E5'].font = font_white
-    wb.save("nutritionist/static/report.xlsx")
+    wb.save("static/report.xlsx")
     return
 
 def create_external_report_detailing(filtered_report):
