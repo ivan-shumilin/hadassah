@@ -274,6 +274,7 @@ label {
 
 .container-fluid {
     margin-bottom: 10px;
+    padding-left: 0px;
 }
 
 .hidden {

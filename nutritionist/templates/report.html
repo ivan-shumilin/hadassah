@@ -77,20 +77,21 @@
         <div class="col-sm-6">
             <h1 class="">Отчет по списанию блюд с {{ date_start|date:"d F Y"|lower }} по {{ date_finish|date:"d F Y"|lower }}</h1>
         </div>
+    </div>
+    <div class="row align-items-center justify-content-between">
         <div class="col-sm-6">
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <button class="btn btn-primary mr-md-2" data-bs-target="#modal" data-bs-toggle="modal">Внутренний отчет</button>
                 <button class="btn btn-primary" data-bs-target="#modal-download" data-bs-toggle="modal">Отчет для Hadassah</button>
             </div>
         </div>
-      </div>
-
-  </div>
-
+    </div>
+</div>
 
 
 
-<table id='table2' width="100%">
+
+<table id='table2' width="auto">
     <tr>
         <td>№</td>
         <td>Категория</td>
@@ -100,7 +101,7 @@
     {% for item in report %}
         <tr>
             <td>{{ item.number }}</td>
-            <td>{{ item.category }}</td>
+            <td>{{ item.category|capfirst }}</td>
             <td>{{ item.name }}</td>
             <td>{{ item.count }}</td>
         </tr>
