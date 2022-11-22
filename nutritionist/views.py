@@ -1560,7 +1560,6 @@ def create_stickers_pdf(catalog):
             pdf.add_font("Arial2", "", "arial.ttf", uni=True)
             pdf.set_font("Arial2", style='', size=30)
             ln = 5
-            item['products_cafe'] = ['Йогуртовый  манго маракуйя  манго маракуйя мусс с манго маракуйя Без сахара 130 гр.', 'Морс бруasdfaсничный без сахара 250 мл', 'Морс бруснfasdfasdfasdfasdfичный без сахара 250 мл']
             for index, product in enumerate(item['products_lp'] + item['products_cafe']):
                 if len(product) >= 33:
                     product_list = product.split(' ')
