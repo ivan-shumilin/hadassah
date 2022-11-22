@@ -22,12 +22,11 @@ def formatting_full_name(full_name):
     list = full_name.split()
     res = ''
     for index, value in enumerate(list):
-        print(index, len(list))
         if index == 0:
             res += value.capitalize() + ' '
             continue
-        if index == len(list) - 1:
-            res += value[0:1].capitalize()
+        if index == 1:
+            res += value[0:1].capitalize() + '.'
             continue
         else:
             res += value[0:1].capitalize() + '.'

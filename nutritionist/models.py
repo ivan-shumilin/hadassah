@@ -268,6 +268,13 @@ class UsersReadyOrder(models.Model):
         default='200',
         help_text='Выбор номера палаты')
 
+    bed = models.CharField(
+        max_length=100,
+        choices=BED,
+        blank=True,
+        default='200',
+        help_text='Выбор койко-места')
+
     type_of_diet = models.CharField(
         max_length=100,
         choices=TYPE_DIET,

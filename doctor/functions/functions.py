@@ -978,6 +978,7 @@ def create_list_users_on_floor(users, floors, meal, date_create, type_order):
             {'name': user.full_name,
              'number': '',
              'room_number': user.room_number,
+             'bed': user.bed,
              'diet': user.type_of_diet,
              'products_lp': creates_dict_test(user.user_id, user.id, str(date_create), 'lp', meal, type_order),
              'products_cafe': creates_dict_test(user.user_id, user.id, str(date_create), 'cafe', meal, type_order),
