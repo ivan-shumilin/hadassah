@@ -55,7 +55,7 @@
     {% if type == 'menu_for_staff' %}
         <form id='form-get' action="{% url 'menu_for_staff' %}" method="get" novalidate>
     {% else %}
-        <form id='form-get' action="{% url 'menu' %}" method="get" novalidate></form>
+        <form id='form-get' action="{% url 'menu' %}" method="get" novalidate>
     {% endif %}
 
 <!-- Если на странице "доктор" или "архив" -->
