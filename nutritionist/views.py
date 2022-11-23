@@ -1548,22 +1548,23 @@ def create_stickers_pdf(catalog):
     catalog = catalog['catalog']
     for floor in ['users_2nd_floor', 'users_3nd_floor', 'users_4nd_floor']:
         for item in catalog[floor]:
-            print(item['name'])
             pdf.add_page()
             # pdf.add_font("Arial", "", "FontsFree-Net-arial-bold.ttf", uni=True)
             pdf.add_font("Arial1", "", "FontsFree-Net-arial-bold.ttf", uni=True)
-            pdf.set_font("Arial1", style='', size=32)
-            pdf.cell(100, 12, txt=f'  {item["room_number"]}, {item["bed"]}', ln=1, align="L")
-            pdf.cell(100, 12, txt=f'  {formatting_full_name(item["name"])}', ln=2, align="L")
-            pdf.cell(100, 12, txt=f'  {item["diet"]}, {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=3, align="L")
-            pdf.cell(100, 10, txt="", ln=5, align="L")
+            pdf.set_font("Arial1", style='', size=33)
+            pdf.set_left_margin(0)
+            pdf.set_right_margin(0)
+            pdf.cell(50, 14, txt=f'  {item["room_number"]}, {item["bed"]}', ln=1, align="L")
+            pdf.cell(50, 14, txt=f'  {formatting_full_name(item["name"])}', ln=2, align="L")
+            pdf.cell(50, 14, txt=f'  {item["diet"]}, {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=3, align="L")
+            pdf.cell(50, 10, txt="", ln=5, align="L")
             pdf.add_font("Arial2", "", "arial.ttf", uni=True)
             pdf.set_font("Arial2", style='', size=30)
             ln = 5
             for index, product in enumerate(item['products_lp'] + item['products_cafe']):
-                if len(product) >= 33:
+                max_count = 37
+                if len(product) >= max_count:
                     product_list = product.split(' ')
-                    max_count = 33
                     res = ""
                     res_list = []
                     for item in product_list:
@@ -1574,11 +1575,11 @@ def create_stickers_pdf(catalog):
                             res = item
                     res_list.append(res) if res[0] == '-' else res_list.append('  ' + res)
                     for product in res_list:
-                        pdf.cell(100, 10, txt=f'{product}', ln=index + ln, align="L")
+                        pdf.cell(50, 10, txt=f'{product}', ln=index + ln, align="L")
                         ln += 1
                 else:
-                    pdf.cell(100, 10, txt=f'- {product}', ln=index + ln, align="L")
-                pdf.cell(100, 3, txt=f'', ln=index + 1 + ln, align="L")
+                    pdf.cell(50, 10, txt=f'- {product}', ln=index + ln, align="L")
+                pdf.cell(50, 3, txt=f'', ln=index + 1 + ln, align="L")
     pdf.output("static/stickers.pdf")
 
     return
