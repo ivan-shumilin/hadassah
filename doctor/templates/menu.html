@@ -32,9 +32,11 @@
 
                     <div class="header-block">
                         <div class="menu-link-and-name">
-                            <a class="menu-link" data-sidebar-toggle>
-                                <div class="i i-menu"></div>
-                            </a>
+                            {% if type != 'menu_for_staff' %}
+                                <a class="menu-link" data-sidebar-toggle>
+                                    <div class="i i-menu"></div>
+                                </a>
+                            {% endif %}
                             <div class="title">Меню</div>
                         </div>
 
