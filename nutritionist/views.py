@@ -1548,10 +1548,10 @@ def create_stickers_pdf(catalog):
     catalog = catalog['catalog']
     for floor in ['users_2nd_floor', 'users_3nd_floor', 'users_4nd_floor']:
         for item in catalog[floor]:
-            pdf.add_page()
-            # pdf.add_font("Arial", "", "FontsFree-Net-arial-bold.ttf", uni=True)
             pdf.set_left_margin(0)
             pdf.set_right_margin(0)
+            pdf.add_page()
+            # pdf.add_font("Arial", "", "FontsFree-Net-arial-bold.ttf", uni=True)
             pdf.add_font("Arial1", "", "FontsFree-Net-arial-bold.ttf", uni=True)
             pdf.set_font("Arial1", style='', size=33)
             pdf.cell(50, 14, txt=f'  {item["room_number"]}, {item["bed"]}', ln=1, align="L")
