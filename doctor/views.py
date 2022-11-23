@@ -57,7 +57,7 @@ def doctor(request):
     # create_user_today() # создаем таблицу с пользователями на сегодня
     # my_job_create_ready_order_dinner.delay()
     # create_user_today('lunch')
-    create_ready_order('lunch')
+    # create_ready_order('lunch')
     # create_report('breakfast')
     # create_report('lunch')
     # create_report('afternoon')
