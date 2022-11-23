@@ -52,7 +52,11 @@
                            name="change-password_flag">
                 </form>
         </div>
-    <form id='form-get' action="{% url 'menu' %}" method="get" novalidate>
+    {% if type == 'menu_for_staff' %}
+        <form id='form-get' action="{% url 'menu_for_staff' %}" method="get" novalidate>
+    {% else %}
+        <form id='form-get' action="{% url 'menu' %}" method="get" novalidate></form>
+    {% endif %}
 
 <!-- Если на странице "доктор" или "архив" -->
 {% else %}
@@ -115,60 +119,62 @@
                                 <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
                             </a>
 
-
-                            <div class="profile">
-                                <a  class="label" data-fade-toggle-link="profile-info">
-                                    <span class="icon"></span>
-                                    Профиль
-                                </a>
-                                <div class="info" data-fade-toggle="profile-info">
-                                    <div class="segment">
-                                        <div class="name">
-                                            {{ user.first_name }}
-                                            {{ user.last_name }}
-                                        </div>
-                                        <div class="email">{{ user.email }}</div>
-                                        <div class="links">
-                                            <a  data-modal-link="logout">Выйти</a>
-                                            <a  data-modal-link="profile-form">Изменить</a>
+                                <div class="profile">
+                                    {% if type != 'menu_for_staff' %}
+                                        <a  class="label" data-fade-toggle-link="profile-info">
+                                            <span class="icon"></span>
+                                            Профиль
+                                        </a>
+                                    {% endif %}
+                                    <div class="info" data-fade-toggle="profile-info">
+                                        <div class="segment">
+                                            <div class="name">
+                                                {{ user.first_name }}
+                                                {{ user.last_name }}
+                                            </div>
+                                            <div class="email">{{ user.email }}</div>
+                                            <div class="links">
+                                                <a  data-modal-link="logout">Выйти</a>
+                                                <a  data-modal-link="profile-form">Изменить</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
+                            {% if type != 'menu_for_staff' %}
+                                <div class="sidebar-menu-block">
+                                    <p style="display: none;" id="page">{{ page }}</p>
+                                    <ul>
+                                        <li id='menu-doctor'>
+                                            <a href="{% url 'doctor'  %}">
+                                                <span class="i i-list icon-default"></span>
+                                                <span class="i i-list-colored icon-colored"></span>
+                                                <span>Пациенты</span>
+                                            </a>
+                                        </li>
+                                        <li id='menu-menu'>
+                                            <a href="{% url 'menu'  %}">
+                                                <span class="i i-eat icon-default"></span>
+                                                <span class="i i-eat-colored icon-colored"></span>
+                                                <span>Меню</span>
+                                            </a>
+                                        </li>
+                                        <li id='menu-archive'>
+                                            <a href="{% url 'archive'  %}">
+                                                <span class="i i-box icon-default"></span>
+                                                <span class="i i-box-colored icon-colored"></span>
+                                                <span>Архив</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {% endif %}
 
-                        <div class="sidebar-menu-block">
-                            <p style="display: none;" id="page">{{ page }}</p>
-                            <ul>
-                                <li id='menu-doctor'>
-                                    <a href="{% url 'doctor'  %}">
-                                        <span class="i i-list icon-default"></span>
-                                        <span class="i i-list-colored icon-colored"></span>
-                                        <span>Пациенты</span>
-                                    </a>
-                                </li>
-                                <li id='menu-menu'>
-                                    <a href="{% url 'menu'  %}">
-                                        <span class="i i-eat icon-default"></span>
-                                        <span class="i i-eat-colored icon-colored"></span>
-                                        <span>Меню</span>
-                                    </a>
-                                </li>
-                                <li id='menu-archive'>
-                                    <a href="{% url 'archive'  %}">
-                                        <span class="i i-box icon-default"></span>
-                                        <span class="i i-box-colored icon-colored"></span>
-                                        <span>Архив</span>
-                                    </a>
-                                </li>
-                            </ul>
+                            <div class="sidebar-petrushka-block">
+                                <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
+                            </div>
                         </div>
-
-                        <div class="sidebar-petrushka-block">
-                            <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
-                        </div>
-                    </div>
                 </div>
             </div>
         
