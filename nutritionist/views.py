@@ -953,7 +953,7 @@ def printed_form_one(request):
         'day': day,
         'date_create': dateformat.format(date.fromisoformat(str(date_create)), 'd E')
     }
-    create_stickers_pdf(catalog, time_now)
+
     return render(request, 'printed_form1.html', context=data)
 
 
