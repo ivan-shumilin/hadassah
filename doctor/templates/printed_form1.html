@@ -69,8 +69,14 @@
 
         </tr>
         {% for user in catalog.users_2nd_floor %}
+            {% if user.comment %}
+                <tr class='light-blue2'>
+                    <td></td>
+                    <td colspan="5"><span style="background: #dfe629;">(!) {{ user.comment }}</span></td>
+                </tr>
+            {% endif %}
             <tr class='dashed'>
-                <td>{{ user.number }}</td>
+                <td class='text-center'>{{ user.number }}</td>
                 <td>{{ user.name|formatting_full_name }}</td>
                 <td>{{ user.room_number }}</td>
                 <td>{{ user.diet }}</td>
@@ -93,59 +99,69 @@
     {% endif %}
     {% if catalog.users_3nd_floor %}
         <tr class='light-blue'>
-            <td colspan="6">Этаж 3</td>
-    
+            <td colspan="6">Этаж 3</td>    
         </tr>
         {% for user in catalog.users_3nd_floor %}
-        <tr class='dashed'>
-            <td>{{ user.number }}</td>
-            <td>{{ user.name|formatting_full_name}}</td>
-            <td>{{ user.room_number }}</td>
-            <td>{{ user.diet }}</td>
-            <td>
-                <ul>
-                    {% for item in user.products_lp %}
-                        <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    {% for item in user.products_cafe %}
-                        <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
-            </td>
-        </tr>    
+            {% if user.comment %}
+                <tr class='light-blue2'>
+                    <td></td>
+                    <td colspan="5"><span style="background: #dfe629;">(!) {{ user.comment }}</span></td>
+                </tr>
+            {% endif %}
+            <tr class='dashed'>
+                <td class='text-center'>{{ user.number }}</td>
+                <td>{{ user.name|formatting_full_name}}</td>
+                <td>{{ user.room_number }}</td>
+                <td>{{ user.diet }}</td>
+                <td>
+                    <ul>
+                        {% for item in user.products_lp %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        {% for item in user.products_cafe %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>    
         {% endfor %}
     {% endif %}
 
     {% if catalog.users_4nd_floor %}
         <tr class='light-blue'>
             <td colspan="6">Этаж 4</td>
-    
         </tr>
         {% for user in catalog.users_4nd_floor %}
-        <tr class='dashed'>
-            <td>{{ user.number }}</td>
-            <td>{{ user.name|formatting_full_name}}</td>
-            <td>{{ user.room_number }}</td>
-            <td>{{ user.diet }}</td>
-            <td>
-                <ul>
-                    {% for item in user.products_lp %}
-                        <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    {% for item in user.products_cafe %}
-                        <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
-            </td>
-        </tr>    
+            {% if user.comment %}
+                <tr class='light-blue2'>
+                    <td></td>
+                    <td colspan="5"><span style="background: #dfe629;">(!) {{ user.comment }}</span></td>
+                </tr>
+            {% endif %}
+            <tr class='dashed'>
+                <td class='text-center'>{{ user.number }}</td>
+                <td>{{ user.name|formatting_full_name}}</td>
+                <td>{{ user.room_number }}</td>
+                <td>{{ user.diet }}</td>
+                <td>
+                    <ul>
+                        {% for item in user.products_lp %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        {% for item in user.products_cafe %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
         {% endfor %}
     {% endif %}
 </table>

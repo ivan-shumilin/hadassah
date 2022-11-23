@@ -977,6 +977,7 @@ def create_list_users_on_floor(users, floors, meal, date_create, type_order):
         users_on_floor.append(
             {'name': user.full_name,
              'number': '',
+             'comment': user.comment,
              'room_number': user.room_number,
              'bed': user.bed,
              'diet': user.type_of_diet,

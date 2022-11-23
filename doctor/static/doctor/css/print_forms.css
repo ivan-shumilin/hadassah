@@ -85,8 +85,7 @@ h1 {
     background: #fff;
 }
 
-#table1 tr:last-child td:nth-child(1),
-#table1 tr:last-child td:nth-child(2) {
+#table1 tr:last-child td {
     border-top: 1px solid #1a1b1c;
     font-weight: 400;
 }
@@ -124,10 +123,14 @@ h1 {
 }
 
 
-.light-blue{
+.light-blue {
     background-color: #c3d1e2;
     border-bottom: 1px solid #1a1b1c;
+}
 
+.light-blue2 {
+    background-color: rgb(236, 240, 243);
+    border-bottom: none;
 }
 
 td ul {
@@ -281,3 +284,7 @@ label {
     display: none;
 }
 
+
+.text-center {
+    text-align: center;
+}
