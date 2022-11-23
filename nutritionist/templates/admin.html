@@ -271,6 +271,16 @@
 <a id="link-download" style="display: none;" href="{% static 'stickers.pdf' %}"> Download </a>
 <script>
 
+function printPDF (url)
+{
+    let pdfFrame = document.body.appendChild(document.createElement('iframe'));
+    pdfFrame.style.display = 'none';
+    pdfFrame.onload = () => (void pdfFrame.contentWindow.print());
+    pdfFrame.src = url;
+}
+
+
+
     const downloadsStickersAPI = async function() {
         let url = 'api/v1/get/downloadsstickers'
         let body = {};
@@ -304,7 +314,7 @@
         res = JSON.parse(res);
         if (res.response == 'yes') {
             console.log('yes')
-            document.getElementById('link-download').click()
+            printPDF("{% static 'stickers.pdf' %}");
         }
         button.setAttribute('disabled', 'false')
         span2.innerHTML = "Еще немного"

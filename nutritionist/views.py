@@ -1550,10 +1550,10 @@ def create_stickers_pdf(catalog):
         for item in catalog[floor]:
             pdf.add_page()
             # pdf.add_font("Arial", "", "FontsFree-Net-arial-bold.ttf", uni=True)
-            pdf.add_font("Arial1", "", "FontsFree-Net-arial-bold.ttf", uni=True)
-            pdf.set_font("Arial1", style='', size=33)
             pdf.set_left_margin(0)
             pdf.set_right_margin(0)
+            pdf.add_font("Arial1", "", "FontsFree-Net-arial-bold.ttf", uni=True)
+            pdf.set_font("Arial1", style='', size=33)
             pdf.cell(50, 14, txt=f'  {item["room_number"]}, {item["bed"]}', ln=1, align="L")
             pdf.cell(50, 14, txt=f'  {formatting_full_name(item["name"])}', ln=2, align="L")
             pdf.cell(50, 14, txt=f'  {item["diet"]}, {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=3, align="L")
