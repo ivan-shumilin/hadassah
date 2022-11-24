@@ -1419,7 +1419,6 @@ def create_external_report_detailing(filtered_report):
 
 
 def report(request):
-    create_pdf()
     if request.method == 'GET' and request.GET != {}:
         date_start = parse(request.GET['start'])
         date_finish = parse(request.GET['finish'])
