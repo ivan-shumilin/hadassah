@@ -321,7 +321,7 @@ def create_products_lp():
         products = json.load(json_file)
     to_create = []
 
-    ProductLp.objects.all().delete()
+    # ProductLp.objects.all().delete()
     for product in products:
         to_create.append(ProductLp(
             name=product['name'],
