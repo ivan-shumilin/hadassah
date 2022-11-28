@@ -1,6 +1,6 @@
 from nutritionist.models import CustomUser, UsersToday, СhangesUsersToday, UsersReadyOrder,\
-    MenuByDayReadyOrder, MenuByDay, Report
-import datetime
+    MenuByDayReadyOrder, MenuByDay, Report, ProductLp
+import datetime, json
 from datetime import datetime, date, timedelta
 from django.db import transaction
 from django.db.models import Q
@@ -313,3 +313,28 @@ def applies_changes():
     users_changes.delete()
 
 
+@transaction.atomic
+def create_products_lp():
+    """Создает таблицу продуктами лечебного питания."""
+    # записать json в python-обьект
+    with open('products_lp.json') as json_file:
+        products = json.load(json_file)
+    to_create = []
+
+    ProductLp.objects.all().delete()
+    for product in products:
+        to_create.append(ProductLp(
+            name=product['name'],
+            fat=product['fat'] if 'fat' in product else 0,
+            carbohydrate=product['carbohydrate'] if 'carbohydrate' in product else 0,
+            fiber=product['fiber'] if 'fiber' in product else 0,
+            energy=product['energy'] if 'energy' in product else 0,
+            image=None,
+            description=product['composition'],
+            category=product['category'],
+            comment=None,
+            weight=product['weight'] if 'weight' in product else 0,
+            number_tk=product['number_tk'],
+            status='1'
+            ))
+    ProductLp.objects.bulk_create(to_create)

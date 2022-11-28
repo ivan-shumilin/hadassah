@@ -330,6 +330,7 @@ class MenuByDayReadyOrder(models.Model):
 
 class ProductLp(models.Model):
     name = models.CharField(max_length=200, null=True)
+    public_name = models.CharField(max_length=200, null=True)
     carbohydrate = models.CharField(max_length=200, null=True)
     fat = models.CharField(max_length=200, null=True)
     fiber = models.CharField(max_length=200, null=True)
@@ -338,6 +339,9 @@ class ProductLp(models.Model):
     description = models.CharField(max_length=1000, null=True)
     category = models.CharField(max_length=2000, null=True)
     comment = models.CharField(max_length=5000, null=True)
+    weight = models.CharField(max_length=5000, null=True)
+    number_tk = models.CharField(max_length=5000, null=True)
+    status = models.CharField(max_length=500, null=True, default='0',)
 
     def __str__(self):
         return f'{self.name}, {self.category}'

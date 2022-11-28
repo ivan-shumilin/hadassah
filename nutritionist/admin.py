@@ -40,9 +40,10 @@ class TimetableLpAdmin(admin.TabularInline):
 
 @admin.register(ProductLp)
 class ProductLpAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'description',)
-    fields = ('name', 'category', 'carbohydrate', 'fat', 'fiber', 'energy', 'description', 'comment',)
-    list_per_page = 200
+    list_display = ('name', 'public_name', 'category', 'description',)
+    fields = ('name', 'public_name', 'category', 'carbohydrate', 'fat', 'fiber', 'energy', 'weight', 'description', 'comment',)
+    list_filter = ('category', 'carbohydrate', 'fat', 'fiber', 'energy', 'weight', 'description', 'status',)
+    list_per_page = 500
 
     inlines = [TimetableLpAdmin]
 
@@ -102,7 +103,7 @@ class UsersReadyOrderAdmin(admin.ModelAdmin):
 class ReportAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'product_id', 'date_create', 'meal', 'type_of_diet')
     fields = ('user_id', 'product_id', 'date_create', 'meal', 'type_of_diet')
-    list_per_page = 200
+    list_per_page = 500
 
 
 
