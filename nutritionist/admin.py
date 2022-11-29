@@ -41,7 +41,7 @@ class TimetableLpAdmin(admin.TabularInline):
 @admin.register(ProductLp)
 class ProductLpAdmin(admin.ModelAdmin):
     list_display = ('name', 'public_name', 'category', 'description', 'status')
-    fields = ('name', 'public_name', 'category', 'carbohydrate', 'fat', 'fiber', 'energy', 'weight', 'description', 'comment', 'status')
+    fields = ('name', 'public_name', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber', 'energy', 'weight', 'description', 'comment', 'status')
     list_filter = ('category', 'status',)
     list_per_page = 500
 
