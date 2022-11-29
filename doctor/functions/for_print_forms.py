@@ -1,5 +1,5 @@
 from nutritionist.models import CustomUser, UsersToday, СhangesUsersToday, UsersReadyOrder,\
-    MenuByDayReadyOrder, MenuByDay, Report, ProductLp
+    MenuByDayReadyOrder, MenuByDay, Report, ProductLp, TimetableLp
 import datetime, json
 from datetime import datetime, date, timedelta
 from django.db import transaction
@@ -338,3 +338,81 @@ def create_products_lp():
             status='1'
             ))
     ProductLp.objects.bulk_create(to_create)
+
+
+@transaction.atomic
+def add_products_lp():
+    """Создает таблицу продуктами лечебного питания."""
+    to_create = []
+    days = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
+    meals = ['breakfast', 'lunch', 'afternoon', 'dinner']
+    diets = ['ОВД', 'ОВД без сахара', 'ОВД вегетарианское', 'ЩД', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД']
+    product = ProductLp.objects.get(name='Вода "Jеvea" 0,51л.')
+    for diet in diets:
+        for day in days:
+            for meal in meals:
+                    to_create.append(TimetableLp(
+                        item=product,
+                        type_of_diet=diet,
+                        day_of_the_week=day,
+                        meals=meal,
+                        ))
+    # TimetableLp.objects.bulk_create(to_create)
+    # добавляем джем
+    product = ProductLp.objects.get(name='Джем порционный 20 гр. в асс.')
+    for diet in ['ОВД', 'ОВД вегетарианское', 'ЩД', 'ВБД', 'ВКД']:
+        for day in days:
+            for meal in ['breakfast']:
+                    to_create.append(TimetableLp(
+                        item=product,
+                        type_of_diet=diet,
+                        day_of_the_week=day,
+                        meals=meal,
+                        ))
+    # TimetableLp.objects.bulk_create(to_create)
+    # добавляем черный хлеб
+    product = ProductLp.objects.get(name='Хлеб бородинский/ржаной 20 гр.')
+    for diet in ['ОВД', 'ОВД без сахара', 'ОВД вегетарианское', 'ВБД', 'ВКД']:
+        for day in days:
+            for meal in ['breakfast', 'lunch', 'dinner']:
+                    to_create.append(TimetableLp(
+                        item=product,
+                        type_of_diet=diet,
+                        day_of_the_week=day,
+                        meals=meal,
+                        ))
+    # TimetableLp.objects.bulk_create(to_create)
+    for diet in ['НКД']:
+        for day in days:
+            for meal in ['lunch']:
+                    to_create.append(TimetableLp(
+                        item=product,
+                        type_of_diet=diet,
+                        day_of_the_week=day,
+                        meals=meal,
+                        ))
+    # TimetableLp.objects.bulk_create(to_create)
+    # добавляем белый хлеб
+    product = ProductLp.objects.get(name='Булочка французская 35гр. в асс.')
+    for diet in ['ОВД', 'ЩД', 'ВБД','ВКД']:
+        for day in days:
+            for meal in ['breakfast', 'lunch', 'dinner']:
+                    to_create.append(TimetableLp(
+                        item=product,
+                        type_of_diet=diet,
+                        day_of_the_week=day,
+                        meals=meal,
+                        ))
+    # TimetableLp.objects.bulk_create(to_create)
+    # добавляем масло
+    product = ProductLp.objects.get(name='Масло сливочное порц.10г')
+    for diet in ['ОВД', 'ОВД без сахара', 'ЩД','ВБД', 'ВКД']:
+        for day in days:
+            for meal in ['breakfast']:
+                    to_create.append(TimetableLp(
+                        item=product,
+                        type_of_diet=diet,
+                        day_of_the_week=day,
+                        meals=meal,
+                        ))
+    TimetableLp.objects.bulk_create(to_create)
