@@ -981,7 +981,9 @@ def printed_form_two_lp(request):
                     menu_all = MenuByDay.objects.filter(user_id=user.user_id)
                 else:
                     menu_all = MenuByDayReadyOrder.objects.filter(user_id=user.id)
-                all_products.append(check_value_two(menu_all, str((date_create)), meal, category))
+                pr = check_value_two(menu_all, str((date_create)), meal, category)
+                if pr != None:
+                    all_products.append(pr)
             # составляем список с уникальными продуктами
             unique_products = []
             for product in all_products:
