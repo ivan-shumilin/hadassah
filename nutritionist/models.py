@@ -182,6 +182,7 @@ class Base(models.Model):
 
 class Product(models.Model):
     iditem = models.IntegerField(null=True)
+    public_name = models.CharField(max_length=200, null=True, blank=True)
     name = models.CharField(max_length=200, null=True)
     price = models.IntegerField(null=True)
     carbohydrate = models.CharField(max_length=200, null=True)

@@ -1081,3 +1081,15 @@ def get_occupied_rooms(user_script):
         return list(occupied_rooms.keys())
     if user_script == 'rooms':
         return one_bed_free
+
+
+def add_public_name():
+    products_lp = ProductLp.objects.all()
+    for product in products_lp:
+        product.public_name = product.name
+        product.save()
+    products = Product.objects.all()
+    for product in products:
+        product.public_name = product.name
+        product.save()
+
