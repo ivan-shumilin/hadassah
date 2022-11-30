@@ -430,10 +430,20 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
 def add_default_menu(user):
     # генератор списка return даты на след 3 дня
     days = [parse(user.receipt_date) + timedelta(days=delta) for delta in [0, 1, 2]]
-    for day_of_the_week in days:
+    if user.type_of_diet in ['БД день 1', 'БД день 2']:
+        translated_diet = 'БД'
+    else:
+        translated_diet = user.type_of_diet
+    if user.type_of_diet == 'БД день 1':
+        days_of_the_week = ['понедельник', 'вторник', 'понедельник']
+    if user.type_of_diet == 'БД день 2':
+        days_of_the_week = ['вторник', 'понедельник', 'вторник']
+    for index, day_of_the_week in enumerate(days):
         for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-            translated_diet = user.type_of_diet
-            products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=get_day_of_the_week(str(day_of_the_week))) &
+
+            # день недели словами
+            day = get_day_of_the_week(str(day_of_the_week)) if user.type_of_diet not in ['БД день 1', 'БД день 2'] else days_of_the_week[index]
+            products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day) &
                                                 Q(timetablelp__type_of_diet=translated_diet) &
                                                 Q(timetablelp__meals=meal))
             to_create = []
@@ -455,9 +465,16 @@ def add_default_menu(user):
     return
 
 def add_default_menu_on_one_day(day_of_the_week, user):
-    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+
+    if user.type_of_diet in ['БД день 1', 'БД день 2']:
+        is_even = (day_of_the_week - user.receipt_date).days % 2 == 0
+        day = 'понедельник' if is_even else 'вторник'
+        translated_diet = 'БД'
+    else:
+        day = get_day_of_the_week(str(day_of_the_week))
         translated_diet = user.type_of_diet
-        products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=get_day_of_the_week(str(day_of_the_week))) &
+    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+        products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day) &
                                             Q(timetablelp__type_of_diet=translated_diet) &
                                             Q(timetablelp__meals=meal))
         to_create = []
