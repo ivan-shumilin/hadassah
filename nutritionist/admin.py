@@ -44,7 +44,7 @@ class ProductLpAdmin(admin.ModelAdmin):
     list_display = ('name', 'public_name', 'category', 'description', 'status')
     fields = ('name', 'public_name', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber', 'energy', 'weight', 'description', 'comment', 'status')
     list_filter = ('category', 'status',)
-    list_per_page = 100
+    list_per_page = 600
 
     inlines = [TimetableLpAdmin]
 
