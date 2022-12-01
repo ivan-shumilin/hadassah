@@ -2460,7 +2460,7 @@ a {
   font-weight: 600;
   line-height: 1.71;
   padding: 4px 16px;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   vertical-align: middle;
   white-space: nowrap
 }

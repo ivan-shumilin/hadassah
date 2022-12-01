@@ -926,7 +926,7 @@ const list = document.querySelectorAll('.product')
 const list1 = document.querySelectorAll('.tag')
  list1.forEach(item1 =>{
         if (item1.innerHTML == 'ОВД') {
-            item1.classList.add('green')
+            item1.classList.add('blue')
         }
         if (item1.innerHTML == 'ОВД б/с') {
             item1.classList.add('mint')
@@ -934,6 +934,10 @@ const list1 = document.querySelectorAll('.tag')
         if (item1.innerHTML == 'ОВД без сахара') {
             item1.innerHTML = 'ОВД б/с'
             item1.classList.add('mint')
+        }
+        if (item1.innerHTML == 'ОВД веган (пост) без глютена') {
+            item1.innerHTML = 'ОВД веган'
+            item1.classList.add('green')
         }
         if (item1.innerHTML == 'ЩД') {
             item1.classList.add('yellow')
@@ -954,7 +958,7 @@ const list1 = document.querySelectorAll('.tag')
             item1.classList.add('red')
         }
         if (item1.innerHTML == 'НКД') {
-            item1.classList.add('blue')
+            item1.classList.add('red')
         }
         if (item1.innerHTML == 'ВКД') {
             item1.classList.add('purple')

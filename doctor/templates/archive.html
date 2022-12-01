@@ -438,10 +438,10 @@ const list2 = document.querySelectorAll('.product')
     list2[0].click()
   }
 
-const list1 = document.querySelectorAll('.tag')
+  const list1 = document.querySelectorAll('.tag')
  list1.forEach(item1 =>{
         if (item1.innerHTML == 'ОВД') {
-            item1.classList.add('green')
+            item1.classList.add('blue')
         }
         if (item1.innerHTML == 'ОВД б/с') {
             item1.classList.add('mint')
@@ -450,20 +450,30 @@ const list1 = document.querySelectorAll('.tag')
             item1.innerHTML = 'ОВД б/с'
             item1.classList.add('mint')
         }
+        if (item1.innerHTML == 'ОВД веган (пост) без глютена') {
+            item1.innerHTML = 'ОВД веган'
+            item1.classList.add('green')
+        }
         if (item1.innerHTML == 'ЩД') {
             item1.classList.add('yellow')
         }
         if (item1.innerHTML == 'БД') {
-            item1.classList.add('yellow')
+            item1.classList.add('pink')
+        }
+        if (item1.innerHTML == 'БД день 1') {
+            item1.classList.add('pink')
+        }
+        if (item1.innerHTML == 'БД день 2') {
+            item1.classList.add('pink')
         }
         if (item1.innerHTML == 'ВБД') {
             item1.classList.add('orange')
         }
         if (item1.innerHTML == 'НБД') {
-            item1.classList.add('yellow')
+            item1.classList.add('red')
         }
         if (item1.innerHTML == 'НКД') {
-            item1.classList.add('blue')
+            item1.classList.add('red')
         }
         if (item1.innerHTML == 'ВКД') {
             item1.classList.add('purple')

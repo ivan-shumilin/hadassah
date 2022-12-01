@@ -467,9 +467,13 @@ def add_default_menu(user):
 def add_default_menu_on_one_day(day_of_the_week, user):
 
     if user.type_of_diet in ['БД день 1', 'БД день 2']:
-        is_even = (day_of_the_week - user.receipt_date).days % 2 == 0
-        day = 'понедельник' if is_even else 'вторник'
-        translated_diet = 'БД'
+        is_even = (day_of_the_week - user.receipt_date + timedelta(days=1)).days % 2 == 0
+        if user.type_of_diet == 'БД день 1':
+            day = 'вторник' if is_even else 'понедельник'
+            translated_diet = 'БД'
+        if user.type_of_diet == 'БД день 2':
+            day = 'понедельник' if is_even else 'вторник'
+            translated_diet = 'БД'
     else:
         day = get_day_of_the_week(str(day_of_the_week))
         translated_diet = user.type_of_diet
@@ -581,15 +585,15 @@ def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
 
 def delete_choices(CustomUserFormSet):
     """ Удаляем два выбора из formset 'не выбрано', '-------' """
-    CustomUserFormSet.form.base_fields['department'].choices = CustomUserFormSet.form.base_fields['department'].choices[
-                                                               2:]
-    CustomUserFormSet.form.base_fields['type_of_diet'].choices = CustomUserFormSet.form.base_fields[
-                                                                     'type_of_diet'].choices[
-                                                                 2:]
-    CustomUserFormSet.form.base_fields['room_number'].choices = CustomUserFormSet.form.base_fields[
-                                                                    'room_number'].choices[
-                                                                2:]
+    for field in ['department', 'type_of_diet', 'room_number']:
+        CustomUserFormSet.form.base_fields[field].choices.remove(('', '---------'))
+        if ('Не выбрано', 'Не выбрано') in CustomUserFormSet.form.base_fields[field].choices:
+            CustomUserFormSet.form.base_fields[field].choices.remove(('Не выбрано', 'Не выбрано'))
+    CustomUserFormSet.form.base_fields['type_of_diet'].choices.remove(('БД', 'БД'))
+
     return CustomUserFormSet
+
+
 
 logging.basicConfig(
     level=logging.DEBUG,

@@ -973,7 +973,7 @@ def printed_form_two_lp(request):
     # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
     for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink']:
         list_whith_unique_products = []
-        for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД', 'БД день 1', 'БД день 2']:
+        for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'ОВД веган (пост) без глютена', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД', 'БД день 1', 'БД день 2']:
             users_with_diet = users.filter(type_of_diet=diet)
             all_products = []
             for user in users_with_diet:
@@ -1057,7 +1057,7 @@ def printed_form_two_cafe(request):
         users = UsersReadyOrder.objects.all()
     for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink']:
         list_whith_unique_products = []
-        for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД']:
+        for diet in ['ОВД', 'ОВД без сахара', 'ОВД веган (пост) без глютена', 'ЩД', 'БД', 'БД день 1', 'БД день 2', 'ВБД', 'НБД', 'НКД', 'ВКД']:
             users_with_diet = users.filter(type_of_diet=diet)
             all_products = []
             for user in users_with_diet:

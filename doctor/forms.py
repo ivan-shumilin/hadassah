@@ -37,7 +37,7 @@ class PatientRegistrationForm(forms.ModelForm):
                                        attrs={'class': 'field',
                                               'placeholder': 'Не выбрано'})
                                    )
-    type_of_diet = forms.ChoiceField(label='Диета', choices=TYPE_DIET,
+    type_of_diet = forms.ChoiceField(label='Диета', choices=TYPE_DIET_FOR_FORM,
                                    widget=forms.Select(
                                        attrs={'class': 'field',
                                               'placeholder': 'Не выбрано'})
