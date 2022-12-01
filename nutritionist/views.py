@@ -1555,13 +1555,24 @@ def create_stickers_pdf(catalog):
             # pdf.add_font("Arial", "", "FontsFree-Net-arial-bold.ttf", uni=True)
             pdf.add_font("Arial1", "", "FontsFree-Net-arial-bold.ttf", uni=True)
             pdf.set_font("Arial1", style='', size=33)
-            pdf.cell(50, 14, txt=f'  {item["room_number"]}, {item["bed"]}', ln=1, align="L")
-            pdf.cell(50, 14, txt=f'  {formatting_full_name(item["name"])}', ln=2, align="L")
-            pdf.cell(50, 14, txt=f'  {item["diet"]}, {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=3, align="L")
+            ln = 1
+            pdf.cell(50, 14, txt=f'  {item["room_number"]}, {item["bed"]}', ln=ln, align="L")
+            ln += 1
+            pdf.cell(50, 14, txt=f'  {formatting_full_name(item["name"])}', ln=ln, align="L")
+            ln += 1
+            if item["diet"] == "ОВД веган (пост) без глютена":
+                pdf.cell(50, 14, txt=f'  {"ОВД веган (пост) без глютена",}', ln=ln, align="L")
+                ln += 1
+                pdf.cell(50, 14, txt=f'  {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=ln, align="L")
+                ln += 1
+            else:
+                pdf.cell(50, 14, txt=f'  {item["diet"]}, {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=3, align="L")
+                ln += 1
             pdf.cell(50, 10, txt="", ln=5, align="L")
+            ln += 1
             pdf.add_font("Arial2", "", "arial.ttf", uni=True)
             pdf.set_font("Arial2", style='', size=30)
-            ln = 5
+
             for index, product in enumerate(item['products_lp'] + item['products_cafe']):
                 max_count = 37
                 if len(product) >= max_count:
