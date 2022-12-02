@@ -2366,7 +2366,7 @@ a {
   letter-spacing: .72px;
   line-height: 1.71;
   padding: 4px 16px;
-  text-transform: uppercase
+  /* text-transform: uppercase */
 }
 
 .header-block .green-menu a.active {

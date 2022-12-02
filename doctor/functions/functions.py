@@ -191,6 +191,7 @@ def translate_diet(diet):
         'НБД': 'nbd',
         'НКД': 'nkd',
         'ВКД': 'vkd',
+        'ОВД веган (пост) без глютена': 'ОВД веган (пост) без глютена'
     }
     return TYPE_DIET[diet]
 

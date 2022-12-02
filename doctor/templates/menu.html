@@ -451,7 +451,7 @@ function submitMeals(meal) {
 var diet_name = document.getElementById('diet_name')
 var diet_menu = document.getElementById('diet-menu')
         if (diet_name.innerHTML == 'ovd') {
-            diet_menu.classList.add('green')
+            diet_menu.classList.add('blue-menu')
             diet_name.innerHTML = 'ОВД'
         }
         if (diet_name.innerHTML == 'ovd_sugarless') {
@@ -465,6 +465,10 @@ var diet_menu = document.getElementById('diet-menu')
         if (diet_name.innerHTML == 'bd') {
             diet_menu.classList.add('yellow-menu')
             diet_name.innerHTML = 'БД'
+        }
+        if (diet_name.innerHTML == 'ОВД веган (пост) без глютена') {
+            diet_menu.classList.add('green')
+            diet_name.innerHTML = 'ОВД веган'
         }
         if (diet_name.innerHTML == 'vbd') {
             diet_menu.classList.add('orange-menu')
