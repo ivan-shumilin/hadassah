@@ -232,7 +232,7 @@ def formatting_full_name(full_name):
 
 def check_value(category, products):
     value: str = ''
-    if category != 'товар':
+    if category != 'товар' and category != 'напиток':
         try:
             value = products.get(category=category).id
         except Exception:
@@ -376,16 +376,28 @@ def check_value_two(menu_all, date_str, meal, category):
         return value
     if category == 'drink':
         try:
-            id = menu_all.filter(date=date_str).get(meal=meal).drink
-            if id == '':
-                return None
-            if 'cafe' in id:
-                product = Product.objects.get(id=id.split('-')[2])
-            else:
-                product = ProductLp.objects.get(id=id)
-            value = create_value(product, id)
+            value: list = []
+            id_set = (menu_all.filter(date=date_str).get(meal=meal).drink).split(',')
+            if len(id_set) == 0:
+                return [None]
+            for id in id_set:
+                if 'cafe' in id:
+                    product = Product.objects.get(id=id.split('-')[2])
+                else:
+                    product = ProductLp.objects.get(id=id)
+                value.append({
+                    'id': id,
+                    'name': product.name,
+                    'carbohydrate': round(float(0 if product.carbohydrate == None else product.carbohydrate), 1),
+                    'fat': round(float(0 if product.fat == None else product.fat), 1),
+                    'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
+                    'energy': round(float(0 if product.energy == None else product.energy), 1),
+                    'image': product.image,
+                    'description': product.description,
+                    'category': product.category,
+                })
         except Exception:
-            value = None
+            value = [None]
         return value
     if category == 'products':
         try:
@@ -1010,7 +1022,7 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order):
         'porridge': [check_value_two(menu_all, date_show, meal, "porridge")],
         'dessert': [check_value_two(menu_all, date_show, meal, "dessert")],
         'fruit': [check_value_two(menu_all, date_show, meal, "fruit")],
-        'drink': [check_value_two(menu_all, date_show, meal, "drink")],
+        'drink': check_value_two(menu_all, date_show, meal, "drink"),
         'products': check_value_two(menu_all, date_show, meal, "products"),
     }
     if lp_or_cafe == 'lp':
