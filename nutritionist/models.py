@@ -222,7 +222,7 @@ class Timetable(models.Model):
 
 
 class MenuByDay(models.Model):
-    user_id = models.ForeignKey('CustomUser', on_delete=models.SET_NULL, null=True)
+    user_id = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True)
     date = models.DateField()
     meal = models.CharField(
             max_length=100,
@@ -244,9 +244,11 @@ class MenuByDay(models.Model):
     fruit = models.CharField(max_length=100, null=True)
     drink = models.CharField(max_length=100, null=True)
     salad = models.CharField(max_length=100, null=True)
+    products = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return f'{self.user_id} {self.date}'
+
 
 class UsersReadyOrder(models.Model):
     user_id = models.CharField(max_length=200, null=True)
@@ -324,6 +326,7 @@ class MenuByDayReadyOrder(models.Model):
     fruit = models.CharField(max_length=100, null=True)
     drink = models.CharField(max_length=100, null=True)
     salad = models.CharField(max_length=100, null=True)
+    products = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return f'{self.user_id} {self.date}'

@@ -191,7 +191,10 @@ def translate_diet(diet):
         'НБД': 'nbd',
         'НКД': 'nkd',
         'ВКД': 'vkd',
-        'ОВД веган (пост) без глютена': 'ОВД веган (пост) без глютена'
+        'ОВД веган (пост) без глютена': 'ОВД веган (пост) без глютена',
+        'Нулевая диета': 'Нулевая диета',
+        'БД день 1': 'БД день 1',
+        'БД день 2': 'БД день 2',
     }
     return TYPE_DIET[diet]
 
@@ -229,10 +232,14 @@ def formatting_full_name(full_name):
 
 def check_value(category, products):
     value: str = ''
-    try:
-        value = products.get(category=category).id
-    except Exception:
-        value = None
+    if category != 'товар':
+        try:
+            value = products.get(category=category).id
+        except Exception:
+            value = None
+    else:
+        value = ','.join([str(item.id) for item in products.filter(category=category)])
+
     return value
 
 def check_value_(menu_all, date_str, meal, category):
@@ -276,6 +283,32 @@ def create_value(product, id):
 
 def check_value_two(menu_all, date_str, meal, category):
     value: str = ''
+    if category == 'salad':
+        try:
+            id = menu_all.filter(date=date_str).get(meal=meal).salad
+            if id == '':
+                return None
+            if 'cafe' in id:
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                product = ProductLp.objects.get(id=id)
+            value = create_value(product, id)
+        except Exception:
+            value = None
+        return value
+    if category == 'soup':
+        try:
+            id = menu_all.filter(date=date_str).get(meal=meal).soup
+            if id == '':
+                return None
+            if 'cafe' in id:
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                product = ProductLp.objects.get(id=id)
+            value = create_value(product, id)
+        except Exception:
+            value = None
+        return value
     if category == 'main':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).main
@@ -305,19 +338,6 @@ def check_value_two(menu_all, date_str, meal, category):
     if category == 'porridge':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).porridge
-            if id == '':
-                return None
-            if 'cafe' in id:
-                product = Product.objects.get(id=id.split('-')[2])
-            else:
-                product = ProductLp.objects.get(id=id)
-            value = create_value(product, id)
-        except Exception:
-            value = None
-        return value
-    if category == 'soup':
-        try:
-            id = menu_all.filter(date=date_str).get(meal=meal).soup
             if id == '':
                 return None
             if 'cafe' in id:
@@ -367,19 +387,32 @@ def check_value_two(menu_all, date_str, meal, category):
         except Exception:
             value = None
         return value
-    if category == 'salad':
+    if category == 'products':
         try:
-            id = menu_all.filter(date=date_str).get(meal=meal).salad
-            if id == '':
-                return None
-            if 'cafe' in id:
-                product = Product.objects.get(id=id.split('-')[2])
-            else:
-                product = ProductLp.objects.get(id=id)
-            value = create_value(product, id)
+            value: list = []
+            id_set = (menu_all.filter(date=date_str).get(meal=meal).products).split(',')
+            if len(id_set) == 0:
+                return [None]
+            for id in id_set:
+                if 'cafe' in id:
+                    product = Product.objects.get(id=id.split('-')[2])
+                else:
+                    product = ProductLp.objects.get(id=id)
+                value.append({
+                    'id': id,
+                    'name': product.name,
+                    'carbohydrate': round(float(0 if product.carbohydrate == None else product.carbohydrate), 1),
+                    'fat': round(float(0 if product.fat == None else product.fat), 1),
+                    'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
+                    'energy': round(float(0 if product.energy == None else product.energy), 1),
+                    'image': product.image,
+                    'description': product.description,
+                    'category': product.category,
+                })
         except Exception:
-            value = None
+            value = [None]
         return value
+
 
 
 def creates_dict_with_menu_patients(id):
@@ -496,6 +529,7 @@ def add_default_menu_on_one_day(day_of_the_week, user):
             fruit=check_value('фрукты', products),
             drink=check_value('напиток', products),
             salad=check_value('салат', products),
+            products=check_value('товар', products),
             ))
         MenuByDay.objects.bulk_create(to_create)
     return
@@ -937,14 +971,14 @@ def archiving_user(user):
 
 
 def counting_diets(users, floors):
-    diets_name = ['ОВД', 'ОВД без сахара', 'ЩД', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД']
+    diets_name = ['ОВД', 'ОВД без сахара', 'ЩД', 'БД день 1', 'БД день 2', 'ОВД веган (пост) без глютена', 'Нулевая диета', 'ВБД', 'НБД', 'НКД', 'ВКД']
     diets_count = []
     for diet in diets_name:
         users_diet = users.filter(type_of_diet=diet)
-        start_2nd_floor = 200
-        end_2nd_floor = 299
-        start_3nd_floor = 300
-        end_3nd_floor = 399
+        # start_2nd_floor = 200
+        # end_2nd_floor = 299
+        # start_3nd_floor = 300
+        # end_3nd_floor = 399
         if len(users_diet) > 0:
             diets_count.append({
                 "name": diet,
@@ -962,37 +996,36 @@ def counting_diets(users, floors):
 
 def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order):
     """ Создаем словарь с блюдами на конкретный прием пищи для пациента """
+
     if type_order == 'flex-order':
         menu_all = MenuByDay.objects.filter(user_id=id)
     else:
         menu_all = MenuByDayReadyOrder.objects.filter(user_id=id_fix_user)
-    menu = {}
     menu_list = []
-    # for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
     menu = {
-        'main': check_value_two(menu_all, date_show, meal, "main"),
-        'garnish': check_value_two(menu_all, date_show, meal, "garnish"),
-        'porridge': check_value_two(menu_all, date_show, meal, "porridge"),
-        'soup': check_value_two(menu_all, date_show, meal, "soup"),
-        'dessert': check_value_two(menu_all, date_show, meal, "dessert"),
-        'fruit': check_value_two(menu_all, date_show, meal, "fruit"),
-        'drink': check_value_two(menu_all, date_show, meal, "drink"),
-        'salad': check_value_two(menu_all, date_show, meal, "salad"),
+        'salad': [check_value_two(menu_all, date_show, meal, "salad")],
+        'soup': [check_value_two(menu_all, date_show, meal, "soup")],
+        'main': [check_value_two(menu_all, date_show, meal, "main")],
+        'garnish': [check_value_two(menu_all, date_show, meal, "garnish")],
+        'porridge': [check_value_two(menu_all, date_show, meal, "porridge")],
+        'dessert': [check_value_two(menu_all, date_show, meal, "dessert")],
+        'fruit': [check_value_two(menu_all, date_show, meal, "fruit")],
+        'drink': [check_value_two(menu_all, date_show, meal, "drink")],
+        'products': check_value_two(menu_all, date_show, meal, "products"),
     }
     if lp_or_cafe == 'lp':
-        for item in menu.values():
-            if item:
-                if 'cafe' not in item['id']:
-                    menu_list.append(item.get('name'))
-    if lp_or_cafe == 'cafe':
-        for item in menu.values():
-            if item:
-                if 'cafe' in item['id']:
-                    menu_list.append(item.get('name'))
+        for item_category in menu.values():
+            if item_category:
+                for item in item_category:
+                    if item:
+                        if (lp_or_cafe == 'lp' and 'cafe' not in item['id'])\
+                                or (lp_or_cafe == 'cafe' and 'cafe' in item['id']):
+                            menu_list.append(item.get('name'))
     return menu_list
 
 
 def create_list_users_on_floor(users, floors, meal, date_create, type_order):
+
     users = [user for user in users if user.room_number in floors]
     users_on_floor = []
     for user in users:

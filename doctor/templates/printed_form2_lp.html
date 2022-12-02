@@ -164,6 +164,23 @@
             {% endif %}
         {% endfor %}
     {% endif %}
+
+    {% if catalog.products %}
+        <tr class='light-blue'>
+            <td colspan="4">Товары</td>
+        </tr>
+    
+        {% for product in catalog.products %}
+            {% if product %}
+                <tr class='lp-table'>
+                    <td>{{ product.number }}</td>
+                    <td>{{ product.diet }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.count }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 </table>
 </body>
 </html>

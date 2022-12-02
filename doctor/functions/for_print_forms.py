@@ -129,7 +129,8 @@ def create_ready_order(meal):
                                 dessert=menu[0].dessert,
                                 fruit=menu[0].fruit,
                                 drink=menu[0].drink,
-                                salad=menu[0].salad))
+                                salad=menu[0].salad,
+                                products=menu[0].products))
     MenuByDayReadyOrder.objects.bulk_create(to_create)
 
 
@@ -346,7 +347,7 @@ def add_products_lp():
     to_create = []
     days = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
     meals = ['breakfast', 'lunch', 'afternoon', 'dinner']
-    diets = ['ОВД', 'ОВД без сахара', 'ОВД вегетарианское', 'ЩД', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД']
+    diets = ['ОВД', 'ОВД без сахара', 'ОВД веган (пост) без глютена', 'Нулевая диета', 'БД день 1', 'БД день 2', 'ЩД', 'ВБД', 'НКД', 'ВКД']
     product = ProductLp.objects.get(name='Вода "Jеvea" 0,51л.')
     for diet in diets:
         for day in days:
@@ -360,7 +361,7 @@ def add_products_lp():
     # TimetableLp.objects.bulk_create(to_create)
     # добавляем джем
     product = ProductLp.objects.get(name='Джем порционный 20 гр. в асс.')
-    for diet in ['ОВД', 'ОВД вегетарианское', 'ЩД', 'ВБД', 'ВКД']:
+    for diet in ['ОВД', 'ОВД веган (пост) без глютена', 'ЩД', 'ВБД', 'ВКД']:
         for day in days:
             for meal in ['breakfast']:
                     to_create.append(TimetableLp(
@@ -372,7 +373,7 @@ def add_products_lp():
     # TimetableLp.objects.bulk_create(to_create)
     # добавляем черный хлеб
     product = ProductLp.objects.get(name='Хлеб бородинский/ржаной 20 гр.')
-    for diet in ['ОВД', 'ОВД без сахара', 'ОВД вегетарианское', 'ВБД', 'ВКД']:
+    for diet in ['ОВД', 'ОВД без сахара', 'ОВД веган (пост) без глютена', 'ВБД', 'ВКД']:
         for day in days:
             for meal in ['breakfast', 'lunch', 'dinner']:
                     to_create.append(TimetableLp(
@@ -394,7 +395,7 @@ def add_products_lp():
     # TimetableLp.objects.bulk_create(to_create)
     # добавляем белый хлеб
     product = ProductLp.objects.get(name='Булочка французская 35гр. в асс.')
-    for diet in ['ОВД', 'ЩД', 'ВБД','ВКД']:
+    for diet in ['ОВД', 'ЩД', 'ВБД', 'ВКД']:
         for day in days:
             for meal in ['breakfast', 'lunch', 'dinner']:
                     to_create.append(TimetableLp(

@@ -757,11 +757,11 @@ async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_ti
     document.getElementById("bed_field").innerHTML = bed;
     document.getElementById("comment_field").innerHTML = comment;
     document.getElementById("card-user-id").value = id;
-    if (comment.length == 0) {
-        document.getElementById("link_lk_patient").innerHTML = '<a href="https://sk.petrushkagroup.com/patient/' + id + '">ЛК пациента</a>';
-    } else {
-        document.getElementById("link_lk_patient").innerHTML = ''
-    }
+    // if (comment.length == 0) {
+    //     document.getElementById("link_lk_patient").innerHTML = '<a href="https://sk.petrushkagroup.com/patient/' + id + '">ЛК пациента</a>';
+    // } else {
+    //     document.getElementById("link_lk_patient").innerHTML = ''
+    // }
     // var d = document.getElementById("patient-card-button");
     // var d_nested = document.getElementById("modal_field");
     // var throwawayNode = d.removeChild(d_nested);
@@ -937,6 +937,10 @@ const list1 = document.querySelectorAll('.tag')
         }
         if (item1.innerHTML == 'ОВД веган (пост) без глютена') {
             item1.innerHTML = 'ОВД веган'
+            item1.classList.add('green')
+        }
+        if (item1.innerHTML == 'Нулевая диета') {
+            item1.innerHTML = 'Нулевая диета'
             item1.classList.add('green')
         }
         if (item1.innerHTML == 'ЩД') {
