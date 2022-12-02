@@ -609,6 +609,7 @@ def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
         products_garnish = list(products.filter(category='гарнир'))
         products_main = list(products.filter(category='основной'))
         products_porridge = list(products.filter(category='каша'))
+        products_drink = list(products.filter(category='напиток'))
 
     if meal == 'afternoon':
         products_main = list(products.filter(category='основной'))
