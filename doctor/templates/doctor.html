@@ -822,58 +822,75 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
             for (var key in obj[day][meal]) {
                 if (obj[day][meal][key] != null) {
                     product = obj[day][meal][key]
+                    
                     isNotProducts = false
-                    result += '<div class="item">'
-                    if (product.image == null) {
-                        result += '<div class="img">'
-                        if (key == 'main') {
-                            result +='<img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt="">'
-                            result +='</div>'
-                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt=""></div>'
-                        }
-                        if (key == 'salad') {
-                            result +='<img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt="">'
-                            result +='</div>'
-                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt=""></div>'
-                        }
-                        if (key == 'soup') {
-                            result +='<img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt="">'
-                            result +='</div>'
-                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt=""></div>'
-                        }
-                        if (key == 'dessert') {
-                            result +='<img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt="">'
-                            result +='</div>'
-                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt=""></div>'
-                        }
-                        if (key == 'porridge') {
-                            result +='<img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt="">'
-                            result +='</div>'
-                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt=""></div>'
-                        }
-                        if (key == 'fruit') {
-                            result +='<img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt="">'
-                            result +='</div>'
-                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt=""></div>'
-                        }
-                        if (key == 'drink') {
+
+                    if (key == 'drink') {
+                        for (var i in product) {
+                            result += '<div class="item">'
+                            result += '<div class="img">'
                             result +='<img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt="">'
                             result +='</div>'
                             result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt=""></div>'
-                        }
-                        if (key == 'garnish') {
-                            result +='<img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt="">'
-                            result +='</div>'
-                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt=""></div>'
-                        }
+                            result += '<div id="name_today" class="name">' + product[i].name + '</div>'
+                            result += '<div class="value">' + 'Б - '+ formattingFFC(product[i].fiber) +  ', Ж -  '+ formattingFFC(product[i].fat) +  ', У -  '+ formattingFFC(product[i].carbohydrate) + ', Ккал - ' + formattingFFC(product[i].energy) +  '</div>'
+                            result += '<div class="text">' + product[i].description + '</div>' 
+                            result += '</div></div>'}
                     } else {
-                        result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
-                        result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
+
+                        result += '<div class="item">'
+                        if (product.image == null) {
+                            result += '<div class="img">'
+                            if (key == 'main') {
+                                result +='<img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt="">'
+                                result +='</div>'
+                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt=""></div>'
+                            }
+                            if (key == 'salad') {
+                                result +='<img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt="">'
+                                result +='</div>'
+                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt=""></div>'
+                            }
+                            if (key == 'soup') {
+                                result +='<img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt="">'
+                                result +='</div>'
+                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt=""></div>'
+                            }
+                            if (key == 'dessert') {
+                                result +='<img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt="">'
+                                result +='</div>'
+                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt=""></div>'
+                            }
+                            if (key == 'porridge') {
+                                result +='<img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt="">'
+                                result +='</div>'
+                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt=""></div>'
+                            }
+                            if (key == 'fruit') {
+                                result +='<img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt="">'
+                                result +='</div>'
+                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt=""></div>'
+                            }
+                            if (key == 'drink') {
+                                
+                                result +='<img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt="">'
+                                result +='</div>'
+                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt=""></div>'
+                            }
+                            if (key == 'garnish') {
+                                result +='<img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt="">'
+                                result +='</div>'
+                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt=""></div>'
+                            }
+                        } else {
+                            result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
+                            result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.com/imagecache/product/'+ product.image +'" alt=""></div>'
+                        }
+                        result += '<div id="name_today" class="name">' + product.name + '</div>'
+                        result += '<div class="value">' + 'Б - '+ formattingFFC(product.fiber) +  ', Ж -  '+ formattingFFC(product.fat) +  ', У -  '+ formattingFFC(product.carbohydrate) + ', Ккал - ' + formattingFFC(product.energy) +  '</div>'
+                        result += '<div class="text">' + product.description + '</div>' 
+                        result += '</div></div>'
                     }
-                    result += '<div id="name_today" class="name">' + product.name + '</div>'
-                    result += '<div class="value">' + 'Б - '+ formattingFFC(product.fiber) +  ', Ж -  '+ formattingFFC(product.fat) +  ', У -  '+ formattingFFC(product.carbohydrate) + ', Ккал - ' + formattingFFC(product.energy) +  '</div>'
-                    result += '<div class="text">' + product.description + '</div>' 
-                    result += '</div></div>'
                 }
             }
             result += '</div></div>'
@@ -881,7 +898,8 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
     } else {
         result += 'Выбранная дата раньше даты госпитализации, данные недоступны'
     }
-    item.insertAdjacentHTML("beforeend", result);
+        item.insertAdjacentHTML("beforeend", result);
+
 }
 
 function formattingFFC(value) {
