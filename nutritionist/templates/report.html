@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Печатная форма №1</title>
+    <title>Отчет для Hadassah</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,14 +75,13 @@
 <div class="container-fluid">
     <div class="row align-items-center justify-content-between">
         <div class="col-sm-6">
-            <h1 class="">Отчет по списанию блюд с {{ date_start|date:"d F Y"|lower }} по {{ date_finish|date:"d F Y"|lower }}</h1>
+            <h1 class="">Отчет по лечебному питанию для <br>Hadassah Medical Moscow</h1>
         </div>
     </div>
     <div class="row align-items-center justify-content-between">
         <div class="col-sm-6">
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                <button class="btn btn-primary mr-md-2" data-bs-target="#modal" data-bs-toggle="modal">Внутренний отчет</button>
-                <button class="btn btn-primary" data-bs-target="#modal-download" data-bs-toggle="modal">Отчет для Hadassah</button>
+                <button class="btn btn-primary" data-bs-target="#modal-download" data-bs-toggle="modal">Отчет</button>
             </div>
         </div>
     </div>
@@ -90,23 +89,6 @@
 
 
 
-
-<table id='table2' width="auto">
-    <tr>
-        <td>№</td>
-        <td>Категория</td>
-        <td>Название</td>
-        <td>Кол-во, шт.</td>
-    </tr>
-    {% for item in report %}
-        <tr>
-            <td>{{ item.number }}</td>
-            <td>{{ item.category|capfirst }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.count }}</td>
-        </tr>
-    {% endfor %}
-</table>
 
 <a id="link-download" class="hidden" href="{% static 'report.xlsx' %}"> Download </a>
 <script>
