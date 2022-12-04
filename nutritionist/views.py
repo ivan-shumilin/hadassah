@@ -1427,50 +1427,50 @@ def create_external_report_detailing(filtered_report):
 
 
 def report(request):
-    if request.method == 'GET' and request.GET != {}:
-        date_start = parse(request.GET['start'])
-        date_finish = parse(request.GET['finish'])
-    else:
-        date_start = datetime(datetime.today().year, datetime.today().month, 1).date()
-        date_finish = datetime.today().date()
-    filtered_report = Report.objects.filter(date_create__gte=date_start, date_create__lte=date_finish)
-
-    report = {}
-    for index, item in enumerate(filtered_report):
-        if 'cafe' in item.product_id:
-            product = Product.objects.get(id=item.product_id.split('-')[2])
-        else:
-            product = ProductLp.objects.get(id=item.product_id)
-        report.setdefault(item.product_id, []).append(
-            {'category': product.category,
-            'name': product.name,
-        })
-
-    temporary_report = []
-    for item in report.values():
-        item[0]['count'] = len(item)
-        temporary_report.append(item[0])
-
-
-    temporary_report.sort(key=operator.itemgetter('category'))
-    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша']
-    intermediate_option = []
-    report = []
-    for cat in category:
-        for item in temporary_report:
-            if item['category'] == cat:
-                intermediate_option.append(item)
-        intermediate_option.sort(key=operator.itemgetter('name'))
-        report += intermediate_option
-        intermediate_option = []
-    for index, item in enumerate(report):
-        item['category'] = item['category'] if item['category'] != 'основной' else 'основное'
-        item['number'] = index + 1
-
-    date = {'report': report,
-            'date_start': date_start,
-            'date_finish': date_finish}
-    return render(request, 'report.html', context=date)
+        # if request.method == 'GET' and request.GET != {}:
+        #     date_start = parse(request.GET['start'])
+        #     date_finish = parse(request.GET['finish'])
+        # else:
+        #     date_start = datetime(datetime.today().year, datetime.today().month, 1).date()
+        #     date_finish = datetime.today().date()
+        # filtered_report = Report.objects.filter(date_create__gte=date_start, date_create__lte=date_finish)
+        #
+        # report = {}
+        # for index, item in enumerate(filtered_report):
+        #     if 'cafe' in item.product_id:
+        #         product = Product.objects.get(id=item.product_id.split('-')[2])
+        #     else:
+        #         product = ProductLp.objects.get(id=item.product_id)
+        #     report.setdefault(item.product_id, []).append(
+        #         {'category': product.category,
+        #         'name': product.name,
+        #     })
+        #
+        # temporary_report = []
+        # for item in report.values():
+        #     item[0]['count'] = len(item)
+        #     temporary_report.append(item[0])
+        #
+        #
+        # temporary_report.sort(key=operator.itemgetter('category'))
+        # category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша']
+        # intermediate_option = []
+        # report = []
+        # for cat in category:
+        #     for item in temporary_report:
+        #         if item['category'] == cat:
+        #             intermediate_option.append(item)
+        #     intermediate_option.sort(key=operator.itemgetter('name'))
+        #     report += intermediate_option
+        #     intermediate_option = []
+        # for index, item in enumerate(report):
+        #     item['category'] = item['category'] if item['category'] != 'основной' else 'основное'
+        #     item['number'] = index + 1
+        #
+        # date = {'report': report,
+        #         'date_start': date_start,
+        #         'date_finish': date_finish}
+    return render(request, 'report.html', {})
 
 
 def reports(request):
