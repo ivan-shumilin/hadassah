@@ -68,9 +68,10 @@ def doctor(request):
     # create_user_today('afternoon')
     # create_products_lp()
     # add_products_lp()
-    # create_user_today('dinner')
+    # create_user_today('breakfast')
     # add_products_lp()
     # create_ready_order('dinner')
+    # create_user_today('tomorrow')
 
 
 
