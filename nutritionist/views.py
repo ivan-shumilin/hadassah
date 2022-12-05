@@ -971,7 +971,7 @@ def printed_form_two_lp(request):
     else:
         users = UsersReadyOrder.objects.all()
     # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
-    for category in ['products', 'porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink']:
+    for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink', 'products']:
         list_whith_unique_products = []
         for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'ОВД веган (пост) без глютена', 'Нулевая диета', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД', 'БД день 1', 'БД день 2']:
             users_with_diet = users.filter(type_of_diet=diet)
