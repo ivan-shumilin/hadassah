@@ -25,7 +25,7 @@
                             <div class="title">Ваши пациенты</div>
                         </div>
 
-                        <a onclick="changeSymbol('id_full_name')" class="button" data-modal-link="patient-add">
+                        <a onclick="changeSymbol('id_full_name', 'id_birthdate')" class="button" data-modal-link="patient-add">
                             <span class="i i-plus"></span>
                             Добавить
                         </a>
@@ -114,7 +114,7 @@
                                     '{{ form.comment.value|cut:"None"  }}',
                                      '{{ form.id.value }}', '{{ form.floor.value }}')">
                             <div class="td">
-                                <div class="name ellipsis">{{ form.full_name.value|formatting_full_name }}</div>
+                                <div class="name ellipsis">{{ forloop.counter }}. {{ form.full_name.value|formatting_full_name }}</div>
                             </div>
                             <div class="td">{{ form.room_number.value }}</div>
                             <div class="td">
@@ -137,7 +137,7 @@
                                     <div id='birthdate_edit' class="form-group">
                                         {% load widget_tweaks %}
                                         <label>Дата рождения</label>
-                                        <input type="text" value="{{ form.birthdate.value|date:'d.m.Y' }}" data-datepicker id="{{ form.birthdate.id_for_label }}">
+                                        <input type="text" value="{{ form.birthdate.value|date:'d.m.Y' }}" id="id-birthdate-{{ form.id.value }}">
                                         <div id ='error_birthdate' class="error-field"></div>
                                     </div>
                                     <div id='receipt_date_edit' class="form-group">
@@ -198,7 +198,7 @@
                                     <div class="form-group item-actions flex flex-center last_form_group">
                                         <button name="add_patient"
                                          onclick="validationEditForm('full_name_{{ form.id.value }}',
-                                         '{{ form.birthdate.id_for_label }}',
+                                         'id-birthdate-{{ form.id.value }}',
                                           '{{ form.receipt_date.id_for_label }}',
                                            '{{ form.receipt_time.id_for_label }}',
                                             '{{ form.department.id_for_label }}',
@@ -206,7 +206,8 @@
                                               'id-room-number-{{ form.id.value }}',
                                                'id_bed-{{ form.id.value }}',
                                                 '{{ form.comment.id_for_label }}',
-                                                 '{{ form.id.value }}')">Сохранить</button>
+                                                 '{{ form.id.value }}',
+                                                 'id-floor-{{ form.id.value }}')">Сохранить</button>
                                         <a class="button white" data-modal-close>Отменить</a>
                                     </div>
 
@@ -324,7 +325,8 @@ async function clickEditForm() {
     var userBed = document.getElementById("card-bed").value;
     var userRoomId = `id-room-number-${userId}`;
     var userNameId = `full_name_${userId}`;
-    changeSymbol(userNameId);
+    var userBdate = `id-birthdate-${userId}`;
+    changeSymbol(userNameId, userBdate);
     item = document.getElementById(userRoomId);
     while (item.firstChild) {
         item.removeChild(item.firstChild);
@@ -825,7 +827,7 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
                     
                     isNotProducts = false
 
-                    if (key == 'drink') {
+                    if ((key == 'drink') && (product[0] != null)) {
                         for (var i in product) {
                             result += '<div class="item">'
                             result += '<div class="img">'
@@ -1020,6 +1022,10 @@ function filtration() {
         document.getElementById(filterBy).classList.add('desc');
     }
 }
+function checkDate(year, month, day) {
+        let date = new Date(year, month - 1, day);
+        return date.getFullYear() == year && date.getMonth() == month - 1 && date.getDate() == day;
+    }
 
 
 function validationForm() {
@@ -1063,6 +1069,16 @@ function validationForm() {
         document.getElementById('birthdate_add').classList.add('error');
         error = error + 1
     }
+
+    let birthdateArr = birthdate.value.split(".");
+    if (!checkDate(birthdateArr[2], birthdateArr[1], birthdateArr[0])) {
+        document.getElementById('error_birthdate').innerHTML = 'Неверная дата';
+        document.getElementById('error_birthdate').classList.add('error');
+        document.getElementById('birthdate_add').classList.add('error');
+        error = error + 1
+    }
+
+
     if (!receipt_date.value) {
         document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле';
         document.getElementById('error_receipt_date').classList.add('error');
@@ -1159,7 +1175,7 @@ function validationForm() {
 }
 
 
-function validationEditForm(id_full_name, id_birthdate, id_receipt_date, id_receipt_time, id_department, id_type_of_diet, id_room_number, id_bed, id_comment, id) {
+function validationEditForm(id_full_name, id_birthdate, id_receipt_date, id_receipt_time, id_department, id_type_of_diet, id_room_number, id_bed, id_comment, id, id_floor) {
     var form = document.getElementById('main-form');
     var full_name = document.getElementById(id_full_name)
     var birthdate = document.getElementById(id_birthdate)
@@ -1167,6 +1183,7 @@ function validationEditForm(id_full_name, id_birthdate, id_receipt_date, id_rece
     var receipt_time = document.getElementById(id_receipt_time)
     var department = document.getElementById(id_department)
     var type_of_diet = document.getElementById(id_type_of_diet)
+    var floor = document.getElementById(id_floor)
     var room_number = document.getElementById(id_room_number)
     var bed = document.getElementById(id_bed)
     var comment = document.getElementById(id_comment)
@@ -1189,6 +1206,14 @@ function validationEditForm(id_full_name, id_birthdate, id_receipt_date, id_rece
 
     if (!birthdate.value) {
         document.getElementById('error_birthdate').innerHTML = 'Обязательное поле';
+        document.getElementById('error_birthdate').classList.add('error');
+        document.getElementById('birthdate_edit').classList.add('error');
+        error = error + 1
+    }
+
+    let birthdateArr = birthdate.value.split(".");
+    if (!checkDate(birthdateArr[2], birthdateArr[1], birthdateArr[0])) {
+        document.getElementById('error_birthdate').innerHTML = 'Неверная дата';
         document.getElementById('error_birthdate').classList.add('error');
         document.getElementById('birthdate_edit').classList.add('error');
         error = error + 1
@@ -1297,6 +1322,7 @@ function validationEditForm(id_full_name, id_birthdate, id_receipt_date, id_rece
         document.getElementById('test1_receipt_time').value = receipt_time.value
         document.getElementById('test1_department').value = department.value
         document.getElementById('test1_type_of_diet').value = type_of_diet.value
+        document.getElementById('test1_floor').value = floor.value
         document.getElementById('test1_room_number').value = room_number.value
         document.getElementById('test1_bed').value = bed.value
         document.getElementById('test1_comment').value = comment.value
@@ -1426,8 +1452,10 @@ function clickOnEditedElement() {
 
 
 clickOnElement();
-function changeSymbol(id) {
-    let nameInput = document.getElementById(id);
+function changeSymbol(idName, idBirthdate) {
+    let symbol = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
+    let nameInput = document.getElementById(idName);
+    let birthdateInput = document.getElementById(idBirthdate);
     nameInput.addEventListener("input", function() {
         if (this.value.charCodeAt(this.value.length - 1) == 1105) {
             this.value = this.value.slice(0, -1) + 'е';
@@ -1435,8 +1463,44 @@ function changeSymbol(id) {
         if (this.value.charCodeAt(this.value.length - 1) == 1025) {
             this.value = this.value.slice(0, -1) + 'Е';
         }
-})
+    })
+    var old = 0
+    birthdateInput.addEventListener("input", function() {
+        if (!symbol.includes(this.value[this.value.length - 1])) {
+            this.value = this.value.slice(0, -1)
+        }
+        if ((this.value.length == 1) && (this.value[0] > 3)) {
+            this.value = '0' + this.value
+            old = 1
+        }
+        if ((this.value.length == 4) && (this.value[3] > 1)) {
+            this.value = this.value.slice(0, -1) + '0' + this.value[3]
+            old = 4
+        }
+        if (this.value.length == 2) {
+            if (old == 1) {
+                this.value = this.value + '.'
+            } 
+            if (old == 3) {
+                this.value = this.value.slice(0, -1)
+            }
+        } 
+        if (this.value.length == 5) {
+            if (old == 4) {
+                this.value = this.value + '.'
+            } 
+            if (old == 6) {
+                this.value = this.value.slice(0, -1)
+            }
+        } 
+        if (this.value.length == 11) {
+            this.value = this.value.slice(0, -1)
+        }
+        old = this.value.length
+    })
 }
+
+
 
 
 

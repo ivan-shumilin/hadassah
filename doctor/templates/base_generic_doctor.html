@@ -60,6 +60,7 @@
 
 <!-- Если на странице "доктор" или "архив" -->
 {% else %}
+<script src="{% static 'doctor/js/moment.js' %}"></script>
 <body  class="has-right">
     <div data-modal="profile-form" data-modal-width="480">
     <div class="title">Редактировать профиль</div>
@@ -267,7 +268,7 @@
                 <div id='birthdate_add' class="form-group">
                     {% load widget_tweaks %}
                     {{ user_form.birthdate.label }}
-                    {{ user_form.birthdate|attr:"data-datepicker" }}
+                    {{ user_form.birthdate }}
                     <div id ='error_birthdate' class="error-field"></div>
                 </div>
                 <div id='receipt_date_add' class="form-group">
@@ -294,6 +295,7 @@
                         <option value="Хирургия">Хирургия</option>
                         <option value="Реанимация">Реанимация</option>
                         <option value="Интенсивная терапия">Интенсивная терапия</option>
+                        <option value="Check-up">Check-up</option>
                      </select>
                     <div id ='error_department' class="error-field"></div>
                 </div>
@@ -370,7 +372,6 @@
             </div>
           </div>
     <script src="{% static 'doctor/js/all.js' %}"></script>
-    <script src="{% static 'doctor/js/moment.js' %}"></script>
 </form>
 </body>
 </html>
