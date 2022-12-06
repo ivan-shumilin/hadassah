@@ -1599,6 +1599,21 @@ def create_сatalog():
 def create_stickers_pdf(catalog):
     from fpdf import FPDF
 
+    def create_res_list(product, max_count_in_line, type):
+        st_ch1 = '- ' if type == 'products' else '  '
+        st_ch2 = '-' if type == 'products' else ' '
+        product_list = product.split(' ')
+        res = ""
+        res_list = []
+        for item in product_list:
+            if len(res + item) < max_count_in_line:
+                res = res + ' ' + item if res != "" else st_ch1 + item
+            else:
+                res_list.append(res) if res[0] == st_ch2 else res_list.append('  ' + res)
+                res = item
+        res_list.append(res) if res[0] == st_ch2 else res_list.append('  ' + res)
+        return res_list
+
     pdf = FPDF()
     catalog = catalog['catalog']
     for floor in ['users_2nd_floor', 'users_3nd_floor', 'users_4nd_floor']:
@@ -1610,36 +1625,35 @@ def create_stickers_pdf(catalog):
             pdf.add_font("Arial1", "", "FontsFree-Net-arial-bold.ttf", uni=True)
             pdf.set_font("Arial1", style='', size=33)
             ln = 1
-            pdf.cell(50, 14, txt=f'  {item["room_number"]}, {item["bed"]}', ln=ln, align="L")
-            ln += 1
-            pdf.cell(50, 14, txt=f'  {formatting_full_name(item["name"])}', ln=ln, align="L")
+            pdf.cell(50, 14, txt=f'  {formatting_full_name(item["name"])}, {item["room_number"]}, {item["bed"]}', ln=ln, align="L")
             ln += 1
             if item["diet"] == "ОВД веган (пост) без глютена":
-                pdf.cell(50, 14, txt=f'  {"ОВД веган (пост) без глютена",}', ln=ln, align="L")
+                pdf.cell(50, 14, txt=f'  ОВД веган (пост) без глютена,', ln=ln, align="L")
                 ln += 1
                 pdf.cell(50, 14, txt=f'  {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=ln, align="L")
                 ln += 1
             else:
                 pdf.cell(50, 14, txt=f'  {item["diet"]}, {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=3, align="L")
                 ln += 1
-            pdf.cell(50, 10, txt="", ln=5, align="L")
-            ln += 1
             pdf.add_font("Arial2", "", "arial.ttf", uni=True)
             pdf.set_font("Arial2", style='', size=30)
+            max_count_in_line = 39
+            if len(item["comment"]) >= max_count_in_line:
+                res_list = create_res_list(item["comment"], max_count_in_line, 'comment')
+                for product in res_list:
+                    pdf.cell(50, 10, txt=f'{product}', ln=ln, align="L")
+                    ln += 1
+            else:
+                pdf.cell(50, 10, txt=f'  {item["comment"]}', ln=ln, align="L")
+            ln += 1
+            pdf.cell(50, 10, txt="", ln=5, align="L")
+            ln += 1
+
+
 
             for index, product in enumerate(item['products_lp'] + item['products_cafe']):
-                max_count = 37
-                if len(product) >= max_count:
-                    product_list = product.split(' ')
-                    res = ""
-                    res_list = []
-                    for item in product_list:
-                        if len(res + item) < max_count:
-                            res = res + ' ' + item if res != "" else '- ' + item
-                        else:
-                            res_list.append(res) if res[0] == '-' else res_list.append('  ' + res)
-                            res = item
-                    res_list.append(res) if res[0] == '-' else res_list.append('  ' + res)
+                if len(product) >= max_count_in_line:
+                    res_list = create_res_list(product, max_count_in_line, 'products')
                     for product in res_list:
                         pdf.cell(50, 10, txt=f'{product}', ln=index + ln, align="L")
                         ln += 1
@@ -1647,7 +1661,6 @@ def create_stickers_pdf(catalog):
                     pdf.cell(50, 10, txt=f'- {product}', ln=index + ln, align="L")
                 pdf.cell(50, 3, txt=f'', ln=index + 1 + ln, align="L")
     pdf.output("static/stickers.pdf")
-
     return
 
 
