@@ -847,7 +847,7 @@ def edit_user(user_form, type):
     user.room_number = user_form.data['room_number1']
 
     if user.bed != user_form.data['bed1']:
-        changes.append(f"номер койко-места<b>{user.bed}</b> изменен на <b>{user_form.data['bed1']}</b>")
+        changes.append(f"номер койко-места <b>{user.bed}</b> изменен на <b>{user_form.data['bed1']}</b>")
     user.bed = user_form.data['bed1']
 
     if user.type_of_diet != user_form.data['type_of_diet1']:
