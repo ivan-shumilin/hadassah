@@ -1637,7 +1637,7 @@ def create_stickers_pdf(catalog):
                 ln += 1
             pdf.add_font("Arial2", "", "arial.ttf", uni=True)
             pdf.set_font("Arial2", style='', size=30)
-            max_count_in_line = 39
+            max_count_in_line = 38
             if len(item["comment"]) >= max_count_in_line:
                 res_list = create_res_list(item["comment"], max_count_in_line, 'comment')
                 for product in res_list:
