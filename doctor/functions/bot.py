@@ -32,7 +32,7 @@ def formatting_full_name(full_name):
             res += value[0:1].capitalize() + '.'
     return res
 
-def do_messang_send():
-    if datetime.today().time().hour < 7 or datetime.today().time().hour >= 17:
+def do_messang_send(name):
+    if datetime.today().time().hour < 7 or datetime.today().time().hour >= 17 or name == 'Leslie William Nielsen':
         return False
     return True

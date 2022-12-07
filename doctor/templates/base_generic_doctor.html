@@ -311,13 +311,13 @@
                 </div>
                 <div id='room_number_add' class="form-group hidden-edit">
                     {{ user_form.room_number.label }}
-                    <select  onchange="addBed(this.value)" name="room_number" id="id_room_number">
+                    <select onchange="addBed(this.value)" name="room_number" id="id_room_number">
                     </select>
                     <div id ='error_room_number' class="error-field"></div>
                 </div>
                 <div id='bed_add' class="form-group hidden-edit">
                     {{ user_form.bed.label }}
-                    <select  name="bed" id="id_bed">
+                    <select onchange="checkBed(this.value)" name="bed" id="id_bed">
                     </select>
                     <div id ='error_bed' class="error-field"></div>
                 </div>

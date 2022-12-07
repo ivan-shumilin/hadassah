@@ -736,7 +736,7 @@ def create_user(user_form):
             now_show_meal = get_now_show_meal()
             if meal_order == now_show_meal and meal_order != 'завтра':
                 update_UsersToday(user)
-            if do_messang_send() and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
+            if do_messang_send(user.full_name) and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
                 regard = u'\u26a0\ufe0f'
                 messang = f'{regard} <b>Изменение с {meal_order}</b>\n'
                 messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
@@ -861,7 +861,17 @@ def edit_user(user_form, type):
         flag_add_comment = True if len(user.comment) < 2 and\
                                    len(user_form.data['comment1']) > 2 else False
 
-        changes.append(f'комментарий <b>"{user.comment if user.comment else "нет комментария"}"</b> изменен на <b>"{user_form.data["comment1"]}"</b>')
+        # changes.append(f'комментарий <b>"{user.comment if user.comment else "нет комментария"}"</b> изменен на <b>"{user_form.data["comment1"]}"</b>')
+        if user_form.data['comment1'] == "" or user.comment == "":
+            if user_form.data['comment1'] == "":
+                changes.append(f'комментарий <b>"{user.comment}"</b> удален')
+            if user.comment == "":
+                changes.append(f'добавлен комментарий <b>"{user_form.data["comment1"]}"</b>')
+        else:
+            changes.append(f'комментарий <b>"{user.comment}"</b> изменен на <b>"{user_form.data["comment1"]}"</b>')
+
+
+
     user.comment = user_form.data['comment1']
     # если надо восстановить учетную запись пациента
     if type == 'restore':
@@ -905,7 +915,7 @@ def edit_user(user_form, type):
             now_show_meal = get_now_show_meal()
             if meal_order == now_show_meal and meal_order != 'завтра':
                 update_UsersToday(user)
-            if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+            if do_messang_send(user.full_name):  # c 17 до 7 утра не отправляем сообщения
                 regard = u'\u26a0\ufe0f'
                 # все номера chat_id
                 if type == 'edit':
@@ -935,7 +945,7 @@ def archiving_user(user):
         # Прием пищи с которого пациент будет добавлен в заказ.
         meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
 
-        if do_messang_send():  # c 17 до 7 утра не отправляем сообщения
+        if do_messang_send(user.full_name):  # c 17 до 7 утра не отправляем сообщения
             attention = u'\u26a0\ufe0f'
             messang = ''
             messang += f'{attention} <b>Изменение с {meal_order}</b>\n'
@@ -1118,7 +1128,8 @@ def get_occupied_rooms(user_script):
     occupied_rooms = {}
     for user in users:
         occupied_rooms.setdefault(user.room_number, []).append(user.bed)
-
+    if user_script == 'easy_mode':
+        return occupied_rooms
      # словарь с double rooms с одной свободной койкой
     one_bed_free = {}
     for key, value in occupied_rooms.items():
@@ -1132,6 +1143,8 @@ def get_occupied_rooms(user_script):
         return list(occupied_rooms.keys())
     if user_script == 'rooms':
         return one_bed_free
+    if user_script == 'easy_mode':
+        return occupied_rooms
 
 
 def add_public_name():
