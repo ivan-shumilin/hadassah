@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
-from django.forms import Textarea, TextInput, Select, DateInput, TimeInput
+from django.forms import Textarea, TextInput, Select, DateInput, TimeInput, CheckboxInput
 from .forms import PatientRegistrationForm, DietChoiceForm
 from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
     UsersToday, TimetableLp
@@ -39,7 +39,8 @@ def doctor(request):
     CustomUserFormSet = modelformset_factory(CustomUser,
                                              fields=(
                                                  'full_name', 'birthdate', 'receipt_date', 'receipt_time', 'department',
-                                                 'floor', 'room_number', 'bed', 'type_of_diet', 'comment', 'id'),
+                                                 'floor', 'room_number', 'bed', 'type_of_diet', 'comment', 'id', 'is_accompanying',
+                                                 'type_pay'),
                                              widgets={
                                                  'full_name': TextInput(attrs={'required': "True"}),
                                                  'birthdate': TextInput(),
@@ -52,6 +53,8 @@ def doctor(request):
                                                  'receipt_time': TextInput(),
                                                  'comment': Textarea(),
                                                  'id': Textarea(attrs={'style': "display: none;"}),
+                                                 'is_accompanying': TextInput(attrs={'required': "True"}),
+                                                 'type_pay': TextInput(attrs={'required': "True"})
                                              },
                                              extra=0, )
     check_have_menu()
@@ -101,7 +104,7 @@ def doctor(request):
         user_form = PatientRegistrationForm(request.POST)
         # formset = \
         #     CustomUserFormSet(request.POST, request.FILES, queryset=queryset)
-        create_user(user_form)
+        create_user(user_form, request.POST['is_accompanying'], request.POST['type_pay'])
         not_active_users_set = get_not_active_users_set()
         queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
         formset = CustomUserFormSet(queryset=queryset)
@@ -157,7 +160,7 @@ def doctor(request):
         return render(request, 'doctor.html', context=data)
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        edit_user(user_form, 'edit')
+        edit_user(user_form, 'edit', request)
 
         formset = CustomUserFormSet(queryset=queryset)
         data = {
@@ -270,7 +273,7 @@ def archive(request):
 
     if request.method == 'POST' and 'archive' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        edit_user(user_form, 'restore')
+        edit_user(user_form, 'restore', request)
 
         formset = CustomUserFormSet(queryset=queryset)
         data = {

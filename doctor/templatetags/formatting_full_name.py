@@ -18,4 +18,4 @@ def formatting_full_name(full_name):
             continue
         else:
             res += value[0:1].capitalize() + '.'
-    return res
+    return res.strip()

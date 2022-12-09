@@ -42,6 +42,9 @@ class PatientRegistrationForm(forms.ModelForm):
                                        attrs={'class': 'field',
                                               'placeholder': 'Не выбрано'})
                                    )
+    is_accompanying = forms.CharField(widget=forms.TextInput(attrs={}))
+    type_pay = forms.CharField(widget=forms.TextInput(attrs={}))
+
 
 
     # email = forms.EmailField(label='Email', widget=forms.EmailInput(

@@ -55,6 +55,18 @@ class CustomUser(AbstractUser):
         default='',
         help_text='Выбор диеты')
 
+    is_accompanying =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Cопровождающий?')
+
+    type_pay = models.CharField(
+        max_length=100,
+        choices=TYPE_PAY,
+        blank=True,
+        default='',
+        help_text='Тип оплаты')
+
 
     def __str__(self):
         return f'{self.full_name}'

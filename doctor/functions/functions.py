@@ -633,7 +633,8 @@ def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
 
 def delete_choices(CustomUserFormSet):
     """ Удаляем два выбора из formset 'не выбрано', '-------' """
-    for field in ['department', 'type_of_diet', 'room_number']:
+    CustomUserFormSet.form.base_fields['department'].choices.remove(('', '---------'))
+    for field in ['type_of_diet', 'room_number']:
         CustomUserFormSet.form.base_fields[field].choices.remove(('', '---------'))
         if ('Не выбрано', 'Не выбрано') in CustomUserFormSet.form.base_fields[field].choices:
             CustomUserFormSet.form.base_fields[field].choices.remove(('Не выбрано', 'Не выбрано'))
@@ -690,7 +691,7 @@ def get_now_show_meal():
 
 
 
-def create_user(user_form):
+def create_user(user_form, is_accompanying, type_pay):
     # генерируем уникальный логин
     while True:
         login = ''.join([random.choice("123456789qwertyuiopasdfghjklzxcvbnm") for i in range(10)])
@@ -707,11 +708,15 @@ def create_user(user_form):
     user.receipt_time = parse(user_form.data['receipt_time']).strftime('%H:%m')
     user.floor = user_form.data['floor']
     user.department = user_form.data['department']
-    user.room_number = user_form.data['room_number']
-    user.bed = user_form.data['bed']
+    user.room_number = user_form.data['room_number'] if user_form.data['room_number'] != '' else 'Не выбрано'
+    user.bed = user_form.data['bed'] if user_form.data['bed'] != '' else 'Не выбрано'
     user.type_of_diet = user_form.data['type_of_diet']
     user.comment = user_form.data['comment']
+    user.is_accompanying = is_accompanying
+    user.type_pay = type_pay
     user.status = 'patient'
+    # is_accompanying
+    # type_pay
     user.save()
     logging.info(f'Создан пациент {user_form.data["full_name"]} {user_form.data["type_of_diet"]}')
     add_default_menu(user)
@@ -811,7 +816,7 @@ def update_menu_for_future(user, flag_is_change_diet):
         add_menu_three_days_ahead()
 
 
-def edit_user(user_form, type):
+def edit_user(user_form, type, request):
     changes = []
     # flag = False
     is_change_diet = False
@@ -844,11 +849,11 @@ def edit_user(user_form, type):
 
     if user.room_number != user_form.data['room_number1']:
         changes.append(f"номер палаты <b>{user.room_number}</b> изменен на <b>{user_form.data['room_number1']}</b>")
-    user.room_number = user_form.data['room_number1']
+    user.room_number = user_form.data['room_number1'] if user_form.data['room_number1'] != '' else 'Не выбрано'
 
     if user.bed != user_form.data['bed1']:
         changes.append(f"номер койко-места <b>{user.bed}</b> изменен на <b>{user_form.data['bed1']}</b>")
-    user.bed = user_form.data['bed1']
+    user.bed = user_form.data['bed1'] if user_form.data['bed1'] != '' else 'Не выбрано'
 
     if user.type_of_diet != user_form.data['type_of_diet1']:
         changes.append(f"тип диеты <b>{user.type_of_diet}</b> изменен на <b>{user_form.data['type_of_diet1']}</b>")
@@ -864,20 +869,26 @@ def edit_user(user_form, type):
         # changes.append(f'комментарий <b>"{user.comment if user.comment else "нет комментария"}"</b> изменен на <b>"{user_form.data["comment1"]}"</b>')
         if user_form.data['comment1'] == "" or user.comment == "":
             if user_form.data['comment1'] == "":
-                changes.append(f'комментарий <b>"{user.comment}"</b> удален')
+                changes.append(f'- комментарий <b>"{user.comment}"</b> удален')
             if user.comment == "":
-                changes.append(f'добавлен комментарий <b>"{user_form.data["comment1"]}"</b>')
+                changes.append(f'- добавлен комментарий <b>"{user_form.data["comment1"]}"</b>')
         else:
             changes.append(f'комментарий <b>"{user.comment}"</b> изменен на <b>"{user_form.data["comment1"]}"</b>')
 
 
 
     user.comment = user_form.data['comment1']
+    user.is_accompanying = request.POST['edit_is_accompanying']
+    user.type_pay = request.POST['edit_type_pay']
     # если надо восстановить учетную запись пациента
     if type == 'restore':
         user.status = 'patient'
     user.save()
-    logging.info(f'Пациент отредактирован {user_form.data["full_name"]}')
+    logging_user_name = f'{request.user.last_name if request.user.last_name != None else "None"} {request.user.last_name if request.user.last_name != None else "None"}'
+    logging.info(f'пользователь ({logging_user_name})пациент отредактирован {user_form.data["full_name"]}')
+    for change in changes:
+        logging.info(f'{change}')
+
     flag_is_change_diet = is_change_diet
     if type == 'restore':
         # ПОМЕНЯТЬ ФУНКЦИЮ
@@ -1011,7 +1022,9 @@ def counting_diets(users, floors):
                 "3nd_floor": len([users_floor for users_floor in users_diet \
                                   if users_floor.room_number in floors['third']]),
                 "4nd_floor": len([users_floor for users_floor in users_diet \
-                                  if users_floor.room_number in floors['fourtha']])
+                                  if users_floor.room_number in floors['fourtha']]),
+                "not_floor": len([users_floor for users_floor in users_diet \
+                                  if users_floor.room_number in ['Не выбрано']])
             })
     return diets_count
 

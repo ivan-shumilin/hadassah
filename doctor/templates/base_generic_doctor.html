@@ -235,6 +235,8 @@
             <input id="test_room_number" name="room_number">
             <input id="test_bed" name="bed">
             <input id="test_comment" name="comment">
+            <input id="is_accompanying" name="is_accompanying">
+            <input id="type_pay" name="type_pay">
         </div>
         <div data-modal="patient-add-test1" data-modal-width="480">
             <input id="test1_full_name" type="text" name="full_name1">
@@ -247,6 +249,8 @@
             <input id="test1_room_number" type="text" name="room_number1">
             <input id="test1_bed" type="text" name="bed1">
             <input id="test1_comment" type="text" name="comment1">
+            <input id="edit_is_accompanying" name="edit_is_accompanying">
+            <input id="edit_type_pay" name="edit_type_pay">
         </div>
 
         <div  data-modal="patient-edited" data-modal-width="400">
@@ -325,6 +329,25 @@
                     {{ user_form.comment.label }}
                     {{ user_form.comment|attr:"rows='4'" }}
                     <div id ='error_receipt_date' class="error-field"></div>
+                </div>
+
+
+                <div class="form-group checkbox">
+                <label class="custom-checkbox">
+                    <input onchange="showPaymentChoice()" class="custom-checkbox" id="accompanying" type="checkbox" name="accompanying">
+                    <span>Сопровождающий</span>
+                </label>
+                </div>
+                <div id="typePay" class="form-group hidden-edit">
+                    <label class="custom-radio">
+                        <input onchange="showPaymentChoice()" id="typePayPetrushka" type="radio" name="typePay" checked>
+                        <span>Оплата через кассу</span>
+                    </label>
+                    <label class="custom-radio">
+                        <input onchange="showPaymentChoice()" id="typePayHadassah" type="radio" name="typePay">
+                        <span>За счет клиники</span>
+                    </label>
+                    <!-- <input id="accompanying" type="checkbox" name="accompanying"> -->
                 </div>
 
                 <div class="form-group item-actions flex flex-center last_form_group">

@@ -921,10 +921,12 @@ def printed_form_one(request):
                'count_2nd_floor': len([user for user in users if user.room_number in floors['second']]),
                'count_3nd_floor': len([user for user in users if user.room_number in floors['third']]),
                'count_4nd_floor': len([user for user in users if user.room_number in floors['fourtha']]),
+               'count_not_floor': len([user for user in users if user.room_number in ['Не выбрано']]),
                'count_diet': counting_diets(users, floors),
                'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order),
                'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order),
                'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order),
+               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order),
                }
     number = 0
     count_users_with_cafe_prod = 0
@@ -940,6 +942,11 @@ def printed_form_one(request):
         if len(user['products_cafe']) > 0:
             count_users_with_cafe_prod += 1
     for user in catalog['users_4nd_floor']:
+        number += 1
+        user['number'] = str(number)
+        if len(user['products_cafe']) > 0:
+            count_users_with_cafe_prod += 1
+    for user in catalog['users_not_floor']:
         number += 1
         user['number'] = str(number)
         if len(user['products_cafe']) > 0:
@@ -1378,7 +1385,7 @@ def get_report(report, report_detailing, date_start, date_finish):
                         _ = ws1.cell(column=2, row=row, value='Ужин').font = font
                     _ = ws1.cell(column=3, row=row, value=key3).font = font
                     _ = ws1.cell(column=4, row=row, value=key4).font = font
-                    _ = ws1.cell(column=5, row=row, value=value4).font = font
+                    _ = ws1.cell(column=5, row=row, value=f'{value4 if value4 != "Не выбрано" else "——"}').font = font
                     row += 1
 
 
@@ -1527,7 +1534,7 @@ class DownloadReportAPIView(APIView):
         date_start = parse(data['start'])
         date_finish = parse(data['finish'])
 
-        filtered_report = Report.objects.filter(date_create__gte=date_start, date_create__lte=date_finish)
+        filtered_report = Report.objects.filter(date_create__gte=date_start, date_create__lte=date_finish).exclude(user_id__type_pay='petrushka')
         report = create_external_report(filtered_report)
         report_detailing = create_external_report_detailing(filtered_report)
         get_report(report, report_detailing, date_start, date_finish)
@@ -1537,7 +1544,7 @@ class DownloadReportAPIView(APIView):
 
 def create_сatalog():
     """ Создание словаря этикеток. """
-    formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
+
     floors = {
     'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13', '2а-14', '2а-15',
                      '2а-16', '2а-17'],
@@ -1546,7 +1553,7 @@ def create_сatalog():
     'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
                       '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
     }
-    time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
+
     # какой прием пищи
     meal, day = what_meal() # после return 'breakfast', 'tomorrow'
     type_order = what_type_order()
@@ -1557,47 +1564,18 @@ def create_сatalog():
         users = UsersReadyOrder.objects.all()
 
     catalog = {'meal': translate_meal(meal),
-               'count': len(users),
-               'count_2nd_floor': len([user for user in users if user.room_number in floors['second']]),
-               'count_3nd_floor': len([user for user in users if user.room_number in floors['third']]),
-               'count_4nd_floor': len([user for user in users if user.room_number in floors['fourtha']]),
-               'count_diet': counting_diets(users, floors),
                'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order),
                'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order),
                'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order),
+               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order),
                }
-    number = 0
-    count_users_with_cafe_prod = 0
-    # расставляем порядковые номера и считаем кол-во пациетнов с блюдами с кафе
-    for user in catalog['users_2nd_floor']:
-        number += 1
-        user['number'] = str(number)
-        if len(user['products_cafe']) > 0:
-            count_users_with_cafe_prod += 1
-    for user in catalog['users_3nd_floor']:
-        number += 1
-        user['number'] = str(number)
-        if len(user['products_cafe']) > 0:
-            count_users_with_cafe_prod += 1
-    for user in catalog['users_4nd_floor']:
-        number += 1
-        user['number'] = str(number)
-        if len(user['products_cafe']) > 0:
-            count_users_with_cafe_prod += 1
 
-    data = {
-        'formatted_date': formatted_date_now,
-        'time_now': time_now,
-        'catalog': catalog,
-        'count_users_with_cafe_prod': count_users_with_cafe_prod,
-        'day': day,
-        'date_create': dateformat.format(date.fromisoformat(str(date_create)), 'd E')
-    }
-    return data
+    return catalog
 
 
 def create_stickers_pdf(catalog):
     from fpdf import FPDF
+
 
     def create_res_list(product, max_count_in_line, type):
         st_ch1 = '- ' if type == 'products' else '  '
@@ -1614,42 +1592,61 @@ def create_stickers_pdf(catalog):
         res_list.append(res) if res[0] == st_ch2 else res_list.append('  ' + res)
         return res_list
 
+    def create_res_list_comment(product, max_count_in_line, type):
+        st_ch1 = '- ' if type == 'products' else ''
+        st_ch2 = '-' if type == 'products' else ''
+        product_list = product.split(' ')
+        res = ""
+        res_list = []
+        for item in product_list:
+            if len(res + item) < max_count_in_line:
+                res = res + ' ' + item if res != "" else st_ch1 + item
+            else:
+                res_list.append(res) if res[0] == st_ch2 else res_list.append('' + res)
+                res = item
+        res_list.append(res) if res[0] == st_ch2 else res_list.append('' + res)
+        return res_list
+
     pdf = FPDF()
-    catalog = catalog['catalog']
-    for floor in ['users_2nd_floor', 'users_3nd_floor', 'users_4nd_floor']:
+    for floor in ['users_2nd_floor', 'users_3nd_floor', 'users_4nd_floor', 'users_not_floor']:
         for item in catalog[floor]:
-            pdf.set_left_margin(0)
+            pdf.set_left_margin(3)
             pdf.set_right_margin(0)
             pdf.add_page()
             # pdf.add_font("Arial", "", "FontsFree-Net-arial-bold.ttf", uni=True)
             pdf.add_font("Arial1", "", "FontsFree-Net-arial-bold.ttf", uni=True)
             pdf.set_font("Arial1", style='', size=33)
             ln = 1
-            pdf.cell(50, 14, txt=f'  {formatting_full_name(item["name"])}, {item["room_number"]}, {item["bed"]}', ln=ln, align="L")
+            pdf.cell(50, 14, txt=f'{formatting_full_name(item["name"])}{", " + item["room_number"] if item["room_number"] != "Не выбрано" else ""}{"" if item["bed"] == "Не выбрано" or item["room_number"] == "Не выбрано" else ", " + item["bed"]}', ln=ln, align="L")
             ln += 1
             if item["diet"] == "ОВД веган (пост) без глютена":
                 pdf.cell(50, 14, txt=f'  ОВД веган (пост) без глютена,', ln=ln, align="L")
                 ln += 1
-                pdf.cell(50, 14, txt=f'  {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=ln, align="L")
+                pdf.cell(50, 14, txt=f'{catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=ln, align="L")
                 ln += 1
             else:
-                pdf.cell(50, 14, txt=f'  {item["diet"]}, {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=3, align="L")
+                pdf.cell(50, 14, txt=f'{item["diet"]}, {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=3, align="L")
                 ln += 1
             pdf.add_font("Arial2", "", "arial.ttf", uni=True)
             pdf.set_font("Arial2", style='', size=30)
+
             max_count_in_line = 38
-            if len(item["comment"]) >= max_count_in_line:
-                res_list = create_res_list(item["comment"], max_count_in_line, 'comment')
-                for product in res_list:
-                    pdf.cell(50, 10, txt=f'{product}', ln=ln, align="L")
-                    ln += 1
-            else:
-                pdf.cell(50, 10, txt=f'  {item["comment"]}', ln=ln, align="L")
+            if item["comment"]:
+                item["comment"] = item["comment"].capitalize()
+                pdf.set_left_margin(3)
+                pdf.underline = True
+                if len(item["comment"]) >= max_count_in_line:
+                    res_list = create_res_list_comment(item["comment"], max_count_in_line, 'comment')
+                    for product in res_list:
+                        pdf.cell(50, 10, txt=f'{product}', ln=ln, align="L")
+                        ln += 1
+                else:
+                    pdf.cell(50, 10, txt=f'{item["comment"]}', ln=ln, align="L")
+                pdf.underline = False
+
             ln += 1
             pdf.cell(50, 10, txt="", ln=5, align="L")
             ln += 1
-
-
 
             for index, product in enumerate(item['products_lp'] + item['products_cafe']):
                 if len(product) >= max_count_in_line:
@@ -1666,8 +1663,8 @@ def create_stickers_pdf(catalog):
 
 class CreateSitckers(APIView):
     def post(self, request):
-        data = create_сatalog()
-        create_stickers_pdf(data)
+        catalog = create_сatalog()
+        create_stickers_pdf(catalog)
         response = {"response": "yes"}
         response = json.dumps(response)
         return Response(response)

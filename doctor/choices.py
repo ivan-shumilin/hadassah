@@ -95,6 +95,11 @@ STATUS_PATIENT = (
     ('patient_archive', 'patient_archive'),
 )
 
+TYPE_PAY = (
+    ('petrushka', 'petrushka'),
+    ('hadassah', 'hadassah'),
+)
+
 STATUS_BARCODES = (
     ('active', 'active'),
     ('no_active', 'no_active'),
