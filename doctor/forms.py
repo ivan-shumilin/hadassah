@@ -21,7 +21,7 @@ class PatientRegistrationForm(forms.ModelForm):
     receipt_time = forms.CharField(label='Время госпитализации', widget=forms.TimeInput(
         attrs={'class': 'field', 'type': 'text', 'name': 'time', 'placeholder': '12:00'}))
     comment = forms.CharField(label='Комментарий', required=False, widget=forms.Textarea(
-        attrs={'class': 'field', 'placeholder': 'Аллергия на арахис, непереносимость лактозы, рекомендована мягкая и жидкая пища'}))
+        attrs={'class': 'field', 'placeholder': 'Аллергия на арахис, непереносимость лактозы.'}))
     department = forms.ChoiceField(label='Отделение', choices=TYPE_DEPARTMENT,
                                    widget=forms.Select(
                                        attrs={'class': 'field',
