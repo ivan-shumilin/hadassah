@@ -506,7 +506,7 @@ async function clickEditForm() {
     console.log(occupiedRooms1)
 
     if (singleRooms.includes(userRoom)) {
-        result += `<option value="Не выбрано">Не выбрано</option>`;
+        
         item.setAttribute("disabled", "disabled");
         result += `<option value="K1">K1</option>`;
         document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.add('hidden-edit')
