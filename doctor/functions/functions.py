@@ -864,6 +864,8 @@ def edit_user(user_form, type, request):
             is_change_diet = True
     user.type_of_diet = user_form.data['type_of_diet1']
 
+
+
     if user.comment != user_form.data['comment1']:
         # Если добавили коментарий, рашьше было без комментария
         flag_add_comment = True if len(user.comment) < 2 and\
@@ -872,15 +874,28 @@ def edit_user(user_form, type, request):
         # changes.append(f'комментарий <b>"{user.comment if user.comment else "нет комментария"}"</b> изменен на <b>"{user_form.data["comment1"]}"</b>')
         if user_form.data['comment1'] == "" or user.comment == "":
             if user_form.data['comment1'] == "":
-                changes.append(f'- комментарий <b>"{user.comment}"</b> удален')
+                changes.append(f'комментарий <b>"{user.comment}"</b> удален')
             if user.comment == "":
-                changes.append(f'- добавлен комментарий <b>"{user_form.data["comment1"]}"</b>')
+                changes.append(f'добавлен комментарий <b>"{user_form.data["comment1"]}"</b>')
         else:
             changes.append(f'комментарий <b>"{user.comment}"</b> изменен на <b>"{user_form.data["comment1"]}"</b>')
 
 
 
     user.comment = user_form.data['comment1']
+    if not user.is_accompanying and request.POST['edit_is_accompanying'] == 'True':
+        if request.POST['edit_type_pay'] == "petrushka":
+            changes.append(f'добавлен статус <b>\"Сопровождающий\"</b> с оплатой через кассу')
+        if request.POST['edit_type_pay'] == "hadassah":
+            changes.append(f'добавлен статус <b>\"Сопровождающий\"</b> с оплатой за счет клиники"</b>')
+    if user.is_accompanying and request.POST['edit_is_accompanying'] == 'False':
+            changes.append(f'удален статус <b>\"Сопровождающий\"</b>')
+    if user.is_accompanying and request.POST['edit_is_accompanying'] == 'True':
+        if user.type_pay != request.POST['edit_type_pay']:
+            if request.POST['edit_type_pay'] == "petrushka":
+                changes.append(f'<b>оплата за счет клиники</b> изменена на <b>оплату через кассу</b>')
+            if request.POST['edit_type_pay'] == "hadassah":
+                changes.append(f'<b>оплата через кассу</b> изменена на <b>оплату за счет клиники</b>')
     user.is_accompanying = request.POST['edit_is_accompanying']
     user.type_pay = request.POST['edit_type_pay']
     # если надо восстановить учетную запись пациента

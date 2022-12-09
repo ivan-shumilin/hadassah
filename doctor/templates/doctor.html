@@ -435,7 +435,9 @@ async function clickEditForm() {
 
     let result = '' 
     result += `<option selected value="${userRoom}">${userRoom}</option>`
-    result += `<option value="Не выбрано">Не выбрано</option>`;
+    if (userBed != "Не выбрано") {
+         result += `<option value="Не выбрано">Не выбрано</option>`;
+    }
 
     if (userFloor == "2") {
         secondFloor.forEach(function(roomNumber, i, arr) {
@@ -1609,18 +1611,18 @@ async function validationEditForm(id_full_name,
     var bedOld = document.getElementById("bed_field").innerText
     var commentOld = document.getElementById("comment_field").innerText
     var error = 0
-    if ((full_name.value == full_nameOld) &&
-    (birthdate.value == birthdateOld) &&
-    (receipt_date.value == receipt_dateOld) &&
-    (receipt_time.value == receipt_timeOld) &&
-    (department.value == departmentOld) &&
-    (type_of_diet.value == type_of_dietOld) &&
-    (floor.value == floorOld) &&
-    (room_number.value == room_numberOld) &&
-    (bed.value == bedOld) &&
-    (comment.value == commentOld)) {
-        error = 1
-    }
+    // if ((full_name.value == full_nameOld) &&
+    // (birthdate.value == birthdateOld) &&
+    // (receipt_date.value == receipt_dateOld) &&
+    // (receipt_time.value == receipt_timeOld) &&
+    // (department.value == departmentOld) &&
+    // (type_of_diet.value == type_of_dietOld) &&
+    // (floor.value == floorOld) &&
+    // (room_number.value == room_numberOld) &&
+    // (bed.value == bedOld) &&
+    // (comment.value == commentOld)) {
+    //     error = 1
+    // }
 
     var errors = document.querySelectorAll('.error-field')
     var formGroup = document.querySelectorAll('.form-group')
