@@ -845,15 +845,18 @@ def edit_user(user_form, type, request):
         changes.append(f"отделение <b>{user.department}</b> изменено на <b>{user_form.data['department1']}</b>")
     user.department = user_form.data['department1']
 
-    user.floor = user_form.data['floor1']
+
+    if user.floor != user_form.data['floor1']:
+        changes.append(f"этаж <b>{user.floor if user.floor != 'Не выбрано' else 'не выбран'}</b> изменен на <b>{user_form.data['floor1'] if user_form.data['floor1'] != 'Не выбрано' else 'не выбран'}</b>")
+    user.floor = user_form.data['floor1'] if user_form.data['floor1'] != '' else 'Не выбрано'
 
     if user.room_number != user_form.data['room_number1']:
-        changes.append(f"номер палаты <b>{user.room_number}</b> изменен на <b>{user_form.data['room_number1']}</b>")
+        changes.append(f"номер палаты <b>{user.room_number if user.room_number != 'Не выбрано' else 'не выбран'}</b> изменен на <b>{user_form.data['room_number1'] if user_form.data['room_number1'] != 'Не выбрано' else 'не выбран'}</b>")
     user.room_number = user_form.data['room_number1'] if user_form.data['room_number1'] != '' else 'Не выбрано'
 
     if user.bed != user_form.data['bed1']:
-        changes.append(f"номер койко-места <b>{user.bed}</b> изменен на <b>{user_form.data['bed1']}</b>")
-    user.bed = user_form.data['bed1'] if user_form.data['bed1'] != '' else 'Не выбрано'
+        changes.append(f"номер койко-места <b>{user.bed if user.bed != 'Не выбрано' else 'не выбран'}</b> изменен на <b>{user_form.data['bed1'] if user_form.data['bed1'] != 'Не выбрано' else 'не выбран'}</b>")
+    user.bed = 'Не выбрано' if user_form.data['bed1'] == '' or user_form.data['room_number1'] == 'Не выбрано' else user_form.data['bed1']
 
     if user.type_of_diet != user_form.data['type_of_diet1']:
         changes.append(f"тип диеты <b>{user.type_of_diet}</b> изменен на <b>{user_form.data['type_of_diet1']}</b>")
@@ -1101,6 +1104,12 @@ def what_type_order():
 
 
 def is_active_user(user):
+    """
+    до 9:00 утра можно редактировать пациента с временем регистрации после 11:00
+    с 9:00 до 12:00 можно редактировать пациента с временем регистрации после 14:00
+    с 12:00 до 16 можно редактировать пациента с временем регистрации после 17:00
+    с 16:00 до 24:00 можно редактировать пациента с временем регистрации после 21:00
+    """
     receipt_datetime = parse(str(user.receipt_date) + ' ' + str(user.receipt_time))
     datetime_today = datetime.today()
     if receipt_datetime.date() > datetime_today.date():
@@ -1121,6 +1130,7 @@ def is_active_user(user):
 
 
 def get_not_active_users_set():
+    """ Проверяем является ли пациент активным """
     users = CustomUser.objects.filter(status='patient').filter(receipt_date__gte=date.today())
     not_active_users_set = ''
     for user in users:
