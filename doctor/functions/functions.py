@@ -835,6 +835,8 @@ def edit_user(user_form, type, request):
         changes.append(f"дату поступления <b>{user.receipt_date}</b> изменена на <b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b>")
     user.receipt_date = datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')
 
+    if user.birthdate != datetime.strptime(user_form.data['birthdate1'], '%d.%m.%Y').date():
+        changes.append(f"дата рождения <b>{user.birthdate}</b> изменена на <b>{datetime.strptime(user_form.data['birthdate1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b>")
     user.birthdate = datetime.strptime(user_form.data['birthdate1'], '%d.%m.%Y').strftime('%Y-%m-%d')
 
     if (user.receipt_time).strftime('%H:%M') != user_form.data['receipt_time1']:
@@ -854,8 +856,11 @@ def edit_user(user_form, type, request):
         changes.append(f"номер палаты <b>{user.room_number if user.room_number != 'Не выбрано' else 'не выбран'}</b> изменен на <b>{user_form.data['room_number1'] if user_form.data['room_number1'] != 'Не выбрано' else 'не выбран'}</b>")
     user.room_number = user_form.data['room_number1'] if user_form.data['room_number1'] != '' else 'Не выбрано'
 
+
+
     if user.bed != user_form.data['bed1']:
-        changes.append(f"номер койко-места <b>{user.bed if user.bed != 'Не выбрано' else 'не выбран'}</b> изменен на <b>{user_form.data['bed1'] if user_form.data['bed1'] != 'Не выбрано' else 'не выбран'}</b>")
+        if user.room_number != 'Не выбрано':
+            changes.append(f"номер койко-места <b>{user.bed if user.bed != 'Не выбрано' else 'не выбран'}</b> изменен на <b>{user_form.data['bed1'] if user_form.data['bed1'] != 'Не выбрано' else 'не выбран'}</b>")
     user.bed = 'Не выбрано' if user_form.data['bed1'] == '' or user_form.data['room_number1'] == 'Не выбрано' else user_form.data['bed1']
 
     if user.type_of_diet != user_form.data['type_of_diet1']:
@@ -1165,7 +1170,8 @@ def get_occupied_rooms(user_script):
     # словарь с занятыми комнатами и койками
     occupied_rooms = {}
     for user in users:
-        occupied_rooms.setdefault(user.room_number, []).append(user.bed)
+        if user.bed != 'Не выбрано':
+            occupied_rooms.setdefault(user.room_number, []).append(user.bed)
     if user_script == 'easy_mode':
         return occupied_rooms
      # словарь с double rooms с одной свободной койкой
