@@ -44,6 +44,16 @@
                 <td class="main-diet">{{ diet.4nd_floor }}</td>
                 <td class="main-diet">{{ diet.not_floor }}</td>
             </tr>
+            {% for diet1 in diet.without_comment %}
+                <tr class="light-blue3">
+                    <td>└ {{ diet1.name }} (без комментария)</td>
+                    <td>{{ diet1.total }}</td>
+                    <td>{{ diet1.2nd_floor }}</td>
+                    <td>{{ diet1.3nd_floor }}</td>
+                    <td>{{ diet1.4nd_floor }}</td>
+                    <td>{{ diet1.not_floor }}</td>
+                </tr>
+            {% endfor %}
             {% for diet1 in diet.with_comment %}
                 <tr class="light-blue3">
                     <td>└ <span style="background: #edf60d;">{{ diet1.name }}</span></td>
