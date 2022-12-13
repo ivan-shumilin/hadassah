@@ -168,6 +168,16 @@
                                         {{ form.type_of_diet|attr:"onchange=deleteError();" }}
                                         <div id ='error_type_of_diet' class="error-field"></div>
                                     </div>
+                                    <div class="form-group checkbox">
+                                        <label for="is_accompanying_form_{{ form.id.value }}" class="custom-checkbox">
+                                            <input class="custom-checkbox" onchange="showPaymentChoiceEdit('is_accompanying_form_{{ form.id.value }}', 'typePay-{{ form.id.value }}')" id="is_accompanying_form_{{ form.id.value }}" type="checkbox" name="accompanying">
+                                            <span>Сопровождающий</span>
+                                        </label>
+                                        <label for="is_accompanying_form_{{ form.id.value }}" class="custom-checkbox">
+                                            <input class="custom-checkbox" onchange="showPaymentChoiceEdit('is_accompanying_form_{{ form.id.value }}', 'typePay-{{ form.id.value }}')" id="is_accompanying_form_{{ form.id.value }}" type="checkbox" name="accompanying">
+                                            <span>Сопровождающий</span>
+                                        </label>
+                                    </div>
                                     <div id='department_edit' class="form-group">
                                         <label>Отделение</label>
                                          {{ form.department|attr:"onchange=deleteError();" }}
@@ -376,7 +386,7 @@
                                 </div>
                                 <div id="day_after_tomorrow" class="boxes" data-tab-content="day_after_tomorrow">
                                     <div class="date">12 июля, вторник</div>
-                                </div>                        
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -718,7 +718,7 @@ def create_user(user_form, is_accompanying, type_pay):
     # is_accompanying
     # type_pay
     user.save()
-    logging.info(f'Создан пациент {user_form.data["full_name"]} {user_form.data["type_of_diet"]}')
+    logging.info(f'пользователь ({logging_user_name}), cоздан пациент {user_form.data["full_name"]} {user_form.data["type_of_diet"]}')
     add_default_menu(user)
     add_menu_three_days_ahead()
 
@@ -969,6 +969,8 @@ def edit_user(user_form, type, request):
 def archiving_user(user):
     user.status = 'patient_archive'
     user.save()
+    logging.info(f'пользователь ({logging_user_name}), пациент перенесен в архив {user_form.data["full_name"]}')
+
     update_UsersToday(user)
     MenuByDay.objects.filter(user_id=user.id).delete()
     if user.receipt_date <= date.today():
