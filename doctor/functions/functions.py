@@ -1023,7 +1023,23 @@ def archiving_user(user):
     #                 bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
 
-
+def create_with_comment(users_diet, floors):
+    with_comment = []
+    users_diet_with_comment = [user for user in users_diet if len(user.comment) >= 1]
+    for user_diet_with_comment in users_diet_with_comment:
+        with_comment.append({
+        "name": user_diet_with_comment.comment,
+        "total": 1,
+        "2nd_floor": len([users_floor for users_floor in [user_diet_with_comment] \
+                                  if users_floor.room_number in floors['second']]),
+        "3nd_floor": len([users_floor for users_floor in [user_diet_with_comment] \
+                                  if users_floor.room_number in floors['third']]),
+        "4nd_floor": len([users_floor for users_floor in [user_diet_with_comment] \
+                                  if users_floor.room_number in floors['fourtha']]),
+        "not_floor": len([users_floor for users_floor in [user_diet_with_comment] \
+                                  if users_floor.room_number in ['Не выбрано']])
+    })
+    return with_comment
 
 
 
@@ -1032,11 +1048,21 @@ def counting_diets(users, floors):
     diets_count = []
     for diet in diets_name:
         users_diet = users.filter(type_of_diet=diet)
-        # start_2nd_floor = 200
-        # end_2nd_floor = 299
-        # start_3nd_floor = 300
-        # end_3nd_floor = 399
+        # users_diet_with_count = [users_diet
         if len(users_diet) > 0:
+            # diets = {
+            #     "name": diet,
+            #     "total": str(len(users_diet)),
+            #     "2nd_floor": len([users_floor for users_floor in users_diet \
+            #                       if users_floor.room_number in floors['second']]),
+            #     "3nd_floor": len([users_floor for users_floor in users_diet \
+            #                       if users_floor.room_number in floors['third']]),
+            #     "4nd_floor": len([users_floor for users_floor in users_diet \
+            #                       if users_floor.room_number in floors['fourtha']]),
+            #     "not_floor": len([users_floor for users_floor in users_diet \
+            #                       if users_floor.room_number in ['Не выбрано']])
+            # }
+
             diets_count.append({
                 "name": diet,
                 "total": str(len(users_diet)),
@@ -1047,7 +1073,8 @@ def counting_diets(users, floors):
                 "4nd_floor": len([users_floor for users_floor in users_diet \
                                   if users_floor.room_number in floors['fourtha']]),
                 "not_floor": len([users_floor for users_floor in users_diet \
-                                  if users_floor.room_number in ['Не выбрано']])
+                                  if users_floor.room_number in ['Не выбрано']]),
+                "with_comment": create_with_comment(users_diet, floors)
             })
     return diets_count
 

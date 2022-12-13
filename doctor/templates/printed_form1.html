@@ -37,13 +37,23 @@
         </tr>
         {% for diet in catalog.count_diet %}
             <tr>
-                <td>{{ diet.name }}</td>
-                <td>{{ diet.total }}</td>
-                <td>{{ diet.2nd_floor }}</td>
-                <td>{{ diet.3nd_floor }}</td>
-                <td>{{ diet.4nd_floor }}</td>
-                <td>{{ diet.not_floor }}</td>
+                <td class="main-diet">{{ diet.name }}</td>
+                <td class="main-diet">{{ diet.total }}</td>
+                <td class="main-diet">{{ diet.2nd_floor }}</td>
+                <td class="main-diet">{{ diet.3nd_floor }}</td>
+                <td class="main-diet">{{ diet.4nd_floor }}</td>
+                <td class="main-diet">{{ diet.not_floor }}</td>
             </tr>
+            {% for diet1 in diet.with_comment %}
+                <tr class="light-blue3">
+                    <td>└ <span style="background: #edf60d;">{{ diet1.name }}</span></td>
+                    <td>{{ diet1.total }}</td>
+                    <td>{{ diet1.2nd_floor }}</td>
+                    <td>{{ diet1.3nd_floor }}</td>
+                    <td>{{ diet1.4nd_floor }}</td>
+                    <td>{{ diet1.not_floor }}</td>
+                </tr>
+            {% endfor %}
         {% endfor %}
         <tr>
             <td>Рационов c блюдами раздачи</td>
@@ -76,7 +86,7 @@
             {% if user.comment %}
                 <tr class='light-blue2'>
                     <td></td>
-                    <td colspan="5"><span style="background: #dfe629;">(!) {{ user.comment }}</span></td>
+                    <td colspan="5"><span style="background: #edf60d;">(!) {{ user.comment }}</span></td>
                 </tr>
             {% endif %}
             <tr class='dashed'>
@@ -115,7 +125,7 @@
             {% if user.comment %}
                 <tr class='light-blue2'>
                     <td></td>
-                    <td colspan="5"><span style="background: #dfe629;">(!) {{ user.comment }}</span></td>
+                    <td colspan="5"><span style="background: #edf60d;">(!) {{ user.comment }}</span></td>
                 </tr>
             {% endif %}
             <tr class='dashed'>
@@ -155,7 +165,7 @@
             {% if user.comment %}
                 <tr class='light-blue2'>
                     <td></td>
-                    <td colspan="5"><span style="background: #dfe629;">(!) {{ user.comment }}</span></td>
+                    <td colspan="5"><span style="background: #edf60d;">(!) {{ user.comment }}</span></td>
                 </tr>
             {% endif %}
             <tr class='dashed'>
@@ -194,7 +204,7 @@
             {% if user.comment %}
                 <tr class='light-blue2'>
                     <td></td>
-                    <td colspan="5"><span style="background: #dfe629;">(!) {{ user.comment }}</span></td>
+                    <td colspan="5"><span style="background: #edf60d;">(!) {{ user.comment }}</span></td>
                 </tr>
             {% endif %}
             <tr class='dashed'>
