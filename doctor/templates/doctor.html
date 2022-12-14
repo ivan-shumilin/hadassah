@@ -168,16 +168,6 @@
                                         {{ form.type_of_diet|attr:"onchange=deleteError();" }}
                                         <div id ='error_type_of_diet' class="error-field"></div>
                                     </div>
-                                    <div class="form-group checkbox">
-                                        <label for="is_accompanying_form_{{ form.id.value }}" class="custom-checkbox">
-                                            <input class="custom-checkbox" onchange="showPaymentChoiceEdit('is_accompanying_form_{{ form.id.value }}', 'typePay-{{ form.id.value }}')" id="is_accompanying_form_{{ form.id.value }}" type="checkbox" name="accompanying">
-                                            <span>Сопровождающий</span>
-                                        </label>
-                                        <label for="is_accompanying_form_{{ form.id.value }}" class="custom-checkbox">
-                                            <input class="custom-checkbox" onchange="showPaymentChoiceEdit('is_accompanying_form_{{ form.id.value }}', 'typePay-{{ form.id.value }}')" id="is_accompanying_form_{{ form.id.value }}" type="checkbox" name="accompanying">
-                                            <span>Сопровождающий</span>
-                                        </label>
-                                    </div>
                                     <div id='department_edit' class="form-group">
                                         <label>Отделение</label>
                                          {{ form.department|attr:"onchange=deleteError();" }}
@@ -1474,6 +1464,13 @@ async function validationForm() {
     var accompanying = document.getElementById('accompanying');
     var typePayPetrushka = document.getElementById('typePayPetrushka');
     var typePayHadassah = document.getElementById('typePayHadassah');
+
+    var isProbe = document.getElementById('is_probe');
+    var isWithoutSalt = document.getElementById('is_without_salt');
+    var isWithoutLactose = document.getElementById('is_without_lactose');
+
+
+
     for (var i = 0; i < errors.length; i++) {
         errors[i].innerHTML = '';
         errors[i].classList.remove('error');
@@ -1609,9 +1606,25 @@ async function validationForm() {
             isAccompanying.value = 'False'
             typePay.value = 'None'
         }
+        if (isProbe.checked) {
+            document.getElementById('test_is_probe').value = 'True'
+        } else {
+            document.getElementById('test_is_probe').value = 'False'
+        }
+        if (isWithoutSalt.checked) {
+            document.getElementById('test_is_without_salt').value = 'True'
+        } else {
+            document.getElementById('test_is_without_salt').value = 'False'
+        }
+        if (isWithoutLactose.checked) {
+            document.getElementById('test_is_without_lactose').value = 'True'
+        } else {
+            document.getElementById('test_is_without_lactose').value = 'False'
+        }
         form.submit();
     }
 }
+
 
 function deleteError() {
     document.getElementById('error_not_change').innerHTML = ''
