@@ -33,7 +33,7 @@ from django.contrib.auth.models import Group
 from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, add_default_menu, \
     creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
-    create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order
+    create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features
 from doctor.functions.bot import check_change
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes
@@ -982,7 +982,8 @@ def printed_form_two_lp(request):
         list_whith_unique_products = []
         for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'ОВД веган (пост) без глютена', 'Нулевая диета', 'БД', 'ВБД', 'НБД', 'НКД', 'ВКД', 'БД день 1', 'БД день 2']:
             users_with_diet = users.filter(type_of_diet=diet)
-            all_products = []
+            all_products = [] # стовляем список всех продуктов
+            comment_list = []
             for user in users_with_diet:
                 if type_order == 'flex-order':
                     menu_all = MenuByDay.objects.filter(user_id=user.user_id)
@@ -996,6 +997,10 @@ def printed_form_two_lp(request):
                 #     all_products.append(pr)
                 if pr[0] != None:
                     for item in pr:
+                        item['comment'] = add_features(user.comment,
+                             user.is_probe,
+                             user.is_without_salt,
+                             user.is_without_lactose)
                         all_products.append(item)
             # составляем список с уникальными продуктами
             unique_products = []
@@ -1016,8 +1021,16 @@ def printed_form_two_lp(request):
                 for product in all_products:
                     if product['id'] == un_product['id']:
                         count += 1
+                        comment_list.append(product['comment'])
                 un_product['count'] = str(count)
                 un_product['diet'] = diet
+                if '' in comment_list:
+                    comment_list.sort()
+                comment_set = set(comment_list)
+                comment_list_dict = [{'comment': f'{"Без комментария." if item == "" else item}', 'count': comment_list.count(item)} for item in comment_set]
+
+                un_product['comments'] = comment_list_dict
+
             # list_whith_unique_products.append(unique_products)
             [list_whith_unique_products.append(item) for item in unique_products]
         catalog[category] = list_whith_unique_products
@@ -1029,6 +1042,7 @@ def printed_form_two_lp(request):
                     if pr['id'] == cat[ii]['id']:
                         pr['count'] = str(int(pr['count']) + int(cat[ii]['count']))
                         pr['diet'] = pr['diet'] + ', ' + cat[ii]['diet']
+                        pr['comments'] = pr['comments'] + cat[ii]['comments']
                         cat[ii] = None
 
     number = 1

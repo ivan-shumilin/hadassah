@@ -117,6 +117,24 @@
                             <input id="full_name_{{ form.id.value }}" type="text" value="{{ form.full_name.value }}">
                             <div id ='error_full_name' class="error-field"></div>
                         </div>
+                        <div class="form-group checkbox">
+                            <label class="custom-checkbox">
+                                <input onchange="showPaymentChoiceEdit('is_accompanying_form_{{ form.id.value }}', 'typePay-{{ form.id.value }}')" id="is_accompanying_form_{{ form.id.value }}" type="checkbox" name="accompanying">
+                                <span>Сопровождающий</span>
+                            </label>
+                        </div>
+                        {% if form.is_accompanying.value != True %}
+                            <div id="typePay-{{ form.id.value }}" class="form-group hidden-edit">
+                        {% else %}
+                            <div id="typePay-{{ form.id.value }}" class="form-group">
+                        {% endif %}
+                            <label class="custom-radio">
+                            <input id="typePayPetrushka{{ form.id.value }}" type="radio" name="typePay{{ form.id.value }}" checked="true">
+                            <span>Оплата через кассу</span></label>
+                            <label class="custom-radio">
+                            <input id="typePayHadassah{{ form.id.value }}" type="radio" name="typePay{{ form.id.value }}" >
+                            <span>За счет клиники</span></label>
+                        </div>
                         <div id='birthdate_edit' class="form-group">
                             {% load widget_tweaks %}
                             <label>Дата рождения</label>
@@ -166,30 +184,25 @@
                             </select>
                             <div id ='error_bed' class="error-field"></div>
                         </div>
+                        <div class="form-group checkbox">
+                            <label class="custom-checkbox">
+                                <input class="custom-checkbox" id="is_probe_form_{{ form.id.value }}" type="checkbox" name="is_probe">
+                                <span>Питание через зонд</span>
+                            </label>
+                            <label class="custom-checkbox">
+                                <input class="custom-checkbox" id="is_without_salt_form_{{ form.id.value }}" type="checkbox" name="is_without_salt">
+                                <span>Без соли</span>
+                            </label>
+                            <label class="custom-checkbox">
+                                <input class="custom-checkbox" id="is_without_lactose_form_{{ form.id.value }}" type="checkbox" name="is_without_lactose">
+                                <span>Без лактозы</span>
+                            </label>
+                        </div>
                         <div class="form-group">
                             <label>Комментарий</label>
                             {{ form.comment|attr:"rows='4'" }}
                             <p id ='error_comment' class="error-field"></p>
                         </div>
-                        <div class="form-group checkbox">
-                            <label class="custom-checkbox">
-                                <input onchange="showPaymentChoiceEdit('is_accompanying_form_{{ form.id.value }}', 'typePay-{{ form.id.value }}')" id="is_accompanying_form_{{ form.id.value }}" type="checkbox" name="accompanying">
-                                <span>Сопровождающий</span>
-                            </label>
-                        </div>
-                        {% if form.is_accompanying.value != True %}
-                            <div id="typePay-{{ form.id.value }}" class="form-group hidden-edit">
-                        {% else %}
-                            <div id="typePay-{{ form.id.value }}" class="form-group">
-                        {% endif %}
-                            <label class="custom-radio">
-                            <input id="typePayPetrushka{{ form.id.value }}" type="radio" name="typePay{{ form.id.value }}" checked="true">
-                            <span>Оплата через кассу</span></label>
-                            <label class="custom-radio">
-                            <input id="typePayHadassah{{ form.id.value }}" type="radio" name="typePay{{ form.id.value }}" >
-                            <span>За счет клиники</span></label>
-                        </div>
-
 
 
                         <div class="form-group item-actions flex flex-center last_form_group">
@@ -203,7 +216,10 @@
                                  '{{ form.floor.id_for_label }}', 'bed_edit-{{ form.id.value }}',
                                  'is_accompanying_form_{{ form.id.value }}',
                                  'typePayPetrushka{{ form.id.value }}',
-                                 'typePayHadassah{{ form.id.value }}')">Сохранить</button>
+                                 'typePayHadassah{{ form.id.value }}',
+                                 'is_probe_form_{{ form.id.value }}',
+                                 'is_without_salt_form_{{ form.id.value }}',
+                                 'is_without_lactose_form_{{ form.id.value }}')">Сохранить</button>
                             <a class="button white" data-modal-close>Отменить</a>
                         </div>
 
@@ -656,7 +672,9 @@ function validationEditForm(id_full_name,
         id, id_floor, bed_div,
          accompanyingId,
           typePayPetrushka,
-           typePayHadassah) {
+           typePayHadassah,
+            isProbeId, isWithoutSaltId,
+             isWithoutLactoseId)  {
     var form = document.getElementById('main-form');
     var full_name = document.getElementById(id_full_name);
     var birthdate = document.getElementById(birthdate);
@@ -671,6 +689,9 @@ function validationEditForm(id_full_name,
     var accompanying = document.getElementById(accompanyingId);
     var typePayPetrushka = document.getElementById(typePayPetrushka);
     var typePayHadassah = document.getElementById(typePayHadassah);
+    var isProbe = document.getElementById(isProbeId)
+    var isWithoutSalt = document.getElementById(isWithoutSaltId)
+    var isWithoutLactose = document.getElementById(isWithoutLactoseId)
 
     var errors = document.querySelectorAll('.error-field');
     var formGroup = document.querySelectorAll('.form-group');
@@ -800,6 +821,21 @@ function validationEditForm(id_full_name,
         } else {
             isAccompanying.value = 'False'
             typePay.value = 'None'
+        }
+        if (isProbe.checked) {
+            document.getElementById('edit_is_probe').value = 'True'
+        } else {
+            document.getElementById('edit_is_probe').value = 'False'
+        }
+        if (isWithoutSalt.checked) {
+            document.getElementById('edit_is_without_salt').value = 'True'
+        } else {
+            document.getElementById('edit_is_without_salt').value = 'False'
+        }
+        if (isWithoutLactose.checked) {
+            document.getElementById('edit_is_without_lactose').value = 'True'
+        } else {
+            document.getElementById('edit_is_without_lactose').value = 'False'
         }
         form.submit()
     }

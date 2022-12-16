@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Печатная форма №1</title>
+    <title>Сводный отчет</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -208,7 +208,7 @@
     {% endif %}
     {% if catalog.users_not_floor %}
         <tr class='light-blue'>
-            <td colspan="6">Не выбрано</td>
+            <td colspan="6">Не выбран</td>
         </tr>
         {% for user in catalog.users_not_floor %}
             {% if user.comment %}

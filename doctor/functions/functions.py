@@ -688,10 +688,21 @@ def get_now_show_meal():
         return 'ужина'
     return 'завтра'
 
+def comment_formatting(comment):
+    comment = comment.strip().capitalize()
+    if comment != '':
+        comment = comment.strip().capitalize()
+        comment = comment if comment[-1] == '.' else comment + '.'
+    return comment
 
 
+def create_user(user_form, request):
+    is_accompanying = request.POST['is_accompanying']
+    type_pay = request.POST['type_pay']
+    is_probe = False if request.POST['is_probe'] == 'False' else True
+    is_without_salt = False if request.POST['is_without_salt'] == 'False' else True
+    is_without_lactose = False if request.POST['is_without_lactose'] == 'False' else True
 
-def create_user(user_form, is_accompanying, type_pay):
     # генерируем уникальный логин
     while True:
         login = ''.join([random.choice("123456789qwertyuiopasdfghjklzxcvbnm") for i in range(10)])
@@ -711,13 +722,18 @@ def create_user(user_form, is_accompanying, type_pay):
     user.room_number = user_form.data['room_number'] if user_form.data['room_number'] != '' else 'Не выбрано'
     user.bed = user_form.data['bed'] if user_form.data['bed'] != '' else 'Не выбрано'
     user.type_of_diet = user_form.data['type_of_diet']
-    user.comment = user_form.data['comment']
+    user.comment = comment_formatting(user_form.data['comment'])
     user.is_accompanying = is_accompanying
     user.type_pay = type_pay
+    user.is_probe = is_probe
+    user.is_without_salt = is_without_salt
+    user.is_without_lactose = is_without_lactose
     user.status = 'patient'
     # is_accompanying
     # type_pay
     user.save()
+    logging_user_name = f'{request.user.last_name if request.user.last_name != None else "None"} {request.user.last_name if request.user.last_name != None else "None"}'
+    logging.info(f'пользователь ({logging_user_name}), cоздан пациент {user_form.data["full_name"]} ({user_form.data["type_of_diet"]})')
 
     add_default_menu(user)
     add_menu_three_days_ahead()
@@ -745,8 +761,12 @@ def create_user(user_form, is_accompanying, type_pay):
                 regard = u'\u26a0\ufe0f'
                 messang = f'{regard} <b>Изменение с {meal_order}</b>\n'
                 messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
-                if user.comment:
-                    messang += f'Комментарий: "{user.comment}"'
+                comment = add_features(user.comment,
+                             user.is_probe,
+                             user.is_without_salt,
+                             user.is_without_lactose)
+                if comment:
+                    messang += f'Комментарий: "{comment}"'
                 my_job_send_messang_changes.delay(messang)
 
 
@@ -869,25 +889,35 @@ def edit_user(user_form, type, request):
             is_change_diet = True
     user.type_of_diet = user_form.data['type_of_diet1']
 
+    is_probe = False if request.POST['edit_is_probe'] == 'False' else True
+    is_without_salt = False if request.POST['edit_is_without_salt'] == 'False' else True
+    is_without_lactose = False if request.POST['edit_is_without_lactose'] == 'False' else True
 
 
-    if user.comment != user_form.data['comment1']:
+    comment_formated = comment_formatting(user_form.data["comment1"])
+    comment_old = add_features(user.comment, user.is_probe, user.is_without_salt, user.is_without_lactose)
+    comment_new = add_features(comment_formated, is_probe, is_without_salt, is_without_lactose)
+
+
+    if comment_old != comment_new:
         # Если добавили коментарий, рашьше было без комментария
-        flag_add_comment = True if len(user.comment) < 2 and\
-                                   len(user_form.data['comment1']) > 2 else False
+        flag_add_comment = True if len(comment_old) < 2 and\
+                                   len(comment_new) > 2 else False
 
         # changes.append(f'комментарий <b>"{user.comment if user.comment else "нет комментария"}"</b> изменен на <b>"{user_form.data["comment1"]}"</b>')
-        if user_form.data['comment1'] == "" or user.comment == "":
+        if comment_new == "" or comment_old == "":
             if user_form.data['comment1'] == "":
-                changes.append(f'комментарий <b>"{user.comment}"</b> удален')
-            if user.comment == "":
-                changes.append(f'добавлен комментарий <b>"{user_form.data["comment1"]}"</b>')
+                changes.append(f'комментарий <b>"{comment_old}"</b> удален')
+            if comment_old == "":
+                changes.append(f'добавлен комментарий <b>"{comment_new}"</b>')
         else:
-            changes.append(f'комментарий <b>"{user.comment}"</b> изменен на <b>"{user_form.data["comment1"]}"</b>')
+            changes.append(f'комментарий <b>"{comment_old}"</b> изменен на <b>"{comment_new}"</b>')
 
+    user.comment = comment_formated
 
-
-    user.comment = user_form.data['comment1']
+    user.is_probe = is_probe
+    user.is_without_salt = is_without_salt
+    user.is_without_lactose = is_without_lactose
     if not user.is_accompanying and request.POST['edit_is_accompanying'] == 'True':
         if request.POST['edit_type_pay'] == "petrushka":
             changes.append(f'добавлен статус <b>\"Сопровождающий\"</b> с оплатой через кассу')
@@ -901,8 +931,10 @@ def edit_user(user_form, type, request):
                 changes.append(f'<b>оплата за счет клиники</b> изменена на <b>оплату через кассу</b>')
             if request.POST['edit_type_pay'] == "hadassah":
                 changes.append(f'<b>оплата через кассу</b> изменена на <b>оплату за счет клиники</b>')
-    user.is_accompanying = request.POST['edit_is_accompanying']
-    user.type_pay = request.POST['edit_type_pay']
+    is_accompanying = request.POST['edit_is_accompanying']
+    type_pay = request.POST['edit_type_pay']
+    user.is_accompanying = is_accompanying
+    user.type_pay = type_pay
     # если надо восстановить учетную запись пациента
     if type == 'restore':
         user.status = 'patient'
@@ -952,23 +984,26 @@ def edit_user(user_form, type, request):
             if do_messang_send(user.full_name):  # c 17 до 7 утра не отправляем сообщения
                 regard = u'\u26a0\ufe0f'
                 # все номера chat_id
-                if type == 'edit':
+                if type == 'edit' and len(changes) > 0:
                     messang = ''
                     messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
                     messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
                     for change in changes:
                         messang += f'- {change}\n'
+                    my_job_send_messang_changes.delay(messang)
                 if type == 'restore':
                     messang = ''
                     messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
                     messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
-                    messang += f'Комментарий: "{user.comment}"' if user.comment else ''
-                my_job_send_messang_changes.delay(messang)
+                    messang += f'Комментарий: "{comment_new}"' if comment_new else ''
+                    my_job_send_messang_changes.delay(messang)
 
 
-def archiving_user(user):
+def archiving_user(user, request):
     user.status = 'patient_archive'
     user.save()
+    logging_user_name = f'{request.user.last_name if request.user.last_name != None else "None"} {request.user.last_name if request.user.last_name != None else "None"}'
+    logging.info(f'пользователь ({logging_user_name}), пациент перенесен в архив {user.full_name} ({user.type_of_diet})')
     update_UsersToday(user)
     MenuByDay.objects.filter(user_id=user.id).delete()
     if user.receipt_date <= date.today():
@@ -1022,13 +1057,29 @@ def archiving_user(user):
     #             for item in BotChatId.objects.all():
     #                 bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
+def add_features(comment, is_probe, is_without_salt, is_without_lactose):
+    """ Добавляем к комментраию признаки для вывода в Сводный отчет. """
+    items_comment = [f"{None if comment == '' else comment}",
+                     f"{None if not is_probe else 'Питание через зонд.'}",
+                     f"{None if not is_without_salt else 'Без соли.'}",
+                     f"{None if not is_without_lactose else 'Без лактозы.'}",
+                    ]
+    items_comment = [item for item in items_comment if item != 'None']
+    return  ' '.join(items_comment)
+
 
 def create_with_comment(users_diet, floors):
     with_comment = []
-    users_diet_with_comment = [user for user in users_diet if len(user.comment) >= 1]
+    users_diet_with_comment = [user for user in users_diet if len(user.comment) >= 1\
+                               or user.is_probe\
+                               or user.is_without_salt\
+                               or user.is_without_lactose]
     for user_diet_with_comment in users_diet_with_comment:
         with_comment.append({
-        "name": user_diet_with_comment.comment,
+        "name": add_features(user_diet_with_comment.comment,
+                             user_diet_with_comment.is_probe,
+                             user_diet_with_comment.is_without_salt,
+                             user_diet_with_comment.is_without_lactose),
         "total": 1,
         "2nd_floor": len([users_floor for users_floor in [user_diet_with_comment] \
                                   if users_floor.room_number in floors['second']]),
@@ -1039,11 +1090,37 @@ def create_with_comment(users_diet, floors):
         "not_floor": len([users_floor for users_floor in [user_diet_with_comment] \
                                   if users_floor.room_number in ['Не выбрано']])
     })
-    return with_comment
+    list_result = []
+    for index1 in range(0, len(with_comment)):
+        if with_comment[index1]['name'] == None:
+            continue
+        result = {
+            "name": with_comment[index1]['name'],
+            "total": with_comment[index1]["total"],
+            "2nd_floor": with_comment[index1]["2nd_floor"],
+            "3nd_floor": with_comment[index1]["3nd_floor"],
+            "4nd_floor": with_comment[index1]["4nd_floor"],
+            "not_floor": with_comment[index1]["not_floor"],
+        }
+        for index2 in range(index1 + 1, len(with_comment)):
+            if result['name'] == with_comment[index2]['name'] and with_comment[index2]['name'] != None:
+                result["total"] = result["total"] + with_comment[index2]["total"]
+                result["2nd_floor"] = result["2nd_floor"] + with_comment[index2]["2nd_floor"]
+                result["3nd_floor"] = result["3nd_floor"] + with_comment[index2]["3nd_floor"]
+                result["4nd_floor"] = result["4nd_floor"] + with_comment[index2]["4nd_floor"]
+                result["not_floor"] = result["not_floor"] + with_comment[index2]["not_floor"]
+                with_comment[index2]['name'] = None
+        if result["name"] != '':
+            list_result.append(result)
+    return list_result
 
 def create_without_comment(users_diet, floors, diet):
     without_comment = []
-    users_diet_without_comment = [user for user in users_diet if user.comment == '']
+    users_diet_without_comment = [user for user in users_diet if user.comment == ''\
+                                  and not user.is_probe and not user.is_without_salt and not user.is_without_lactose]
+    if len(users_diet) == len(users_diet_without_comment) or \
+        len(users_diet_without_comment) == 0:
+        return ''
     without_comment.append({
         "name": diet,
         "total": len(users_diet_without_comment),
@@ -1056,7 +1133,7 @@ def create_without_comment(users_diet, floors, diet):
         "not_floor": len([users_floor for users_floor in users_diet_without_comment \
                                   if users_floor.room_number in ['Не выбрано']])
     })
-    return ''  if len(users_diet) == len(users_diet_without_comment) else without_comment
+    return without_comment
 
 
 def counting_diets(users, floors):
@@ -1122,7 +1199,10 @@ def create_list_users_on_floor(users, floors, meal, date_create, type_order):
         users_on_floor.append(
             {'name': user.full_name,
              'number': '',
-             'comment': user.comment,
+             'comment': add_features(user.comment,
+                             user.is_probe,
+                             user.is_without_salt,
+                             user.is_without_lactose),
              'room_number': user.room_number,
              'bed': user.bed,
              'diet': user.type_of_diet,

@@ -70,6 +70,11 @@ def create_user_today(meal):
             type_of_diet=user.type_of_diet,
             comment=user.comment,
             status=user.status,
+            is_accompanying=user.is_accompanying,
+            is_probe=user.is_probe,
+            is_without_salt=user.is_without_salt,
+            is_without_lactose=user.is_without_lactose,
+            type_pay=user.type_pay,
             ))
     UsersToday.objects.bulk_create(to_create)
 
@@ -113,6 +118,11 @@ def create_ready_order(meal):
             type_of_diet=user.type_of_diet,
             comment=user.comment,
             status=user.status,
+            is_accompanying=user.is_accompanying,
+            is_probe=user.is_probe,
+            is_without_salt=user.is_without_salt,
+            is_without_lactose=user.is_without_lactose,
+            type_pay=user.type_pay,
             ))
     UsersReadyOrder.objects.bulk_create(to_create)
     to_create = []

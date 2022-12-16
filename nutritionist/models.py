@@ -60,6 +60,21 @@ class CustomUser(AbstractUser):
         default=False,
         help_text='Cопровождающий?')
 
+    is_probe =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Питание через зонд')
+
+    is_without_salt =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Без соли')
+
+    is_without_lactose =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Без лактозы')
+
     type_pay = models.CharField(
         max_length=100,
         choices=TYPE_PAY,
@@ -119,6 +134,33 @@ class UsersToday(models.Model):
         blank=True,
         default='',
         help_text='Выбор диеты')
+
+    is_accompanying =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Cопровождающий?')
+
+    is_probe =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Питание через зонд')
+
+    is_without_salt =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Без соли')
+
+    is_without_lactose =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Без лактозы')
+
+    type_pay = models.CharField(
+        max_length=100,
+        choices=TYPE_PAY,
+        blank=True,
+        default='',
+        help_text='Тип оплаты')
 
 
     def __str__(self):
@@ -308,6 +350,32 @@ class UsersReadyOrder(models.Model):
         blank=True,
         default='',
         help_text='Выбор диеты')
+    is_accompanying =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Cопровождающий?')
+
+    is_probe =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Питание через зонд')
+
+    is_without_salt =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Без соли')
+
+    is_without_lactose =  models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Без лактозы')
+
+    type_pay = models.CharField(
+        max_length=100,
+        choices=TYPE_PAY,
+        blank=True,
+        default='',
+        help_text='Тип оплаты')
 
 
     def __str__(self):

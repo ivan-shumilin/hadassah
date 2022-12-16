@@ -237,7 +237,11 @@
             <input id="test_comment" name="comment">
             <input id="is_accompanying" name="is_accompanying">
             <input id="type_pay" name="type_pay">
+            <input id="test_is_probe" name="is_probe">
+            <input id="test_is_without_salt" name="is_without_salt">
+            <input id="test_is_without_lactose" name="is_without_lactose">
         </div>
+
         <div data-modal="patient-add-test1" data-modal-width="480">
             <input id="test1_full_name" type="text" name="full_name1">
             <input id="test1_birthdate" type="text" name="birthdate1">
@@ -251,6 +255,9 @@
             <input id="test1_comment" type="text" name="comment1">
             <input id="edit_is_accompanying" name="edit_is_accompanying">
             <input id="edit_type_pay" name="edit_type_pay">
+            <input id="edit_is_probe" name="edit_is_probe">
+            <input id="edit_is_without_salt" name="edit_is_without_salt">
+            <input id="edit_is_without_lactose" name="edit_is_without_lactose">
         </div>
 
         <div  data-modal="patient-edited" data-modal-width="400">
@@ -268,6 +275,22 @@
                     {{ user_form.full_name.label }}
                     {{ user_form.full_name }}
                     <div id ='error_full_name' class="error-field"></div>
+                </div>
+                <div class="form-group checkbox">
+                    <label class="custom-checkbox">
+                        <input onchange="showPaymentChoice()" class="custom-checkbox" id="accompanying" type="checkbox" name="accompanying">
+                        <span>Сопровождающий</span>
+                    </label>
+                </div>
+                <div id="typePay" class="form-group hidden-edit">
+                    <label class="custom-radio">
+                        <input onchange="showPaymentChoice()" id="typePayPetrushka" type="radio" name="typePay" checked>
+                        <span>Оплата через кассу</span>
+                    </label>
+                    <label class="custom-radio">
+                        <input onchange="showPaymentChoice()" id="typePayHadassah" type="radio" name="typePay">
+                        <span>За счет клиники</span>
+                    </label>
                 </div>
                 <div id='birthdate_add' class="form-group">
                     {% load widget_tweaks %}
@@ -291,6 +314,7 @@
                     {{ user_form.type_of_diet }}
                     <div id ='error_type_of_diet' class="error-field"></div>
                 </div>
+
                 <div id='department_add' class="form-group">
                     {{ user_form.department.label }}
                     <select name="department" id="id_department">
@@ -325,6 +349,24 @@
                     </select>
                     <div id ='error_bed' class="error-field"></div>
                 </div>
+                <div class="form-group checkbox">
+                    <label class="custom-checkbox">
+                        <input class="custom-checkbox" id="is_probe" type="checkbox" name="is_probe">
+                        <span>Питание через зонд</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input class="custom-checkbox" id="is_without_salt" type="checkbox" name="is_without_salt">
+                        <span>Без соли</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input class="custom-checkbox" id="is_without_lactose" type="checkbox" name="is_without_lactose">
+                        <span>Без лактозы</span>
+                    </label>
+                </div>
+
+
+
+
                 <div class="form-group">
                     {{ user_form.comment.label }}
                     {{ user_form.comment|attr:"rows='4'" }}
@@ -332,23 +374,7 @@
                 </div>
 
 
-                <div class="form-group checkbox">
-                <label class="custom-checkbox">
-                    <input onchange="showPaymentChoice()" class="custom-checkbox" id="accompanying" type="checkbox" name="accompanying">
-                    <span>Сопровождающий</span>
-                </label>
-                </div>
-                <div id="typePay" class="form-group hidden-edit">
-                    <label class="custom-radio">
-                        <input onchange="showPaymentChoice()" id="typePayPetrushka" type="radio" name="typePay" checked>
-                        <span>Оплата через кассу</span>
-                    </label>
-                    <label class="custom-radio">
-                        <input onchange="showPaymentChoice()" id="typePayHadassah" type="radio" name="typePay">
-                        <span>За счет клиники</span>
-                    </label>
-                    <!-- <input id="accompanying" type="checkbox" name="accompanying"> -->
-                </div>
+
 
                 <div class="form-group item-actions flex flex-center last_form_group">
                     <button name="add_patient" onclick="validationForm()">Сохранить</button>

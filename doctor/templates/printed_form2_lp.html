@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Печатная форма №2</title>
+    <title>Заявка для цеха лечебного питания</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,13 +12,13 @@
     <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
 
 </head>
-<body>
+<body class='table-lp'>
 <h1>Производственный отчет<span class="lp ex-bold">Цех лечебного питания</span></h1>
 <p class="bold">{{ formatted_date }}, {{ time_now }}</p>
 <p class="bold underline">{{ catalog.meal }} {% if day %}<span>(Заказ на завтра, {{ date_create }})</span> {% endif %}</p>
 
 
-<table id='table2' width="100%">
+<table id='table2'>
     <tr>
         <td>№</td>
         <td>Диета</td>
@@ -41,6 +41,33 @@
                     <td>{{ product.count }}</td>
                 </tr>
             {% endif %}
+            {% for comment in product.comments %}
+                {% if comment %}
+                    {% if forloop.last %}
+                        <tr class='lp-table'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>└ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% else %}
+                        <tr class='lp-table'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>├ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
         {% endfor %}
     {% endif %}
     
@@ -52,12 +79,39 @@
         {% for product in catalog.salad %}
             {% if product %}
                 <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
+                    <td class='bold-for-lp'>{{ product.number }}</td>
+                    <td class='bold-for-lp'>{{ product.diet }}</td>
+                    <td class='bold-for-lp'>{{ product.name }}</td>
+                    <td class='bold-for-lp'>{{ product.count }}</td>
                 </tr>
             {% endif %}
+            {% for comment in product.comments %}
+                {% if comment %}
+                    {% if forloop.last %}
+                        <tr class='lp-table'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>└ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% else %}
+                        <tr class='lp-table'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>├ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% endif %}
+            {% endif %}
+            {% endfor %}
         {% endfor %}
     {% endif %}
 
@@ -75,12 +129,39 @@
                     <td>{{ product.count }}</td>
                 </tr>
             {% endif %}
+            {% for comment in product.comments %}
+                {% if comment %}
+                    {% if forloop.last %}
+                        <tr class='lp-table'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>└ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% else %}
+                        <tr class='lp-table'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>├ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
         {% endfor %}
     {% endif %}
 
     {% if catalog.main %}
         <tr class='light-blue'>
-            <td colspan="4">Вторые блюда</td>   
+            <td colspan="4">Вторые блюда</td>
         </tr>
         
         {% for product in catalog.main %}
@@ -92,6 +173,33 @@
                     <td>{{ product.count }}</td>
                 </tr>
             {% endif %}
+            {% for comment in product.comments %}
+            {% if comment %}
+            {% if forloop.last %}
+                <tr class='lp-table'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>└ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% else %}
+                <tr class='lp-table'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>├ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+            {% endfor %}
         {% endfor %}
     {% endif %}
 
@@ -109,6 +217,33 @@
                     <td>{{ product.count }}</td>
                 </tr>
             {% endif %}
+            {% for comment in product.comments %}
+            {% if comment %}
+            {% if forloop.last %}
+                <tr class='lp-table'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>└ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% else %}
+                <tr class='lp-table'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>├ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+            {% endfor %}
         {% endfor %}
     {% endif %}
 
@@ -127,6 +262,33 @@
                     <td>{{ product.count }}</td>
                 </tr>
             {% endif %}
+            {% for comment in product.comments %}
+            {% if comment %}
+            {% if forloop.last %}
+                <tr class='lp-table'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>└ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% else %}
+                <tr class='lp-table'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>├ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+            {% endfor %}
         {% endfor %}
     {% endif %}
 
@@ -144,6 +306,33 @@
                     <td>{{ product.count }}</td>
                 </tr>
             {% endif %}
+            {% for comment in product.comments %}
+            {% if comment %}
+            {% if forloop.last %}
+                <tr class='lp-table'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>└ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% else %}
+                <tr class='lp-table'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>├ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+            {% endfor %}
         {% endfor %}
     {% endif %}
 

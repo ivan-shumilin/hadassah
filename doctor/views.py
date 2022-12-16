@@ -40,7 +40,7 @@ def doctor(request):
                                              fields=(
                                                  'full_name', 'birthdate', 'receipt_date', 'receipt_time', 'department',
                                                  'floor', 'room_number', 'bed', 'type_of_diet', 'comment', 'id', 'is_accompanying',
-                                                 'type_pay'),
+                                                 'is_probe', 'is_without_salt', 'is_without_lactose', 'type_pay'),
                                              widgets={
                                                  'full_name': TextInput(attrs={'required': "True"}),
                                                  'birthdate': TextInput(),
@@ -54,7 +54,10 @@ def doctor(request):
                                                  'comment': Textarea(),
                                                  'id': Textarea(attrs={'style': "display: none;"}),
                                                  'is_accompanying': TextInput(attrs={'required': "True"}),
-                                                 'type_pay': TextInput(attrs={'required': "True"})
+                                                 'type_pay': TextInput(attrs={'required': "True"}),
+                                                 'is_probe': TextInput(attrs={'required': "True"}),
+                                                 'is_without_salt': TextInput(attrs={'required': "True"}),
+                                                 'is_without_lactose': TextInput(attrs={'required': "True"}),
                                              },
                                              extra=0, )
     check_have_menu()
@@ -113,7 +116,7 @@ def doctor(request):
         user_form = PatientRegistrationForm(request.POST)
         # formset = \
         #     CustomUserFormSet(request.POST, request.FILES, queryset=queryset)
-        create_user(user_form, request.POST['is_accompanying'], request.POST['type_pay'])
+        create_user(user_form, request)
         not_active_users_set = get_not_active_users_set()
         queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
         formset = CustomUserFormSet(queryset=queryset)
@@ -188,7 +191,7 @@ def doctor(request):
     if request.method == 'POST' and 'archive' in request.POST:
         id_user = request.POST.getlist('id_edit_user')[0]
         user = CustomUser.objects.get(id=id_user)
-        archiving_user(user)
+        archiving_user(user, request)
         not_active_users_set = get_not_active_users_set()
         user_form = PatientRegistrationForm(request.POST)
         formset = CustomUserFormSet(queryset=queryset)
