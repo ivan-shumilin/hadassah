@@ -1051,6 +1051,13 @@ def printed_form_two_lp(request):
             if product != None:
                 product['number'] = number
                 number += 1
+                without_comment = {'comment': 'Без комментария.', 'count': 1}
+                count_without_comment = product['comments'].count(without_comment)
+                try:
+                    while True:
+                        product['comments'].remove(without_comment)
+                except:
+                    product['comments'].insert(0, {'comment': 'Без комментария.', 'count': count_without_comment})
 
 
 
