@@ -15,7 +15,8 @@
 <body class='table-lp'>
 <h1>Производственный отчет<span class="lp ex-bold">Цех лечебного питания</span></h1>
 <p class="bold">{{ formatted_date }}, {{ time_now }}</p>
-<p class="bold underline">{{ catalog.meal }} {% if day %}<span>(Заказ на завтра, {{ date_create }})</span> {% endif %}</p>
+
+<p class="bold underline">{{ meal }} {% if day %}<span>(Заказ на завтра, {{ date_create }})</span> {% endif %}</p>
 
 
 <table id='table2'>
