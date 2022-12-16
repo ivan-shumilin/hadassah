@@ -35,16 +35,16 @@
         {% for product in catalog.porridge %}
             {% if product %}
                 <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
             {% endif %}
             {% for comment in product.comments %}
                 {% if comment %}
                     {% if forloop.last %}
-                        <tr class='lp-table'>
+                        <tr class='lp-table light-blue3 solid'>
                             <td></td>
                             <td></td>
                             {% if comment.comment == "Без комментария." %} 
@@ -55,7 +55,7 @@
                             <td>{{ comment.count }}</td>
                         </tr>
                     {% else %}
-                        <tr class='lp-table'>
+                        <tr class='lp-table light-blue3'>
                             <td></td>
                             <td></td>
                             {% if comment.comment == "Без комментария." %} 
@@ -88,7 +88,7 @@
             {% for comment in product.comments %}
                 {% if comment %}
                     {% if forloop.last %}
-                        <tr class='lp-table'>
+                        <tr class='lp-table light-blue3 solid'>
                             <td></td>
                             <td></td>
                             {% if comment.comment == "Без комментария." %} 
@@ -99,7 +99,7 @@
                             <td>{{ comment.count }}</td>
                         </tr>
                     {% else %}
-                        <tr class='lp-table'>
+                        <tr class='lp-table light-blue3'>
                             <td></td>
                             <td></td>
                             {% if comment.comment == "Без комментария." %} 
@@ -123,16 +123,16 @@
         {% for product in catalog.soup %}
             {% if product %}
                 <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
             {% endif %}
             {% for comment in product.comments %}
                 {% if comment %}
                     {% if forloop.last %}
-                        <tr class='lp-table'>
+                        <tr class='lp-table light-blue3 solid'>
                             <td></td>
                             <td></td>
                             {% if comment.comment == "Без комментария." %} 
@@ -143,7 +143,7 @@
                             <td>{{ comment.count }}</td>
                         </tr>
                     {% else %}
-                        <tr class='lp-table'>
+                        <tr class='lp-table light-blue3'>
                             <td></td>
                             <td></td>
                             {% if comment.comment == "Без комментария." %} 
@@ -167,16 +167,16 @@
         {% for product in catalog.main %}
             {% if product %}
                 <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
             {% endif %}
             {% for comment in product.comments %}
             {% if comment %}
             {% if forloop.last %}
-                <tr class='lp-table'>
+                <tr class='lp-table light-blue3 solid'>
                     <td></td>
                     <td></td>
                     {% if comment.comment == "Без комментария." %} 
@@ -187,7 +187,7 @@
                     <td>{{ comment.count }}</td>
                 </tr>
             {% else %}
-                <tr class='lp-table'>
+                <tr class='lp-table light-blue3'>
                     <td></td>
                     <td></td>
                     {% if comment.comment == "Без комментария." %} 
@@ -211,16 +211,16 @@
         {% for product in catalog.garnish %}
             {% if product %}
                 <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
             {% endif %}
             {% for comment in product.comments %}
             {% if comment %}
             {% if forloop.last %}
-                <tr class='lp-table'>
+                <tr class='lp-table light-blue3 solid'>
                     <td></td>
                     <td></td>
                     {% if comment.comment == "Без комментария." %} 
@@ -231,7 +231,7 @@
                     <td>{{ comment.count }}</td>
                 </tr>
             {% else %}
-                <tr class='lp-table'>
+                <tr class='lp-table light-blue3'>
                     <td></td>
                     <td></td>
                     {% if comment.comment == "Без комментария." %} 
@@ -256,16 +256,16 @@
         {% for product in catalog.dessert %}
             {% if product %}
                 <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
             {% endif %}
             {% for comment in product.comments %}
             {% if comment %}
             {% if forloop.last %}
-                <tr class='lp-table'>
+                <tr class='lp-table light-blue3 solid'>
                     <td></td>
                     <td></td>
                     {% if comment.comment == "Без комментария." %} 
@@ -276,7 +276,7 @@
                     <td>{{ comment.count }}</td>
                 </tr>
             {% else %}
-                <tr class='lp-table'>
+                <tr class='lp-table light-blue3'>
                     <td></td>
                     <td></td>
                     {% if comment.comment == "Без комментария." %} 
@@ -300,16 +300,16 @@
         {% for product in catalog.fruit %}
             {% if product %}
                 <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
             {% endif %}
             {% for comment in product.comments %}
             {% if comment %}
             {% if forloop.last %}
-                <tr class='lp-table'>
+                <tr class='lp-table light-blue3 solid'>
                     <td></td>
                     <td></td>
                     {% if comment.comment == "Без комментария." %} 
@@ -320,7 +320,7 @@
                     <td>{{ comment.count }}</td>
                 </tr>
             {% else %}
-                <tr class='lp-table'>
+                <tr class='lp-table light-blue3'>
                     <td></td>
                     <td></td>
                     {% if comment.comment == "Без комментария." %} 
@@ -345,10 +345,10 @@
         {% for product in catalog.drink %}
             {% if product %}
                 <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
             {% endif %}
         {% endfor %}
@@ -362,10 +362,10 @@
         {% for product in catalog.products %}
             {% if product %}
                 <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
             {% endif %}
         {% endfor %}
