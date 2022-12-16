@@ -1065,7 +1065,8 @@ def printed_form_two_lp(request):
                     if comment['comment'] == 'Без комментария.':
                         count += comment['count']
                 result = [comment for comment in product['comments'] if comment['comment'] != 'Без комментария.']
-                result.insert(0, {'comment': 'Без комментария.', 'count': count})
+                if count > 0:
+                    result.insert(0, {'comment': 'Без комментария.', 'count': count})
                 product['comments'] = result
 
 
