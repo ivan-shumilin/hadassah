@@ -1042,7 +1042,9 @@ def printed_form_two_lp(request):
                     if pr['id'] == cat[ii]['id']:
                         pr['count'] = str(int(pr['count']) + int(cat[ii]['count']))
                         pr['diet'] = pr['diet'] + ', ' + cat[ii]['diet']
+
                         pr['comments'] = pr['comments'] + cat[ii]['comments']
+
                         cat[ii] = None
 
     number = 1
@@ -1058,6 +1060,13 @@ def printed_form_two_lp(request):
                         product['comments'].remove(without_comment)
                 except:
                     product['comments'].insert(0, {'comment': 'Без комментария.', 'count': count_without_comment})
+                count = 0
+                for comment in product['comments']:
+                    if comment['comment'] == 'Без комментария.':
+                        count += comment['count']
+                result = [comment for comment in product['comments'] if comment['comment'] != 'Без комментария.']
+                result.insert(0, {'comment': 'Без комментария.', 'count': count})
+                product['comments'] = result
 
 
 
