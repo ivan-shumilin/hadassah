@@ -272,7 +272,7 @@
                                         <div id ='error_not_change' class="error-field"></div>
                                     </div>
                                     <div class="form-group item-actions flex flex-center last_form_group">
-                                        <button name="add_patient"
+                                        <button id="btn-edit-{{ form.id.value }}" name="add_patient"
                                          onclick="validationEditForm('full_name_{{ form.id.value }}',
                                          'id-birthdate-{{ form.id.value }}',
                                           '{{ form.receipt_date.id_for_label }}',
@@ -289,7 +289,8 @@
                                                     'typePayHadassah{{ form.id.value }}',
                                                     'is_probe_form_{{ form.id.value }}',
                                                      'is_without_salt_form_{{ form.id.value }}',
-                                                      'is_without_lactose_form_{{ form.id.value }}')">Сохранить</button>
+                                                      'is_without_lactose_form_{{ form.id.value }}',
+                                                      'btn-edit-{{ form.id.value }}')">Сохранить</button>
                                         <a class="button white" data-modal-close>Отменить</a>
                                     </div>
 
@@ -298,7 +299,7 @@
                             <div class="title align-center">Перенести учётную запись пациента в архив?</div>
                             <div class="confirm-block">
                                 <div class="buttons">
-                                    <a class="button" onclick="patientArchive('{{ form.id.value }}')">Архивировать</a>
+                                    <a id='btn-archive-{{ form.id.value }}' class="button" onclick="patientArchive('{{ form.id.value }}', 'btn-archive-{{ form.id.value }}')">Архивировать</a>
                                     <a id='close{{ form.id.value }}' class="button white" data-modal-close>Отменить</a>
                                 </div>
                             </div>
@@ -1334,6 +1335,8 @@ function checkDate(year, month, day) {
 
 
 async function validationForm() {
+    var btn = document.getElementById('btn-save');
+    btn.setAttribute('disabled', true);
     var form = document.getElementById('main-form');
     var fields = form.querySelectorAll('.field');
     var full_name = document.getElementById('id_full_name');
@@ -1484,6 +1487,8 @@ async function validationForm() {
             document.getElementById('test_is_without_lactose').value = 'False'
         }
         form.submit();
+    } else {
+    btn.removeAttribute('disabled');
     }
 }
 
@@ -1509,7 +1514,9 @@ async function validationEditForm(id_full_name,
            typePayPetrushka,
             typePayHadassah,
             isProbeId, isWithoutSaltId,
-             isWithoutLactoseId) {
+             isWithoutLactoseId, btnId) {
+    var btn = document.getElementById(btnId);
+    btn.setAttribute('disabled', true);
     var form = document.getElementById('main-form');
     var full_name = document.getElementById(id_full_name)
     var birthdate = document.getElementById(id_birthdate)
@@ -1742,10 +1749,14 @@ async function validationEditForm(id_full_name,
         document.getElementById('test1_comment').value = comment.value
         document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
         form.submit()
+    } else {
+    btn.removeAttribute('disabled');
     }
  }
 
-function patientArchive(id) {
+function patientArchive(id, btnId) {
+    var btn1 = document.getElementById(btnId);
+    btn1.setAttribute('disabled', true);
     var form = document.getElementById('main-form');
     document.getElementById('id_edit_user').value = id;
     document.getElementById('archive').setAttribute('checked', 'true');

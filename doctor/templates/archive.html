@@ -206,7 +206,7 @@
 
 
                         <div class="form-group item-actions flex flex-center last_form_group">
-                            <button name="add_patient"
+                            <button name="add_patient" id="btn-edit-{{ form.id.value }}"
                              onclick="validationEditForm('full_name_{{ form.id.value }}',
                              '{{ form.birthdate.id_for_label }}',
                               '{{ form.receipt_date.id_for_label }}',
@@ -219,7 +219,7 @@
                                  'typePayHadassah{{ form.id.value }}',
                                  'is_probe_form_{{ form.id.value }}',
                                  'is_without_salt_form_{{ form.id.value }}',
-                                 'is_without_lactose_form_{{ form.id.value }}')">Сохранить</button>
+                                 'is_without_lactose_form_{{ form.id.value }}', 'btn-edit-{{ form.id.value }}')">Сохранить</button>
                             <a class="button white" data-modal-close>Отменить</a>
                         </div>
 
@@ -674,7 +674,9 @@ function validationEditForm(id_full_name,
           typePayPetrushka,
            typePayHadassah,
             isProbeId, isWithoutSaltId,
-             isWithoutLactoseId)  {
+             isWithoutLactoseId, btnId)  {
+    var btn = document.getElementById(btnId);
+    btn.setAttribute('disabled', true);
     var form = document.getElementById('main-form');
     var full_name = document.getElementById(id_full_name);
     var birthdate = document.getElementById(birthdate);
@@ -766,34 +768,6 @@ function validationEditForm(id_full_name,
         error = error + 1
     }
 
-    // if (department.value == 'Не выбрано') {
-    //     document.getElementById('error_department').innerHTML = 'Обязательное поле'
-    //     document.getElementById('error_department').classList.add('error')
-    //     document.getElementById('department_edit').classList.add('error')
-    //     error = error + 1
-    // }
-
-    // if (floor.value == 'Не выбрано') {
-    //     document.getElementById('error_floor').innerHTML = 'Обязательное поле'
-    //     document.getElementById('error_floor').classList.add('error')
-    //     document.getElementById('floor_edit').classList.add('error')
-    //     error = error + 1
-    // }
-
-    // if (room_number.value == 'Не выбрано') {
-    //     document.getElementById('error_room_number').innerHTML = 'Обязательное поле'
-    //     document.getElementById('error_room_number').classList.add('error')
-    //     document.getElementById('room_number_edit').classList.add('error')
-    //     error = error + 1
-    // }
-
-    // if (bed.value == 'Не выбрано') {
-    //     document.getElementById('error_bed').innerHTML = 'Обязательное поле'
-    //     document.getElementById('error_bed').classList.add('error')
-    //     document.getElementById(bed_div).classList.add('error')
-    //     error = error + 1
-    // }
-
     if (error == 0) {
         document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
         document.getElementById('id_edit_user').value = id
@@ -838,6 +812,8 @@ function validationEditForm(id_full_name,
             document.getElementById('edit_is_without_lactose').value = 'False'
         }
         form.submit()
+    } else {
+    btn.removeAttribute('disabled');
     }
  }
 
