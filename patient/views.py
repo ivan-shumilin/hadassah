@@ -34,80 +34,82 @@ def group_patient_check(user):
 # @login_required
 # @user_passes_test(group_patient_check, login_url='login')
 def patient(request, id):
-    import datetime
-    page = 'menu-menu'
-    is_have = 'ok'
-    date_menu = {
-        'today': str(date.today()),
-        'tomorrow': str(date.today() + datetime.timedelta(days=1)),
-        'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
-    }
-
-
-    user = CustomUser.objects.get(id=id)
-    diet = translate_diet(user.type_of_diet)
-    translated_diet = user.type_of_diet
-    meal = 'lunch'
-    if request.GET == {} or request.method == 'POST':
-        date_get = str(date.today())
-
-    else:
-        date_get = request.GET['date']
-
-    # если дата показа меньше даты госпитализации is_have = False
-    if len(user.comment) >= 2:
-        is_have = 'comment'
-    if parse(date_get).date() < user.receipt_date:
-        is_have = 'date'  # выводим сообщение об ошибке
-
-    day_of_the_week = get_day_of_the_week(date_get)
-
-    menu_for_lk_patient = creating_menu_for_lk_patient(date_get, diet, meal, day_of_the_week, translated_diet)
-
-
-    products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
-                                        Q(timetablelp__type_of_diet=translated_diet) &
-                                        Q(timetablelp__meals=meal))
-
-
-    queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Вторые блюда').order_by(Lower('name')))
-    queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Гарниры').order_by(Lower('name')))
-    queryset_salad = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Салаты').order_by(Lower('name')))
-    queryset_soup = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Первые блюда').order_by(Lower('name')))
-
-    queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup = \
-        sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup)
-
-    breakfast, afternoon, lunch, dinner = formation_menu(products)
-
-    patient_select = create_patient_select(id, date_get)
-    # patient_select = 'cafe-salad-1162,cafe-soup-1161,cafe-main-1094'
-
-
-
-
-    formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
-    date_timer = parse(date_get)
-    today = (date_get == str(date.today()))
-    data = {'is_have': is_have,
-            'user': user,
-            'breakfast': breakfast,
-            'afternoon': afternoon,
-            'lunch': lunch,
-            'dinner': dinner,
-            'date_menu': date_menu,
-            'page': page,
-            'date_get': date_get,
-            'date': date_timer,
-            'formatted_date': formatted_date,
-            'products': menu_for_lk_patient,
-            'patient_select': patient_select,
-            'today': today
-            }
+    # import datetime
+    # page = 'menu-menu'
+    # is_have = 'ok'
+    # date_menu = {
+    #     'today': str(date.today()),
+    #     'tomorrow': str(date.today() + datetime.timedelta(days=1)),
+    #     'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
+    # }
+    #
+    #
+    # user = CustomUser.objects.get(id=id)
+    # diet = translate_diet(user.type_of_diet)
+    # translated_diet = user.type_of_diet
+    # meal = 'lunch'
+    # if request.GET == {} or request.method == 'POST':
+    #     date_get = str(date.today())
+    #
+    # else:
+    #     date_get = request.GET['date']
+    #
+    # # если дата показа меньше даты госпитализации is_have = False
+    # if len(user.comment) >= 2:
+    #     is_have = 'comment'
+    # if parse(date_get).date() < user.receipt_date:
+    #     is_have = 'date'  # выводим сообщение об ошибке
+    #
+    # day_of_the_week = get_day_of_the_week(date_get)
+    #
+    # menu_for_lk_patient = creating_menu_for_lk_patient(date_get, diet, meal, day_of_the_week, translated_diet)
+    #
+    #
+    # products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
+    #                                     Q(timetablelp__type_of_diet=translated_diet) &
+    #                                     Q(timetablelp__meals=meal))
+    #
+    #
+    # queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+    #     category='Вторые блюда').order_by(Lower('name')))
+    # queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+    #     category='Гарниры').order_by(Lower('name')))
+    # queryset_salad = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+    #     category='Салаты').order_by(Lower('name')))
+    # queryset_soup = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+    #     category='Первые блюда').order_by(Lower('name')))
+    #
+    # queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup = \
+    #     sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup)
+    #
+    # breakfast, afternoon, lunch, dinner = formation_menu(products)
+    #
+    # patient_select = create_patient_select(id, date_get)
+    # # patient_select = 'cafe-salad-1162,cafe-soup-1161,cafe-main-1094'
+    #
+    #
+    #
+    #
+    # formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
+    # date_timer = parse(date_get)
+    # today = (date_get == str(date.today()))
+    # data = {'is_have': is_have,
+    #         'user': user,
+    #         'breakfast': breakfast,
+    #         'afternoon': afternoon,
+    #         'lunch': lunch,
+    #         'dinner': dinner,
+    #         'date_menu': date_menu,
+    #         'page': page,
+    #         'date_get': date_get,
+    #         'date': date_timer,
+    #         'formatted_date': formatted_date,
+    #         'products': menu_for_lk_patient,
+    #         'patient_select': patient_select,
+    #         'today': today
+    #         }
+    is_have = 'comment'
+    data = {'is_have': is_have}
     return render(request, 'patient_.html', context=data)
 
 

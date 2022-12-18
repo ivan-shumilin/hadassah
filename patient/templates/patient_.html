@@ -1,6 +1,6 @@
 {% extends "base_generic_patient.html" %}
 {% block content %}
-<input style='display: none;' type="radio" id='input_{{ date_menu.today }}' name='date' value='{{ date_menu.today }}'>
+<!-- <input style='display: none;' type="radio" id='input_{{ date_menu.today }}' name='date' value='{{ date_menu.today }}'>
 <input style='display: none;' type="radio" id='input_{{ date_menu.tomorrow }}' name='date' value='{{ date_menu.tomorrow }}'>
 <input style='display: none;' type="radio" id='input_{{ date_menu.day_after_tomorrow }}' name='date' value='{{ date_menu.day_after_tomorrow }}'>
 <a style="display: none;"  id="orderConfirmed" data-modal-link="order-confirmed">a</a>
@@ -38,7 +38,7 @@
                             <a id='mobile-{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
                         </div>
                     </div>
-</form>
+</form> -->
 
 
 {% if is_have == 'ok' %}
@@ -1073,8 +1073,8 @@
         </div>
     {% endif %}
     {% if is_have == 'comment' %}
-        <div>
-            <p>Данные недоступны</p>
+        <div style="margin-top: 30px; margin-left: 10px;">
+            <p>На странице ведутся технические работы.</p>
         </div>
     {% endif %}
 {% endif %}
