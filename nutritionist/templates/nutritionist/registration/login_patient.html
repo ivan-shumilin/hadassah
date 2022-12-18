@@ -8,6 +8,11 @@
             <form id='register-form' class="login-form" method="post" novalidate>
                 {% csrf_token %}
                 <div id="last-name" class="form-group">
+                    <label for="#">Дата рождения</label>
+                    <input type="text" onchange="deleteError()" id="id-birthdate" placeholder="01.01.1960">
+                    <div id="error-birthdate" class=""></div>
+                </div>
+                <div id="last-name" class="form-group">
                     <label for="#">Фамилия</label>
                     <input class="test text" id="last-name-input" type="text" name="last-name">
                     <div id="error-last-name" class=""></div>
@@ -31,6 +36,51 @@
     </div>
 </div>
 <script>
+function deleteError() {
+    document.getElementById('error-birthdate').innerHTML = '';
+    document.getElementById('error-birthdate').classList.remove('error');
+}
+
+let symbol = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
+let birthdateInput = document.getElementById('id-birthdate');
+var old = 0
+birthdateInput.addEventListener("input", function() {
+    if (!symbol.includes(this.value[this.value.length - 1])) {
+        this.value = this.value.slice(0, -1)
+    }
+    if ((this.value.length == 1) && (this.value[0] > 3)) {
+        this.value = '0' + this.value
+        old = 1
+    }
+    if ((this.value.length == 4) && (this.value[3] > 1)) {
+        this.value = this.value.slice(0, -1) + '0' + this.value[3]
+        old = 4
+    }
+    if (this.value.length == 2) {
+        if (old == 1) {
+            this.value = this.value + '.'
+        } 
+        if (old == 3) {
+            this.value = this.value.slice(0, -1)
+        }
+    } 
+    if (this.value.length == 5) {
+        if (old == 4) {
+            this.value = this.value + '.'
+        } 
+        if (old == 6) {
+            this.value = this.value.slice(0, -1)
+        }
+    } 
+    if (this.value.length == 11) {
+        this.value = this.value.slice(0, -1)
+    }
+    old = this.value.length
+})
+
+
+
+
 
 var FLAG_L_NAME = 'false'
 var FLAG_NAME = 'false'
