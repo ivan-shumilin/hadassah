@@ -962,6 +962,8 @@ def edit_user(user_form, type, request):
         my_job_send_messang_changes.delay(messang)
 
 def archiving_user(user, request):
+    if user.status == 'patient_archive':
+        return
     user.status = 'patient_archive'
     user.save()
     logging_user_name = f'{request.user.last_name if request.user.last_name != None else "None"} {request.user.last_name if request.user.last_name != None else "None"}'
@@ -981,7 +983,8 @@ def archiving_user(user, request):
             regard = u'\u26a0\ufe0f'
             messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
     messang += f'Пациент {formatting_full_name(user.full_name)} ({user.type_of_diet}) выписан\n'
-    return my_job_send_messang_changes.delay(messang)
+    my_job_send_messang_changes.delay(messang)
+    return 'archived'
 
 def add_features(comment, is_probe, is_without_salt, is_without_lactose):
     """ Добавляем к комментраию признаки для вывода в Сводный отчет. """

@@ -191,13 +191,14 @@ def doctor(request):
     if request.method == 'POST' and 'archive' in request.POST:
         id_user = request.POST.getlist('id_edit_user')[0]
         user = CustomUser.objects.get(id=id_user)
-        archiving_user(user, request)
+        modal = archiving_user(user, request)
         not_active_users_set = get_not_active_users_set()
         user_form = PatientRegistrationForm(request.POST)
         formset = CustomUserFormSet(queryset=queryset)
         if not formset.is_valid():
             data = {
-                'modal': 'archived',
+                # 'modal': 'archived',
+                'modal': modal,
                 'formset': formset,
                 'page': page,
                 'today': today,
@@ -212,7 +213,8 @@ def doctor(request):
             queryset = CustomUser.objects.filter(status='patient')
             formset = CustomUserFormSet(queryset=queryset)
             data = {
-                'modal': 'archive',
+                # 'modal': 'archive',
+                'modal': modal,
                 'page': page,
                 'today': today,
                 'formset': formset,
