@@ -48,11 +48,12 @@
 
                 <div style="display: none;" id="filter_by">{{ filter_by }}</div>
                 <div style="display: none;" id="sorting">{{ sorting }}</div>
-                <div style="display: none;" id="status">{{ modal }}</div>
- 
-                <a style="display: none;"  id="archived" data-modal-link="patient-archived">a</a>
+
+                
+                <a style="display: none;"  id="archived" data-modal-link="patient was discharged">Пациент уже выписан</a>
+                <a style="display: none;"  id="archived" data-modal-link="patient-archived">Пациент перенесен в архив</a>
                 <a style="display: none;" id="edited" data-modal-link="patient-edited">Редактировать</a>
-                <a style="display: none;" id="patient-added" data-modal-link="patient-added">a</a>
+                <a style="display: none;" id="patient-added" data-modal-link="patient-added">Поступил пациент</a>
                 <a style="display: none;" id="modal-close" data-modal-close>a</a>
                 <a style="display: none;" id="password-edited" data-modal-link="password-edited">a</a>
                 <a style="display: none;" id="profile-edited" data-modal-link="profile-edited">a</a>
@@ -404,6 +405,7 @@
             </div>
 <!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script> -->
 <script>
+
 document.getElementById("modal_field").onclick = function() {clickEditForm()};
 
 function showPaymentChoice() {

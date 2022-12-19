@@ -1,6 +1,8 @@
 from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId,\
     UsersToday, MenuByDayReadyOrder, UsersReadyOrder
 from django.db import transaction
+from django.contrib import messages
+from django.contrib.messages import get_messages
 from dateutil.parser import parse
 from django.db.models import Q
 from typing import List
@@ -814,6 +816,10 @@ def edit_user(user_form, type, request):
     is_change_diet = False
     flag_add_comment = False
     user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
+    # если пациента уже восстоновлен из архива
+    if type == 'restore' and user.status == 'patient' or\
+        type == 'edit' and user.status == 'patient_archive':
+        return False
     # обравляем CustomUser и состовляем список изменений
     if user.full_name != user_form.data['full_name1']:
         changes.append(f"ФИО <b>{user.full_name}</b> изменена на <b>{user_form.data['full_name1']}</b>")
@@ -918,14 +924,6 @@ def edit_user(user_form, type, request):
         add_menu_three_days_ahead()
     elif flag_is_change_diet or flag_add_comment:
         update_menu_for_future(user, flag_is_change_diet)
-
-    # date_order = date.today() + timedelta(days=1) if datetime.today().time().hour >= 19 else date.today()
-    # # после 19 в заказ добавляем пользователей с датой госпитализации на след день
-    # if parse(user.receipt_date).date() <= date_order or flag == True:
-    #     if check_time():
-    #         update_UsersToday(user)
-    #     else:
-    #         update_СhangesUsersToday(user)
     #     # отправить сообщение
     regard = u'\u26a0\ufe0f'
     messang = ''
@@ -960,6 +958,7 @@ def edit_user(user_form, type, request):
         messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
         messang += f'Комментарий: "{comment_new}"' if comment_new else ''
         my_job_send_messang_changes.delay(messang)
+    return True
 
 def archiving_user(user, request):
     if user.status == 'patient_archive':
@@ -1181,7 +1180,15 @@ def is_active_user(user):
             return user.id
 
 def get_not_active_users_set():
-    """ Проверяем является ли пациент активным """
+    """ Проверяем является ли пациент активным
+    в 9:00 после завртака все пациетны которые успевают на обед(время регистрации раньше 14:00) становятся активными\
+    (нет возможности редактировать дату и время)
+    В кейсе (1), когда у нас заранее известно время госпитализации.
+    00:00 - 10:00 вкл. поступает – с завтрака
+    10:00 - 14:00 вкл. поступает – с обеда,
+    14:00 - 17:00 вкл. поступает – с полдника,
+    17:00 - 21:00 вкл. поступает – с ужина
+     """
     users = CustomUser.objects.filter(status='patient').filter(receipt_date__gte=date.today())
     not_active_users_set = ''
     for user in users:
@@ -1229,4 +1236,3 @@ def add_public_name():
     for product in products:
         product.public_name = product.name
         product.save()
-

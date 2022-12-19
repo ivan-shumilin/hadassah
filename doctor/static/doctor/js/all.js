@@ -12679,10 +12679,22 @@ function addHtmlLunch() {
 
 
 //  делаем нужную ссылку визуально активной
+// function funonload() {
+//   var page = document.getElementById('page')
+//   document.getElementById(page.innerHTML).classList.add('active');
+//   var list6 = document.getElementById('status').innerHTML
+//   document.getElementById(list6).click();
+// }
+// window.onload = funonload;
+
 function funonload() {
   var page = document.getElementById('page')
   document.getElementById(page.innerHTML).classList.add('active');
-  var list6 = document.getElementById('status').innerHTML
-  document.getElementById(list6).click();
+  var messages = document.getElementsByClassName('messages')
+  if (messages.length != 0) {
+    var link = document.getElementById(messages[0].value)
+    link.click();
+  }
 }
 window.onload = funonload;
+

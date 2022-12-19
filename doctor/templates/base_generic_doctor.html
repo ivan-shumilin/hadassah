@@ -259,6 +259,11 @@
             <input id="edit_is_without_salt" name="edit_is_without_salt">
             <input id="edit_is_without_lactose" name="edit_is_without_lactose">
         </div>
+        {% if messages %}
+                {% for message in messages %}
+                    <input class="messages" type="text" value="{{ message }}">
+                {% endfor %}
+        {% endif %}
 
         <div  data-modal="patient-edited" data-modal-width="400">
             <div class="message-block">
@@ -363,18 +368,11 @@
                         <span>Без лактозы</span>
                     </label>
                 </div>
-
-
-
-
                 <div class="form-group">
                     {{ user_form.comment.label }}
                     {{ user_form.comment|attr:"rows='4'" }}
                     <div id ='error_receipt_date' class="error-field"></div>
                 </div>
-
-
-
 
                 <div class="form-group item-actions flex flex-center last_form_group">
                     <button id="btn-save" name="add_patient" onclick="validationForm()">Сохранить</button>
