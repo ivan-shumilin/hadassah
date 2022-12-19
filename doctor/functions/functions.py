@@ -13,7 +13,6 @@ from doctor.functions.for_print_forms import create_user_today, check_time, upda
     applies_changes
 from doctor.tasks import my_job_send_messang_changes
 
-
 def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup):
     """Сортировка блюд по приемам пищи"""
 
@@ -77,7 +76,6 @@ def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad,
 
     return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup
 
-
 def parsing():
     import fake_useragent
     import requests
@@ -139,7 +137,6 @@ def parsing():
                                          }
     load_menu(menu)
 
-
 @transaction.atomic
 def load_menu(menu):
     menu_items = menu
@@ -158,7 +155,6 @@ def load_menu(menu):
     ))
     ProductLp.objects.bulk_create(to_create)
 
-
 def get_day_of_the_week(date_get):
     '''Дату в формате Y-M-D в день недели прописью'''
     DAT_OF_THE_WEEK = {
@@ -171,7 +167,6 @@ def get_day_of_the_week(date_get):
         'Sunday': 'воскресенье',
     }
     return DAT_OF_THE_WEEK[parse(date_get).strftime('%A')]
-
 
 def translate_diet(diet):
     TYPE_DIET = {
@@ -207,14 +202,12 @@ def translate_meal(meal):
     }
     return MEALS[meal]
 
-
 def сhange_password(email, request):
     user = CustomUser.objects.get(id=request.user.id)
     user.email = email
     user.save()
     return
 
-# formset[0].initial['full_name']
 def formatting_full_name(full_name):
     list = full_name.split()
     res = ''
@@ -278,8 +271,6 @@ def create_value(product, id):
         'category': product.category,
     }
     return value
-
-
 
 def check_value_two(menu_all, date_str, meal, category):
     value: str = ''
@@ -425,8 +416,6 @@ def check_value_two(menu_all, date_str, meal, category):
             value = [None]
         return value
 
-
-
 def creates_dict_with_menu_patients(id):
     """ Создаем меню на 3 дня для вывода в ЛК врача"""
     menu_all = MenuByDay.objects.filter(user_id=id)
@@ -453,7 +442,6 @@ def creates_dict_with_menu_patients(id):
         menu[day]['date'] = dateformat.format(date.fromisoformat(date_str), 'Y-m-d')
     return menu
 
-
 def creates_dict_with_menu_patients_on_day(id, date_show):
     """ Создаем меню на день для вывода в ЛК пациента(история) """
     menu_all = MenuByDay.objects.filter(user_id=id)
@@ -471,7 +459,6 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
             'salad': check_value_two(menu_all, date_show, meal, "salad"),
         }
     return menu
-
 
 def add_default_menu(user):
     # генератор списка return даты на след 3 дня
@@ -557,7 +544,6 @@ def add_menu_three_days_ahead():
                     add_default_menu_on_one_day(change_day, user)
     return
 
-
 def check_have_menu():
     # посмотреть все даты от регистрации до сегодня -1, если нет меню, тогда добавить.
     users = CustomUser.objects.filter(status='patient')
@@ -572,7 +558,6 @@ def check_have_menu():
             if len(menu_all.filter(date=str(day))) == 0:
                 add_default_menu_on_one_day(day, user)
     return
-
 
 def creating_meal_menu_cafe(date_get, diet, meal):
 
@@ -589,7 +574,6 @@ def creating_meal_menu_cafe(date_get, diet, meal):
         sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup)
 
     return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup
-
 
 def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
     products_main = []
@@ -630,7 +614,6 @@ def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
         products_drink = list(products.filter(category='напиток'))
     return products_main, products_garnish, products_salad, products_soup, products_porridge, products_dessert, products_fruit, products_drink
 
-
 def delete_choices(CustomUserFormSet):
     """ Удаляем два выбора из formset 'не выбрано', '-------' """
     CustomUserFormSet.form.base_fields['department'].choices.remove(('', '---------'))
@@ -641,16 +624,12 @@ def delete_choices(CustomUserFormSet):
     CustomUserFormSet.form.base_fields['type_of_diet'].choices.remove(('БД', 'БД'))
 
     return CustomUserFormSet
-
-
-
 logging.basicConfig(
     level=logging.DEBUG,
     filename="mylog.log",
     format="%(asctime)s - %(module)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s",
     datefmt='%Y-%m-%d %H:%M:%S',
 )
-
 
 def check_meal_user(user, type):
     """ Вернет на какой прием пищи успевает пациент. """
@@ -695,7 +674,6 @@ def comment_formatting(comment):
         comment = comment if comment[-1] == '.' else comment + '.'
     return comment
 
-
 def create_user(user_form, request):
     is_accompanying = request.POST['is_accompanying']
     type_pay = request.POST['type_pay']
@@ -729,15 +707,12 @@ def create_user(user_form, request):
     user.is_without_salt = is_without_salt
     user.is_without_lactose = is_without_lactose
     user.status = 'patient'
-    # is_accompanying
-    # type_pay
     user.save()
     logging_user_name = f'{request.user.last_name if request.user.last_name != None else "None"} {request.user.last_name if request.user.last_name != None else "None"}'
     logging.info(f'пользователь ({logging_user_name}), cоздан пациент {user_form.data["full_name"]} ({user_form.data["type_of_diet"]})')
-
     add_default_menu(user)
     add_menu_three_days_ahead()
-
+    messang = ''
     if datetime.today().time().hour >= 19:
         if parse(user.receipt_date).date() == (date.today() + timedelta(days=1)) and \
             (parse(user.receipt_date + ' ' + user.receipt_time).time() <= parse(user.receipt_date + ' ' + '10:00').time()):
@@ -759,16 +734,15 @@ def create_user(user_form, request):
                 update_UsersToday(user)
             if do_messang_send(user.full_name) and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
                 regard = u'\u26a0\ufe0f'
-                messang = f'{regard} <b>Изменение с {meal_order}</b>\n'
-                messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
-                comment = add_features(user.comment,
-                             user.is_probe,
-                             user.is_without_salt,
-                             user.is_without_lactose)
-                if comment:
-                    messang += f'Комментарий: "{comment}"'
-                my_job_send_messang_changes.delay(messang)
-
+                messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+    messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
+    comment = add_features(user.comment,
+                 user.is_probe,
+                 user.is_without_salt,
+                 user.is_without_lactose)
+    if comment:
+        messang += f'Комментарий: "{comment}"'
+    my_job_send_messang_changes.delay(messang)
 
 def get_next_meals():
     """ Вернет след прием пищи. """
@@ -835,10 +809,8 @@ def update_menu_for_future(user, flag_is_change_diet):
         add_default_menu(user)
         add_menu_three_days_ahead()
 
-
 def edit_user(user_form, type, request):
     changes = []
-    # flag = False
     is_change_diet = False
     flag_add_comment = False
     user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
@@ -847,11 +819,6 @@ def edit_user(user_form, type, request):
         changes.append(f"ФИО <b>{user.full_name}</b> изменена на <b>{user_form.data['full_name1']}</b>")
     user.full_name = user_form.data['full_name1']
     if user.receipt_date != datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date():
-        # # проверяем если дату из прошлого поренесли в будущее
-        # if type == 'edit' and \
-        #     user.receipt_date <= date.today() and \
-        #     datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date() > date.today():
-        #     flag = True
         changes.append(f"дату поступления <b>{user.receipt_date}</b> изменена на <b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b>")
     user.receipt_date = datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')
 
@@ -960,7 +927,8 @@ def edit_user(user_form, type, request):
     #     else:
     #         update_СhangesUsersToday(user)
     #     # отправить сообщение
-
+    regard = u'\u26a0\ufe0f'
+    messang = ''
     if datetime.today().time().hour >= 19:
         if parse(user.receipt_date).date() == (date.today() + timedelta(days=1)) and \
                 (parse(user.receipt_date + ' ' + user.receipt_time).time() <= parse(
@@ -982,22 +950,16 @@ def edit_user(user_form, type, request):
             if meal_order == now_show_meal and meal_order != 'завтра':
                 update_UsersToday(user)
             if do_messang_send(user.full_name):  # c 17 до 7 утра не отправляем сообщения
-                regard = u'\u26a0\ufe0f'
-                # все номера chat_id
-                if type == 'edit' and len(changes) > 0:
-                    messang = ''
-                    messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
-                    messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
-                    for change in changes:
-                        messang += f'- {change}\n'
-                    my_job_send_messang_changes.delay(messang)
-                if type == 'restore':
-                    messang = ''
-                    messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
-                    messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
-                    messang += f'Комментарий: "{comment_new}"' if comment_new else ''
-                    my_job_send_messang_changes.delay(messang)
-
+                messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+    if type == 'edit' and len(changes) > 0:
+        messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
+        for change in changes:
+            messang += f'- {change}\n'
+        my_job_send_messang_changes.delay(messang)
+    if type == 'restore':
+        messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
+        messang += f'Комментарий: "{comment_new}"' if comment_new else ''
+        my_job_send_messang_changes.delay(messang)
 
 def archiving_user(user, request):
     user.status = 'patient_archive'
@@ -1006,6 +968,7 @@ def archiving_user(user, request):
     logging.info(f'пользователь ({logging_user_name}), пациент перенесен в архив {user.full_name} ({user.type_of_diet})')
     update_UsersToday(user)
     MenuByDay.objects.filter(user_id=user.id).delete()
+    messang = ''
     if user.receipt_date <= date.today():
         # Проверяем с какого приема пищи мы можем накормить пациента.
         meal_permissible, weight_meal_permissible = check_change('True')
@@ -1015,47 +978,10 @@ def archiving_user(user, request):
         meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
 
         if do_messang_send(user.full_name):  # c 17 до 7 утра не отправляем сообщения
-            attention = u'\u26a0\ufe0f'
-            messang = ''
-            messang += f'{attention} <b>Изменение с {meal_order}</b>\n'
-            messang += f'Пациент {formatting_full_name(user.full_name)} ({user.type_of_diet}) выписан\n'
-            return my_job_send_messang_changes.delay(messang)
-
-
-
-    # дата на которую создается заказ
-    # receipt_date = str(user.receipt_date)
-    # receipt_time = str(user.receipt_time)
-    # if datetime.today().time().hour >= 19:
-    #     if parse(receipt_date).date() == (date.today() + timedelta(days=1)) and \
-    #             (parse(receipt_date + ' ' + receipt_time).time() <= parse(
-    #                 receipt_date + ' ' + '10:00').time()):
-    #         update_UsersToday(user)
-    #     else:
-    #         if parse(receipt_date).date() == date.today():
-    #             update_UsersToday(user)
-    # else:  # время меньше 19
-    #     if parse(receipt_date).date() == date.today():
-    #         # Проверяем с какого приема пищи мы можем накормить пациента.
-    #         meal_permissible, weight_meal_permissible = check_change('True')
-    #         # Проверяем на какой прием пищи успевает пациент пациента.
-    #         meal_user, weight_meal_user = check_meal_user(user, 'archiving')
-    #         # Прием пищи с которого пациент будет добавлен в заказ.
-    #         meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
-    #         # Определяем, какой след прием пищи.
-    #         now_show_meal = get_now_show_meal()
-    #         if meal_order == now_show_meal and meal_order != 'завтра':
-    #             update_UsersToday(user)
-    #         if do_messang_send() and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
-    #             attention = u'\u2757\ufe0f'
-    #             TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-    #             bot = telepot.Bot(TOKEN)
-    #             # все номера chat_id
-    #             messang = ''
-    #             messang += f'{attention} Изменение с <u><b>{check_change(user)}</b></u>{attention}\n'
-    #             messang += f'Пациент <u><b>{formatting_full_name(user.full_name)} ({user.type_of_diet})</b></u> выписан\n'
-    #             for item in BotChatId.objects.all():
-    #                 bot.sendMessage(item.chat_id, messang, parse_mode="html")
+            regard = u'\u26a0\ufe0f'
+            messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+    messang += f'Пациент {formatting_full_name(user.full_name)} ({user.type_of_diet}) выписан\n'
+    return my_job_send_messang_changes.delay(messang)
 
 def add_features(comment, is_probe, is_without_salt, is_without_lactose):
     """ Добавляем к комментраию признаки для вывода в Сводный отчет. """
@@ -1066,7 +992,6 @@ def add_features(comment, is_probe, is_without_salt, is_without_lactose):
                     ]
     items_comment = [item for item in items_comment if item != 'None']
     return  ' '.join(items_comment)
-
 
 def create_with_comment(users_diet, floors):
     with_comment = []
@@ -1135,7 +1060,6 @@ def create_without_comment(users_diet, floors, diet):
     })
     return without_comment
 
-
 def counting_diets(users, floors):
     diets_name = ['ОВД', 'ОВД без сахара', 'ЩД', 'БД день 1', 'БД день 2', 'ОВД веган (пост) без глютена', 'Нулевая диета', 'ВБД', 'НБД', 'НКД', 'ВКД']
     diets_count = []
@@ -1159,8 +1083,6 @@ def counting_diets(users, floors):
             })
 
     return diets_count
-
-
 
 def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order):
     """ Создаем словарь с блюдами на конкретный прием пищи для пациента """
@@ -1190,7 +1112,6 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order):
                                 or (lp_or_cafe == 'cafe' and 'cafe' in item['id']):
                             menu_list.append(item.get('name'))
     return menu_list
-
 
 def create_list_users_on_floor(users, floors, meal, date_create, type_order):
     users = [user for user in users if user.room_number in floors]
@@ -1224,7 +1145,6 @@ def what_meal():
     if datetime.today().time().hour >= 19:
         return 'breakfast', 'tomorrow'
 
-
 def what_type_order():
     if (datetime.today().time().hour >= 7  and datetime.today().time().hour < 9)\
         or (datetime.today().time().hour >= 11  and datetime.today().time().hour < 12) \
@@ -1232,7 +1152,6 @@ def what_type_order():
         or (datetime.today().time().hour >= 17 and datetime.today().time().hour < 19):
         return 'fix-order'
     return 'flex-order'
-
 
 def is_active_user(user):
     """
@@ -1258,8 +1177,6 @@ def is_active_user(user):
             receipt_datetime.time() >= datetime(1, 1, 1, 21, 0).time():
             return user.id
 
-
-
 def get_not_active_users_set():
     """ Проверяем является ли пациент активным """
     users = CustomUser.objects.filter(status='patient').filter(receipt_date__gte=date.today())
@@ -1268,7 +1185,6 @@ def get_not_active_users_set():
         if is_active_user(user):
             not_active_users_set += str(user.id) + ','
     return not_active_users_set[:-1] if len(not_active_users_set) != 0 else 'none'
-
 
 def get_occupied_rooms(user_script):
     """ Возвращает список с занятыми палатами """
@@ -1300,7 +1216,6 @@ def get_occupied_rooms(user_script):
         return one_bed_free
     if user_script == 'easy_mode':
         return occupied_rooms
-
 
 def add_public_name():
     products_lp = ProductLp.objects.all()
