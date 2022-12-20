@@ -3,7 +3,9 @@
 """
 from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId,\
     UsersToday, MenuByDayReadyOrder, UsersReadyOrder
-from doctor.functions.helpers import check_value, get_day_of_the_week
+from doctor.functions.helpers import check_value
+from doctor.functions.translator import get_day_of_the_week
+
 from django.db import transaction
 from django.db.models import Q
 from dateutil.parser import parse

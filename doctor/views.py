@@ -26,7 +26,7 @@ from doctor.functions.bot import check_change, do_messang_send, formatting_full_
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes, create_user_tomorrow, create_ready_order, create_report, create_products_lp, add_products_lp, add_products_lp
 from doctor.functions.diet_formation import add_default_menu, add_menu_three_days_ahead
-from doctor.functions.helpers import get_day_of_the_week
+from doctor.functions.translator import get_day_of_the_week
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response

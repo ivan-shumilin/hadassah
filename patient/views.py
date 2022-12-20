@@ -16,7 +16,7 @@ from doctor.functions.functions import sorting_dishes, parsing, translate_diet, 
     creating_meal_menu_lp, creates_dict_with_menu_patients_on_day
 from patient.functions import formation_menu, creating_menu_for_lk_patient, create_category, create_patient_select,\
     date_menu_history
-from doctor.functions.helpers import get_day_of_the_week
+from doctor.functions.translator import get_day_of_the_week
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response

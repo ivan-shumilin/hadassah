@@ -20,17 +20,3 @@ def check_value(category, products):
     else:
         value = ','.join([str(item.id) for item in products.filter(category=category)])
     return value
-
-def get_day_of_the_week(date_get):
-    """Дату в формате Y-M-D в день недели прописью"""
-
-    DAT_OF_THE_WEEK = {
-        'Monday': 'понедельник',
-        'Tuesday': 'вторник',
-        'Wednesday': 'среда',
-        'Thursday': 'четверг',
-        'Friday': 'пятница',
-        'Saturday': 'суббота',
-        'Sunday': 'воскресенье',
-    }
-    return DAT_OF_THE_WEEK[parse(date_get).strftime('%A')]

@@ -11,7 +11,8 @@ from django.utils import dateformat
 from django.db.models.functions import Lower
 import logging, random, telepot
 from doctor.functions.bot import check_change, formatting_full_name, do_messang_send
-from doctor.functions.helpers import check_value, get_day_of_the_week
+from doctor.functions.helpers import check_value
+from doctor.functions.translator import get_day_of_the_week
 from doctor.functions.diet_formation import add_default_menu, add_default_menu_on_one_day
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes
@@ -237,7 +238,6 @@ def check_value_(menu_all, date_str, meal, category):
     return value
 
 def create_value(product, id):
-    value: str = ''
     value = {
         'id': id,
         'name': product.name,
@@ -252,7 +252,6 @@ def create_value(product, id):
     return value
 
 def check_value_two(menu_all, date_str, meal, category):
-    value: str = ''
     if category == 'salad':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).salad
@@ -439,7 +438,6 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
         }
     return menu
 
-
 def check_have_menu():
     # посмотреть все даты от регистрации до сегодня -1, если нет меню, тогда добавить.
     users = CustomUser.objects.filter(status='patient')
@@ -456,7 +454,6 @@ def check_have_menu():
     return
 
 def creating_meal_menu_cafe(date_get, diet, meal):
-
     queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
         category='Вторые блюда').order_by(Lower('name')))
     queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
@@ -520,6 +517,7 @@ def delete_choices(CustomUserFormSet):
     CustomUserFormSet.form.base_fields['type_of_diet'].choices.remove(('БД', 'БД'))
 
     return CustomUserFormSet
+
 logging.basicConfig(
     level=logging.DEBUG,
     filename="mylog.log",
@@ -527,14 +525,10 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',
 )
 
-def check_meal_user(user, type):
+def check_meal_user(user):
     """ Вернет на какой прием пищи успевает пациент. """
-    # if type == 'archiving':
     receipt_time = parse(str(user.receipt_date) + ' ' + str(user.receipt_time)).time()
     receipt_date = parse(str(user.receipt_date))
-    # else:
-    #     receipt_time = parse(user.receipt_date + ' ' + user.receipt_time).time()
-    #     receipt_date = parse(user.receipt_date)
     # Если пользователь есть в UsersReadyOrder, тогда вернем "завтрак".
     if receipt_date.date() >= date.today():
         if receipt_time.hour > 0 and receipt_time.hour < 10:
@@ -592,7 +586,6 @@ def is_user_look(user_form, is_accompanying, type_pay, is_probe, is_without_salt
             str(user.status) == 'patient':
             return True
 
-
 def create_user(user_form, request):
     is_accompanying = request.POST['is_accompanying']
     type_pay = request.POST['type_pay']
@@ -638,18 +631,18 @@ def create_user(user_form, request):
     # add_menu_three_days_ahead()
     messang = ''
     if datetime.today().time().hour >= 19:
-        if parse(user.receipt_date).date() == (date.today() + timedelta(days=1)) and \
-            (parse(user.receipt_date + ' ' + user.receipt_time).time() <= parse(user.receipt_date + ' ' + '10:00').time()):
+        if parse(str(user.receipt_date)).date() == (date.today() + timedelta(days=1)) and \
+            (parse(str(user.receipt_date) + ' ' + str(user.receipt_time)).time() <= parse(str(user.receipt_date) + ' ' + '10:00').time()):
                 update_UsersToday(user)
         else:
-            if parse(user.receipt_date).date() == date.today():
+            if parse(str(user.receipt_date)).date() == date.today():
                 update_UsersToday(user)
     else:  # время меньше 19
-        if parse(user.receipt_date).date() == date.today():
+        if parse(str(user.receipt_date)).date() == date.today():
             # Проверяем с какого приема пищи мы можем накормить пациента.
             meal_permissible, weight_meal_permissible = check_change('True')
             # Проверяем на какой прием пищи успевает пациент пациента.
-            meal_user, weight_meal_user = check_meal_user(user, 'creating')
+            meal_user, weight_meal_user = check_meal_user(user)
             # Прием пищи с которого пациент будет добавлен в заказ.
             meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
             # Определяем, какой след прием пищи.
@@ -769,8 +762,6 @@ def edit_user(user_form, type, request):
     if user.room_number != user_form.data['room_number1']:
         changes.append(f"номер палаты <b>{user.room_number if user.room_number != 'Не выбрано' else 'не выбран'}</b> изменен на <b>{user_form.data['room_number1'] if user_form.data['room_number1'] != 'Не выбрано' else 'не выбран'}</b>")
     user.room_number = user_form.data['room_number1'] if user_form.data['room_number1'] != '' else 'Не выбрано'
-
-
 
     if user.bed != user_form.data['bed1']:
         if user.room_number != 'Не выбрано':
