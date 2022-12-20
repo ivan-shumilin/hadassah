@@ -1,6 +1,7 @@
 from celery import shared_task
 import telepot
 from nutritionist.models import BotChatId, CustomUser, MenuByDay, UsersReadyOrder
+from doctor.functions.functions import add_menu_three_days_ahead
 from doctor.functions.for_print_forms import create_user_today, applies_changes, create_user_tomorrow,\
     create_ready_order, create_report
 from doctor.functions.bot import check_change, formatting_full_name
@@ -30,6 +31,9 @@ def delete_menu_by_arhived_users():
     for user in users:
         MenuByDay.objects.filter(user_id=user.id).delete()
 
+@shared_task()
+def my_job_add_menu_three_days_ahead():
+    add_menu_three_days_ahead()
 
 @shared_task()
 def my_job_applies_changes_():

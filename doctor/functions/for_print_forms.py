@@ -52,10 +52,6 @@ def create_user_today(meal):
             filter(Q(receipt_date__lte=date.today()) | Q(receipt_date__lte=tomorrow) & Q(receipt_time__lte='10:00'))
 
 
-
-    # users = CustomUser.objects.filter(status='patient')\
-    #     .filter(receipt_date__lte=date.today())\
-    #     .filter(receipt_time__lte=check_change_time())
     UsersToday.objects.all().delete()
     for user in users:
         to_create.append(UsersToday(

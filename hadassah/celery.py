@@ -10,9 +10,17 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 
 
 app.conf.beat_schedule = {
-    'my_job_applies_changes_breakfast': {
+    'my_job_add_menu_three_days_ahead': {
+        'task': 'doctor.tasks.my_job_add_menu_three_days_ahead',
+        'schedule': crontab(minute=0, hour='0'),
+    },
+    'my_job_applies_changes_breakfast_one': {
         'task': 'doctor.tasks.my_job_applies_changes_breakfast',
-        'schedule': crontab(minute=0, hour='7'),
+        'schedule': crontab(minute=3, hour='0'),
+    },
+    'my_job_applies_changes_breakfast_two': {
+        'task': 'doctor.tasks.my_job_applies_changes_breakfast',
+        'schedule': crontab(minute=0, hour='4'),
     },
     'my_job_applies_changes_lunch': {
         'task': 'doctor.tasks.my_job_applies_changes_lunch',

@@ -64,9 +64,9 @@ def doctor(request):
                                                  'is_without_lactose': TextInput(attrs={'required': "True"}),
                                              },
                                              extra=0, )
-    check_have_menu()
-
-    add_menu_three_days_ahead()
+    # check_have_menu()
+    #
+    # add_menu_three_days_ahead()
 
     not_active_users_set = get_not_active_users_set()
 

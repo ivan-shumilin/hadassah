@@ -11,6 +11,7 @@ from django.utils import dateformat
 from django.db.models.functions import Lower
 import logging, random, telepot
 from doctor.functions.bot import check_change, formatting_full_name, do_messang_send
+# from doctor.functions.diet_formation import add_default_menu
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes
 from doctor.tasks import my_job_send_messang_changes
@@ -158,7 +159,8 @@ def load_menu(menu):
     ProductLp.objects.bulk_create(to_create)
 
 def get_day_of_the_week(date_get):
-    '''Дату в формате Y-M-D в день недели прописью'''
+    """Дату в формате Y-M-D в день недели прописью"""
+
     DAT_OF_THE_WEEK = {
         'Monday': 'понедельник',
         'Tuesday': 'вторник',
@@ -234,7 +236,6 @@ def check_value(category, products):
             value = None
     else:
         value = ','.join([str(item.id) for item in products.filter(category=category)])
-
     return value
 
 def check_value_(menu_all, date_str, meal, category):
@@ -463,46 +464,30 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
     return menu
 
 def add_default_menu(user):
+    """
+    Заполняем MenuByDay.
+    В MenuByDay хранится перечень блюд для пациента в определенный день, прием пищи.
+    """
     # генератор списка return даты на след 3 дня
     days = [parse(user.receipt_date) + timedelta(days=delta) for delta in [0, 1, 2]]
-    if user.type_of_diet in ['БД день 1', 'БД день 2']:
-        translated_diet = 'БД'
-    else:
-        translated_diet = user.type_of_diet
-    if user.type_of_diet == 'БД день 1':
-        days_of_the_week = ['понедельник', 'вторник', 'понедельник']
-    if user.type_of_diet == 'БД день 2':
-        days_of_the_week = ['вторник', 'понедельник', 'вторник']
-    for index, day_of_the_week in enumerate(days):
-        for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
 
-            # день недели словами
-            day = get_day_of_the_week(str(day_of_the_week)) if user.type_of_diet not in ['БД день 1', 'БД день 2'] else days_of_the_week[index]
-            products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day) &
-                                                Q(timetablelp__type_of_diet=translated_diet) &
-                                                Q(timetablelp__meals=meal))
-            to_create = []
-            to_create.append(MenuByDay(
-                user_id=user,
-                date=day_of_the_week,
-                meal=meal,
-                type_of_diet=user.type_of_diet,
-                main=check_value('основной', products),
-                garnish=check_value('гарнир', products),
-                porridge=check_value('каша', products),
-                soup=check_value('суп', products),
-                dessert=check_value('десерт', products),
-                fruit=check_value('фрукты', products),
-                drink=check_value('напиток', products),
-                salad=check_value('салат', products),
-                ))
-            MenuByDay.objects.bulk_create(to_create)
+    # if user.type_of_diet in ['БД день 1', 'БД день 2']:
+    #     if user.type_of_diet == 'БД день 1':
+    #         days_of_the_week = ['понедельник', 'вторник', 'понедельник']
+    #     if user.type_of_diet == 'БД день 2':
+    #         days_of_the_week = ['вторник', 'понедельник', 'вторник']
+    #     translated_diet = 'БД'
+    # else:
+    #     translated_diet = user.type_of_diet
+
+    for index, day_of_the_week in enumerate(days):
+        add_default_menu_on_one_day(day_of_the_week, user)
     return
 
+@transaction.atomic
 def add_default_menu_on_one_day(day_of_the_week, user):
-
     if user.type_of_diet in ['БД день 1', 'БД день 2']:
-        is_even = (day_of_the_week - user.receipt_date + timedelta(days=1)).days % 2 == 0
+        is_even = (day_of_the_week - parse(user.receipt_date) + timedelta(days=1)).days % 2 == 0
         if user.type_of_diet == 'БД день 1':
             day = 'вторник' if is_even else 'понедельник'
             translated_diet = 'БД'
@@ -536,6 +521,7 @@ def add_default_menu_on_one_day(day_of_the_week, user):
     return
 
 def add_menu_three_days_ahead():
+    """ Добовляем меню на 3 дня. """
     users = CustomUser.objects.filter(status='patient')
     days = [date.today() + timedelta(days=delta) for delta in [0, 1, 2]]
     for user in users:
@@ -741,7 +727,7 @@ def create_user(user_form, request):
     logging_user_name = f'{request.user.last_name if request.user.last_name != None else "None"} {request.user.last_name if request.user.last_name != None else "None"}'
     logging.info(f'пользователь ({logging_user_name}), cоздан пациент {user_form.data["full_name"]} ({user_form.data["type_of_diet"]})')
     add_default_menu(user)
-    add_menu_three_days_ahead()
+    # add_menu_three_days_ahead()
     messang = ''
     if datetime.today().time().hour >= 19:
         if parse(user.receipt_date).date() == (date.today() + timedelta(days=1)) and \
@@ -775,7 +761,7 @@ def create_user(user_form, request):
     my_job_send_messang_changes.delay(messang)
 
 def get_next_meals():
-    """ Вернет след прием пищи. """
+    """ Вернет следующий прием пищи. """
     time = datetime.today().time()
     if time.hour > 0 and time.hour < 7:
         return ['breakfast', 'lunch', 'afternoon', 'dinner']
@@ -837,7 +823,7 @@ def update_menu_for_future(user, flag_is_change_diet):
     except:
         MenuByDay.objects.filter(user_id=user.id).delete()
         add_default_menu(user)
-        add_menu_three_days_ahead()
+        # add_menu_three_days_ahead()
 
 def edit_user(user_form, type, request):
     changes = []
@@ -867,7 +853,6 @@ def edit_user(user_form, type, request):
     if user.department != user_form.data['department1']:
         changes.append(f"отделение <b>{user.department}</b> изменено на <b>{user_form.data['department1']}</b>")
     user.department = user_form.data['department1']
-
 
     if user.floor != user_form.data['floor1']:
         changes.append(f"этаж <b>{user.floor if user.floor != 'Не выбрано' else 'не выбран'}</b> изменен на <b>{user_form.data['floor1'] if user_form.data['floor1'] != 'Не выбрано' else 'не выбран'}</b>")
@@ -949,10 +934,9 @@ def edit_user(user_form, type, request):
     if type == 'restore':
         # ПОМЕНЯТЬ ФУНКЦИЮ
         add_default_menu(user)
-        add_menu_three_days_ahead()
+        # add_menu_three_days_ahead()
     elif flag_is_change_diet or flag_add_comment:
         update_menu_for_future(user, flag_is_change_diet)
-    #     # отправить сообщение
     regard = u'\u26a0\ufe0f'
     messang = ''
     if datetime.today().time().hour >= 19:
