@@ -635,12 +635,12 @@ logging.basicConfig(
 
 def check_meal_user(user, type):
     """ Вернет на какой прием пищи успевает пациент. """
-    if type == 'archiving':
-        receipt_time = parse(str(user.receipt_date) + ' ' + str(user.receipt_time)).time()
-        receipt_date = parse(str(user.receipt_date))
-    else:
-        receipt_time = parse(user.receipt_date + ' ' + user.receipt_time).time()
-        receipt_date = parse(user.receipt_date)
+    # if type == 'archiving':
+    receipt_time = parse(str(user.receipt_date) + ' ' + str(user.receipt_time)).time()
+    receipt_date = parse(str(user.receipt_date))
+    # else:
+    #     receipt_time = parse(user.receipt_date + ' ' + user.receipt_time).time()
+    #     receipt_date = parse(user.receipt_date)
     # Если пользователь есть в UsersReadyOrder, тогда вернем "завтрак".
     if receipt_date.date() >= date.today():
         if receipt_time.hour > 0 and receipt_time.hour < 10:
@@ -676,12 +676,39 @@ def comment_formatting(comment):
         comment = comment if comment[-1] == '.' else comment + '.'
     return comment
 
+def is_user_look(user_form, is_accompanying, type_pay, is_probe, is_without_salt, is_without_lactose):
+    users = CustomUser.objects.filter(full_name=user_form.data['full_name'], status='patient')
+    for user in users:
+        time = user_form.data['receipt_time'].split(':')
+        if user.full_name == user_form.data['full_name'] and\
+            str(user.birthdate) == datetime.strptime(user_form.data['birthdate'], '%d.%m.%Y').strftime('%Y-%m-%d') and\
+            str(user.receipt_date) == datetime.strptime(user_form.data['receipt_date'], '%d.%m.%Y').strftime('%Y-%m-%d') and \
+            user.receipt_time == datetime(2000, 12, 12, int(time[0]), int(time[1])).time() and\
+            str(user.floor) == str(user_form.data['floor']) and\
+            str(user.department) == str(user_form.data['department']) and\
+            str(user.room_number) == str((user_form.data['room_number'] if user_form.data['room_number'] != '' else 'Не выбрано')) and\
+            str(user.bed) == str((user_form.data['bed'] if user_form.data['bed'] != '' else 'Не выбрано')) and\
+            str(user.type_of_diet) == str(user_form.data['type_of_diet']) and\
+            str(user.comment) == str(comment_formatting(user_form.data['comment'])) and\
+            str(user.is_accompanying) == str(is_accompanying) and\
+            str(user.type_pay) == str(type_pay) and\
+            str(user.is_probe) == str(is_probe) and\
+            str(user.is_without_salt) == str(is_without_salt) and\
+            str(user.is_without_lactose) == str(is_without_lactose) and\
+            str(user.status) == 'patient':
+            return True
+
+
 def create_user(user_form, request):
     is_accompanying = request.POST['is_accompanying']
     type_pay = request.POST['type_pay']
     is_probe = False if request.POST['is_probe'] == 'False' else True
     is_without_salt = False if request.POST['is_without_salt'] == 'False' else True
     is_without_lactose = False if request.POST['is_without_lactose'] == 'False' else True
+
+    is_user = is_user_look(user_form, is_accompanying, type_pay, is_probe, is_without_salt, is_without_lactose)
+    if is_user:
+        return
 
     # генерируем уникальный логин
     while True:
@@ -696,7 +723,8 @@ def create_user(user_form, request):
     user.full_name = user_form.data['full_name']
     user.birthdate = datetime.strptime(user_form.data['birthdate'], '%d.%m.%Y').strftime('%Y-%m-%d')
     user.receipt_date = datetime.strptime(user_form.data['receipt_date'], '%d.%m.%Y').strftime('%Y-%m-%d')
-    user.receipt_time = parse(user_form.data['receipt_time']).strftime('%H:%m')
+    time = user_form.data['receipt_time'].split(':')
+    user.receipt_time = datetime(2000, 12, 12, int(time[0]), int(time[1])).time()
     user.floor = user_form.data['floor']
     user.department = user_form.data['department']
     user.room_number = user_form.data['room_number'] if user_form.data['room_number'] != '' else 'Не выбрано'
