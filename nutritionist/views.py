@@ -30,8 +30,8 @@ from datetime import datetime, date
 from django.core import management
 from django.core.management.commands import dumpdata
 from django.contrib.auth.models import Group
-from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, add_default_menu, \
-    creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe, \
+from doctor.functions.functions import sorting_dishes, parsing, translate_diet, \
+    creates_dict_with_menu_patients, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features
 from doctor.functions.bot import check_change

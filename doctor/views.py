@@ -17,14 +17,16 @@ from django.contrib import messages
 from django.contrib.messages import get_messages
 from dateutil.parser import parse
 from django.db.models.functions import Lower
-from doctor.functions.functions import sorting_dishes, parsing, get_day_of_the_week, translate_diet, add_default_menu, \
-    creates_dict_with_menu_patients, add_menu_three_days_ahead, creating_meal_menu_lp, creating_meal_menu_cafe, \
+from doctor.functions.functions import sorting_dishes, parsing, translate_diet, \
+    creates_dict_with_menu_patients, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two, archiving_user, get_not_active_users_set, \
     get_occupied_rooms, add_public_name
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes, create_user_tomorrow, create_ready_order, create_report, create_products_lp, add_products_lp, add_products_lp
+from doctor.functions.diet_formation import add_default_menu, add_menu_three_days_ahead
+from doctor.functions.helpers import get_day_of_the_week
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
