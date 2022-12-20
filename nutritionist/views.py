@@ -906,7 +906,7 @@ def printed_form_one(request):
     'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
                       '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
     }
-    time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
+    time_now = datetime.today().time().strftime("%H:%M")
     # какой прием пищи
     meal, day = what_meal() # после return 'breakfast', 'tomorrow'
     type_order = what_type_order()
