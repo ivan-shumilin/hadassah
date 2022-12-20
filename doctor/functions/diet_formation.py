@@ -63,7 +63,10 @@ def add_default_menu(user):
 @transaction.atomic
 def add_default_menu_on_one_day(day_of_the_week, user):
     if user.type_of_diet in ['БД день 1', 'БД день 2']:
-        is_even = (day_of_the_week - parse(user.receipt_date) + timedelta(days=1)).days % 2 == 0
+        if type(user.receipt_date) == str:
+            is_even = (day_of_the_week - parse(user.receipt_date) + timedelta(days=1)).days % 2 == 0
+        else:
+            is_even = (day_of_the_week - user.receipt_date + timedelta(days=1)).days % 2 == 0
         if user.type_of_diet == 'БД день 1':
             day = 'вторник' if is_even else 'понедельник'
             translated_diet = 'БД'
