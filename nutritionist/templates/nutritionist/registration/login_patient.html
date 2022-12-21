@@ -1,3 +1,4 @@
+<!-- Версия станици с автоматической подстановкой Имени и Отчества.  -->
 {% extends "base_generic_login.html" %}
 
 {% block content %}
@@ -7,42 +8,57 @@
             <div class="title">Авторизация</div>
             <form id='register-form' class="login-form" method="post" novalidate>
                 {% csrf_token %}
-                <div id="last-name" class="form-group">
+                <div id="birthdate" class="form-group">
                     <label for="#">Дата рождения</label>
-                    <input type="text" onchange="deleteError()" id="id-birthdate" placeholder="01.01.1960">
+                    <input type="text" onclick="deleteError('error-birthdate', 'birthdate')" id="birthdate-input" placeholder="01.01.1960">
                     <div id="error-birthdate" class=""></div>
                 </div>
                 <div id="last-name" class="form-group">
                     <label for="#">Фамилия</label>
-                    <input class="test text" id="last-name-input" type="text" name="last-name">
+                    <input class="test text" onclick="deleteError('error-last-name', 'last-name')" id="last-name-input" type="text" name="last-name" placeholder="Иванов">
                     <div id="error-last-name" class=""></div>
                 </div>
                 <div id="name" class="form-group">
                     <label for="#">Имя</label>
-                    <input class="text" id="name-input" type="text" name="name">
+                    <input class="text" onclick="deleteError('error-name', 'name')" id="name-input" type="text" name="name" placeholder="Виктор">
                     <div id="error-name" class="error"></div>
                 </div>
                 <div id="patronymic" class="form-group">
                     <label for="#">Отчество</label>
-                    <input class="text" id="patronymic-input" type="text" name="patronymic">
+                    <input class="text" onclick="deleteError('error-patronymic', 'patronymic')" id="patronymic-input" type="text" name="patronymic" placeholder="Иванович">
                     <div id="error-patronymic" class="error"></div>
+                </div>
+                <div id="error" class="form-group">
+                    <div id="error-error" class="error"> </div>
+                </div>
+                <div>
+                    <input id="user-id" style="display: none;" type="text" name="user-id">
                 </div>
                 <div class="form-group item-actions flex flex-center">
                     <button type="button" onclick="validationForm();">Войти</button>
-                    
                 </div>
             </form>
         </div>
     </div>
 </div>
 <script>
-function deleteError() {
-    document.getElementById('error-birthdate').innerHTML = '';
-    document.getElementById('error-birthdate').classList.remove('error');
+if ('{{errors}}' != 'None') {
+    document.getElementById('error-error').innerHTML = '{{errors}}'
+    document.getElementById('error-error').classList.add('error')
+    document.getElementById('error').classList.add('error')
+}
+function deleteError(divError, input) {
+    document.getElementById(divError).innerHTML = '';
+    document.getElementById(divError).classList.remove('error');
+    document.getElementById(input).classList.remove('error');
+
+    document.getElementById('error-error').innerHTML = ''
+    document.getElementById('error-error').classList.remove('error')
+    document.getElementById('error').classList.remove('error')
 }
 
 let symbol = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
-let birthdateInput = document.getElementById('id-birthdate');
+let birthdateInput = document.getElementById('birthdate-input');
 var old = 0
 birthdateInput.addEventListener("input", function() {
     if (!symbol.includes(this.value[this.value.length - 1])) {
@@ -78,10 +94,6 @@ birthdateInput.addEventListener("input", function() {
     old = this.value.length
 })
 
-
-
-
-
 var FLAG_L_NAME = 'false'
 var FLAG_NAME = 'false'
 let error = "{{ errors }}";
@@ -95,154 +107,6 @@ let divName = document.getElementById('name')
 let patronymicError = document.getElementById('error-patronymic')
 let divPatronymic = document.getElementById('patronymic')
 lastNameInput.focus()
-
-divName.classList.add('hidden')
-divPatronymic.classList.add('hidden')
-if (error != 'None') {
-    itemError.innerHTML = error;
-    itemError.classList.add('error')
-    divLastName.classList.add('error')
-}
-let strPatientDate = '{{str_patient_id_name}}'
-let patientDate = strPatientDate.split('$')
-let objPatintDate = {}
-for (var index in patientDate) {
-    console.log(patientDate[index])
-    let listPatientDate = patientDate[index].split('=')
-    objPatintDate[listPatientDate[0]] = {
-        'last-name': listPatientDate[1],
-        'name': listPatientDate[2],
-        'patronymic': listPatientDate[3],
-    }
-}
-
-
-function checkLastName(value) {
-    if (value.charCodeAt(0) == 32) {
-        value = value.slice(1)
-    }
-    if (value.charCodeAt(value.length-1) == 32) {
-        value = value.slice(0, -1)
-    }
-    console.log(value)
-    let countAttempts = 0
-    for (var key in objPatintDate) {
-        if (objPatintDate[key]['last-name'] == value ) {
-            countAttempts += 1;
-            var name = objPatintDate[key]['name'];
-            var patronymic = objPatintDate[key]['patronymic'];
-        }
-    }
-    if (countAttempts == 1) {
-        document.getElementById('name-input').value = name
-        document.getElementById('patronymic-input').value = patronymic
-        var form = document.getElementById('register-form');
-        form.submit()
-        
-    } else if ((value.length != 0) && (countAttempts == 0)) {
-            let itemError = document.getElementById('error-last-name')
-            let divLastName = document.getElementById('last-name')
-            itemError.innerHTML = "Пацинта с такой фамилией нет.";
-            itemError.classList.add('error')
-            divLastName.classList.add('error')
-    } else if (countAttempts > 1) {
-        divName.classList.remove('hidden');
-        nameInput.focus();
-        FLAG_L_NAME = 'true';
-    }
-}
-
-
-function checkName(value) {
-    if (FLAG_L_NAME == 'true') {
-        if (value.charCodeAt(0) == 32) {
-        value = value.slice(1)
-        }
-        if (value.charCodeAt(value.length-1) == 32) {
-            value = value.slice(0, -1)
-        }
-
-        let countAttempts = 0
-        for (var key in objPatintDate) {
-            if ((objPatintDate[key]['name'] == value ) && (objPatintDate[key]['last-name'] == lastNameInput.value)) {
-                countAttempts += 1;
-                var patronymic = objPatintDate[key]['patronymic'];
-            }
-        }
-        if (countAttempts == 1) {
-            document.getElementById('patronymic-input').value = patronymic
-            var form = document.getElementById('register-form');
-            form.submit()
-        } else if (countAttempts > 1) {
-            divPatronymic.classList.remove('hidden');
-            patronymicInput.focus();
-            FLAG_NAME = 'true';
-
-        } else if (value.length != 0) {
-                nameError.innerHTML = "Пацинта с таким именем нет.";
-                nameError.classList.add('error')
-                divName.classList.add('error')
-        }  
-    }  
-}
-
-function checkPatronymic(value)  {
-    if (FLAG_NAME == 'true') {
-        if (value.charCodeAt(0) == 32) {
-        value = value.slice(1)
-        }
-        if (value.charCodeAt(value.length-1) == 32) {
-            value = value.slice(0, -1)
-        }
-        let countAttempts = 0
-        for (var key in objPatintDate) {
-            if ((objPatintDate[key]['patronymic'] == value )
-                && (objPatintDate[key]['last-name'] == lastNameInput.value)
-                && (objPatintDate[key]['name'] == nameInput.value)) {
-                countAttempts += 1;
-            }
-        }
-        if (countAttempts == 1) {
-            var form = document.getElementById('register-form');
-            form.submit()
-        } else if (countAttempts > 1) {
-                patronymicError.innerHTML = "Простите, возникла ошибка. Обратитесь к мед. персоналу.";
-                patronymicError.classList.add('error')
-                divPatronymic.classList.add('error')
-        } else if (value.length != 0) {
-                patronymicError.innerHTML = "Пацинта с таким отчеством нет.";
-                patronymicError.classList.add('error')
-                divPatronymic.classList.add('error')
-        }  
-    }  
-}
-
-function clearLastNameError() {
-    lastNameError.innerHTML = "";
-    lastNameError.classList.remove('error')
-    divLastName.classList.remove('error')
-    nameInput.value = ''
-    patronymicInput.value = ''
-    divName.classList.add('hidden')
-
-}
-
-
-function clearNameError() {
-    nameError.innerHTML = "";
-    nameError.classList.remove('error')
-    divName.classList.remove('error')
-    patronymicInput.value = ''
-    divPatronymic.classList.add('hidden')
-}
-
-function clearPatronymicError() {
-    patronymicError.innerHTML = "";
-    patronymicError.classList.remove('error')
-    divPatronymic.classList.remove('error')
-}
-
-
 
 lastNameInput.addEventListener("input", function() {
     if (this.value.charCodeAt(this.value.length - 1) == 1105) {
@@ -293,105 +157,90 @@ patronymicInput.addEventListener("input", function() {
     this.value = this.value[0].toUpperCase() + this.value.slice(1).toLowerCase();
 })
 
-$( document ).ready(function() {
-var inputLastNameCheck = $( '#last-name-input' ), timeOut;
-    inputLastNameCheck.on( 'keyup', function () {
-        clearTimeout( timeOut );
-        clearLastNameError();
-        timeOut = setTimeout( myfunc, 1000, $( this ).val() );
-    });
+const loginDataValidation = async function(birthdate, name, lastname, patronymic) {
+    let url = 'api/v1/login/datavalidation'
+    let body = {'birthdate': birthdate,
+                'name': name,
+                'lastname': lastname,
+                'patronymic': patronymic,    
+    };
 
-    inputLastNameCheck.on( 'keydown', function () {
-        clearTimeout( timeOut );
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;',
+        },
+        body: JSON.stringify(body)
     });
+    let result = await response.text();
+    return result;
+}
 
-    function myfunc( value ) {
-        console.log(value);
-        checkLastName(value);
+async function validationForm() {
+   var form = document.getElementById('register-form');
+   var birthdate = document.getElementById('birthdate-input');
+   var name = document.getElementById('name-input');
+   var lastname = document.getElementById('last-name-input');
+   var patronymic = document.getElementById('patronymic-input');
+
+   var errors = document.querySelectorAll('.error-field');
+   var formGroup = document.querySelectorAll('.form-group');
+
+   for (var i = 0; i < errors.length; i++) {
+       errors[i].innerHTML = '';
+       errors[i].classList.remove('error');
+       formGroup[i].classList.remove('error');
+   }
+
+   var error = 0;
+   if (!birthdate.value) {
+       document.getElementById('error-birthdate').innerHTML = 'Обязательное поле'
+       document.getElementById('error-birthdate').classList.add('error')
+       document.getElementById('birthdate').classList.add('error')
+       error = error + 1
+   }
+   birthdateList = birthdate.value.split('.')
+   if (birthdateList.length != 3 || birthdateList[0].length != 2 || birthdateList[1].length != 2 || birthdateList[2].length != 4) {
+       document.getElementById('error-birthdate').innerHTML = 'Введите дату в формате ДД.ММ.ГГГГ'
+       document.getElementById('error-birthdate').classList.add('error')
+       document.getElementById('birthdate').classList.add('error')
+       error = error + 1
+   }
+   if (!lastname.value) {
+       document.getElementById('error-last-name').innerHTML = 'Обязательное поле'
+       document.getElementById('error-last-name').classList.add('error')
+       document.getElementById('last-name').classList.add('error')
+       error = error + 1
+   }
+
+   if (!name.value) {
+       document.getElementById('error-name').innerHTML = 'Обязательное поле'
+       document.getElementById('error-name').classList.add('error')
+       document.getElementById('name').classList.add('error')
+       error = error + 1
+   }
+
+    if (!patronymic.value) {
+        document.getElementById('error-patronymic').innerHTML = 'Обязательное поле'
+        document.getElementById('error-patronymic').classList.add('error')
+        document.getElementById('patronymic').classList.add('error')
+        error = error + 1
     }
-// });
-
-var inputNameCheck = $( '#name-input' ), timeOut;
-    inputNameCheck.on( 'keyup', function () {
-        clearTimeout( timeOut );
-        clearNameError();
-        timeOut = setTimeout( myfunc1, 1000, $( this ).val() );
-    });
-
-    inputNameCheck.on( 'keydown', function () {
-        clearTimeout( timeOut );
-    });
-
-    function myfunc1( value2 ) {
-        console.log(value2);
-        checkName(value2);
+    if (error == 0) {
+        let answer = await loginDataValidation(birthdate.value, name.value, lastname.value, patronymic.value);
+        answer = JSON.parse(answer);
+        answer = JSON.parse(answer);
+        console.log(answer)
+        if (answer[0] == null) {
+            document.getElementById('user-id').value = answer[1]
+            form.submit()
+        } else {
+            document.getElementById('error-error').innerHTML = answer[0]
+            document.getElementById('error-error').classList.add('error')
+            document.getElementById('error').classList.add('error')
+        }
     }
-
-var inputPatronymic = $( '#patronymic-input' ), timeOut;
-    inputPatronymic.on( 'keyup', function () {
-        clearPatronymicError();
-        clearTimeout( timeOut );
-        timeOut = setTimeout( myfunc2, 1000, $( this ).val() );
-    });
-
-    inputPatronymic.on( 'keydown', function () {
-        clearTimeout( timeOut );
-    });
-
-    function myfunc2( value3 ) {
-        console.log(value3);
-        checkPatronymic(value3);
-    }
-});
-
-
-
-// check()
-// async function check() {
-//     // let lastNameInput = document.getElementById('last-name-input')
-//     while (true) {
-//     if (document.querySelector('test') == document.activeElement) {
-//         console.log('Yes!')
-//     }
-//     }
-// }
-
-
-
-    function validationForm() {
-        var form = document.getElementById('register-form');
-        form.submit()
-        // var username = document.getElementById('id_username');
-        // var password = document.getElementById('id_password');
-
-        // var errors = document.querySelectorAll('.error-field');
-        // var formGroup = document.querySelectorAll('.form-group');
-
-        // for (var i = 0; i < errors.length; i++) {
-        //     errors[i].innerHTML = '';
-        //     errors[i].classList.remove('error');
-        //     formGroup[i].classList.remove('error');
-        // }
-
-        // var error = 0;
-        // var st = new RegExp("[^а-яА-Яa-zA-Z0-9ёЁ+/)/(/-/'/ /./,-]+");
-        // var stEmail = new RegExp("[^a-zA-Z0-9/-/./@/_-]+");
-        // if (!username.value) {
-        //     document.getElementById('error-username').innerHTML = 'Обязательное поле'
-        //     document.getElementById('error-username').classList.add('error')
-        //     document.getElementById('form-group-username').classList.add('error')
-        //     error = error + 1
-        // }
-
-        // if (!password.value) {
-        //     document.getElementById('error-password').innerHTML = 'Обязательное поле'
-        //     document.getElementById('error-password').classList.add('error')
-        //     document.getElementById('form-group-password').classList.add('error')
-        //     error = error + 1
-        // }
-
-        // if (error == 0) { form.submit(); }
-    }
-    </script>
+}
+</script>
 
 {% endblock %}
