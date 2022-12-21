@@ -851,7 +851,7 @@ def edit_user(user_form, type, request):
             # Проверяем с какого приема пищи мы можем накормить пациента.
             meal_permissible, weight_meal_permissible = check_change('True')
             # Проверяем на какой прием пищи успевает пациент пациента.
-            meal_user, weight_meal_user = check_meal_user(user, 'editing')
+            meal_user, weight_meal_user = check_meal_user(user)
             # Прием пищи с которого пациент будет добавлен в заказ.
             meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
             # Определяем, какой след прием пищи сейчас в печатных формах.
@@ -885,7 +885,7 @@ def archiving_user(user, request):
         # Проверяем с какого приема пищи мы можем накормить пациента.
         meal_permissible, weight_meal_permissible = check_change('True')
         # Проверяем на какой прием пищи успевает пациент пациента.
-        meal_user, weight_meal_user = check_meal_user(user, 'archiving')
+        meal_user, weight_meal_user = check_meal_user(user)
         # Прием пищи с которого пациент будет добавлен в заказ.
         meal_order = meal_permissible if weight_meal_permissible >= weight_meal_user else meal_user
 
