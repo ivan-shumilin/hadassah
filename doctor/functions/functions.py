@@ -11,7 +11,7 @@ from django.utils import dateformat
 from django.db.models.functions import Lower
 import logging, random, telepot
 from doctor.functions.bot import check_change, formatting_full_name, do_messang_send
-from doctor.functions.helpers import check_value
+from doctor.functions.helpers import check_value, formatting_full_name_mode_full
 from doctor.functions.translator import get_day_of_the_week
 from doctor.functions.diet_formation import add_default_menu, add_default_menu_on_one_day,\
     writes_the_patient_menu_to_the_database, add_the_patient_menu
@@ -601,7 +601,7 @@ def create_user(user_form, request):
             break
 
     user = CustomUser.objects.create_user(login)
-    user.full_name = user_form.data['full_name']
+    user.full_name = formatting_full_name_mode_full(user_form.data['full_name'])
     user.birthdate = datetime.strptime(user_form.data['birthdate'], '%d.%m.%Y').date()
     user.receipt_date = datetime.strptime(user_form.data['receipt_date'], '%d.%m.%Y').date()
     time = user_form.data['receipt_time'].split(':')
@@ -707,7 +707,7 @@ def edit_user(user_form, type, request):
     # обравляем CustomUser и состовляем список изменений
     if user.full_name != user_form.data['full_name1']:
         changes.append(f"ФИО <b>{user.full_name}</b> изменена на <b>{user_form.data['full_name1']}</b>")
-    user.full_name = user_form.data['full_name1']
+    user.full_name = formatting_full_name_mode_full(user_form.data['full_name1'])
     if user.receipt_date != datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date():
         changes.append(f"дату поступления <b>{user.receipt_date}</b> изменена на <b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b>")
     user.receipt_date = datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date()
