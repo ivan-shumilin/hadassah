@@ -207,6 +207,7 @@ def is_have_user(formatted_full_name, birthdate):
     Return: Ошибка, id пациента(если такой найден)
     """
     users = CustomUser.objects.filter(full_name=formatted_full_name, status='patient')
+    
     if len(users) == 0:
         return "Пользователь с такими данными не найден", None
     if len(users) > 0:

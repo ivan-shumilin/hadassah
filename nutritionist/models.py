@@ -9,9 +9,9 @@ from patient.choices import *
 
 class CustomUser(AbstractUser):
     full_name = models.CharField(max_length=200, null=True)
-    birthdate = models.DateField(null=True)
-    receipt_date = models.DateField(null=True)
-    receipt_time = models.TimeField(null=True)
+    birthdate = models.DateField(null=True)  # datetime.date
+    receipt_date = models.DateField(null=True)  # datetime.date
+    receipt_time = models.TimeField(null=True)  # datetime.time
     floor = models.CharField(max_length=200, null=True)
 
     department = models.CharField(

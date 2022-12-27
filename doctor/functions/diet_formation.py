@@ -5,7 +5,6 @@ from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotCh
     UsersToday, MenuByDayReadyOrder, UsersReadyOrder
 from doctor.functions.helpers import check_value
 from doctor.functions.translator import get_day_of_the_week
-
 from django.db import transaction
 from django.db.models import Q
 from dateutil.parser import parse
@@ -13,30 +12,35 @@ from datetime import datetime, date, timedelta
 from django.utils import dateformat
 
 
-# def check_value(category, products):
-#     value: str = ''
-#     if category != 'товар' and category != 'напиток':
-#         try:
-#             value = products.get(category=category).id
-#         except Exception:
-#             value = None
-#     else:
-#         value = ','.join([str(item.id) for item in products.filter(category=category)])
-#     return value
-#
-# def get_day_of_the_week(date_get):
-#     """Дату в формате Y-M-D в день недели прописью"""
-#
-#     DAT_OF_THE_WEEK = {
-#         'Monday': 'понедельник',
-#         'Tuesday': 'вторник',
-#         'Wednesday': 'среда',
-#         'Thursday': 'четверг',
-#         'Friday': 'пятница',
-#         'Saturday': 'суббота',
-#         'Sunday': 'воскресенье',
-#     }
-#     return DAT_OF_THE_WEEK[parse(date_get).strftime('%A')]
+def get_next_meals():
+    """ Вернет следующий прием пищи. """
+    time = datetime.today().time()
+    if time.hour > 0 and time.hour < 7:
+        return ['breakfast', 'lunch', 'afternoon', 'dinner']
+    if time.hour >= 7 and time.hour < 11:
+        return ['lunch', 'afternoon', 'dinner']
+    if time.hour >= 11 and time.hour < 14:
+        return ['afternoon', 'dinner']
+    if time.hour >= 14 and time.hour < 17:
+        return ['dinner']
+    return []
+
+def add_the_patient_menu(user, user_change_type):
+    """ Если поменялась диета или добавили комментарий.
+        Удаляем все меню в будущем и добавляем новое.
+     """
+    next_meals = get_next_meals()
+
+    if next_meals == []:
+        days = [date.today() + timedelta(days=delta) for delta in [0, 1, 2, 3]]
+    else:
+        days = [date.today() + timedelta(days=delta) for delta in [0, 1, 2]]
+
+    if user_change_type == 'edit':
+        delete_menu_for_future(user, days, next_meals)
+
+    writes_the_patient_menu_to_the_database(user, days, next_meals)
+
 def add_menu_three_days_ahead():
     """ Добовляем меню на 3 дня. """
     users = CustomUser.objects.filter(status='patient')
@@ -55,12 +59,11 @@ def add_default_menu(user):
     В MenuByDay хранится перечень блюд для пациента в определенный день, прием пищи.
     """
     # генератор списка return даты на след 3 дня
-    days = [parse(user.receipt_date) + timedelta(days=delta) for delta in [0, 1, 2]]
+    days = [user.receipt_date + timedelta(days=delta) for delta in [0, 1, 2]]
 
     for index, day_of_the_week in enumerate(days):
         add_default_menu_on_one_day(day_of_the_week, user)
     return
-
 
 @transaction.atomic
 def add_default_menu_on_one_day(day_of_the_week, user):
@@ -78,6 +81,7 @@ def add_default_menu_on_one_day(day_of_the_week, user):
     else:
         day = get_day_of_the_week(str(day_of_the_week))
         translated_diet = user.type_of_diet
+
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day) &
                                             Q(timetablelp__type_of_diet=translated_diet) &
@@ -100,3 +104,54 @@ def add_default_menu_on_one_day(day_of_the_week, user):
             ))
         MenuByDay.objects.bulk_create(to_create)
     return
+
+
+@transaction.atomic
+def writes_the_patient_menu_to_the_database(user, days, next_meals):
+    for index, change_day in enumerate(days):
+        next_meals = next_meals if index == 0 else ['breakfast', 'lunch', 'afternoon', 'dinner']
+        for meal in next_meals:
+            if user.type_of_diet in ['БД день 1', 'БД день 2']:
+                if type(user.receipt_date) == str:
+                    is_even = (change_day - parse(user.receipt_date).date() + timedelta(days=1)).days % 2 == 0
+                else:
+                    is_even = (change_day - user.receipt_date + timedelta(days=1)).days % 2 == 0
+                if user.type_of_diet == 'БД день 1':
+                    day = 'вторник' if is_even else 'понедельник'
+                    translated_diet = 'БД'
+                if user.type_of_diet == 'БД день 2':
+                    day = 'понедельник' if is_even else 'вторник'
+                    translated_diet = 'БД'
+            else:
+                day = get_day_of_the_week(str(change_day))
+                translated_diet = user.type_of_diet
+
+            products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day) &
+                                                Q(timetablelp__type_of_diet=translated_diet) &
+                                                Q(timetablelp__meals=meal))
+            to_create = []
+            to_create.append(MenuByDay(
+                user_id=user,
+                date=change_day,
+                meal=meal,
+                type_of_diet=user.type_of_diet,
+                main=check_value('основной', products),
+                garnish=check_value('гарнир', products),
+                porridge=check_value('каша', products),
+                soup=check_value('суп', products),
+                dessert=check_value('десерт', products),
+                fruit=check_value('фрукты', products),
+                drink=check_value('напиток', products),
+                salad=check_value('салат', products),
+                products=check_value('товар', products),
+            ))
+            MenuByDay.objects.bulk_create(to_create)
+    return
+
+def delete_menu_for_future(user, days, next_meals):
+    for index, change_day in enumerate(days):
+        next_meals = next_meals if index == 0 else ['breakfast', 'lunch', 'afternoon', 'dinner']
+        for meal in next_meals:
+            set_menu_del = MenuByDay.objects.filter(user_id=user.id).filter(date=str(change_day)).filter(meal=meal)
+            for menu_del in set_menu_del:
+                menu_del.delete()
