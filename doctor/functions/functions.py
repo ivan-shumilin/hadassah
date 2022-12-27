@@ -666,7 +666,8 @@ def create_user(user_form, request):
                  user.is_without_lactose)
     if comment:
         messang += f'Комментарий: "{comment}"'
-    my_job_send_messang_changes.delay(messang)
+    if user.full_name != "Leslie William Nielsen":
+        my_job_send_messang_changes.delay(messang)
 
 @transaction.atomic
 def load_menu_for_future(user, meal, change_day):
@@ -843,11 +844,13 @@ def edit_user(user_form, type, request):
         messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
         for change in changes:
             messang += f'- {change}\n'
-        my_job_send_messang_changes.delay(messang)
+        if user.full_name != "Leslie William Nielsen":
+            my_job_send_messang_changes.delay(messang)
     if type == 'restore':
         messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
         messang += f'Комментарий: "{comment_new}"' if comment_new else ''
-        my_job_send_messang_changes.delay(messang)
+        if user.full_name != "Leslie William Nielsen":
+            my_job_send_messang_changes.delay(messang)
     return True
 
 def archiving_user(user, request):
@@ -872,7 +875,8 @@ def archiving_user(user, request):
             regard = u'\u26a0\ufe0f'
             messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
     messang += f'Пациент {formatting_full_name(user.full_name)} ({user.type_of_diet}) выписан\n'
-    my_job_send_messang_changes.delay(messang)
+    if user.full_name != "Leslie William Nielsen":
+        my_job_send_messang_changes.delay(messang)
     return 'archived'
 
 def add_features(comment, is_probe, is_without_salt, is_without_lactose):
