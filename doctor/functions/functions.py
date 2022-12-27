@@ -477,42 +477,19 @@ def creating_meal_menu_cafe(date_get, diet, meal):
     return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup
 
 def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
-    products_main = []
-    products_porridge = []
-    products_dessert = []
-    products_fruit = []
-    products_salad = []
-    products_soup = []
-    products_drink = []
-    products_garnish = []
-
     products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
                                         Q(timetablelp__type_of_diet=translated_diet) &
                                         Q(timetablelp__meals=meal))
 
-    if meal == 'breakfast':
-        products_garnish = list(products.filter(category='гарнир'))
-        products_main = list(products.filter(category='основной'))
-        products_porridge = list(products.filter(category='каша'))
-        products_drink = list(products.filter(category='напиток'))
+    products_porridge = list(products.filter(category='каша'))
+    products_salad = list(products.filter(category='салат'))
+    products_soup = list(products.filter(category='суп'))
+    products_main = list(products.filter(category='основной'))
+    products_garnish = list(products.filter(category='гарнир'))
+    products_dessert = list(products.filter(category='десерт'))
+    products_fruit = list(products.filter(category='фрукты'))
+    products_drink = list(products.filter(category='напиток'))
 
-    if meal == 'afternoon':
-        products_main = list(products.filter(category='основной'))
-        products_dessert = list(products.filter(category='десерт'))
-        products_fruit = list(products.filter(category='фрукты'))
-        products_drink = list(products.filter(category='напиток'))
-
-    if meal == 'lunch':
-        products_main = list(products.filter(category='основной'))
-        products_garnish = list(products.filter(category='гарнир'))
-        products_salad = list(products.filter(category='салат'))
-        products_soup = list(products.filter(category='суп'))
-        products_drink = list(products.filter(category='напиток'))
-
-    if meal == 'dinner':
-        products_main = list(products.filter(category='основной'))
-        products_garnish = list(products.filter(category='гарнир'))
-        products_drink = list(products.filter(category='напиток'))
     return products_main, products_garnish, products_salad, products_soup, products_porridge, products_dessert, products_fruit, products_drink
 
 def delete_choices(CustomUserFormSet):
