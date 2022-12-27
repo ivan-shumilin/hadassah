@@ -70,6 +70,7 @@ def create_user_today(meal):
             is_probe=user.is_probe,
             is_without_salt=user.is_without_salt,
             is_without_lactose=user.is_without_lactose,
+            is_pureed_nutrition=user.is_pureed_nutrition,
             type_pay=user.type_pay,
             ))
     UsersToday.objects.bulk_create(to_create)
@@ -118,6 +119,7 @@ def create_ready_order(meal):
             is_probe=user.is_probe,
             is_without_salt=user.is_without_salt,
             is_without_lactose=user.is_without_lactose,
+            is_pureed_nutrition=user.is_pureed_nutrition,
             type_pay=user.type_pay,
             ))
     UsersReadyOrder.objects.bulk_create(to_create)
@@ -257,6 +259,7 @@ def update_UsersToday(user):
             user_today.is_probe=user.is_probe
             user_today.is_without_salt=user.is_without_salt
             user_today.is_without_lactose=user.is_without_lactose
+            user_today.is_pureed_nutrition = user.is_pureed_nutrition
             user_today.type_pay=user.type_pay
             user_today.save()
         except:
@@ -275,6 +278,7 @@ def update_UsersToday(user):
             is_probe=user.is_probe,
             is_without_salt=user.is_without_salt,
             is_without_lactose=user.is_without_lactose,
+            is_pureed_nutrition=user.is_pureed_nutrition,
             type_pay=user.type_pay).save()
     return
 

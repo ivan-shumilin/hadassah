@@ -65,15 +65,20 @@ class CustomUser(AbstractUser):
         default=False,
         help_text='Питание через зонд')
 
-    is_without_salt =  models.BooleanField(
+    is_without_salt = models.BooleanField(
         blank=True,
         default=False,
         help_text='Без соли')
 
-    is_without_lactose =  models.BooleanField(
+    is_without_lactose = models.BooleanField(
         blank=True,
         default=False,
         help_text='Без лактозы')
+
+    is_pureed_nutrition = models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Протертое питание')
 
     type_pay = models.CharField(
         max_length=100,
@@ -154,6 +159,11 @@ class UsersToday(models.Model):
         blank=True,
         default=False,
         help_text='Без лактозы')
+
+    is_pureed_nutrition = models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Протертое питание')
 
     type_pay = models.CharField(
         max_length=100,
@@ -369,6 +379,11 @@ class UsersReadyOrder(models.Model):
         blank=True,
         default=False,
         help_text='Без лактозы')
+
+    is_pureed_nutrition = models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Протертое питание')
 
     type_pay = models.CharField(
         max_length=100,

@@ -190,6 +190,10 @@
                                 <span>Питание через зонд</span>
                             </label>
                             <label class="custom-checkbox">
+                                <input class="custom-checkbox" id="is_pureed_nutrition_{{ form.id.value }}" type="checkbox" name="is_pureed_nutrition">
+                                <span>Протертое питание</span>
+                            </label>
+                            <label class="custom-checkbox">
                                 <input class="custom-checkbox" id="is_without_salt_form_{{ form.id.value }}" type="checkbox" name="is_without_salt">
                                 <span>Без соли</span>
                             </label>
@@ -214,12 +218,14 @@
                                '{{ form.type_of_diet.id_for_label }}', '{{ form.room_number.id_for_label }}',
                                 '{{ form.bed.id_for_label }}', '{{ form.comment.id_for_label }}', '{{ form.id.value }}',
                                  '{{ form.floor.id_for_label }}', 'bed_edit-{{ form.id.value }}',
-                                 'is_accompanying_form_{{ form.id.value }}',
-                                 'typePayPetrushka{{ form.id.value }}',
-                                 'typePayHadassah{{ form.id.value }}',
-                                 'is_probe_form_{{ form.id.value }}',
-                                 'is_without_salt_form_{{ form.id.value }}',
-                                 'is_without_lactose_form_{{ form.id.value }}', 'btn-edit-{{ form.id.value }}')">Сохранить</button>
+                                  'is_accompanying_form_{{ form.id.value }}',
+                                   'typePayPetrushka{{ form.id.value }}',
+                                    'typePayHadassah{{ form.id.value }}',
+                                     'is_probe_form_{{ form.id.value }}',
+                                      'is_without_salt_form_{{ form.id.value }}',
+                                       'is_without_lactose_form_{{ form.id.value }}',
+                                        'is_pureed_nutrition_{{ form.id.value }}',
+                                         'btn-edit-{{ form.id.value }}')">Сохранить</button>
                             <a class="button white" data-modal-close>Отменить</a>
                         </div>
 
@@ -674,7 +680,8 @@ function validationEditForm(id_full_name,
           typePayPetrushka,
            typePayHadassah,
             isProbeId, isWithoutSaltId,
-             isWithoutLactoseId, btnId)  {
+             isWithoutLactoseId,
+              isPureedNutritionId, btnId)  {
     var btn = document.getElementById(btnId);
     btn.setAttribute('disabled', true);
     var form = document.getElementById('main-form');
@@ -694,6 +701,7 @@ function validationEditForm(id_full_name,
     var isProbe = document.getElementById(isProbeId)
     var isWithoutSalt = document.getElementById(isWithoutSaltId)
     var isWithoutLactose = document.getElementById(isWithoutLactoseId)
+    var isPureedNutrition = document.getElementById(isPureedNutritionId)
 
     var errors = document.querySelectorAll('.error-field');
     var formGroup = document.querySelectorAll('.form-group');
@@ -810,6 +818,11 @@ function validationEditForm(id_full_name,
             document.getElementById('edit_is_without_lactose').value = 'True'
         } else {
             document.getElementById('edit_is_without_lactose').value = 'False'
+        }
+        if (isPureedNutrition.checked) {
+            document.getElementById('edit_is_pureed_nutrition').value = 'True'
+        } else {
+            document.getElementById('edit_is_pureed_nutrition').value = 'False'
         }
         form.submit()
     } else {

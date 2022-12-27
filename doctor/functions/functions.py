@@ -549,7 +549,7 @@ def comment_formatting(comment):
         comment = comment if comment[-1] == '.' else comment + '.'
     return comment
 
-def is_user_look(user_form, is_accompanying, type_pay, is_probe, is_without_salt, is_without_lactose):
+def is_user_look(user_form, is_accompanying, type_pay, is_probe, is_without_salt, is_without_lactose, is_pureed_nutrition):
     users = CustomUser.objects.filter(full_name=user_form.data['full_name'], status='patient')
     for user in users:
         time = user_form.data['receipt_time'].split(':')
@@ -567,7 +567,8 @@ def is_user_look(user_form, is_accompanying, type_pay, is_probe, is_without_salt
             str(user.type_pay) == str(type_pay) and\
             str(user.is_probe) == str(is_probe) and\
             str(user.is_without_salt) == str(is_without_salt) and\
-            str(user.is_without_lactose) == str(is_without_lactose) and\
+            str(user.is_without_lactose) == str(is_without_lactose) and \
+            str(user.is_pureed_nutrition) == str(is_pureed_nutrition) and \
             str(user.status) == 'patient':
             return True
 
@@ -577,8 +578,16 @@ def create_user(user_form, request):
     is_probe = False if request.POST['is_probe'] == 'False' else True
     is_without_salt = False if request.POST['is_without_salt'] == 'False' else True
     is_without_lactose = False if request.POST['is_without_lactose'] == 'False' else True
+    is_pureed_nutrition = False if request.POST['is_pureed_nutrition'] == 'False' else True
 
-    is_user = is_user_look(user_form, is_accompanying, type_pay, is_probe, is_without_salt, is_without_lactose)
+    is_user = is_user_look(
+        user_form,
+        is_accompanying,
+        type_pay,
+        is_probe,
+        is_without_salt,
+        is_without_lactose,
+        is_pureed_nutrition)
     if is_user:
         return
 
@@ -608,6 +617,7 @@ def create_user(user_form, request):
     user.is_probe = is_probe
     user.is_without_salt = is_without_salt
     user.is_without_lactose = is_without_lactose
+    user.is_pureed_nutrition = is_pureed_nutrition
     user.status = 'patient'
     user.save()
     logging_user_name = f'{request.user.last_name if request.user.last_name != None else "None"} {request.user.last_name if request.user.last_name != None else "None"}'
@@ -640,7 +650,8 @@ def create_user(user_form, request):
     comment = add_features(user.comment,
                  user.is_probe,
                  user.is_without_salt,
-                 user.is_without_lactose)
+                 user.is_without_lactose,
+                user.is_pureed_nutrition)
     if comment:
         messang += f'Комментарий: "{comment}"'
     if user.full_name != "Leslie William Nielsen":
@@ -735,11 +746,24 @@ def edit_user(user_form, type, request):
     is_probe = False if request.POST['edit_is_probe'] == 'False' else True
     is_without_salt = False if request.POST['edit_is_without_salt'] == 'False' else True
     is_without_lactose = False if request.POST['edit_is_without_lactose'] == 'False' else True
+    is_pureed_nutrition = False if request.POST['edit_is_pureed_nutrition'] == 'False' else True
 
 
     comment_formated = comment_formatting(user_form.data["comment1"])
-    comment_old = add_features(user.comment, user.is_probe, user.is_without_salt, user.is_without_lactose)
-    comment_new = add_features(comment_formated, is_probe, is_without_salt, is_without_lactose)
+    comment_old = add_features(
+        user.comment,
+        user.is_probe,
+        user.is_without_salt,
+        user.is_without_lactose,
+        user.is_pureed_nutrition
+    )
+    comment_new = add_features(
+        comment_formated,
+        is_probe,
+        is_without_salt,
+        is_without_lactose,
+        is_pureed_nutrition
+    )
 
 
     if comment_old != comment_new:
@@ -761,6 +785,7 @@ def edit_user(user_form, type, request):
     user.is_probe = is_probe
     user.is_without_salt = is_without_salt
     user.is_without_lactose = is_without_lactose
+    user.is_pureed_nutrition = is_pureed_nutrition
     if not user.is_accompanying and request.POST['edit_is_accompanying'] == 'True':
         if request.POST['edit_type_pay'] == "petrushka":
             changes.append(f'добавлен статус <b>\"Сопровождающий\"</b> с оплатой через кассу')
@@ -856,12 +881,13 @@ def archiving_user(user, request):
         my_job_send_messang_changes.delay(messang)
     return 'archived'
 
-def add_features(comment, is_probe, is_without_salt, is_without_lactose):
+def add_features(comment, is_probe, is_without_salt, is_without_lactose, is_pureed_nutrition):
     """ Добавляем к комментраию признаки для вывода в Сводный отчет. """
     items_comment = [f"{None if comment == '' else comment}",
                      f"{None if not is_probe else 'Питание через зонд.'}",
                      f"{None if not is_without_salt else 'Без соли.'}",
                      f"{None if not is_without_lactose else 'Без лактозы.'}",
+                     f"{None if not is_pureed_nutrition else 'Протертое питание.'}",
                     ]
     items_comment = [item for item in items_comment if item != 'None']
     return  ' '.join(items_comment)
@@ -871,13 +897,15 @@ def create_with_comment(users_diet, floors):
     users_diet_with_comment = [user for user in users_diet if len(user.comment) >= 1\
                                or user.is_probe\
                                or user.is_without_salt\
-                               or user.is_without_lactose]
+                               or user.is_without_lactose\
+                               or user.is_pureed_nutrition]
     for user_diet_with_comment in users_diet_with_comment:
         with_comment.append({
         "name": add_features(user_diet_with_comment.comment,
                              user_diet_with_comment.is_probe,
                              user_diet_with_comment.is_without_salt,
-                             user_diet_with_comment.is_without_lactose),
+                             user_diet_with_comment.is_without_lactose,
+                             user_diet_with_comment.is_pureed_nutrition),
         "total": 1,
         "2nd_floor": len([users_floor for users_floor in [user_diet_with_comment] \
                                   if users_floor.room_number in floors['second']]),
@@ -915,7 +943,8 @@ def create_with_comment(users_diet, floors):
 def create_without_comment(users_diet, floors, diet):
     without_comment = []
     users_diet_without_comment = [user for user in users_diet if user.comment == ''\
-                                  and not user.is_probe and not user.is_without_salt and not user.is_without_lactose]
+                                  and not user.is_probe and not user.is_without_salt\
+                                  and not user.is_without_lactose and not user.is_pureed_nutrition]
     if len(users_diet) == len(users_diet_without_comment) or \
         len(users_diet_without_comment) == 0:
         return ''
@@ -996,7 +1025,8 @@ def create_list_users_on_floor(users, floors, meal, date_create, type_order):
              'comment': add_features(user.comment,
                              user.is_probe,
                              user.is_without_salt,
-                             user.is_without_lactose),
+                             user.is_without_lactose,
+                             user.is_pureed_nutrition),
              'room_number': user.room_number,
              'bed': user.bed,
              'diet': user.type_of_diet,

@@ -50,7 +50,7 @@
                 <div style="display: none;" id="sorting">{{ sorting }}</div>
 
                 
-                <a style="display: none;"  id="archived" data-modal-link="patient was discharged">Пациент уже выписан</a>
+                <!-- <a style="display: none;" id="archived" data-modal-link="patient was discharged">Пациент уже выписан</a> -->
                 <a style="display: none;"  id="archived" data-modal-link="patient-archived">Пациент перенесен в архив</a>
                 <a style="display: none;" id="edited" data-modal-link="patient-edited">Редактировать</a>
                 <a style="display: none;" id="patient-added" data-modal-link="patient-added">Поступил пациент</a>
@@ -104,6 +104,7 @@
                             <input type="text" id="is_accompanying_{{ form.id.value }}" value="{{ form.is_accompanying.value }}">
                             <input type="text" id="type_pay_{{ form.id.value }}" value="{{ form.type_pay.value }}">
                             <input type="text" id="is_probe_{{ form.id.value }}" value="{{ form.is_probe.value }}">
+                            <input type="text" id="is_pureed_nutrition_{{ form.id.value }}" value="{{ form.is_pureed_nutrition.value }}">
                             <input type="text" id="is_without_salt_{{ form.id.value }}" value="{{ form.is_without_salt.value }}">
                             <input type="text" id="is_without_lactose_{{ form.id.value }}" value="{{ form.is_without_lactose.value }}">
                         </div>
@@ -254,6 +255,10 @@
                                             <span>Питание через зонд</span>
                                         </label>
                                         <label class="custom-checkbox">
+                                            <input class="custom-checkbox" id="is_pureed_nutrition_form_{{ form.id.value }}" type="checkbox" name="is_pureed_nutrition">
+                                            <span>Протертое питание</span>
+                                        </label>
+                                        <label class="custom-checkbox">
                                             <input class="custom-checkbox" id="is_without_salt_form_{{ form.id.value }}" type="checkbox" name="is_without_salt">
                                             <span>Без соли</span>
                                         </label>
@@ -289,9 +294,10 @@
                                                    'typePayPetrushka{{ form.id.value }}',
                                                     'typePayHadassah{{ form.id.value }}',
                                                     'is_probe_form_{{ form.id.value }}',
-                                                     'is_without_salt_form_{{ form.id.value }}',
-                                                      'is_without_lactose_form_{{ form.id.value }}',
-                                                      'btn-edit-{{ form.id.value }}')">Сохранить</button>
+                                                      'is_without_salt_form_{{ form.id.value }}',
+                                                       'is_without_lactose_form_{{ form.id.value }}',
+                                                        'is_pureed_nutrition_form_{{ form.id.value }}',
+                                                         'btn-edit-{{ form.id.value }}')">Сохранить</button>
                                         <a class="button white" data-modal-close>Отменить</a>
                                     </div>
 
@@ -405,7 +411,7 @@
             </div>
 <!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script> -->
 <script>
-
+console.log("{{ message }}")
 document.getElementById("modal_field").onclick = function() {clickEditForm()};
 
 function showPaymentChoice() {
@@ -597,14 +603,17 @@ async function clickEditForm() {
 
 // получаем id
     var isProbeId = `is_probe_${userId}`;
+    var isPureedNutritionId = `is_pureed_nutrition_${userId}`;
     var isWithoutSaltId = `is_without_salt_${userId}`;
     var isWithoutLactoseId = `is_without_lactose_${userId}`;
 // получаем значения
     var isProbe = document.getElementById(isProbeId).value
     var isWithoutSalt = document.getElementById(isWithoutSaltId).value
     var isWithoutLactose = document.getElementById(isWithoutLactoseId).value
+    var isPureedNutrition = document.getElementById(isPureedNutritionId).value
 // получаем id input'ов в форме
     var isProbeFormId = `is_probe_form_${userId}`;
+    var isPureedNutritionFormId = `is_pureed_nutrition_form_${userId}`;
     var isWithoutSaltFormId = `is_without_salt_form_${userId}`;
     var isWithoutLactoseFormId = `is_without_lactose_form_${userId}`;
 // устанавливаем флажок если значение True
@@ -616,6 +625,9 @@ async function clickEditForm() {
     }
     if (isWithoutLactose == 'True') {
         document.getElementById(isWithoutLactoseFormId).setAttribute('checked', 'true');
+    }
+    if (isPureedNutrition == 'True') {
+        document.getElementById(isPureedNutritionFormId).setAttribute('checked', 'true');
     }
 }
 
@@ -1361,6 +1373,7 @@ async function validationForm() {
     var typePayHadassah = document.getElementById('typePayHadassah');
 
     var isProbe = document.getElementById('is_probe');
+    var isPureedNutrition = document.getElementById('is_pureed_nutrition');
     var isWithoutSalt = document.getElementById('is_without_salt');
     var isWithoutLactose = document.getElementById('is_without_lactose');
 
@@ -1480,6 +1493,13 @@ async function validationForm() {
         } else {
             document.getElementById('test_is_probe').value = 'False'
         }
+
+        if (isPureedNutrition.checked) {
+            document.getElementById('test_is_pureed_nutrition').value = 'True'
+        } else {
+            document.getElementById('test_is_pureed_nutrition').value = 'False'
+        }
+        
         if (isWithoutSalt.checked) {
             document.getElementById('test_is_without_salt').value = 'True'
         } else {
@@ -1517,7 +1537,7 @@ async function validationEditForm(id_full_name,
            typePayPetrushka,
             typePayHadassah,
             isProbeId, isWithoutSaltId,
-             isWithoutLactoseId, btnId) {
+             isWithoutLactoseId, isPureedNutritionId, btnId) {
     var btn = document.getElementById(btnId);
     btn.setAttribute('disabled', true);
     var form = document.getElementById('main-form');
@@ -1582,6 +1602,7 @@ async function validationEditForm(id_full_name,
     var isProbe = document.getElementById(isProbeId)
     var isWithoutSalt = document.getElementById(isWithoutSaltId)
     var isWithoutLactose = document.getElementById(isWithoutLactoseId)
+    var isPureedNutrition = document.getElementById(isPureedNutritionId)
 
     if (isProbe.checked) {
         document.getElementById('edit_is_probe').value = 'True'
@@ -1589,6 +1610,13 @@ async function validationEditForm(id_full_name,
     } else {
         document.getElementById('edit_is_probe').value = 'False'
         var isProbeValue = 'False'
+    }
+    if (isPureedNutrition.checked) {
+        document.getElementById('edit_is_pureed_nutrition').value = 'True'
+        var isPureedNutritionValue = 'True'
+    } else {
+        document.getElementById('edit_is_pureed_nutrition').value = 'False'
+        var isPureedNutritionValue = 'False'
     }
     if (isWithoutSalt.checked) {
         document.getElementById('edit_is_without_salt').value = 'True'
@@ -1608,9 +1636,11 @@ async function validationEditForm(id_full_name,
 
 
     var isProbeOldId = `is_probe_${id}`
+    var isPureedNutritionOldId = `is_pureed_nutrition_${id}`
     var isWithoutSaltOldId = `is_without_salt_${id}`
     var isWithoutLactoseOldId = `is_without_lactose_${id}`
     var isProbeOld = document.getElementById(isProbeOldId)
+
     if (isProbeOld.value == '') {
         isProbeOld.value = 'False'
     }
@@ -1621,6 +1651,11 @@ async function validationEditForm(id_full_name,
     isWithoutLactoseOld = document.getElementById(isWithoutLactoseOldId)
     if (isWithoutLactoseOld.value == '') {
         isWithoutLactoseOld.value = 'False'
+    }
+
+    isPureedNutritionOld = document.getElementById(isPureedNutritionOldId)
+    if (isPureedNutritionOld.value == '') {
+        isPureedNutritionOld.value = 'False'
     }
 
 
@@ -1648,7 +1683,8 @@ async function validationEditForm(id_full_name,
     (typePay.value == typePayOld) &&
     (isProbeValue == isProbeOld.value) &&
     (isWithoutSaltValue == isWithoutSaltOld.value) &&
-    (isWithoutLactoseValue == isWithoutLactoseOld.value)) {
+    (isWithoutLactoseValue == isWithoutLactoseOld.value)  &&
+    (isPureedNutritionValue == isPureedNutritionOld.value)) {
         error = 1
         document.getElementById('error_not_change').innerHTML = 'Нет изменений'
         document.getElementById('error_not_change').classList.add('error')

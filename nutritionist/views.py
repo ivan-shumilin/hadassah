@@ -896,7 +896,6 @@ def manager(request):
     return render(request, 'admin.html', context=data)
 
 def printed_form_one(request):
-
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     floors = {
     'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13', '2а-14', '2а-15',
@@ -1000,7 +999,8 @@ def printed_form_two_lp(request):
                         item['comment'] = add_features(user.comment,
                              user.is_probe,
                              user.is_without_salt,
-                             user.is_without_lactose)
+                             user.is_without_lactose,
+                             user.is_pureed_nutrition)
                         all_products.append(item)
             # составляем список с уникальными продуктами
             unique_products = []

@@ -46,7 +46,7 @@ def doctor(request):
                                              fields=(
                                                  'full_name', 'birthdate', 'receipt_date', 'receipt_time', 'department',
                                                  'floor', 'room_number', 'bed', 'type_of_diet', 'comment', 'id', 'is_accompanying',
-                                                 'is_probe', 'is_without_salt', 'is_without_lactose', 'type_pay'),
+                                                 'is_probe', 'is_without_salt', 'is_pureed_nutrition', 'is_without_lactose', 'type_pay'),
                                              widgets={
                                                  'full_name': TextInput(attrs={'required': "True"}),
                                                  'birthdate': TextInput(),
@@ -63,6 +63,7 @@ def doctor(request):
                                                  'type_pay': TextInput(attrs={'required': "True"}),
                                                  'is_probe': TextInput(attrs={'required': "True"}),
                                                  'is_without_salt': TextInput(attrs={'required': "True"}),
+                                                 'is_pureed_nutrition': TextInput(attrs={'required': "True"}),
                                                  'is_without_lactose': TextInput(attrs={'required': "True"}),
                                              },
                                              extra=0, )
