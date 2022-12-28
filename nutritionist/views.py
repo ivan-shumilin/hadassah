@@ -1699,3 +1699,63 @@ class CreateSitckers(APIView):
         response = {"response": "yes"}
         response = json.dumps(response)
         return Response(response)
+
+def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):
+    if day_of_the_week == 'день 1':
+        day_of_the_week = 'понедельник'
+    if day_of_the_week == 'день 2':
+        day_of_the_week = 'вторник'
+    products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
+                                        Q(timetablelp__type_of_diet=translated_diet) &
+                                        Q(timetablelp__meals=meal))
+
+    products_porridge = [product.name for product in products.filter(category='каша')]
+    products_salad = [product.name for product in products.filter(category='салат')]
+    products_soup = [product.name for product in products.filter(category='суп')]
+    products_main = [product.name for product in products.filter(category='основной')]
+    products_garnish = [product.name for product in products.filter(category='гарнир')]
+    products_dessert = [product.name for product in products.filter(category='десерт')]
+    products_fruit = [product.name for product in products.filter(category='фрукты')]
+    products_drink = [product.name for product in products.filter(category='напиток')]
+    products_product = [product.name for product in products.filter(category='товар')]
+
+
+    all_products = products_salad,\
+        products_soup,\
+        products_main,\
+        products_garnish,\
+        products_porridge,\
+        products_dessert,\
+        products_fruit,\
+        products_drink,\
+        products_product
+    result = []
+    for products in all_products:
+        for product in products:
+            result.append(product)
+    return result
+
+def menu_lp_for_staff(request):
+    try:
+        diet =request.GET['diet']
+        day_of_the_week = request.GET['day']
+        if day_of_the_week == 'вся неделя':
+            DAY_OF_THE_WEEK = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
+        else:
+            DAY_OF_THE_WEEK = [day_of_the_week]
+    except:
+        diet = 'ОВД'
+        day_of_the_week = 'вся неделя'
+        DAY_OF_THE_WEEK = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
+
+    MEALS = ['breakfast', 'lunch', 'afternoon', 'dinner']
+    if diet == 'БД':
+        DAY_OF_THE_WEEK = ['день 1', 'день 2']
+    menu = {}
+    for day in DAY_OF_THE_WEEK:
+        menu[day.capitalize()] = {}
+        for meal in MEALS:
+            meal_in_russian = translate_meal(meal)
+            menu[day.capitalize()][meal_in_russian] = creating_meal_menu_lp_new(day, diet, meal)
+    data = {'menu': menu, 'diet': diet, 'day_of_the_week': day_of_the_week}
+    return render(request, 'menu_lp_for_staff.html', context=data)

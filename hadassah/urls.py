@@ -39,6 +39,7 @@ urlpatterns = [
     path('manager/printed_form_one', views.printed_form_one, name='printed_form_one'),
     path('manager/printed_form_two_lp', views.printed_form_two_lp, name='printed_form_two'),
     path('manager/printed_form_two_cafe', views.printed_form_two_cafe, name='printed_form_cafe'),
+    path('manager/menu', views.menu_lp_for_staff, name='menu_lp_for_staff'),
     path('register/', views.register, name='register'),
     path('password_reset/', views.password_reset, name='reset_password'),
     path('logout/', views.user_logout, name='logout'),

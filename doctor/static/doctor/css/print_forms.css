@@ -57,6 +57,14 @@ h1 {
     border-bottom: 1px solid #000000
 }
 
+.solid-white {
+    border-bottom: 1px solid #ffffff
+}
+
+.solid-grey {
+    border-bottom: 1px solid #bebdc1
+}
+
 #table1 table {
     border-collapse: collapse;
     text-align: center;
@@ -310,4 +318,24 @@ label {
 
 .text-center {
     text-align: center;
+}
+
+.pd-left-right {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.pd-ul {
+    padding-left: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.mg-top-bottom {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.form-select {
+    width: 260px;
 }
