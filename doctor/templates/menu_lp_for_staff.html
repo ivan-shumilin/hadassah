@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Рацион лечебного питания</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
+
+</head>
+<body class='table-menu'>
+    <form id="form"  action="{% url 'menu_lp_for_staff' %}" method="get" novalidate>
+        <select id="select-diet" onchange="formSubmit()" class="form-select mg-top-bottom form-select-sm" name="diet">
+            <option value="ОВД" selected>ОВД</option>
+            <option value="ОВД без сахара">ОВД без сахара</option>
+            <option value="ОВД веган (пост) без глютена">ОВД веган (пост) без глютена</option>
+            <option value="Нулевая диета">Нулевая диета</option>
+            <option value="ЩД">ЩД</option>
+            <option value="БД" >БД</option>
+            <option value="ВБД">ВБД</option>
+            <option value="НКД">НКД</option>
+            <option value="ВКД">ВКД</option>
+        </select>
+
+        <select id="select-day" onchange="formSubmit()" class="form-select mg-top-bottom form-select-sm" name="day">
+            <option value="вся неделя">вся неделя</option>
+            <option value="понедельник">понедельник</option>
+            <option value="вторник">вторник</option>
+            <option value="среда">среда</option>
+            <option value="четверг">четверг</option>
+            <option value="пятница">пятница</option>
+            <option value="суббота" >суббота</option>
+            <option value="воскресенье">воскресенье</option>
+        </select>
+    </form>
+<table id='table2'>
+    <tr>
+        <td class="pd-left-right">День недели</td>
+        <td class="pd-left-right">Прием пищи</td>
+        <td>Название блюда</td>
+    </tr>
+    {% for name_day_of_the_week, day_of_the_week in menu.items %}
+        {% for name_meal, meal in day_of_the_week.items %}
+                {% if forloop.last %}
+                    <tr class="solid">
+                {% else %}
+                    <tr>
+                {% endif %}
+                        {% if forloop.first %}
+                            <td class="pd-left-right">{{ name_day_of_the_week }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                        {% if not forloop.last %}
+                            <td class="pd-left-right" class="solid-grey">{{ name_meal }}</td>
+                            <td class="solid-grey">
+                        {% else %}
+                            <td class="pd-left-right">{{ name_meal }}</td>
+                            <td>
+                        {% endif %}
+                                <ul class="pd-ul">
+                                {% for product in meal %}
+                                    <li>{{ product }}</li>
+                                {% endfor %}
+                                </ul>
+                            </td>
+                    </tr>
+            {% endfor %}
+    {% endfor %}
+</table>
+<script>
+function formSubmit() {
+    var form = document.getElementById('form');
+    form.submit();
+}
+
+var optionSelectDiet = document.getElementById("select-diet")
+for (var i = 0; i < optionSelectDiet.length; i++) {
+    if (optionSelectDiet[i].value == "{{ diet }}") {
+        optionSelectDiet[i].selected = true
+    }
+}
+
+var optionSelectDayOfTheWeek = document.getElementById("select-day")
+for (var i = 0; i < optionSelectDayOfTheWeek.length; i++) {
+    if (optionSelectDayOfTheWeek[i].value == "{{ day_of_the_week }}") {
+        optionSelectDayOfTheWeek[i].selected = true
+    }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+</body>
+</html>
