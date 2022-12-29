@@ -169,7 +169,7 @@ def create_report(meal):
     report_dict = {}
     for user in users:
         menu = MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
-        products = [menu[0].main, menu[0].garnish, menu[0].porridge, menu[0].soup, menu[0].dessert, menu[0].fruit, menu[0].drink, menu[0].salad]
+        products = [menu[0].main, menu[0].garnish, menu[0].porridge, menu[0].soup, menu[0].dessert, menu[0].fruit, menu[0].drink, menu[0].salad, menu[0].products]
         products = [product for product in products if product not in ['', None, 'None']]
         report_dict[user.id] = {'type_of_diet': user.type_of_diet,
                                   'meal': meal,

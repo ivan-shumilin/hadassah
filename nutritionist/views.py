@@ -1552,7 +1552,7 @@ def internal_report(request):
 
 
     temporary_report.sort(key=operator.itemgetter('category'))
-    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша']
+    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша', 'товар']
     intermediate_option = []
     report = []
     for cat in category:
