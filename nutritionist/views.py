@@ -1525,12 +1525,25 @@ def internal_report(request):
     for index, item in enumerate(filtered_report):
         if 'cafe' in item.product_id:
             product = Product.objects.get(id=item.product_id.split('-')[2])
+            report.setdefault(item.product_id, []).append(
+                {'category': product.category,
+                 'name': product.name,
+                 })
         else:
-            product = ProductLp.objects.get(id=item.product_id)
-        report.setdefault(item.product_id, []).append(
-            {'category': product.category,
-            'name': product.name,
-        })
+            if ',' in item.product_id:
+                for id in item.product_id.split(','):
+                    product = ProductLp.objects.get(id=id)
+                    report.setdefault(id, []).append(
+                        {'category': product.category,
+                         'name': product.name,
+                         })
+            else:
+                product = ProductLp.objects.get(id=item.product_id)
+                report.setdefault(item.product_id, []).append(
+                    {'category': product.category,
+                     'name': product.name,
+                     })
+
 
     temporary_report = []
     for item in report.values():
