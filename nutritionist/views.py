@@ -1512,7 +1512,7 @@ def report(request):
     return render(request, 'report.html', {})
 
 
-def reports(request):
+def internal_report(request):
     if request.method == 'GET' and request.GET != {}:
         date_start = parse(request.GET['start'])
         date_finish = parse(request.GET['finish'])
@@ -1556,7 +1556,7 @@ def reports(request):
     date = {'report': report,
             'date_start': date_start,
             'date_finish': date_finish}
-    return render(request, 'reports.html', context=date)
+    return render(request, 'internal_report.html', context=date)
 
 
 
