@@ -1127,3 +1127,5 @@ def get_occupied_rooms(user_script):
         return one_bed_free
     if user_script == 'easy_mode':
         return occupied_rooms
+
+    '3b-1', '3b-2', '3b-3', '3b-4', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'

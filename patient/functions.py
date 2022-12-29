@@ -9,6 +9,7 @@ from dateutil.parser import parse
 
 def formation_menu(products):
     breakfast = {}
+    breakfast['products_salad'] = list(products.filter(category='салат'))
     breakfast['products_garnish'] = list(products.filter(category='гарнир'))
     breakfast['products_main'] = list(products.filter(category='основной'))
     breakfast['products_porridge'] = list(products.filter(category='каша'))
