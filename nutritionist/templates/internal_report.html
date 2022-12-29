@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Печатная форма №1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
+
+</head>
+<body class='report'>
+    <div id="modal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{% url 'report' %}" method="get">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Отчет за период</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <label for="data-start" class="form-label">Дата начала отчетного периода</label>
+                                <input onclick="removeError('data-start', 'data-start-error')" id="data-start" type="date" class="form-control" name='start'>
+                                <div id="data-start-error" class="error-field"></div>
+                                <label for="date-finish" class="form-label">Дата конца отчетного периода</label>
+                                <input onclick="removeError('date-finish', 'data-finish-error')" id="date-finish" type="date" class="form-control" name='finish'>
+                                <div id="data-finish-error" class="error-field"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" onclick="checkForm()" class="btn-close btn btn-secondary">Сформировать</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <div>
+
+    <div id="modal-download" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="" method="get">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Отчет для Hadassah</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="data-start-download" class="form-label">Дата начала отчетного периода</label>
+                            <input onclick="removeError('data-start-download', 'data-start-error-download')" id="data-start-download" type="date" class="form-control" name='start'>
+                            <div id="data-start-error-download" class="error-field"></div>
+                            <label for="date-finish-download" class="form-label">Дата конца отчетного периода</label>
+                            <input onclick="removeError('date-finish-download', 'data-finish-error-download')" id="date-finish-download" type="date" class="form-control" name='finish'>
+                            <div id="data-finish-error-download" class="error-field"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="button" type="button" onclick="checkFormDownload()" class="btn btn-primary" type="button">
+                                <span id="span1" class="" role="status" aria-hidden="true"></span>
+                                <span id="span2" class="visually-hidden">Сформировать отчет</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <div>
+
+
+<div class="container-fluid">
+    <div class="row align-items-center justify-content-between">
+        <div class="col-sm-6">
+            <h1 class="">Отчет по списанию блюд с {{ date_start|date:"d F Y"|lower }} по {{ date_finish|date:"d F Y"|lower }}</h1>
+        </div>
+    </div>
+    <div class="row align-items-center justify-content-between">
+        <div class="col-sm-6">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <button class="btn btn-primary mr-md-2" data-bs-target="#modal" data-bs-toggle="modal">Внутренний отчет</button>
+                <button class="btn btn-primary" data-bs-target="#modal-download" data-bs-toggle="modal">Отчет для Hadassah</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<table id='table2' width="auto">
+    <tr>
+        <td>№</td>
+        <td>Категория</td>
+        <td>Название</td>
+        <td>Кол-во, шт.</td>
+    </tr>
+    {% for item in report %}
+        <tr>
+            <td>{{ item.number }}</td>
+            <td>{{ item.category|capfirst }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.count }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<a id="link-download" class="hidden" href="{% static 'report.xlsx' %}"> Download </a>
+<script>
+function checkForm() {
+    let form = document.querySelector('form')
+    let start = document.getElementById('data-start');
+    let finish = document.getElementById('date-finish');
+    let error = 0;
+
+    let input = document.querySelectorAll('.form-control')
+    var errors = document.querySelectorAll('.error-field');
+    for (var i = 0; i < errors.length; i++) {
+        errors[i].innerHTML = '';
+        input[i].classList.remove('error');
+    }
+
+    if (start.value == '') {
+        document.getElementById('data-start-error').innerHTML = 'Обязательное поле'
+        start.classList.add('error')
+        error = error + 1
+    }
+    if (finish.value == '') {
+        document.getElementById('data-finish-error').innerHTML = 'Обязательное поле'
+        finish.classList.add('error')
+        error = error + 1
+    }
+    if (error == 0) {
+        let dateStart = (start.value).split("-");
+        let dateFinish = (finish.value).split("-");
+        dateStart = new Date(dateStart[0], dateStart[1] - 1, dateStart[2]);
+        dateFinish = new Date(dateFinish[0], dateFinish[1] - 1, dateFinish[2]);
+
+        if (moment(dateFinish).isBefore(dateStart, 'day')) {
+            document.getElementById('data-start-error').innerHTML = 'Дата конца не может быть раньше даты начала';
+            start.classList.add('error')
+            error = error + 1;
+            }
+    }
+
+    if (error == 0) {
+        form.submit();
+    }
+}
+
+
+const downloadReport = async function(start, finish) {
+    let url = 'api/v1/get/downloadreport'
+    let body = {'start': start, 'finish': finish};
+
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;',
+        },
+        body: JSON.stringify(body)
+    });
+    let result = await response.json();
+    return result;
+}
+
+
+async function checkFormDownload() {
+    let start = document.getElementById('data-start-download');
+    let finish = document.getElementById('date-finish-download');
+    let error = 0;
+
+    let input = document.querySelectorAll('.form-control')
+    var errors = document.querySelectorAll('.error-field');
+    for (var i = 0; i < errors.length; i++) {
+        errors[i].innerHTML = '';
+        input[i].classList.remove('error');
+    }
+
+    if (start.value == '') {
+        document.getElementById('data-start-error-download').innerHTML = 'Обязательное поле'
+        start.classList.add('error')
+        error = error + 1
+    }
+    if (finish.value == '') {
+        document.getElementById('data-finish-error-download').innerHTML = 'Обязательное поле'
+        finish.classList.add('error')
+        error = error + 1
+    }
+    if (error == 0) {
+        let dateStart = (start.value).split("-");
+        let dateFinish = (finish.value).split("-");
+        dateStart = new Date(dateStart[0], dateStart[1] - 1, dateStart[2]);
+        dateFinish = new Date(dateFinish[0], dateFinish[1] - 1, dateFinish[2]);
+
+        if (moment(dateFinish).isBefore(dateStart, 'day')) {
+            document.getElementById('data-start-error-download').innerHTML = 'Дата конца не может быть раньше даты начала';
+            start.classList.add('error')
+            error = error + 1;
+            }
+    }
+
+    function testTimeout() {
+        span2.innerHTML = "Сформировать отчет"
+        button.removeAttribute("disabled");
+    }
+
+
+    if (error == 0) {
+        let button = document.getElementById('button')
+        let span2 = document.getElementById('span2')
+        let span1 = document.getElementById('span1')
+        span1.classList.add('spinner-border')
+        span1.classList.add('spinner-border-sm')
+        button.setAttribute('disabled', '')
+        span2.innerHTML = "Формируем отчет ..."
+        let res = await downloadReport(start.value, finish.value);
+        res = JSON.parse(res);
+        if (res.response == 'yes') {
+            console.log('yes')
+            document.getElementById('link-download').click()
+        }
+        button.setAttribute('disabled', 'false')
+        span2.innerHTML = "Сейчас начнется скачивание"
+        setTimeout(testTimeout, 3000);
+        span1.classList.remove('spinner-border')
+        span1.classList.remove('spinner-border-sm')
+
+    }
+}
+
+function removeError(idInput, idDivError) {
+    document.getElementById(idInput).classList.remove('error');
+    document.getElementById(idDivError).innerHTML = '';
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src="{% static 'doctor/js/moment.js' %}"></script>
+</body>
+</html>
