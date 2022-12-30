@@ -1544,7 +1544,7 @@ def internal_report(request):
                         {'category': product.category,
                          'name': product.name,
                          })
-                except DoesNotExist:
+                except:
                     pass
 
 
