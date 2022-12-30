@@ -1538,11 +1538,14 @@ def internal_report(request):
                          'name': product.name,
                          })
             else:
-                product = ProductLp.objects.get(id=item.product_id)
-                report.setdefault(item.product_id, []).append(
-                    {'category': product.category,
-                     'name': product.name,
-                     })
+                try:
+                    product = ProductLp.objects.get(id=item.product_id)
+                    report.setdefault(item.product_id, []).append(
+                        {'category': product.category,
+                         'name': product.name,
+                         })
+                except DoesNotExist:
+                    pass
 
 
     temporary_report = []
