@@ -18,7 +18,7 @@ from django.forms import CheckboxInput, Textarea
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
-    UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report
+    UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import ProductSerializer
 from rest_framework import generics
@@ -30,7 +30,7 @@ from datetime import datetime, date
 from django.core import management
 from django.core.management.commands import dumpdata
 from django.contrib.auth.models import Group
-from doctor.functions.functions import sorting_dishes, parsing, translate_diet, \
+from doctor.functions.functions import sorting_dishes, parsing, \
     creates_dict_with_menu_patients, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features
@@ -38,9 +38,12 @@ from doctor.functions.bot import check_change
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes
 from doctor.functions.bot import formatting_full_name
+from doctor.functions.translator import get_day_of_the_week, translate_diet
 import random, calendar, datetime, logging, json
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
+from nutritionist.functions.functions import create_products_list_category, complete_catalog, \
+    checking_is_ready_meal, create_category_dict, create_stickers_pdf
 
 
 def group_nutritionists_check(user):
@@ -896,6 +899,7 @@ def manager(request):
     return render(request, 'admin.html', context=data)
 
 def printed_form_one(request):
+    is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     floors = {
     'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13', '2а-14', '2а-15',
@@ -923,10 +927,10 @@ def printed_form_one(request):
                'count_4nd_floor': len([user for user in users if user.room_number in floors['fourtha']]),
                'count_not_floor': len([user for user in users if user.room_number in ['Не выбрано']]),
                'count_diet': counting_diets(users, floors),
-               'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order),
-               'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order),
-               'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order),
-               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order),
+               'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order, is_public),
+               'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order, is_public),
+               'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order, is_public),
+               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order, is_public),
                }
     number = 0
     count_users_with_cafe_prod = 0
@@ -965,6 +969,7 @@ def printed_form_one(request):
 
 
 def printed_form_two_lp(request):
+    is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
@@ -990,9 +995,9 @@ def printed_form_two_lp(request):
                 else:
                     menu_all = MenuByDayReadyOrder.objects.filter(user_id=user.id)
                 if category == 'products' or category ==  'drink':
-                    pr = check_value_two(menu_all, str((date_create)), meal, category)
+                    pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
                 else:
-                    pr = [check_value_two(menu_all, str((date_create)), meal, category)]
+                    pr = [check_value_two(menu_all, str((date_create)), meal, category, is_public)]
                 # if pr != None:
                 #     all_products.append(pr)
                 if pr[0] != None:
@@ -1084,73 +1089,21 @@ def printed_form_two_lp(request):
 
 
 def printed_form_two_cafe(request):
+    """ Заявка по блюдам линии раздачи. """
+    is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
-    time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
-    # какой прием пищи
-    meal, day = what_meal() # после return 'breakfast', 'tomorrow'
-    type_order = what_type_order()
-    # type_order = 'fix-order'
+    time_now = datetime.today().time().strftime("%H:%M")
+    meal, day = what_meal()  # после return 'breakfast', 'tomorrow'
     date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
-    # meal = 'lunch'
     catalog = {}
 
-    # users = CustomUser.objects.all()
-    # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
-    if type_order == 'flex-order':
-        users = UsersToday.objects.all()
-    else:
-        users = UsersReadyOrder.objects.all()
-    for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink']:
-        list_whith_unique_products = []
-        for diet in ['ОВД', 'ОВД без сахара', 'ОВД веган (пост) без глютена', 'Нулевая диета', 'ЩД', 'БД', 'БД день 1', 'БД день 2', 'ВБД', 'НБД', 'НКД', 'ВКД']:
-            users_with_diet = users.filter(type_of_diet=diet)
-            all_products = []
-            for user in users_with_diet:
-                if type_order == 'flex-order':
-                    menu_all = MenuByDay.objects.filter(user_id=user.user_id)
-                else:
-                    menu_all = MenuByDayReadyOrder.objects.filter(user_id=user.id)
-                all_products.append(check_value_two(menu_all, str(date.today()), meal, category))
-            # составляем список с уникальными продуктами
-            unique_products = []
-            for product in all_products:
-                flag = True
-                for un_product in unique_products:
-                    if product != None or un_product != None:
-                        if product['id'] == un_product['id']:
-                            flag = False
-                if flag == True:
-                    if product:
-                        if 'cafe' in product['id']:
-                            unique_products.append(product)
-            # добавляем элеметны списока с уникальными продуктами, кол-вом(сколько продуктов всего)
-            # типом диеты
-            for un_product in unique_products:
-                count = 0
-                for product in all_products:
-                    if product['id'] == un_product['id']:
-                        count += 1
-                un_product['count'] = str(count)
-                un_product['diet'] = diet
-            # list_whith_unique_products.append(unique_products)
-            [list_whith_unique_products.append(item) for item in unique_products]
-        catalog[category] = list_whith_unique_products
-
-    for cat in catalog.values():
-        for i, pr in enumerate(cat):
-            for ii in range(i + 1, len(cat)):
-                if pr != None and cat[ii] != None:
-                    if pr['id'] == cat[ii]['id']:
-                        pr['count'] = str(int(pr['count']) + int(cat[ii]['count']))
-                        pr['diet'] = pr['diet'] + ', ' + cat[ii]['diet']
-                        cat[ii] = None
-
-    number = 1
-    for item in catalog.values():
-        for product in item:
-            if product != None:
-                product['number'] = number
-                number += 1
+    for meal in ['lunch', 'dinner']:
+        # Проверяем сформирован ли прием пищи
+        is_ready_meal, patients = checking_is_ready_meal(meal)
+        category_dict = create_category_dict(meal, is_ready_meal, patients)
+        # Добавляем порядковые номера блюд и переводим тип диеты в формат для вывода в заявке
+        category_dict = complete_catalog(category_dict)
+        catalog[meal] = category_dict
 
     data = {
         'formatted_date': formatted_date_now,
@@ -1158,10 +1111,8 @@ def printed_form_two_cafe(request):
         'catalog': catalog,
         'day': day,
         'date_create': date_create,
-        'meal': translate_meal(meal)
     }
     return render(request, 'printed_form2_cafe.html', context=data)
-
 
 def create_external_report(filtered_report):
     report = {}
@@ -1186,10 +1137,7 @@ def create_external_report(filtered_report):
                 report[key1][key2][key3] = len(set([user.user_id for user in (report[key1][key2][key3])]))
                 count += report[key1][key2][key3]
         report[key1]['Всего'] = {'count': count}
-
-
     return report
-
 
 def get_report(report, report_detailing, date_start, date_finish):
     """ Создаёт excel фаил с отчетом по блюдам """
@@ -1547,7 +1495,6 @@ def internal_report(request):
                 except:
                     pass
 
-
     temporary_report = []
     for item in report.values():
         item[0]['count'] = len(item)
@@ -1590,7 +1537,7 @@ class DownloadReportAPIView(APIView):
         response = json.dumps(response)
         return Response(response)
 
-def create_сatalog():
+def create_сatalog(is_public):
     """ Создание словаря этикеток. """
 
     floors = {
@@ -1613,106 +1560,18 @@ def create_сatalog():
         users = UsersReadyOrder.objects.all()
 
     catalog = {'meal': translate_meal(meal),
-               'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order),
-               'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order),
-               'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order),
-               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order),
+               'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order, is_public),
+               'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order, is_public),
+               'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order, is_public),
+               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order, is_public),
                }
 
     return catalog
 
-
-def create_stickers_pdf(catalog):
-    from fpdf import FPDF
-
-
-    def create_res_list(product, max_count_in_line, type):
-        st_ch1 = '- ' if type == 'products' else '  '
-        st_ch2 = '-' if type == 'products' else ' '
-        product_list = product.split(' ')
-        res = ""
-        res_list = []
-        for item in product_list:
-            if len(res + item) < max_count_in_line:
-                res = res + ' ' + item if res != "" else st_ch1 + item
-            else:
-                res_list.append(res) if res[0] == st_ch2 else res_list.append('  ' + res)
-                res = item
-        res_list.append(res) if res[0] == st_ch2 else res_list.append('  ' + res)
-        return res_list
-
-    def create_res_list_comment(product, max_count_in_line, type):
-        st_ch1 = '- ' if type == 'products' else ''
-        st_ch2 = '-' if type == 'products' else ''
-        product_list = product.split(' ')
-        res = ""
-        res_list = []
-        for item in product_list:
-            if len(res + item) < max_count_in_line:
-                res = res + ' ' + item if res != "" else st_ch1 + item
-            else:
-                res_list.append(res) if res[0] == st_ch2 else res_list.append('' + res)
-                res = item
-        res_list.append(res) if res[0] == st_ch2 else res_list.append('' + res)
-        return res_list
-
-    pdf = FPDF()
-    for floor in ['users_2nd_floor', 'users_3nd_floor', 'users_4nd_floor', 'users_not_floor']:
-        for item in catalog[floor]:
-            pdf.set_left_margin(3)
-            pdf.set_right_margin(0)
-            pdf.add_page()
-            # pdf.add_font("Arial", "", "FontsFree-Net-arial-bold.ttf", uni=True)
-            pdf.add_font("Arial1", "", "FontsFree-Net-arial-bold.ttf", uni=True)
-            pdf.set_font("Arial1", style='', size=33)
-            ln = 1
-            pdf.cell(50, 14, txt=f'{formatting_full_name(item["name"])}{", " + item["room_number"] if item["room_number"] != "Не выбрано" else ""}{"" if item["bed"] == "Не выбрано" or item["room_number"] == "Не выбрано" else ", " + item["bed"]}', ln=ln, align="L")
-            ln += 1
-            if item["diet"] == "ОВД веган (пост) без глютена":
-                pdf.cell(50, 14, txt=f'  ОВД веган (пост) без глютена,', ln=ln, align="L")
-                ln += 1
-                pdf.cell(50, 14, txt=f'{catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=ln, align="L")
-                ln += 1
-            else:
-                pdf.cell(50, 14, txt=f'{item["diet"]}, {catalog["meal"].lower()}, {date.today().day}/{date.today().month}/{str(date.today().year)[2:]}', ln=3, align="L")
-                ln += 1
-            pdf.add_font("Arial2", "", "arial.ttf", uni=True)
-            pdf.set_font("Arial2", style='', size=30)
-
-            max_count_in_line = 38
-            if item["comment"]:
-                item["comment"] = item["comment"].capitalize()
-                pdf.set_left_margin(3)
-                pdf.underline = True
-                if len(item["comment"]) >= max_count_in_line:
-                    res_list = create_res_list_comment(item["comment"], max_count_in_line, 'comment')
-                    for product in res_list:
-                        pdf.cell(50, 10, txt=f'{product}', ln=ln, align="L")
-                        ln += 1
-                else:
-                    pdf.cell(50, 10, txt=f'{item["comment"]}', ln=ln, align="L")
-                pdf.underline = False
-
-            ln += 1
-            pdf.cell(50, 10, txt="", ln=5, align="L")
-            ln += 1
-
-            for index, product in enumerate(item['products_lp'] + item['products_cafe']):
-                if len(product) >= max_count_in_line:
-                    res_list = create_res_list(product, max_count_in_line, 'products')
-                    for product in res_list:
-                        pdf.cell(50, 10, txt=f'{product}', ln=index + ln, align="L")
-                        ln += 1
-                else:
-                    pdf.cell(50, 10, txt=f'- {product}', ln=index + ln, align="L")
-                pdf.cell(50, 3, txt=f'', ln=index + 1 + ln, align="L")
-    pdf.output("static/stickers.pdf")
-    return
-
-
 class CreateSitckers(APIView):
     def post(self, request):
-        catalog = create_сatalog()
+        is_public = True  # используем публичные названия для блюд
+        catalog = create_сatalog(is_public)
         create_stickers_pdf(catalog)
         response = {"response": "yes"}
         response = json.dumps(response)

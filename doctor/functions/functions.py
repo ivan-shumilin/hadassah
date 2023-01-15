@@ -161,31 +161,6 @@ def load_menu(menu):
     ))
     ProductLp.objects.bulk_create(to_create)
 
-def translate_diet(diet):
-    TYPE_DIET = {
-        'ovd': 'ОВД',
-        'ovd_sugarless': 'ОВД без сахара',
-        'shd': 'ЩД',
-        'bd': 'БД',
-        'vbd': 'ВБД',
-        'nbd': 'НБД',
-        'nkd': 'НКД',
-        'vkd': 'ВКД',
-        'ОВД': 'ovd',
-        'ОВД без сахара': 'ovd_sugarless',
-        'ЩД': 'shd',
-        'БД': 'bd',
-        'ВБД': 'vbd',
-        'НБД': 'nbd',
-        'НКД': 'nkd',
-        'ВКД': 'vkd',
-        'ОВД веган (пост) без глютена': 'ОВД веган (пост) без глютена',
-        'Нулевая диета': 'Нулевая диета',
-        'БД день 1': 'БД день 1',
-        'БД день 2': 'БД день 2',
-    }
-    return TYPE_DIET[diet]
-
 def translate_meal(meal):
     MEALS = {
         'breakfast': 'Завтрак',
@@ -238,10 +213,17 @@ def check_value_(menu_all, date_str, meal, category):
         value = None
     return value
 
-def create_value(product, id):
+def create_value(product, id, is_public):
+    if is_public:
+        try:
+            name = product.public_name
+        except:
+            name = product.name
+    else:
+        name = product.name
     value = {
         'id': id,
-        'name': product.name,
+        'name': name,
         'carbohydrate': round(float(0 if product.carbohydrate == None else product.carbohydrate), 1),
         'fat': round(float(0 if product.fat == None else product.fat), 1),
         'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
@@ -252,7 +234,7 @@ def create_value(product, id):
     }
     return value
 
-def check_value_two(menu_all, date_str, meal, category):
+def check_value_two(menu_all, date_str, meal, category, is_public):
     if category == 'salad':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).salad
@@ -262,7 +244,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product, id)
+            value = create_value(product, id, is_public)
         except Exception:
             value = None
         return value
@@ -275,7 +257,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product, id)
+            value = create_value(product, id, is_public)
         except Exception:
             value = None
         return value
@@ -288,7 +270,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product, id)
+            value = create_value(product, id, is_public)
         except Exception:
             value = None
         return value
@@ -301,7 +283,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product, id)
+            value = create_value(product, id, is_public)
         except Exception:
             value = None
         return value
@@ -314,7 +296,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product, id)
+            value = create_value(product, id, is_public)
         except Exception:
             value = None
         return value
@@ -327,7 +309,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product, id)
+            value = create_value(product, id, is_public)
         except Exception:
             value = None
         return value
@@ -340,7 +322,7 @@ def check_value_two(menu_all, date_str, meal, category):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product, id)
+            value = create_value(product, id, is_public)
         except Exception:
             value = None
         return value
@@ -357,7 +339,7 @@ def check_value_two(menu_all, date_str, meal, category):
                     product = ProductLp.objects.get(id=id)
                 value.append({
                     'id': id,
-                    'name': product.name,
+                    'name': product.public_name if is_public else product.name,
                     'carbohydrate': round(float(0 if product.carbohydrate == None else product.carbohydrate), 1),
                     'fat': round(float(0 if product.fat == None else product.fat), 1),
                     'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
@@ -382,7 +364,7 @@ def check_value_two(menu_all, date_str, meal, category):
                     product = ProductLp.objects.get(id=id)
                 value.append({
                     'id': id,
-                    'name': product.name,
+                    'name': product.public_name if is_public else product.name,
                     'carbohydrate': round(float(0 if product.carbohydrate == None else product.carbohydrate), 1),
                     'fat': round(float(0 if product.fat == None else product.fat), 1),
                     'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
@@ -396,7 +378,7 @@ def check_value_two(menu_all, date_str, meal, category):
         return value
 
 def creates_dict_with_menu_patients(id):
-    """ Создаем меню на 3 дня для вывода в ЛК врача"""
+    """ Создаем меню на 3 дня для вывода в ЛК врача """
     menu_all = MenuByDay.objects.filter(user_id=id)
     menu = {}
     day_date = {
@@ -408,14 +390,14 @@ def creates_dict_with_menu_patients(id):
         menu[day] = {}
         for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
             menu[day][meal] = {
-                'salad': check_value_two(menu_all, date_str, meal, "salad"),
-                'soup': check_value_two(menu_all, date_str, meal, "soup"),
-                'main': check_value_two(menu_all, date_str, meal, "main"),
-                'garnish': check_value_two(menu_all, date_str, meal, "garnish"),
-                'porridge': check_value_two(menu_all, date_str, meal, "porridge"),
-                'dessert': check_value_two(menu_all, date_str, meal, "dessert"),
-                'fruit': check_value_two(menu_all, date_str, meal, "fruit"),
-                'drink': check_value_two(menu_all, date_str, meal, "drink"),
+                'salad': check_value_two(menu_all, date_str, meal, "salad", is_public=True),
+                'soup': check_value_two(menu_all, date_str, meal, "soup", is_public=True),
+                'main': check_value_two(menu_all, date_str, meal, "main", is_public=True),
+                'garnish': check_value_two(menu_all, date_str, meal, "garnish", is_public=True),
+                'porridge': check_value_two(menu_all, date_str, meal, "porridge", is_public=True),
+                'dessert': check_value_two(menu_all, date_str, meal, "dessert", is_public=True),
+                'fruit': check_value_two(menu_all, date_str, meal, "fruit", is_public=True),
+                'drink': check_value_two(menu_all, date_str, meal, "drink", is_public=True),
             }
             flag_no_products = True
             for category in ['main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad']:
@@ -434,15 +416,19 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
     menu = {}
 
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+        drink = [product\
+                 for product in check_value_two(menu_all, date_show, meal, "drink", is_public=True)\
+                 if product != None]
+        drink = [product for product in drink if str(product.get('id')) != '458']
         menu[meal] = {
-            'main': check_value_two(menu_all, date_show, meal, "main"),
-            'garnish': check_value_two(menu_all, date_show, meal, "garnish"),
-            'porridge': check_value_two(menu_all, date_show, meal, "porridge"),
-            'soup': check_value_two(menu_all, date_show, meal, "soup"),
-            'dessert': check_value_two(menu_all, date_show, meal, "dessert"),
-            'fruit': check_value_two(menu_all, date_show, meal, "fruit"),
-            'drink': check_value_two(menu_all, date_show, meal, "drink"),
-            'salad': check_value_two(menu_all, date_show, meal, "salad"),
+            'main': check_value_two(menu_all, date_show, meal, "main", is_public=True),
+            'garnish': check_value_two(menu_all, date_show, meal, "garnish", is_public=True),
+            'porridge': check_value_two(menu_all, date_show, meal, "porridge", is_public=True),
+            'soup': check_value_two(menu_all, date_show, meal, "soup", is_public=True),
+            'dessert': check_value_two(menu_all, date_show, meal, "dessert", is_public=True),
+            'fruit': check_value_two(menu_all, date_show, meal, "fruit", is_public=True),
+            'drink': None if len(drink) == 0 else drink[0],
+            'salad': check_value_two(menu_all, date_show, meal, "salad", is_public=True),
         }
     return menu
 
@@ -462,6 +448,9 @@ def check_have_menu():
     return
 
 def creating_meal_menu_cafe(date_get, diet, meal):
+    exception = ['ОВД веган (пост) без глютена', 'БД день 2', 'БД день 1', 'Нулевая диета']
+    if diet in exception:
+        return [], [], [], []
     queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
         category='Вторые блюда').order_by(Lower('name')))
     queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
@@ -986,7 +975,7 @@ def counting_diets(users, floors):
 
     return diets_count
 
-def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order):
+def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, is_public):
     """ Создаем словарь с блюдами на конкретный прием пищи для пациента """
 
     if type_order == 'flex-order':
@@ -995,27 +984,34 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order):
         menu_all = MenuByDayReadyOrder.objects.filter(user_id=id_fix_user)
     menu_list = []
     menu = {
-        'salad': [check_value_two(menu_all, date_show, meal, "salad")],
-        'soup': [check_value_two(menu_all, date_show, meal, "soup")],
-        'main': [check_value_two(menu_all, date_show, meal, "main")],
-        'garnish': [check_value_two(menu_all, date_show, meal, "garnish")],
-        'porridge': [check_value_two(menu_all, date_show, meal, "porridge")],
-        'dessert': [check_value_two(menu_all, date_show, meal, "dessert")],
-        'fruit': [check_value_two(menu_all, date_show, meal, "fruit")],
-        'drink': check_value_two(menu_all, date_show, meal, "drink"),
-        'products': check_value_two(menu_all, date_show, meal, "products"),
+        'salad': [check_value_two(menu_all, date_show, meal, "salad", is_public)],
+        'soup': [check_value_two(menu_all, date_show, meal, "soup", is_public)],
+        'main': [check_value_two(menu_all, date_show, meal, "main", is_public)],
+        'garnish': [check_value_two(menu_all, date_show, meal, "garnish", is_public)],
+        'porridge': [check_value_two(menu_all, date_show, meal, "porridge", is_public)],
+        'dessert': [check_value_two(menu_all, date_show, meal, "dessert", is_public)],
+        'fruit': [check_value_two(menu_all, date_show, meal, "fruit", is_public)],
+        'drink': check_value_two(menu_all, date_show, meal, "drink", is_public),
+        'products': check_value_two(menu_all, date_show, meal, "products", is_public),
     }
+    if lp_or_cafe == 'cafe':
+        for item_category in menu.values():
+            if item_category:
+                for item in item_category:
+                    if item:
+                        if 'cafe' in item['id']:
+                            menu_list.append(item.get('name'))
+
     if lp_or_cafe == 'lp':
         for item_category in menu.values():
             if item_category:
                 for item in item_category:
                     if item:
-                        if (lp_or_cafe == 'lp' and 'cafe' not in item['id'])\
-                                or (lp_or_cafe == 'cafe' and 'cafe' in item['id']):
+                        if 'cafe' not in item['id']:
                             menu_list.append(item.get('name'))
     return menu_list
 
-def create_list_users_on_floor(users, floors, meal, date_create, type_order):
+def create_list_users_on_floor(users, floors, meal, date_create, type_order, is_public):
     users = [user for user in users if user.room_number in floors]
     users_on_floor = []
     for user in users:
@@ -1030,8 +1026,9 @@ def create_list_users_on_floor(users, floors, meal, date_create, type_order):
              'room_number': user.room_number,
              'bed': user.bed,
              'diet': user.type_of_diet,
-             'products_lp': creates_dict_test(user.user_id, user.id, str(date_create), 'lp', meal, type_order),
-             'products_cafe': creates_dict_test(user.user_id, user.id, str(date_create), 'cafe', meal, type_order),
+             'department': user.department,
+             'products_lp': creates_dict_test(user.user_id, user.id, str(date_create), 'lp', meal, type_order, is_public),
+             'products_cafe': creates_dict_test(user.user_id, user.id, str(date_create), 'cafe', meal, type_order, is_public),
              }
         )
     return users_on_floor
@@ -1082,7 +1079,7 @@ def is_active_user(user):
 
 def get_not_active_users_set():
     """ Проверяем является ли пациент активным
-    в 9:00 после завртака все пациетны которые успевают на обед(время регистрации раньше 14:00) становятся активными\
+    в 9:00 после завтрака все пациенты которые успевают на обед(время регистрации раньше 14:00) становятся активными\
     (нет возможности редактировать дату и время)
     В кейсе (1), когда у нас заранее известно время госпитализации.
     00:00 - 10:00 вкл. поступает – с завтрака
@@ -1127,5 +1124,3 @@ def get_occupied_rooms(user_script):
         return one_bed_free
     if user_script == 'easy_mode':
         return occupied_rooms
-
-    '3b-1', '3b-2', '3b-3', '3b-4', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'

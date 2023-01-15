@@ -22,3 +22,28 @@ def get_day_of_the_week(date_get):
         'Sunday': 'воскресенье',
     }
     return DAT_OF_THE_WEEK[parse(date_get).strftime('%A')]
+
+def translate_diet(diet):
+    TYPE_DIET = {
+        'ovd': 'ОВД',
+        'ovd_sugarless': 'ОВД без сахара',
+        'shd': 'ЩД',
+        'bd': 'БД',
+        'vbd': 'ВБД',
+        'nbd': 'НБД',
+        'nkd': 'НКД',
+        'vkd': 'ВКД',
+        'ОВД': 'ovd',
+        'ОВД без сахара': 'ovd_sugarless',
+        'ЩД': 'shd',
+        'БД': 'bd',
+        'ВБД': 'vbd',
+        'НБД': 'nbd',
+        'НКД': 'nkd',
+        'ВКД': 'vkd',
+        'ОВД веган (пост) без глютена': 'ОВД веган (пост) без глютена',
+        'Нулевая диета': 'Нулевая диета',
+        'БД день 1': 'bd',
+        'БД день 2': 'bd',
+    }
+    return TYPE_DIET[diet]

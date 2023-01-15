@@ -300,15 +300,15 @@ class MenuByDay(models.Model):
         blank=True,
         default='ОВД',
         help_text='Выбор диеты')
-    main = models.CharField(max_length=100, null=True)
-    garnish = models.CharField(max_length=100, null=True)
-    porridge = models.CharField(max_length=100, null=True)
-    soup = models.CharField(max_length=100, null=True)
-    dessert = models.CharField(max_length=100, null=True)
-    fruit = models.CharField(max_length=100, null=True)
-    drink = models.CharField(max_length=100, null=True)
-    salad = models.CharField(max_length=100, null=True)
-    products = models.CharField(max_length=100, null=True)
+    main = models.CharField(max_length=100, null=True, blank=True)
+    garnish = models.CharField(max_length=100, null=True, blank=True)
+    porridge = models.CharField(max_length=100, null=True, blank=True)
+    soup = models.CharField(max_length=100, null=True, blank=True)
+    dessert = models.CharField(max_length=100, null=True, blank=True)
+    fruit = models.CharField(max_length=100, null=True, blank=True)
+    drink = models.CharField(max_length=100, null=True, blank=True)
+    salad = models.CharField(max_length=100, null=True, blank=True)
+    products = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f'{self.user_id} {self.date}'
@@ -519,3 +519,27 @@ class Report(models.Model):
 
     def __str__(self):
         return f'{self.user_id} {self.date_create} {self.meal}'
+
+
+class ProductStorage(models.Model):
+    """
+    Таблица для вывода данных в "Заявку по блюдам линии раздачи"
+    Блюда, которые уже пошли в производство и не будут меняться.
+    """
+    date_create = models.DateField(default=date.today)
+    type_of_diet = models.CharField(
+        max_length=100,
+        choices=TYPE_DIET,
+        blank=True,
+        help_text='Тип диеты')
+    meal = models.CharField(
+            max_length=100,
+            choices=MEALS,
+            blank=True,
+            default='',
+        )
+    category = models.CharField(max_length=200, null=True, blank=True)
+    products_id =models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.date_create} {self.meal} {self.category} {self.products_id}'

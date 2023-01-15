@@ -9,15 +9,12 @@
                                 <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
                             </a>
                         </div>
-                        <a class="menu-link" data-sidebar-toggle>
-                            <div class="i i-menu"></div>
-                        </a>
                         <div class="petrushka">
                             <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
                         </div>
                     </div>
 
-                    <div class="header-block">
+                    <div class="header-block columns-2">
                         <div class="menu-link-and-name">
                             <a class="menu-link" data-sidebar-toggle>
                                 <div class="i i-menu"></div>
@@ -27,7 +24,7 @@
 
                         <a onclick="changeSymbol('id_full_name', 'id_birthdate')" class="button" data-modal-link="patient-add">
                             <span class="i i-plus"></span>
-                            Добавить
+                            <span>Добавить</span>
                         </a>
                     </div>
                 </div>
@@ -68,28 +65,28 @@
                     </div>
                 </div>
 
-                <div id="content" data-simplebar>
-                    <div class="table"
+                <div id="content" data-scrollbar>
+                    <div class="table patients-list"
                         data-columns="30% 20% 30% 1fr"
                         data-columns-mobile="30% 15% 30% 1fr">
                         <div class="tr thead">
-                            <div class="th">
+                            <div class="th th-name">
                                     <label id="full_name" onclick="check_function('input_full_name')" class="sort" for="input_full_name">
                                         <span style="cursor: pointer;">фио пациента</span></label>
                                     <input type="radio" class="btn-check" id="input_full_name" value="full_name" name="filter_by">
                             </div>
-                            <div class="th">
+                            <div class="th th-number">
                                     <label id="room_number" onclick="check_function('input_room_number')" class="sort" for="input_room_number">
                                         <span style="cursor: pointer;" class="only-desktop">палата</span>
                                         <span style="cursor: pointer;" class="only-mobile">№</span>
                                     <input type="radio" class="btn-check" id="input_room_number" value="room_number" name="filter_by">
                             </div>
-                            <div class="th">
+                            <div class="th th-department">
                                     <label id="department" onclick="check_function('input_department')" class="sort" for="input_department">
                                         <span style="cursor: pointer;">отделение</span></label>
                                     <input type="radio" class="btn-check" id="input_department" value="department" name="filter_by">
                             </div>
-                            <div class="th">
+                            <div class="th th-diet">
                                     <label id="type_of_diet" onclick="check_function('input_type_of_diet')" class="sort" for="input_type_of_diet">
                                         <span style="cursor: pointer;">диета</span></label>
                                     <input type="radio" class="btn-check" id="input_type_of_diet" value="type_of_diet" name="filter_by">
@@ -109,28 +106,29 @@
                             <input type="text" id="is_without_lactose_{{ form.id.value }}" value="{{ form.is_without_lactose.value }}">
                         </div>
                         <div id="{{ form.id.value }}"
-                            class="tr product" data-patient-card-show 
-                            onclick="displayInfoPatient('{{ form.full_name.value }}',
-                             '{{ form.birthdate.value|date:"d.m.Y" }}',
-                              '{{ form.receipt_date.value|date:"d.m.Y" }}',
-                               '{{ form.receipt_time.value|time:"H:i" }}',
-                                '{{ form.department.value }}',
-                                 '{{ form.type_of_diet.value }}',
-                                  '{{ form.room_number.value }}',
-                                   '{{ form.bed.value }}',
-                                    '{{ form.comment.value|cut:"None"  }}',
-                                     '{{ form.id.value }}', '{{ form.floor.value }}')">
-                            <div class="td">
+                        class="tr product" data-patient-card-show 
+                        onclick="displayInfoPatient('{{ form.full_name.value }}',
+                         '{{ form.birthdate.value|date:"d.m.Y" }}',
+                          '{{ form.receipt_date.value|date:"d.m.Y" }}',
+                           '{{ form.receipt_time.value|time:"H:i" }}',
+                            '{{ form.department.value }}',
+                             '{{ form.type_of_diet.value }}',
+                              '{{ form.room_number.value }}',
+                               '{{ form.bed.value }}',
+                                '{{ form.comment.value|cut:"None"  }}',
+                                 '{{ form.id.value }}', '{{ form.floor.value }}')">
+
+                            <div class="td td-name">
                                 <div class="name ellipsis">{{ forloop.counter }}. {{ form.full_name.value|formatting_full_name }}</div>
                             </div>
-                            <div class="td">
+                            <div class="td td-number">
                                 {% if form.room_number.value == 'Не выбрано' %}
                                     <span class="trait">——</span>
                                 {% else %}
                                     {{ form.room_number.value }}
                                 {% endif %}
                             </div>
-                            <div class="td">
+                            <div class="td td-department">
                                 <div class="ellipsis">
                                     {% if form.department.value == 'Не выбрано' %}
                                         <span class="trait">——</span>
@@ -139,7 +137,7 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="td">
+                            <div class="td td-diet">
                                 <span class="tag">{{ form.type_of_diet.value }}</span>
                             </div>
                         </div>
@@ -317,7 +315,7 @@
             </div>
 
 
-            <div id="right" data-simplebar>
+            <div id="right" data-scrollbar>
                 <div class="patient-card-block">
                     <div class="overlay" data-patient-card-toggle></div>
                     <div class="content">

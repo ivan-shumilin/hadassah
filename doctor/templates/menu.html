@@ -93,7 +93,12 @@
                                                         <img src="{% static 'doctor/css/img/main.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
-                                                <div class="name">{{ product.name }}</div>
+                                                {% if product.public_name %}
+                                                    <div class="name">{{ product.public_name }}</div>
+                                                {% else %}
+                                                    <div class="name">{{ product.name }}</div>
+                                                {% endif %}
+
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                             </div>
                                             <div class="text">
@@ -134,7 +139,11 @@
                                                         <img src="{% static 'doctor/css/img/porridge.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
-                                                <div class="name">{{ product.name }}</div>
+                                                {% if product.public_name %}
+                                                    <div class="name">{{ product.public_name }}</div>
+                                                {% else %}
+                                                    <div class="name">{{ product.name }}</div>
+                                                {% endif %}
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                             </div>
                                             <div class="text">
@@ -175,7 +184,11 @@
                                                         <img src="{% static 'doctor/css/img/dessert.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
-                                                <div class="name">{{ product.name }}</div>
+                                                {% if product.public_name %}
+                                                    <div class="name">{{ product.public_name }}</div>
+                                                {% else %}
+                                                    <div class="name">{{ product.name }}</div>
+                                                {% endif %}
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                             </div>
                                             <div class="text">
@@ -215,7 +228,11 @@
                                                         <img src="{% static 'doctor/css/img/fruit.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
-                                                <div class="name">{{ product.name }}</div>
+                                                {% if product.public_name %}
+                                                    <div class="name">{{ product.public_name }}</div>
+                                                {% else %}
+                                                    <div class="name">{{ product.name }}</div>
+                                                {% endif %}
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                             </div>
                                             <div class="text">
@@ -255,7 +272,11 @@
                                                         <img src="{% static 'doctor/css/img/garnish.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
-                                                <div class="name">{{ product.name }}</div>
+                                                {% if product.public_name %}
+                                                    <div class="name">{{ product.public_name }}</div>
+                                                {% else %}
+                                                    <div class="name">{{ product.name }}</div>
+                                                {% endif %}
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                             </div>
                                             <div class="text">
@@ -296,7 +317,11 @@
                                                         <img src="{% static 'doctor/css/img/salad.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
-                                                <div class="name">{{ product.name }}</div>
+                                                {% if product.public_name %}
+                                                    <div class="name">{{ product.public_name }}</div>
+                                                {% else %}
+                                                    <div class="name">{{ product.name }}</div>
+                                                {% endif %}
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                             </div>
                                             <div class="text">
@@ -337,7 +362,11 @@
                                                         <img src="{% static 'doctor/css/img/soup.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
-                                                <div class="name">{{ product.name }}</div>
+                                                {% if product.public_name %}
+                                                    <div class="name">{{ product.public_name }}</div>
+                                                {% else %}
+                                                    <div class="name">{{ product.name }}</div>
+                                                {% endif %}
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                             </div>
                                             <div class="text">
@@ -378,7 +407,11 @@
                                                         <img src="{% static 'doctor/css/img/drink.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
-                                                <div class="name">{{ product.name }}</div>
+                                                {% if product.public_name %}
+                                                    <div class="name">{{ product.public_name }}</div>
+                                                {% else %}
+                                                    <div class="name">{{ product.name }}</div>
+                                                {% endif %}
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                             </div>
                                             <div class="text">

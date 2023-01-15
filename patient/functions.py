@@ -3,8 +3,9 @@ from typing import List
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from django.db.models.functions import Lower
-from doctor.functions.functions import creating_meal_menu_lp, creating_meal_menu_cafe
+from doctor.functions.functions import creating_meal_menu_cafe
 from dateutil.parser import parse
+from django.db.models import Q
 
 
 def formation_menu(products):
@@ -67,44 +68,50 @@ def creates_dict_with_menu_patients_for_patient(user):
 
 def create_dict_products_lp(products_lp_category):
     list_with_products = []
-    dict_with_product = {}
+    excluded_product = ['458']  # Вода "Jеvea" 0,51л.
     for item in products_lp_category:
-        dict_with_product['id'] = item.id
-        dict_with_product['name'] = item.name
-        dict_with_product['carbohydrate'] = item.carbohydrate
-        dict_with_product['fat'] = item.fat
-        dict_with_product['fiber'] = item.fiber
-        dict_with_product['energy'] = item.energy
-        dict_with_product['image'] = item.image
-        dict_with_product['description'] = item.description
-        dict_with_product['category'] = item.category
-        list_with_products.append(dict_with_product)
+        if not str(item.id) in excluded_product:
+            list_with_products.append({
+                'id': item.id,
+                'name': item.public_name,
+                'carbohydrate': item.carbohydrate,
+                'fat': item.fat,
+                'fiber': item.fiber,
+                'energy': item.energy,
+                'image': item.image,
+                'description': item.description,
+                'category': item.category
+            })
     return None if list_with_products == [] else list_with_products
 
 
-def creating_menu_for_lk_patient(date_get, diet, meal_, day_of_the_week, translated_diet):
+def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet):
     """ Создаем словарь со всеми вариантами блюд для пациента, и с отмеченными блюдами
         которые выбрал пациент. """
     menu = {}
+
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
-        products_lp: tuple = creating_meal_menu_lp(day_of_the_week, translated_diet, meal)
-        # menu[meal] = {}
+        products_lp = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
+                                            Q(timetablelp__type_of_diet=translated_diet) &
+                                            Q(timetablelp__meals=meal))
+
         menu[meal] = {'cafe': {
                     'main': products_cafe[0],
                     'garnish': products_cafe[1],
                     'salad': products_cafe[2],
                     'soup': products_cafe[3]
                 }}
+
         menu[meal].update({'lp': {
-            'main': create_dict_products_lp(products_lp[0]),
-            'garnish': create_dict_products_lp(products_lp[1]),
-            'salad': create_dict_products_lp(products_lp[2]),
-            'soup': create_dict_products_lp(products_lp[3]),
-            'porridge': create_dict_products_lp(products_lp[4]),
-            'dessert': create_dict_products_lp(products_lp[5]),
-            'fruit': create_dict_products_lp(products_lp[6]),
-            'drink': create_dict_products_lp(products_lp[7])
+            'porridge': create_dict_products_lp(list(products_lp.filter(category='каша'))),
+            'salad': create_dict_products_lp(list(products_lp.filter(category='салат'))),
+            'soup': create_dict_products_lp(list(products_lp.filter(category='суп'))),
+            'main': create_dict_products_lp(list(products_lp.filter(category='основной'))),
+            'garnish': create_dict_products_lp(list(products_lp.filter(category='гарнир'))),
+            'dessert': create_dict_products_lp(list(products_lp.filter(category='десерт'))),
+            'fruit': create_dict_products_lp(list(products_lp.filter(category='фрукты'))),
+            'drink': create_dict_products_lp(list(products_lp.filter(category='напиток')))
         }})
     return menu
 

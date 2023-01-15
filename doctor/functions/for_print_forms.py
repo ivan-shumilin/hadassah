@@ -1,5 +1,6 @@
 from nutritionist.models import CustomUser, UsersToday, СhangesUsersToday, UsersReadyOrder,\
-    MenuByDayReadyOrder, MenuByDay, Report, ProductLp, TimetableLp
+    MenuByDayReadyOrder, MenuByDay, Report, ProductLp, TimetableLp, ProductStorage
+from doctor.functions.diet_formation import get_users_on_the_meal
 import datetime, json
 from datetime import datetime, date, timedelta
 from django.db import transaction
@@ -30,26 +31,27 @@ def create_user_today(meal):
        17 - 00 поступает с ужина """
     to_create = []
     # В зависимости от приема пищи добавляем разных пациентов в UsersToday
-    if meal == 'breakfast':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='10:00'))
-
-    if meal == 'lunch':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='14:00'))
-
-    if meal == 'afternoon':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='17:00'))
-
-    if meal == 'dinner':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='21:00'))
-
-    if meal == 'tomorrow':
-        tomorrow = date.today() + timedelta(days=1)
-        users = CustomUser.objects.filter(status='patient').\
-            filter(Q(receipt_date__lte=date.today()) | Q(receipt_date__lte=tomorrow) & Q(receipt_time__lte='10:00'))
+    users = get_users_on_the_meal(meal)
+    # if meal == 'breakfast':
+    #     users = CustomUser.objects.filter(status='patient') \
+    #         .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='10:00'))
+    # 
+    # if meal == 'lunch':
+    #     users = CustomUser.objects.filter(status='patient') \
+    #         .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='14:00'))
+    # 
+    # if meal == 'afternoon':
+    #     users = CustomUser.objects.filter(status='patient') \
+    #         .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='17:00'))
+    # 
+    # if meal == 'dinner':
+    #     users = CustomUser.objects.filter(status='patient') \
+    #         .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='21:00'))
+    # 
+    # if meal == 'tomorrow':
+    #     tomorrow = date.today() + timedelta(days=1)
+    #     users = CustomUser.objects.filter(status='patient').\
+    #         filter(Q(receipt_date__lte=date.today()) | Q(receipt_date__lte=tomorrow) & Q(receipt_time__lte='10:00'))
 
 
     UsersToday.objects.all().delete()
@@ -79,26 +81,27 @@ def create_user_today(meal):
 def create_ready_order(meal):
     to_create = []
     # В зависимости от приема пищи добавляем разных пациентов в UsersToday
-    if meal == 'breakfast':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='10:00'))
-
-    if meal == 'lunch':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='14:00'))
-
-    if meal == 'afternoon':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='17:00'))
-
-    if meal == 'dinner':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='21:00'))
-
-    if meal == 'tomorrow':
-        tomorrow = date.today() + timedelta(days=1)
-        users = CustomUser.objects.filter(status='patient').\
-            filter(Q(receipt_date__lte=date.today()) | Q(receipt_date__lte=tomorrow) & Q(receipt_time__lte='10:00'))
+    users = get_users_on_the_meal(meal)
+    # if meal == 'breakfast':
+    #     users = CustomUser.objects.filter(status='patient') \
+    #         .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='10:00'))
+    # 
+    # if meal == 'lunch':
+    #     users = CustomUser.objects.filter(status='patient') \
+    #         .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='14:00'))
+    # 
+    # if meal == 'afternoon':
+    #     users = CustomUser.objects.filter(status='patient') \
+    #         .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='17:00'))
+    # 
+    # if meal == 'dinner':
+    #     users = CustomUser.objects.filter(status='patient') \
+    #         .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='21:00'))
+    # 
+    # if meal == 'tomorrow':
+    #     tomorrow = date.today() + timedelta(days=1)
+    #     users = CustomUser.objects.filter(status='patient').\
+    #         filter(Q(receipt_date__lte=date.today()) | Q(receipt_date__lte=tomorrow) & Q(receipt_time__lte='10:00'))
 
 
     UsersReadyOrder.objects.all().delete()
@@ -439,3 +442,28 @@ def add_products_lp():
                         meals=meal,
                         ))
     TimetableLp.objects.bulk_create(to_create)
+
+@transaction.atomic
+def create_product_storage(meal):
+    """
+        Функция для вывода данных в "Заявку по блюдам раздачи"
+        В 11 записывает блюда раздачи на обед в ProductStorage для корректного отображения
+        блюд раздачи в течение всего дня.
+        В 17 блюда на ужин.
+    """
+    users = get_users_on_the_meal(meal)
+    ProductStorage.objects.filter(date_create=(date.today() - timedelta(days=1))).delete()
+    to_create = []
+    for user in users:
+        menu = MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
+        for item in menu.values():
+            for category in ['main', 'garnish', 'soup', 'salad']:
+                if item[category] is not None:
+                    if 'cafe' in item[category]:
+                        to_create.append(ProductStorage(date_create=date.today(),
+                                                meal=meal,
+                                                type_of_diet=user.type_of_diet,
+                                                category=category,
+                                                products_id=item[category]))
+    ProductStorage.objects.bulk_create(to_create)
+

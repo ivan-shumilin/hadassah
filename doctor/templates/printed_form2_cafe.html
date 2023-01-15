@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Печатная форма №2</title>
+    <title>Заявка по блюдам раздачи</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,150 +17,183 @@
 <p class="bold">{{ formatted_date }}, {{ time_now }}</p>
 <p class="bold underline">{{ catalog.meal }} {% if day %}<span>(Заказ на завтра, {{ date_create }})</span> {% endif %}</p>
 
+<!-- {% for catalog_in_mael in catalog.values %}
+    <p class="bold underline">{{ catalog_in_mael.meal }}</p>
+    <table id='table2' width="100%">
+        <tr>
+            <td>№</td>
+            <td>Диета</td>
+            <td>Название блюда</td>
+            <td>Кол-во порций, шт.</td>
 
-<table id='table2' width="100%">
-    <tr>
-        <td>№</td>
-        <td>Диета</td>
-        <td>Название блюда</td>
-        <td>Кол-во порций, шт.</td>
-
-    </tr>
-    {% if catalog.porridge %}
-        <tr class='light-blue'>
-            <td colspan="4">Кашы</td> 
         </tr>
-    
-        {% for product in catalog.porridge %}
-            {% if product %}
-                <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-    
-    {% if catalog.salad %}
-        <tr class='light-blue'>
-            <td colspan="4">Салаты</td>
-        </tr>
+        {% if catalog_in_mael.porridge %}
+            <tr class='light-blue'>
+                <td colspan="4">Кашы</td> 
+            </tr>
         
-        {% for product in catalog.salad %}
-            {% if product %}
-                <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-
-    {% if catalog.soup %}
-        <tr class='light-blue'>
-            <td colspan="4">Первые блюда</td>
-        </tr>
+            {% for product in catalog_in_mael.porridge %}
+                {% if product %}
+                    <tr class='lp-table'>
+                        <td>{{ product.number }}</td>
+                        <td>{{ product.diet }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.count }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
         
-        {% for product in catalog.soup %}
-            {% if product %}
-                <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+        {% if catalog_in_mael.salad %}
+            <tr class='light-blue'>
+                <td colspan="4">Салаты</td>
+            </tr>
+            
+            {% for product in catalog_in_mael.salad %}
+                {% if product %}
+                    <tr class='lp-table'>
+                        <td>{{ product.number }}</td>
+                        <td>{{ product.diet }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.count }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
 
-    {% if catalog.main %}
-        <tr class='light-blue'>
-            <td colspan="4">Вторые блюда</td>
-        </tr>
-        
-        {% for product in catalog.main %}
-            {% if product %}
-                <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+        {% if catalog_in_mael.soup %}
+            <tr class='light-blue'>
+                <td colspan="4">Первые блюда</td>
+            </tr>
+            
+            {% for product in catalog_in_mael.soup %}
+                {% if product %}
+                    <tr class='lp-table'>
+                        <td>{{ product.number }}</td>
+                        <td>{{ product.diet }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.count }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
 
-    {% if catalog.garnish %}
-        <tr class='light-blue'>
-            <td colspan="4">Гарниры</td>
-        </tr>
-        
-        {% for product in catalog.garnish %}
-            {% if product %}
-                <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+        {% if catalog_in_mael.main %}
+            <tr class='light-blue'>
+                <td colspan="4">Вторые блюда</td>
+            </tr>
+            
+            {% for product in catalog_in_mael.main %}
+                {% if product %}
+                    <tr class='lp-table'>
+                        <td>{{ product.number }}</td>
+                        <td>{{ product.diet }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.count }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
 
-    {% if catalog.dessert %}
-        <tr class='light-blue'>
-            <td colspan="4">Десерты</td>
-        </tr>
-        
-        {% for product in catalog.dessert %}
-            {% if product %}
-                <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+        {% if catalog_in_mael.garnish %}
+            <tr class='light-blue'>
+                <td colspan="4">Гарниры</td>
+            </tr>
+            
+            {% for product in catalog_in_mael.garnish %}
+                {% if product %}
+                    <tr class='lp-table'>
+                        <td>{{ product.number }}</td>
+                        <td>{{ product.diet }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.count }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
 
-    {% if catalog.fruit %}
-        <tr class='light-blue'>
-            <td colspan="4">Фрукты</td>
-        </tr>
-        
-        {% for product in catalog.fruit %}
-            {% if product %}
-                <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+        {% if catalog_in_mael.dessert %}
+            <tr class='light-blue'>
+                <td colspan="4">Десерты</td>
+            </tr>
+            
+            {% for product in catalog_in_mael.dessert %}
+                {% if product %}
+                    <tr class='lp-table'>
+                        <td>{{ product.number }}</td>
+                        <td>{{ product.diet }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.count }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
 
-    {% if catalog.drink %}
-        <tr class='light-blue'>
-            <td colspan="4">Напитки</td>
+        {% if catalog_in_mael.fruit %}
+            <tr class='light-blue'>
+                <td colspan="4">Фрукты</td>
+            </tr>
+            
+            {% for product in catalog_in_mael.fruit %}
+                {% if product %}
+                    <tr class='lp-table'>
+                        <td>{{ product.number }}</td>
+                        <td>{{ product.diet }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.count }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if catalog_in_mael.drink %}
+            <tr class='light-blue'>
+                <td colspan="4">Напитки</td>
+            </tr>
+            
+            {% for product in catalog_in_mael.drink %}
+                {% if product %}
+                    <tr class='lp-table'>
+                        <td>{{ product.number }}</td>
+                        <td>{{ product.diet }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.count }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </table>
+{% endfor %} -->
+{% for name_meal, mael in catalog.items %}
+    {% load translate %}
+    <p class="bold underline">{{ name_meal|translate|capfirst }}</p>
+    <table id='table2' width="100%">
+        <tr>
+            <td>№</td>
+            <td>Диета</td>
+            <td>Название блюда</td>
+            <td>Кол-во порций, шт.</td>
+
         </tr>
-        
-        {% for product in catalog.drink %}
-            {% if product %}
-                <tr class='lp-table'>
-                    <td>{{ product.number }}</td>
-                    <td>{{ product.diet }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.count }}</td>
+        {% for name_category, catalog_in_mael in mael.items %}
+            {% if catalog_in_mael %}
+                <tr class='light-blue'>
+                    <td colspan="4">{{ name_category|translate|capfirst }}</td> 
                 </tr>
+            
+                {% for product in catalog_in_mael %}
+                    {% if product %}
+                        <tr class='lp-table'>
+                            <td>{{ product.number }}</td>
+                            <td>{{ product.type_of_diet }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.count }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
         {% endfor %}
-    {% endif %}
-</table>
+    </table>
+{% endfor %}
 </body>
 </html>

@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Add additional CSS in static file -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
     <style>
@@ -88,11 +87,11 @@
                                 {% else %}
                                     <li>
                                 {% endif %}
-                                        <a href="{% url 'patient:patient_history' id=user.id %}">
+                                        <!-- <a href="{% url 'patient:patient_history' id=user.id %}">
                                             <span class="i i-box icon-default"></span>
                                             <span class="i i-box-colored icon-colored"></span>
                                             <span>Архив</span>
-                                        </a>
+                                        </a> -->
                                     </li>
                             </ul>
                         </div>
@@ -109,6 +108,8 @@
         {% block content %}
 
         {% endblock %}
+
+
         <div  data-modal="order-confirmed" data-modal-width="400">
             <div class="message-block">
                 <div class="icon">
@@ -127,11 +128,36 @@
             </div>
         </div>
 
+        <div id="patientWarningModal" data-modal="patient-warning" data-modal-width="400">
+            <div class="title align-center">
+                <p class="font-weight-normal">В вашей карточке указан комментарий к диете, что может требовать индивидуального питания.</p>
+                <p>Блюда и их составы могут отличаться от стандартных, указанных в приложении.</p>
+            </div>
+            <div class="confirm-block">
+                <div class="buttons">
+                    <a  class="button" data-modal-close>OK</a>
+                </div>
+            </div>
+        </div>
+
 
     {% load static %}
         </div>  <!-- div wrapper -->
 
 <script src="{% static 'doctor/js/all.js' %}"></script>
+<script>
+function funonload1() {
+    if ('{{ is_have }}' == 'comment') {
+        document.getElementById('patientWarning').click();
+        var parent = document.getElementById('patientWarningModal');
+        var child = parent.querySelector('.mfp-close');
+        child.classList.add('mfp-hide');
+        console.log(child); 
+    }
+
+}
+window.onload = funonload1;
+</script>
 
 </body>
 </html>

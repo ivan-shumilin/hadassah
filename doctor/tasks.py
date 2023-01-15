@@ -4,7 +4,7 @@ from nutritionist.models import BotChatId, CustomUser, MenuByDay, UsersReadyOrde
 
 from doctor.functions.diet_formation import add_default_menu, add_menu_three_days_ahead
 from doctor.functions.for_print_forms import create_user_today, applies_changes, create_user_tomorrow,\
-    create_ready_order, create_report
+    create_ready_order, create_report, create_product_storage
 from doctor.functions.bot import check_change, formatting_full_name
 
 
@@ -124,3 +124,11 @@ def my_job_create_user_tomorrow():
 @shared_task()
 def my_job_send_messang_changes(messang):
     return f'попытка - {send_messang_changes(messang)}'
+
+@shared_task()
+def my_job_create_product_storage_lunch():
+    create_product_storage('lunch')
+
+@shared_task()
+def my_job_create_product_storage_dinner():
+    create_product_storage('dinner')

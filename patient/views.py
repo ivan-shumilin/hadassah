@@ -12,11 +12,11 @@ from django.conf import settings
 from django.utils import dateformat
 from dateutil.parser import parse
 from django.db.models.functions import Lower
-from doctor.functions.functions import sorting_dishes, parsing, translate_diet, creating_meal_menu_cafe,\
+from doctor.functions.functions import sorting_dishes, parsing, creating_meal_menu_cafe,\
     creating_meal_menu_lp, creates_dict_with_menu_patients_on_day
-from patient.functions import formation_menu, creating_menu_for_lk_patient, create_category, create_patient_select,\
+from patient.functions import formation_menu, creating_menu_for_patient, create_category, create_patient_select,\
     date_menu_history
-from doctor.functions.translator import get_day_of_the_week
+from doctor.functions.translator import get_day_of_the_week, translate_diet
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -35,42 +35,43 @@ def group_patient_check(user):
 # @login_required
 # @user_passes_test(group_patient_check, login_url='login')
 def patient(request, id):
-    # import datetime
-    # page = 'menu-menu'
-    # is_have = 'ok'
-    # date_menu = {
-    #     'today': str(date.today()),
-    #     'tomorrow': str(date.today() + datetime.timedelta(days=1)),
-    #     'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
-    # }
-    #
-    #
-    # user = CustomUser.objects.get(id=id)
-    # diet = translate_diet(user.type_of_diet)
-    # translated_diet = user.type_of_diet
-    # meal = 'lunch'
-    # if request.GET == {} or request.method == 'POST':
-    #     date_get = str(date.today())
-    #
-    # else:
-    #     date_get = request.GET['date']
-    #
-    # # если дата показа меньше даты госпитализации is_have = False
-    # if len(user.comment) >= 2:
-    #     is_have = 'comment'
-    # if parse(date_get).date() < user.receipt_date:
-    #     is_have = 'date'  # выводим сообщение об ошибке
-    #
-    # day_of_the_week = get_day_of_the_week(date_get)
-    #
-    # menu_for_lk_patient = creating_menu_for_lk_patient(date_get, diet, meal, day_of_the_week, translated_diet)
-    #
-    #
-    # products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
-    #                                     Q(timetablelp__type_of_diet=translated_diet) &
-    #                                     Q(timetablelp__meals=meal))
-    #
-    #
+    is_public = True  # используем публичные названия блюд
+    is_have = 'ok'
+
+    date_menu = {
+        'today': str(date.today()),
+        'tomorrow': str(date.today() + timedelta(days=1)),
+        'day_after_tomorrow': str(date.today() + timedelta(days=2)),
+    }
+
+    user = CustomUser.objects.get(id=id)
+    diet = translate_diet(user.type_of_diet)
+    translated_diet = user.type_of_diet
+    meal = 'lunch'
+    if request.GET == {} or request.method == 'POST':
+        date_get = str(date.today())
+    else:
+        date_get = request.GET['date']
+
+    # если дата показа меньше даты госпитализации is_have = False
+    if len(user.comment) >= 2:
+        is_have = 'comment'
+    if parse(date_get).date() < user.receipt_date:
+        is_have = 'date'  # выводим сообщение об ошибке
+
+    if user.type_of_diet in ['БД день 1', 'БД день 2', 'Нулевая диета']:
+        is_have = 'BD'  # выводим сообщение об ошибке
+        return render(request, 'patient.html', context={'is_have': is_have})
+
+    day_of_the_week = get_day_of_the_week(date_get)
+
+    menu_for_lk_patient = creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet)
+
+    products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
+                                        Q(timetablelp__type_of_diet=translated_diet) &
+                                        Q(timetablelp__meals=meal))
+
+
     # queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
     #     category='Вторые блюда').order_by(Lower('name')))
     # queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
@@ -82,36 +83,32 @@ def patient(request, id):
     #
     # queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup = \
     #     sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup)
-    #
-    # breakfast, afternoon, lunch, dinner = formation_menu(products)
-    #
-    # patient_select = create_patient_select(id, date_get)
-    # # patient_select = 'cafe-salad-1162,cafe-soup-1161,cafe-main-1094'
-    #
-    #
-    #
-    #
-    # formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
-    # date_timer = parse(date_get)
-    # today = (date_get == str(date.today()))
-    # data = {'is_have': is_have,
-    #         'user': user,
-    #         'breakfast': breakfast,
-    #         'afternoon': afternoon,
-    #         'lunch': lunch,
-    #         'dinner': dinner,
-    #         'date_menu': date_menu,
-    #         'page': page,
-    #         'date_get': date_get,
-    #         'date': date_timer,
-    #         'formatted_date': formatted_date,
-    #         'products': menu_for_lk_patient,
-    #         'patient_select': patient_select,
-    #         'today': today
-    #         }
-    is_have = 'comment'
-    data = {'is_have': is_have}
-    return render(request, 'patient_.html', context=data)
+
+    breakfast, afternoon, lunch, dinner = formation_menu(products)
+
+    patient_select = create_patient_select(id, date_get)
+    # patient_select = 'cafe-salad-1019'
+
+    formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
+    date_timer = parse(date_get)
+    today = (date_get == str(date.today()))
+    data = {'is_have': is_have,
+            'user': user,
+            'breakfast': breakfast,
+            'afternoon': afternoon,
+            'lunch': lunch,
+            'dinner': dinner,
+            'date_menu': date_menu,
+            'date_get': date_get,
+            'date': date_timer,
+            'formatted_date': formatted_date,
+            'menu': menu_for_lk_patient,
+            'patient_select': patient_select,
+            'today': today,
+            }
+    # is_have = 'comment'
+    # data = {'is_have': is_have}
+    return render(request, 'patient.html', context=data)
 
 
 def patient_history(request, id):
@@ -121,7 +118,7 @@ def patient_history(request, id):
         comment = CommentProduct()
         comment.user_id = user
         comment.product_id = request.POST['product_id']
-        comment.comment = request.POST['text']
+        comment.comment = request.POST['text'] if request.POST['text'] != '' else request.POST['text-mobile']
         comment.rating = request.POST['rating']
         comment.save()
 
@@ -129,7 +126,7 @@ def patient_history(request, id):
         messang += f'Отзыв на заказ от {request.POST["date"]}\n'
         messang += f'{formatting_full_name(user.full_name)}\n'
         messang += f'{request.POST["product_name"]}\n'
-        messang += f'{request.POST["rating"]}/5\n'
+        messang += f'Оценка {request.POST["rating"]} из 5\n'
         messang += f'{request.POST["text"]}\n'
 
         my_job_send_messang_changes.delay(messang)

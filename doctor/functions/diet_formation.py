@@ -155,3 +155,30 @@ def delete_menu_for_future(user, days, next_meals):
             set_menu_del = MenuByDay.objects.filter(user_id=user.id).filter(date=str(change_day)).filter(meal=meal)
             for menu_del in set_menu_del:
                 menu_del.delete()
+
+
+def get_users_on_the_meal(meal):
+    """ Возвращает queryset c пациентами, которые попадают в заявку на приготовление блюд
+        на конкретный прием пищи. """
+    if meal == 'breakfast':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='10:00'))
+
+    if meal == 'lunch':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='14:00'))
+
+    if meal == 'afternoon':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='17:00'))
+
+    if meal == 'dinner':
+        users = CustomUser.objects.filter(status='patient') \
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='21:00'))
+
+    if meal == 'tomorrow':
+        tomorrow = date.today() + timedelta(days=1)
+        users = CustomUser.objects.filter(status='patient').\
+            filter(Q(receipt_date__lte=date.today()) | Q(receipt_date__lte=tomorrow) & Q(receipt_time__lte='10:00'))
+
+    return users

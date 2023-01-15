@@ -30,7 +30,7 @@ def formatting_full_name(full_name):
             continue
         else:
             res += value[0:1].capitalize() + '.'
-    return res
+    return res.strip()
 
 def do_messang_send(name):
     if datetime.today().time().hour < 7 or datetime.today().time().hour >= 17:
