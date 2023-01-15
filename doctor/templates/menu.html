@@ -73,9 +73,9 @@
                     </div>
                 </div>
                 
-                <div id="content" data-simplebar>
+                <div id="content" data-scrollbar>
                     <div class="eat-grid-block">
-                        {% if products_main %}                        
+                        {% if products_main %}
                             <div class="category">Основное блюдо</div>
                             <div class="eat-grid">
                                 {% for product in products_main %}
@@ -87,10 +87,9 @@
                                                         <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
                                                     </div>
                                                 {% else %}
-                                                    <div class="img mobile">
+                                                    <div class="img">
                                                         {% load static %}                                    
-                                                        <svg  viewBox="20 -55 180 220" xmlns="http://www.w3.org/2000/svg" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                        <img src="{% static 'doctor/css/img/main.png' %}" alt="">
+                                                        <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
                                                 {% if product.public_name %}
@@ -112,8 +111,7 @@
                                         {% else %}
                                             <div class="img">
                                                 {% load static %}
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                <img src="{% static 'doctor/css/img/main.png' %}" alt="">
+                                                <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
                                             </div>
                                         {% endif %}
                                     </div>
@@ -134,9 +132,8 @@
                                                     </div>
                                                 {% else %}
                                                     <div class="img mobile">
-                                                        {% load static %}                                    
-                                                        <svg  viewBox="20 -55 180 220" xmlns="http://www.w3.org/2000/svg" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                        <img src="{% static 'doctor/css/img/porridge.png' %}" alt="">
+                                                        {% load static %}
+                                                        <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
                                                 {% if product.public_name %}
@@ -157,8 +154,7 @@
                                         {% else %}
                                                 <div class="img">
                                                     {% load static %}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                    <img src="{% static 'doctor/css/img/porridge.png' %}" alt="">
+                                                    <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
                                                 </div>
                                         {% endif %}
                                     </div>
@@ -179,9 +175,9 @@
                                                     </div>
                                                 {% else %}
                                                     <div class="img mobile">
-                                                        {% load static %}                                    
+                                                        {% load static %}
                                                         <svg  viewBox="20 -55 180 220" xmlns="http://www.w3.org/2000/svg" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                        <img src="{% static 'doctor/css/img/dessert.png' %}" alt="">
+                                                        <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
                                                 {% if product.public_name %}
@@ -202,8 +198,7 @@
                                         {% else %}
                                             <div class="img">
                                                 {% load static %}
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                <img src="{% static 'doctor/css/img/dessert.png' %}" alt="">
+                                                <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt="">
                                             </div>
                                         {% endif %}
                                     </div>
@@ -225,7 +220,7 @@
                                                     <div class="img mobile">
                                                         {% load static %}                                    
                                                         <svg  viewBox="20 -55 180 220" xmlns="http://www.w3.org/2000/svg" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                        <img src="{% static 'doctor/css/img/fruit.png' %}" alt="">
+                                                        <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
                                                 {% if product.public_name %}
@@ -245,8 +240,7 @@
                                         {% else %}
                                             <div class="img">
                                                 {% load static %}
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                <img src="{% static 'doctor/css/img/fruit.png' %}" alt="">
+                                                <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
                                             </div>
                                         {% endif %}
                                     </div>
@@ -267,9 +261,8 @@
                                                     </div>
                                                 {% else %}
                                                     <div class="img mobile">
-                                                        {% load static %}                                    
-                                                        <svg  viewBox="20 -55 180 220" xmlns="http://www.w3.org/2000/svg" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                        <img src="{% static 'doctor/css/img/garnish.png' %}" alt="">
+                                                        {% load static %}
+                                                        <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
                                                 {% if product.public_name %}
@@ -290,8 +283,7 @@
                                         {% else %}
                                             <div class="img">
                                                 {% load static %}
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                <img src="{% static 'doctor/css/img/garnish.png' %}" alt="">
+                                                <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
                                             </div>
                                         {% endif %}
                                     </div>
@@ -312,9 +304,9 @@
                                                     </div>
                                                 {% else %}
                                                     <div class="img mobile">
-                                                        {% load static %}                                    
+                                                        {% load static %}
                                                         <svg  viewBox="20 -55 180 220" xmlns="http://www.w3.org/2000/svg" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                        <img src="{% static 'doctor/css/img/salad.png' %}" alt="">
+                                                        <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
                                                 {% if product.public_name %}
@@ -335,8 +327,7 @@
                                         {% else %}
                                             <div class="img">
                                                 {% load static %}
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                <img src="{% static 'doctor/css/img/salad.png' %}" alt="">
+                                                <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
                                             </div>
                                         {% endif %}
                                     </div>
@@ -357,9 +348,8 @@
                                                     </div>
                                                 {% else %}
                                                     <div class="img mobile">
-                                                        {% load static %}                                    
-                                                        <svg  viewBox="20 -55 180 220" xmlns="http://www.w3.org/2000/svg" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                        <img src="{% static 'doctor/css/img/soup.png' %}" alt="">
+                                                        {% load static %}
+                                                        <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
                                                 {% if product.public_name %}
@@ -380,8 +370,7 @@
                                         {% else %}
                                             <div class="img">
                                                 {% load static %}
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                <img src="{% static 'doctor/css/img/soup.png' %}" alt="">
+                                                <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
                                             </div>
                                         {% endif %}
                                     </div>
@@ -402,9 +391,8 @@
                                                     </div>
                                                 {% else %}
                                                     <div class="img mobile">
-                                                        {% load static %}                                    
-                                                        <svg  viewBox="20 -55 180 220" xmlns="http://www.w3.org/2000/svg" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                        <img src="{% static 'doctor/css/img/drink.png' %}" alt="">
+                                                        {% load static %}
+                                                        <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
                                                 {% if product.public_name %}
@@ -425,8 +413,7 @@
                                         {% else %}
                                             <div class="img">
                                                 {% load static %}
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -30 80 120" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                <img src="{% static 'doctor/css/img/drink.png' %}" alt="">
+                                                <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
                                             </div>
                                         {% endif %}
                                     </div>
