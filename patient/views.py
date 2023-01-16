@@ -15,7 +15,7 @@ from django.db.models.functions import Lower
 from doctor.functions.functions import sorting_dishes, parsing, creating_meal_menu_cafe,\
     creating_meal_menu_lp, creates_dict_with_menu_patients_on_day
 from patient.functions import formation_menu, creating_menu_for_patient, create_category, create_patient_select,\
-    date_menu_history
+    date_menu_history, check_is_comment
 from doctor.functions.translator import get_day_of_the_week, translate_diet
 from django.db.models import Q
 from rest_framework.views import APIView
@@ -53,9 +53,13 @@ def patient(request, id):
     else:
         date_get = request.GET['date']
 
+    http_referer = request.META.get('HTTP_REFERER', False)
+    if http_referer:
+        http_referer = http_referer.split('/')
+        if http_referer[-2] == 'patient' and http_referer[-1] == '':
+            if check_is_comment(user):
+                is_have = 'comment'
     # если дата показа меньше даты госпитализации is_have = False
-    if len(user.comment) >= 2:
-        is_have = 'comment'
     if parse(date_get).date() < user.receipt_date:
         is_have = 'date'  # выводим сообщение об ошибке
 

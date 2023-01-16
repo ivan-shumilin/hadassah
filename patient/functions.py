@@ -214,3 +214,12 @@ def date_menu_history(id, user):
     for day in days:
         days_history.append({'number': str(day), 'word': dateformat.format(day, 'd E, l')})
     return days_history
+
+def check_is_comment(patient):
+    if len(patient.comment) >= 2 or \
+        patient.is_probe or \
+        patient.is_without_salt or \
+        patient.is_without_lactose or \
+        patient.is_pureed_nutrition:
+        return True
+    return False

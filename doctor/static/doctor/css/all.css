@@ -5623,3 +5623,7 @@ font-weight: 200;
 /* .first-patient.active {
   border-radius: 0 0 0 16px;
 } */
+/* added code */
+.hide-item {
+  display: none !important;
+}

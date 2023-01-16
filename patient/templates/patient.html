@@ -1292,6 +1292,21 @@ function selectPatientChoice() {
     }
 }
 
+// "сегодня" скрываем все блюда, которые неактвны тк выбор уже сделан.
+hideInactiveDishes()
+function hideInactiveDishes() {
+    if ('{{ today }}' == 'True') {
+        let items = document.querySelectorAll('.eat-choose-grid>.item')
+            for (var index = 0; index < items.length; index++ ) {
+                let item = items[index]
+                    if (!item.classList.contains('active')) {
+                        item.classList.add('hide-item')
+                    }
+                }
+    }
+}
+
+
 function submitPatientSelection() {
     let patientSelection = {
         "breakfast": [],
@@ -1472,6 +1487,8 @@ timer = setInterval(function () {
         timer_show.innerHTML = str_timer;
     }
 }, 1000)
+
+
 
 </script>
 {% endblock %}
