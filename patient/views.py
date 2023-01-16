@@ -197,7 +197,6 @@ class SubmitPatientSelectionAPIView(APIView):
             menu_item.soup = soup
             menu_item.dessert = dessert
             menu_item.fruit = fruit
-            menu_item.drink = drink
             menu_item.salad = salad
             menu_item.save()
         return Response('Ok')
