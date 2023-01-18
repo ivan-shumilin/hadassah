@@ -18,24 +18,16 @@
             background: #A7BBC7;
             border-radius: 8px;
         }
-        
-        
     </style>
-
-
 </head>
-
 {% if page == 'history' %}
     <body class="small-left">
 {% else %}
-    <body class="has-right small-left">
+    <body class="has-right small-left is-menu-page">
     <form id='form-get' style='padding-left: 0px; padding-right: 0px;' method="get" novalidate>
     {{ formset.management_form }}
 {% endif %}
-
-
-        
-        <div id="wrapper">
+    <div id="wrapper">
             <div id="left">
                 <div class="sidebar">
                     <div class="overlay" data-sidebar-toggle></div>
@@ -87,11 +79,11 @@
                                 {% else %}
                                     <li>
                                 {% endif %}
-                                        <!-- <a href="{% url 'patient:patient_history' id=user.id %}">
+                                        <a href="{% url 'patient:patient_history' id=user.id %}">
                                             <span class="i i-box icon-default"></span>
                                             <span class="i i-box-colored icon-colored"></span>
                                             <span>Архив</span>
-                                        </a> -->
+                                        </a>
                                     </li>
                             </ul>
                         </div>
@@ -106,7 +98,6 @@
             </div>
 
         {% block content %}
-
         {% endblock %}
 
 

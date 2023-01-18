@@ -4257,6 +4257,11 @@ html.is-report-page body .container {
     grid-template-columns: repeat(2, auto)
   }
 
+  body .header-block.columns-2 .menu-link-and-name, body.has-right .header-block.columns-2 .menu-link-and-name {
+    grid-column: unset
+  }
+
+
   body .header-block .menu-link-and-name .menu-link, body.has-right .header-block .menu-link-and-name .menu-link {
     display: block
   }
@@ -4805,7 +4810,7 @@ html.is-report-page body .container {
   body .header-block, body.has-right .header-block {
     background: #eef1f8;
     box-sizing: border-box;
-    margin-bottom: 52px;
+    margin-bottom: 24px;
     margin-left: -20px;
     margin-right: -20px;
     min-height: 48px;
@@ -4881,6 +4886,10 @@ html.is-report-page body .container {
 
   body .header-block .date-form, body.has-right .header-block .date-form {
     display: none
+  }
+
+  body.is-menu-page .header-block {
+    margin-bottom: 52px
   }
 
   .auth-layout {
@@ -5215,7 +5224,8 @@ html.is-report-page body .container {
 
   .eat-history-grid .item {
     display: flex;
-    flex-direction: column-reverse
+    flex-direction: column-reverse;
+    justify-content: flex-end;
   }
 
   .eat-history-grid .item .img {
@@ -5249,16 +5259,17 @@ html.is-report-page body .container {
   }
 
   .patients-list .tr {
-    grid-template-columns: minmax(0, 1fr) auto !important
+    grid-template-columns: minmax(0, 1fr) minmax(0, 42px) minmax(0, 1fr) minmax(0, 50px) !important
   }
 
-  .patients-list .tr .td-department, .patients-list .tr .td-number, .patients-list .tr .th-department, .patients-list .tr .th-number {
-    display: none
+  .patients-list .tr .td, .patients-list .tr .th {
+    padding-right: 6px
   }
 
   .patients-list .tr .td:last-child, .patients-list .tr .th:last-child {
     padding-right: 0
   }
+}
 }
 
 @media screen and (max-width:1440px) {

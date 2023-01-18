@@ -5,7 +5,7 @@ from django.forms import Textarea, TextInput, Select, DateInput, TimeInput
 from doctor.forms import PatientRegistrationForm, DietChoiceForm
 from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, CommentProduct, BotChatId
 from nutritionist.forms import TimetableForm
-import random, calendar, datetime
+import random, calendar, datetime, logging
 from datetime import datetime, date, timedelta
 from django.views.generic.list import ListView
 from django.conf import settings
@@ -27,6 +27,13 @@ from django.urls import reverse
 from doctor.tasks import my_job_send_messang_changes
 from doctor.functions.bot import formatting_full_name
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    filename="mylog.log",
+    format="%(message)s",
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
+
 
 def group_patient_check(user):
     return user.groups.filter(name='patients').exists()
@@ -37,6 +44,7 @@ def group_patient_check(user):
 def patient(request, id):
     is_public = True  # используем публичные названия блюд
     is_have = 'ok'
+    logging.info(f'На странице ЛК пациента')
 
     date_menu = {
         'today': str(date.today()),
@@ -122,12 +130,12 @@ def patient_history(request, id):
         comment = CommentProduct()
         comment.user_id = user
         comment.product_id = request.POST['product_id']
-        comment.comment = request.POST['text'] if request.POST['text'] != '' else request.POST['text-mobile']
+        comment.comment = request.POST['text']
         comment.rating = request.POST['rating']
         comment.save()
 
-        messang = ''
-        messang += f'Отзыв на заказ от {request.POST["date"]}\n'
+        check_mark = '&#9989;'
+        messang = f'{check_mark} <b>Отзыв на заказ от {request.POST["date"]}\n</b>'
         messang += f'{formatting_full_name(user.full_name)}\n'
         messang += f'{request.POST["product_name"]}\n'
         messang += f'Оценка {request.POST["rating"]} из 5\n'
@@ -154,24 +162,19 @@ def patient_history(request, id):
     # day_history = ['1']
     # menu = creates_dict_with_menu_patients_on_day(id, '2022-09-23')
 
-    breakfast = []
-    afternoon = []
-    lunch = []
-    dinner = []
+    products_all = {
+        'завтрак': [item for item in menu['breakfast'].values()],
+        'обед': [item for item in menu['afternoon'].values()],
+        'полдник': [item for item in menu['lunch'].values()],
+        'ужин': [item for item in menu['dinner'].values()],
+    }
 
-    [breakfast.append(item) for item in menu['breakfast'].values()]
-    [afternoon.append(item) for item in menu['afternoon'].values()]
-    [lunch.append(item) for item in menu['lunch'].values()]
-    [dinner.append(item) for item in menu['dinner'].values()]
     data = {'user': user,
             'day_history': day_history,
             'page': 'history',
             'date_get': date_get,
             'menu': menu,
-            'breakfast': breakfast,
-            'afternoon': afternoon,
-            'lunch': lunch,
-            'dinner': dinner,
+            'products_all': products_all,
             'products_marked': products_marked
             }
     return render(request, 'patient_history.html', context=data)
@@ -231,6 +234,7 @@ def user_login(request):
             user = CustomUser.objects.get(id=id)
             if user is not None:
                 login(request, user)
+                logging.info(f'пациент {formatting_full_name(user.full_name)} авторизовался в личном кабинете')
                 return HttpResponseRedirect(reverse('patient:patient', kwargs={'id': id}))
         except:
             errors = 'Пользователя с такими данными не существует'
