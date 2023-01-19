@@ -29,7 +29,7 @@ from doctor.functions.bot import formatting_full_name
 
 logging.basicConfig(
     level=logging.DEBUG,
-    filename="mylog.log",
+    filename="mylog-patient.log",
     format="%(message)s",
     datefmt='%Y-%m-%d %H:%M:%S',
 )
@@ -187,11 +187,10 @@ def patient_history_test(request):
 class SubmitPatientSelectionAPIView(APIView):
     def post(self, request):
         data = request.data
-
         menu = MenuByDay.objects.filter(user_id=data['id_user'])
         menu = menu.filter(date=data['date'])
 
-        for key, value in data['menu'].items():
+        for key, value in data['menu']['id'].items():
             main, garnish, porridge, soup, dessert, fruit, drink, salad = create_category(value)
             menu_item = menu.get(meal=key)
             menu_item.main = main
@@ -202,6 +201,15 @@ class SubmitPatientSelectionAPIView(APIView):
             menu_item.fruit = fruit
             menu_item.salad = salad
             menu_item.save()
+
+        message = "Выбор пациента:\n"
+        for meal in data['menu']['name'].keys():
+            message += f"{meal}\n"
+            print(meal)
+            for name in data['menu']['name'][meal]:
+                message += f"{name}\n"
+                print(name)
+        logging.info(f'{message}')
         return Response('Ok')
 
 def is_have_user(formatted_full_name, birthdate):
@@ -212,7 +220,9 @@ def is_have_user(formatted_full_name, birthdate):
     users = CustomUser.objects.filter(full_name=formatted_full_name, status='patient')
     
     if len(users) == 0:
-        return "Пользователь с такими данными не найден", None
+        error = "Пользователь с такими данными не найден"
+        logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, {error}')
+        return error, None
     if len(users) > 0:
         birthdate = datetime.strptime(birthdate, '%d.%m.%Y')
         answer = []
@@ -220,9 +230,13 @@ def is_have_user(formatted_full_name, birthdate):
             if user.birthdate == birthdate.date():
                 answer.append((None, user.id))
         if answer == []:
-            return "Неверная дата рождения", None
+            error = "Неверная дата рождения"
+            logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, {error}')
+            return error, None
         if len(answer) > 1:
-            return f"{len(answer)} пациента с таким данными", None
+            error = f"{len(answer)} пациента с таким данными"
+            logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, {error}')
+            return error, None
         if len(answer) == 1:
             return answer[0]
 

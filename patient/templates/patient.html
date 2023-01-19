@@ -477,7 +477,7 @@
                                                     {% else %}
                                                         <div class="name" data-choose>{{ product.name }}</div>
                                                     {% endif %}
-                                                    <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
+                                                    <div class="id" style="display: none;">cafe-porridge-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                     <div class="text" data-toggle>
                                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -528,7 +528,7 @@
                                                 {% else %}
                                                     <div class="name" data-choose>{{ product.name }}</div>
                                                 {% endif %}
-                                                <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
+                                                <div class="id" style="display: none;">lp-dessert-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                 <div class="text" data-toggle>
                                                     {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -566,7 +566,7 @@
                                                 {% else %}
                                                     <div class="name" data-choose>{{ product.name }}</div>
                                                 {% endif %}
-                                                <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
+                                                <div class="id" style="display: none;">cafe-dessert-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                 <div class="text" data-toggle>
                                                     {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -615,7 +615,7 @@
                                                 {% else %}
                                                     <div class="name" data-choose>{{ product.name }}</div>
                                                 {% endif %}
-                                                <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
+                                                <div class="id" style="display: none;">lp-fruit-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                 <div class="text" data-toggle>
                                                     {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -653,7 +653,7 @@
                                                 {% else %}
                                                     <div class="name" data-choose>{{ product.name }}</div>
                                                 {% endif %}
-                                                <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
+                                                <div class="id" style="display: none;">cafe-fruit-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                 <div class="text" data-toggle>
                                                     {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -1246,11 +1246,6 @@
     {% endfor %}
 </div>
 {% endfor %}
-
-
-
-
-
 {% endif %}
 <script>
 // отмечаем день
@@ -1303,25 +1298,44 @@ function hideInactiveDishes() {
     }
 }
 
-
 function submitPatientSelection() {
-    let patientSelection = {
+    let patientSelectionId = {
         "breakfast": [],
         "lunch": [],
         "afternoon": [],
         "dinner": []
     }
-    for (meal in patientSelection) {
+
+    let patientSelectionName = {
+        "breakfast": [],
+        "lunch": [],
+        "afternoon": [],
+        "dinner": []
+    }
+
+    let patientSelection = {
+        "id": patientSelectionId,
+        "name": patientSelectionName
+    }
+
+    for (meal in patientSelectionId) {
         let products = document.querySelectorAll('#' + meal +'>.eat-choose-block>.eat-choose-grid>.active>.info>.id')
         for (var index = 0; index < products.length; index++ ) {
-            patientSelection[meal].push(products[index].innerText)
+            patientSelectionId[meal].push(products[index].innerText)
         }
     }
+
+    for (meal in patientSelectionName) {
+        let products = document.querySelectorAll('#' + meal +'>.eat-choose-block>.eat-choose-grid>.active>.info>.name')
+        for (var index = 0; index < products.length; index++ ) {
+            patientSelectionName[meal].push(products[index].innerText)
+        }
+    }
+
+
     submitApiPatientSelection(patientSelection)
     document.getElementById("orderConfirmed").click();
 };
-
-
 
 
 const submitApiPatientSelection = async function(menu) {
