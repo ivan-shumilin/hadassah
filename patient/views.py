@@ -44,7 +44,6 @@ def group_patient_check(user):
 def patient(request, id):
     is_public = True  # используем публичные названия блюд
     is_have = 'ok'
-    logging.info(f'На странице ЛК пациента')
 
     date_menu = {
         'today': str(date.today()),
@@ -221,7 +220,7 @@ def is_have_user(formatted_full_name, birthdate):
     
     if len(users) == 0:
         error = "Пользователь с такими данными не найден"
-        logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, {error}')
+        logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, {"error"}')
         return error, None
     if len(users) > 0:
         birthdate = datetime.strptime(birthdate, '%d.%m.%Y')
@@ -231,11 +230,11 @@ def is_have_user(formatted_full_name, birthdate):
                 answer.append((None, user.id))
         if answer == []:
             error = "Неверная дата рождения"
-            logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, {error}')
+            logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, {"error"}')
             return error, None
         if len(answer) > 1:
             error = f"{len(answer)} пациента с таким данными"
-            logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, {error}')
+            logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, {"error"}')
             return error, None
         if len(answer) == 1:
             return answer[0]
