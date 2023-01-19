@@ -30,13 +30,15 @@
     <div id="wrapper">
             <div id="left">
                 <div class="sidebar">
-                    <div class="overlay" data-sidebar-toggle></div>
+                    {% if page != 'history' %}
+                        <div class="overlay" data-sidebar-toggle></div>
+                    {% endif %}
+                    
                     <div class="inner">
                         <div class="sidebar-header-block">
                             <a href='https://hadassah.moscow/' class="logo">
                                 <img alt="">
                             </a>
-
                             <div class="profile">
                                 <a href="#" class="label" data-fade-toggle-link="profile-info">
                                     <span class="icon"></span>

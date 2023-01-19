@@ -2,13 +2,64 @@
 {% block content %}
 {% load static %}
 <a style="display: none;" id="commentSend" data-modal-link="comment-send">a</a>
-<div id="center">
-    <div id="header">
-        <div class="header-block">
-            <div class="menu-link-and-name">
+<!-- <div id="center"> -->
+    <!-- <div id="header">
+        <div class="before-header-block"> -->
+            <!-- <div class="menu-link-and-name">
                 <a href="#" class="menu-link" data-sidebar-toggle>
                     <div class="i i-menu"></div>
-                </a>
+                </a> -->
+                <div id="center">
+                    <div id="header">
+                        <div class="before-header-block">
+                            <div class="menu">
+                                <ul>
+                                    <li class="active">
+                                        <a href="./menu-patient.htm">
+                                            <span class="i i-eat icon-default"></span>
+                                            <span class="i i-eat-colored icon-colored"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="./history-patient.htm">
+                                            <span class="i i-box icon-default"></span>
+                                            <span class="i i-box-colored icon-colored"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+    
+                            <a href="#" class="logo-main">
+                                <img src="./img/logo.svg" alt="">
+                            </a>
+                            <a href="#" class="logo-petrushka">
+                                <img src="./img/petrushka.png" alt="">
+                            </a>
+                            <div class="profile">
+                                <a href="#" class="label" data-fade-toggle-link="profile-info">
+                                    <span class="icon"></span>
+                                </a>
+                                <div class="info" data-fade-toggle="profile-info">
+                                    <div class="segment">
+                                        <div class="name">Смирнова А.С.</div>
+                                        <div class="value">
+                                            <span>Отделение</span>
+                                            Гастроэнтерология
+                                        </div>
+                                        <div class="value">
+                                            <span>Диета</span>
+                                            Стандартная диета (ОВД)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="header-block name-full-width">
+                            <div class="menu-link-and-name">
+                                <a href="#" class="menu-link" data-sidebar-toggle>
+                                    <div class="i i-menu"></div>
+                                </a>
                 <div class="title">История заказов</div>
             </div>
             {% if day_history %}
