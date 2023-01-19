@@ -201,13 +201,11 @@ class SubmitPatientSelectionAPIView(APIView):
             menu_item.salad = salad
             menu_item.save()
 
-        message = "Выбор пациента:\n"
+        message = f"Пациент подтвердил заказ на {data['date']}:\n"
         for meal in data['menu']['name'].keys():
             message += f"{meal}\n"
-            print(meal)
             for name in data['menu']['name'][meal]:
-                message += f"{name}\n"
-                print(name)
+                message += f"   {name}\n"
         logging.info(f'{message}')
         return Response('Ok')
 
@@ -217,24 +215,23 @@ def is_have_user(formatted_full_name, birthdate):
     Return: Ошибка, id пациента(если такой найден)
     """
     users = CustomUser.objects.filter(full_name=formatted_full_name, status='patient')
-    
+    birthdate = datetime.strptime(birthdate, '%d.%m.%Y')
     if len(users) == 0:
         error = "Пользователь с такими данными не найден"
-        logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, "{error}"')
+        logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate.date()}, "{error}"')
         return error, None
     if len(users) > 0:
-        birthdate = datetime.strptime(birthdate, '%d.%m.%Y')
         answer = []
         for user in users:
             if user.birthdate == birthdate.date():
                 answer.append((None, user.id))
         if answer == []:
             error = "Неверная дата рождения"
-            logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, "{error}"')
+            logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate.date()}, "{error}"')
             return error, None
         if len(answer) > 1:
             error = f"{len(answer)} пациента с таким данными"
-            logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate}, "{error}"')
+            logging.info(f'ФИО {formatted_full_name}, дата рождения {birthdate.date()}, "{error}"')
             return error, None
         if len(answer) == 1:
             return answer[0]
