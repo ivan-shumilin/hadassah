@@ -38,7 +38,6 @@ app.conf.beat_schedule = {
         'task': 'doctor.tasks.my_job_create_user_tomorrow',
         'schedule': crontab(minute=0, hour='19'),
     },
-
     'my_job_create_ready_order_breakfast': {
         'task': 'doctor.tasks.my_job_create_ready_order_breakfast',
         'schedule': crontab(minute=0, hour='7'),
