@@ -1115,6 +1115,7 @@ def printed_form_two_cafe(request):
     return render(request, 'printed_form2_cafe.html', context=data)
 
 def create_external_report(filtered_report):
+    """ Отчет для Hadassah. """
     report = {}
     report_ = {}
     for index, item in enumerate(filtered_report):
@@ -1124,19 +1125,36 @@ def create_external_report(filtered_report):
         report_[key] = {}
         for index, item in enumerate(value):
             report_[key].setdefault(str(item.meal), []).append(item)
-
+    money_total = 0
+    count_total = 0
     for key1, value1 in report_.items():
         report[key1] = {}
-        count = 0
+        count_all = 0 # все рационы кроме "Нулевой диеты"
+        count_just_wather = 0
+        price_all = 750
+        price_just_wather = 150
         for key2, value2 in value1.items():
             report[key1][key2] = {}
             for index, item in enumerate(value2):
                 report[key1][key2].setdefault(str(item.type_of_diet), []).append(item)
                 test_dict = {}
             for key3, value3 in report[key1][key2].items():
-                report[key1][key2][key3] = len(set([user.user_id for user in (report[key1][key2][key3])]))
-                count += report[key1][key2][key3]
-        report[key1]['Всего'] = {'count': count}
+                count_items = len(set([user.user_id for user in (report[key1][key2][key3])]))
+                price = price_just_wather if key3 == 'Нулевая диета'\
+                    else price_all
+                report[key1][key2][key3] = {'count': count_items,
+                                            'money': count_items * price}
+                if key3 == 'Нулевая диета':
+                    count_just_wather += count_items
+                count_all += count_items
+        money = (count_all - count_just_wather) * price_all + \
+                (count_just_wather * price_just_wather)
+        report[key1]['Всего'] = {'count': count_all,
+                                 'money': money}
+        money_total += money
+        count_total += count_all
+    report['Итого'] = {'Всего за период': {'count': count_total,
+                       'money': money_total}}
     return report
 
 def get_report(report, report_detailing, date_start, date_finish):
@@ -1234,9 +1252,10 @@ def get_report(report, report_detailing, date_start, date_finish):
     row = 5
     for key1, item1 in report.items():
         row += 1
-        _ = ws.cell(column=1, row=row, value=key1).font = font
+        if key1 != 'Итого':
+            _ = ws.cell(column=1, row=row, value=key1).font = font
         for key2, item2 in item1.items():
-            if key2 == 'Всего':
+            if key2 in ['Всего','Всего за период']:
                 _ = ws.cell(column=2, row=row, value=key2).font = font_10_bold
             if key2 == 'breakfast':
                 _ = ws.cell(column=2, row=row, value='Завтрак').font = font
@@ -1247,14 +1266,14 @@ def get_report(report, report_detailing, date_start, date_finish):
             if key2 == 'dinner':
                 _ = ws.cell(column=2, row=row, value='Ужин').font = font
             for key3, item3 in item2.items():
-                if key2 == 'Всего':
+                if key2 in ['Всего','Всего за период']:
                     _ = ws.cell(column=3, row=row, value='').font = font_10_bold
-                    _ = ws.cell(column=4, row=row, value=str(item3)).font = font_10_bold
-                    _ = ws.cell(column=5, row=row, value=f'{item3 * 750}.00').font = font_10_bold
+                    _ = ws.cell(column=4, row=row, value=str(item2['count'])).font = font_10_bold
+                    _ = ws.cell(column=5, row=row, value=f'{item2["money"]}.00').font = font_10_bold
                 else:
                     _ = ws.cell(column=3, row=row, value=key3).font = font
-                    _ = ws.cell(column=4, row=row, value=str(item3)).font = font
-                    _ = ws.cell(column=5, row=row, value=f'{item3 * 750}.00').font = font
+                    _ = ws.cell(column=4, row=row, value=str(item3['count'])).font = font
+                    _ = ws.cell(column=5, row=row, value=f'{item3["money"]}.00').font = font
                     row += 1
             ws[row-1][0].border = Border(bottom=dotted)
             ws[row-1][1].border = Border(bottom=dotted)
