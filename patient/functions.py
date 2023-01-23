@@ -85,13 +85,16 @@ def create_dict_products_lp(products_lp_category):
     return None if list_with_products == [] else list_with_products
 
 
-def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet):
+def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, user):
     """ Создаем словарь со всеми вариантами блюд для пациента, и с отмеченными блюдами
         которые выбрал пациент. """
     menu = {}
 
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-        products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
+        if check_is_comment(user):
+            products_cafe: tuple = [], [], [], []
+        else:
+            products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
         products_lp = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
                                             Q(timetablelp__type_of_diet=translated_diet) &
                                             Q(timetablelp__meals=meal))

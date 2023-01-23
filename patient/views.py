@@ -76,7 +76,7 @@ def patient(request, id):
 
     day_of_the_week = get_day_of_the_week(date_get)
 
-    menu_for_lk_patient = creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet)
+    menu_for_lk_patient = creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, user)
 
     products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
                                         Q(timetablelp__type_of_diet=translated_diet) &
