@@ -22,7 +22,7 @@ def check_value(category, products):
     return value
 
 def formatting_full_name_mode_full(full_name_row):
-    full_name_row_list = full_name_row.split(' ')
+    full_name_row_list = full_name_row.strip().split(' ')
     full_name_list = [item.strip().capitalize() for item in full_name_row_list]
     return ' '.join(full_name_list)
 
