@@ -111,6 +111,28 @@ def load_timetable(dict_tests):
     Timetable.objects.bulk_create(to_create)
 
 
+# загрузка блюд из json в БД после парсинга
+@transaction.atomic
+def load_product():
+    with open("new_products.json", "r") as my_file:
+        new_products = my_file.read()
+    new_products = json.loads(new_products)
+    to_create = []
+    for product in new_products:
+        to_create.append(Product(
+            name=product['name'],
+            date_create=date.today(),
+            public_name=product['name'],
+            carbohydrate=product['carbohydrate'],
+            fat=product['fat'],
+            fiber=product['fiber'],
+            energy=product['energy'],
+            description=product['composition'],
+            category=product['category'],
+        ))
+    Product.objects.bulk_create(to_create)
+
+
 def redirect(request):
     return HttpResponseRedirect(reverse('index'))
 
@@ -273,6 +295,7 @@ def index(request):
 @user_passes_test(group_nutritionists_check, login_url='login')
 @login_required(login_url='login')
 def search(request):
+    load_product()
     error = ''
     ProductFormSet = modelformset_factory(Product,
                                           fields=(

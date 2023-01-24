@@ -245,6 +245,7 @@ class Base(models.Model):
 
 
 class Product(models.Model):
+    date_create = models.DateField(default=date.today, null=True, blank=True)
     iditem = models.IntegerField(null=True)
     public_name = models.CharField(max_length=200, null=True, blank=True)
     name = models.CharField(max_length=200, null=True)
