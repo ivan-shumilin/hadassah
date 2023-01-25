@@ -188,7 +188,10 @@ def create_patient_select(id, date_get):
 
     patient_select = {}
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-        menu_item = menu.get(meal=meal)
+        try:
+            menu_item = menu.get(meal=meal)
+        except:
+            continue
         patient_select[meal] = {
             'main': menu_item.main,
             'garnish': menu_item.garnish,
