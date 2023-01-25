@@ -448,7 +448,7 @@ def check_have_menu():
     return
 
 def creating_meal_menu_cafe(date_get, diet, meal):
-    exception = ['ОВД веган (пост) без глютена', 'БД день 2', 'БД день 1', 'Нулевая диета']
+    exception = ['ОВД веган (пост) без глютена', 'БД день 2', 'БД день 1', 'Нулевая диета', 'ЩД без сахара']
     if diet in exception:
         return [], [], [], []
     queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
