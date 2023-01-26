@@ -10,9 +10,9 @@ from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp
 admin.site.register(Base)
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'public_name', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category',)
-    fields = ('name', 'public_name', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category', 'description',)
-    list_filter = ('category', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd')
+    list_display = ('name', 'public_name', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category',)
+    fields = ('name', 'public_name', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category', 'description',)
+    list_filter = ('category', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd')
     list_per_page = 100
     # list_filter = ('status', 'due_back')
 
@@ -42,8 +42,8 @@ class TimetableLpAdmin(admin.TabularInline):
 
 @admin.register(ProductLp)
 class ProductLpAdmin(admin.ModelAdmin):
-    list_display = ('name', 'public_name', 'category', 'description', 'status')
-    fields = ('name', 'public_name', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber', 'energy', 'weight', 'description', 'comment', 'status')
+    list_display = ('name', 'public_name', 'with_garnish', 'category', 'description', 'status')
+    fields = ('name', 'public_name', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber', 'energy', 'weight', 'description', 'comment', 'status')
     list_filter = ('category', 'status',)
     list_per_page = 600
 
