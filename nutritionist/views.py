@@ -43,7 +43,7 @@ import random, calendar, datetime, logging, json
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from nutritionist.functions.functions import create_products_list_category, complete_catalog, \
-    checking_is_ready_meal, create_category_dict, create_stickers_pdf
+    checking_is_ready_meal, create_category_dict, create_stickers_pdf, add_try
 
 
 def group_nutritionists_check(user):
@@ -1557,6 +1557,7 @@ def internal_report(request):
     for index, item in enumerate(report):
         item['category'] = item['category'] if item['category'] != 'основной' else 'основное'
         item['number'] = index + 1
+    add_try(report) # добавляем суточные пробы
 
     date = {'report': report,
             'date_start': date_start,

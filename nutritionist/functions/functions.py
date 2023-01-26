@@ -171,3 +171,17 @@ def create_stickers_pdf(catalog):
                 pdf.cell(50, 3, txt=f'', ln=index + 1 + ln, align="L")
     pdf.output("static/stickers.pdf")
     return
+
+def add_try(report):
+    """ Добавляем суточные пробы. """
+    exception = ['Вода "Jеvea" 0,51л.',
+                    'Булочка французская 35гр. в асс.',
+                    'Булочка французская 35гр. в асс, 2 шт',
+                    'Булочка французская 35гр. в асс., 3 шт',
+                    'Хлеб бородинский/ржаной 20 гр., 2 шт.',
+                    'Хлеб из зеленой гречки пряный 35 гр., 2 шт.',
+                    'Батончик  "SOJ" в асс.',
+                    'Джем порционный 20 гр. в асс.']
+    for product in report:
+        if product['name'] not in exception:
+            product['count'] += 1
