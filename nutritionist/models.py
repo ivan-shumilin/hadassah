@@ -273,6 +273,10 @@ class Product(models.Model):
     category = models.CharField(max_length=2000, null=True)
     cooking_method = models.CharField(max_length=7000, null=True)
     comment = models.CharField(max_length=5000, null=True)
+    with_garnish =   models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Блюдо уже с гарниром?')
 
     def __str__(self):
         return f'{self.name}, {self.category}'
@@ -361,7 +365,7 @@ class UsersReadyOrder(models.Model):
         blank=True,
         default='',
         help_text='Выбор диеты')
-    is_accompanying =  models.BooleanField(
+    is_accompanying = models.BooleanField(
         blank=True,
         default=False,
         help_text='Cопровождающий?')
@@ -441,7 +445,12 @@ class ProductLp(models.Model):
     comment = models.CharField(max_length=5000, null=True, blank=True)
     weight = models.CharField(max_length=5000, null=True, blank=True)
     number_tk = models.CharField(max_length=5000, null=True, blank=True)
+    # у новых блюд статус равен 1
     status = models.CharField(max_length=500, null=True, default='1',)
+    with_garnish =   models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Блюдо уже с гарниром?')
 
     def __str__(self):
         return f'{self.name}, {self.category}'
