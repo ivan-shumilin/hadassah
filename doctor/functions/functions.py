@@ -538,6 +538,11 @@ def comment_formatting(comment):
         comment = comment if comment[-1] == '.' else comment + '.'
     return comment
 
+def get_user_name(request):
+    first_name = f'{request.user.last_name if request.user.last_name != None else "None"}'
+    last_name = f'{request.user.first_name if request.user.first_name != None else "None"}'
+    return formatting_full_name(f'{last_name} {first_name}')
+
 def is_user_look(user_form, is_accompanying, type_pay, is_probe, is_without_salt, is_without_lactose, is_pureed_nutrition):
     users = CustomUser.objects.filter(full_name=user_form.data['full_name'], status='patient')
     for user in users:
@@ -609,8 +614,8 @@ def create_user(user_form, request):
     user.is_pureed_nutrition = is_pureed_nutrition
     user.status = 'patient'
     user.save()
-    logging_user_name = f'{request.user.last_name if request.user.last_name != None else "None"} {request.user.last_name if request.user.last_name != None else "None"}'
-    logging.info(f'пользователь ({logging_user_name}), cоздан пациент {user_form.data["full_name"]} ({user_form.data["type_of_diet"]})')
+    user_name = get_user_name(request) # получаем имя пользователя (вносит изменения в ЛК)
+    logging.info(f'пользователь ({user_name}), cоздан пациент {user_form.data["full_name"]} ({user_form.data["type_of_diet"]})')
     add_the_patient_menu(user, 'creation')
     messang = ''
     if datetime.today().time().hour >= 19:
@@ -634,7 +639,7 @@ def create_user(user_form, request):
                 update_UsersToday(user)
             if do_messang_send(user.full_name) and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
                 regard = u'\u26a0\ufe0f'
-                messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+                messang += f'{regard} <b>Изменение с {meal_order}</b> ({user_name})\n'
     messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
     comment = add_features(user.comment,
                  user.is_probe,
@@ -796,8 +801,8 @@ def edit_user(user_form, type, request):
     if type == 'restore':
         user.status = 'patient'
     user.save()
-    logging_user_name = f'{request.user.last_name if request.user.last_name != None else "None"} {request.user.last_name if request.user.last_name != None else "None"}'
-    logging.info(f'пользователь ({logging_user_name})пациент отредактирован {user_form.data["full_name"]}')
+    user_name = get_user_name(request)  # получаем имя пользователя (вносит изменения в ЛК)
+    logging.info(f'пользователь ({user_name}) пациент отредактирован {user_form.data["full_name1"]}')
     for change in changes:
         logging.info(f'{change}')
 
@@ -830,7 +835,7 @@ def edit_user(user_form, type, request):
             if meal_order == now_show_meal and meal_order != 'завтра':
                 update_UsersToday(user)
             if do_messang_send(user.full_name):  # c 17 до 7 утра не отправляем сообщения
-                messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+                messang += f'{regard} <b>Изменение с {meal_order}</b> ({user_name})\n'
     if type == 'edit' and len(changes) > 0:
         messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
         for change in changes:
@@ -849,8 +854,8 @@ def archiving_user(user, request):
         return
     user.status = 'patient_archive'
     user.save()
-    logging_user_name = f'{request.user.last_name if request.user.last_name != None else "None"} {request.user.last_name if request.user.last_name != None else "None"}'
-    logging.info(f'пользователь ({logging_user_name}), пациент перенесен в архив {user.full_name} ({user.type_of_diet})')
+    user_name = get_user_name(request)  # получаем имя пользователя (вносит изменения в ЛК)
+    logging.info(f'пользователь ({user_name}), пациент перенесен в архив {user.full_name} ({user.type_of_diet})')
     update_UsersToday(user)
     MenuByDay.objects.filter(user_id=user.id).delete()
     messang = ''
@@ -864,7 +869,7 @@ def archiving_user(user, request):
 
         if do_messang_send(user.full_name):  # c 17 до 7 утра не отправляем сообщения
             regard = u'\u26a0\ufe0f'
-            messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+            messang += f'{regard} <b>Изменение с {meal_order}</b> ({user_name})\n'
     messang += f'Пациент {formatting_full_name(user.full_name)} ({user.type_of_diet}) выписан\n'
     if user.full_name != "Leslie William Nielsen":
         my_job_send_messang_changes.delay(messang)
