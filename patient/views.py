@@ -15,7 +15,7 @@ from django.db.models.functions import Lower
 from doctor.functions.functions import sorting_dishes, parsing, creating_meal_menu_cafe,\
     creating_meal_menu_lp, creates_dict_with_menu_patients_on_day
 from patient.functions import formation_menu, creating_menu_for_patient, create_category, create_patient_select,\
-    date_menu_history, check_is_comment
+    date_menu_history, check_is_comment, del_if_not_garnish, del_if_not_product_without_garnish
 from doctor.functions.translator import get_day_of_the_week, translate_diet
 from django.db.models import Q
 from rest_framework.views import APIView
@@ -81,20 +81,6 @@ def patient(request, id):
     products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
                                         Q(timetablelp__type_of_diet=translated_diet) &
                                         Q(timetablelp__meals=meal))
-
-
-    # queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-    #     category='Вторые блюда').order_by(Lower('name')))
-    # queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-    #     category='Гарниры').order_by(Lower('name')))
-    # queryset_salad = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-    #     category='Салаты').order_by(Lower('name')))
-    # queryset_soup = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-    #     category='Первые блюда').order_by(Lower('name')))
-    #
-    # queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup = \
-    #     sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup)
-
     breakfast, afternoon, lunch, dinner = formation_menu(products)
 
     patient_select = create_patient_select(id, date_get)
@@ -103,6 +89,18 @@ def patient(request, id):
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
     date_timer = parse(date_get)
     today = (date_get == str(date.today()))
+
+    # проверяем есть ли ганрир, если нет удаляем блюда, которые идут без гарнира
+    menu_for_lk_patient = del_if_not_garnish(menu_for_lk_patient)
+
+    # проверяем есть ли блюда в которым нужен гарнир , если нет, тогда удаляем гарниры
+    # из блюд cafe
+    menu_for_lk_patient = del_if_not_product_without_garnish(menu_for_lk_patient)
+
+    # если блюдо ЛП уже с гарниром (плов)
+    lunch_is_with_garnish = menu_for_lk_patient['lunch']['lp']['main'][0].with_garnish
+    dinner_is_with_garnish = menu_for_lk_patient['dinner']['lp']['main'][0].with_garnish
+
     data = {'is_have': is_have,
             'user': user,
             'breakfast': breakfast,
@@ -116,6 +114,8 @@ def patient(request, id):
             'menu': menu_for_lk_patient,
             'patient_select': patient_select,
             'today': today,
+            'lunch_is_with_garnish': lunch_is_with_garnish,
+            'dinner_is_with_garnish': dinner_is_with_garnish
             }
     # is_have = 'comment'
     # data = {'is_have': is_have}

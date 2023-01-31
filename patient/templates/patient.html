@@ -257,7 +257,7 @@
                                     </div>
                                     <div class="eat-choose-grid" data-eat-choose-grid>
                                         {% for product in menu_for_the_meal.lp.main %}
-                                            <div class="item active" data-item="item-{{ product.id }}">
+                                            <div id='{{ product.id }}' class="item active main {{ meal }} {{ product.with_garnish }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -295,7 +295,7 @@
                                             </div>
                                         {% endfor %}
                                         {% for product in menu_for_the_meal.cafe.main %}
-                                            <div class="item" data-item="item-{{ product.id }}">
+                                            <div id='{{ product.id }}' class="item main {{ meal }} {{ product.with_garnish }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -335,16 +335,16 @@
                                     </div>
                                 {% endif %}
 
-                                {% if menu_for_the_meal.lp.garnish %}
-                                    <div class="category">
+                                {% if menu_for_the_meal.lp.garnish or menu_for_the_meal.cafe.garnish %}
+                                    <div id="category-garnish-{{ meal }}" class="category">
                                         <div class="name">Гарнир</div>
                                         {% if not menu_for_the_meal.cafe.garnish %}
                                             <div class="info">Это блюдо нельзя заменить</div>
                                         {% endif %}
                                     </div>
-                                    <div class="eat-choose-grid" data-eat-choose-grid>
+                                    <div id="garnish-{{ meal }}" class="eat-choose-grid" data-eat-choose-grid>
                                         {% for product in menu_for_the_meal.lp.garnish %}
-                                            <div class="item active" data-item="item-{{ product.id }}">
+                                            <div class="item active garnish {{ meal }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -382,7 +382,7 @@
                                             </div>
                                         {% endfor %}
                                         {% for product in menu_for_the_meal.cafe.garnish %}
-                                            <div class="item" data-item="item-{{ product.id }}">
+                                            <div class="item garnish {{ meal }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -986,7 +986,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                             <div class="choose">
-                                <a href="#" data-choose>
+                                <a onclick="checkProduct('{{ product.id }}', '{{ product.with_garnish }}', '{{ meal }}')" href="#" data-choose>
                                     <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                     <span class="not-chosen">Выбрать</span>
                                 </a>
@@ -1020,7 +1020,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                             <div class="choose">
-                                <a href="#" data-choose>
+                                <a onclick="checkProduct('{{ product.id }}', '{{ product.with_garnish }}', '{{ meal }}')" href="#" data-choose>
                                     <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                     <span class="not-chosen">Выбрать</span>
                                 </a>
@@ -1033,7 +1033,7 @@
 </div>
 <div class="eat-choose-bottom-sheet">
     {% for product in menu_for_the_meal.lp.garnish %}
-        <div data-bottom-sheet="item-{{ product.id }}-bottom-sheet">
+        <div data-bottom-sheet="item-{{ product.id }}-bottom-sheet" class='bottom-sheet-garnish'>
             <div class="overlay"></div>
             <div class="body">
                 <div class="toggle"></div>
@@ -1067,7 +1067,7 @@
         </div>
     {% endfor %}
     {% for product in menu_for_the_meal.cafe.garnish %}
-        <div data-bottom-sheet="item-{{ product.id }}-bottom-sheet">
+        <div data-bottom-sheet="item-{{ product.id }}-bottom-sheet" class='bottom-sheet-garnish'>
             <div class="overlay"></div>
             <div class="body">
                 <div class="toggle"></div>
@@ -1251,6 +1251,71 @@
 // отмечаем день
 document.getElementById('{{ date_get }}').classList.add('active');
 document.getElementById('mobile-{{ date_get }}').classList.add('active');
+
+// если блюдо основное с гарниром делаем гарниры не кликабельными (при загрузке странице)
+let isWithGarnishLunch = '{{ lunch_is_with_garnish }}'
+let isWithGarnishDinner = '{{ dinner_is_with_garnish }}'
+if (isWithGarnishLunch == 'True') {
+    let chooses = document.querySelectorAll('.eat-choose-grid>.garnish.lunch')
+    for (var index1 = 0; index1 < chooses.length; index1++ ) {
+            chooses[index1].classList.remove('active');
+            chooses[index1].classList.add('pointer-events-none');
+        }
+}
+
+if (isWithGarnishDinner == 'True') {
+    let chooses = document.querySelectorAll('.eat-choose-grid>.garnish.dinner')
+    for (var index1 = 0; index1 < chooses.length; index1++ ) {
+            chooses[index1].classList.remove('active');
+            chooses[index1].classList.add('pointer-events-none');
+        }
+}
+
+
+// var observer = new MutationObserver(function (mutations) {
+//     mutations.forEach(function (mutation) {
+//         var newVal = $(mutation.target).prop(mutation.attributeName);
+//         if (mutation.attributeName === "class") {
+//             // если зашли сюда, значит класс сменился на значение из newVal
+//             console.log("yes!")
+//         }
+//     });
+// });
+
+// observer.observe(document.getElementById('1026'), { // заменяем document.body на нужный нам элемент
+//     attributes: true
+// });
+
+
+
+
+// если блюдо уже с гарниром (плов), делаем гарниры неактивными
+// function checkProduct(id, isWhithGarnish, meal) {
+//         // let product = document.getElementById(id)
+//         // if(product.classList.contains('active')) {
+//             let chooses = document.querySelectorAll('.eat-choose-grid>.garnish.' + meal)
+//             if (isWhithGarnish == 'True') {
+//                 for (var index1 = 0; index1 < chooses.length; index1++ ) {
+//                         chooses[index1].classList.remove('active');
+//                         chooses[index1].classList.add('pointer-events-none');
+//                     }
+//             } else {
+//                 chooses[0].classList.add('active');
+//                 chooses[0].querySelector('.choose a').click();
+//                 for (var index1 = 0; index1 < chooses.length; index1++ ) {
+//                         chooses[index1].classList.remove('pointer-events-none');
+//                     }
+//             }
+//             // чтобы в моб. версии не открывалось нижнее меню
+//             chooses = document.querySelectorAll('.bottom-sheet-garnish')
+//                 for (var index1 = 0; index1 < chooses.length; index1++ ) {
+//                         chooses[index1].classList.remove('open');
+//                     }
+
+//     addHtmlLunch();
+//     addHtmlDinner();
+// }
+
 //  отмечаем блюда, которые выбрал пациент
 selectPatientChoice()
 function selectPatientChoice() {
@@ -1499,6 +1564,148 @@ timer = setInterval(function () {
     }
 }, 1000)
 
+
+
+
+
+// // выбираем элемент
+// var target = document.getElementById('1026');
+ 
+// // создаем экземпляр наблюдателя
+// var observer = new MutationObserver(function(mutations) {
+//     mutations.forEach(function(mutation) {
+//         console.log(mutation.type);
+//     });
+// });
+ 
+// // настраиваем наблюдатель
+// var config = { attributes: true}
+ 
+// // передаем элемент и настройки в наблюдатель
+// observer.observe(target, config);
+
+var observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+        var newVal = $(mutation.target).prop(mutation.attributeName);
+        if (mutation.attributeName === "class") {
+            if(mutation.target.classList.contains('active')) {
+                console.log('yes');
+                checkProduct();
+            }
+            // console.log('yes')
+        }
+    });
+});
+
+
+function checkProduct() {
+        // id, isWhithGarnish, meal)
+        let products = document.querySelectorAll('.eat-choose-grid>.main.dinner')
+        // let product = document.getElementById(id)
+        // if(product.classList.contains('active')) {
+        for (var index1 = 0; index1 < products.length; index1++ ) {
+            if(products[index1].classList.contains('active')) {
+                let chooses = document.querySelectorAll('.eat-choose-grid>.garnish.dinner')
+                if (products[index1].classList.contains('True')) {
+                    for (var index1 = 0; index1 < chooses.length; index1++ ) {
+                            chooses[index1].classList.remove('active');
+                            chooses[index1].classList.add('pointer-events-none');
+                        }
+                    document.getElementById("garnish-dinner").classList.add('hide-item');
+                    document.getElementById("category-garnish-dinner").classList.add('hide-item');
+                } else {
+                    chooses[0].classList.add('active');
+                    chooses[0].querySelector('.choose a').click();
+                    for (var index1 = 0; index1 < chooses.length; index1++ ) {
+                            chooses[index1].classList.remove('pointer-events-none');
+                        }
+                    document.getElementById("garnish-dinner").classList.remove('hide-item');
+                    document.getElementById("category-garnish-dinner").classList.remove('hide-item');
+                }
+            }
+        }
+            // чтобы в моб. версии не открывалось нижнее меню
+            chooses = document.querySelectorAll('.bottom-sheet-garnish')
+                for (var index1 = 0; index1 < chooses.length; index1++ ) {
+                        chooses[index1].classList.remove('open');
+                    }
+
+    addHtmlLunch();
+    addHtmlDinner();
+}
+
+
+let products = document.querySelectorAll('.eat-choose-grid>.main.dinner')
+for (var index = 0; index < products.length; index++ ) {
+    observer.observe(products[index], { // заменяем document.body на нужный нам элемент
+        attributes: true
+    });
+}
+
+
+
+
+
+var observer1 = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+        var newVal = $(mutation.target).prop(mutation.attributeName);
+        if (mutation.attributeName === "class") {
+            if(mutation.target.classList.contains('active')) {
+                console.log('yes');
+                checkProduct1();
+            }
+            // console.log('yes')
+        }
+    });
+});
+
+//  ПОТОМ УБРАТЬ ДУБЛИРОВАНИЕ КОДА
+function checkProduct1() {
+        // id, isWhithGarnish, meal)
+        let products = document.querySelectorAll('.eat-choose-grid>.main.lunch')
+        // let product = document.getElementById(id)
+        // if(product.classList.contains('active')) {
+        for (var index1 = 0; index1 < products.length; index1++ ) {
+            if(products[index1].classList.contains('active')) {
+                let chooses = document.querySelectorAll('.eat-choose-grid>.garnish.lunch')
+                if (products[index1].classList.contains('True')) {
+                    for (var index1 = 0; index1 < chooses.length; index1++ ) {
+                            chooses[index1].classList.remove('active');
+                            chooses[index1].classList.add('pointer-events-none');
+                        }
+                        document.getElementById("garnish-lunch").classList.add('hide-item');
+                        document.getElementById("category-garnish-lunch").classList.add('hide-item');
+                } else {
+                    chooses[0].classList.add('active');
+                    chooses[0].querySelector('.choose a').click();
+                    for (var index1 = 0; index1 < chooses.length; index1++ ) {
+                            chooses[index1].classList.remove('pointer-events-none');
+                        }
+                        document.getElementById("garnish-lunch").classList.remove('hide-item');
+                        document.getElementById("category-garnish-lunch").classList.remove('hide-item');
+                }
+            }
+        }
+            // чтобы в моб. версии не открывалось нижнее меню
+            chooses = document.querySelectorAll('.bottom-sheet-garnish')
+                for (var index1 = 0; index1 < chooses.length; index1++ ) {
+                        chooses[index1].classList.remove('open');
+                    }
+
+    addHtmlLunch();
+    addHtmlDinner();
+}
+
+
+let products1 = document.querySelectorAll('.eat-choose-grid>.main.lunch')
+for (var index = 0; index < products1.length; index++ ) {
+    observer1.observe(products1[index], { // заменяем document.body на нужный нам элемент
+        attributes: true
+    });
+}
+// observer.observe(document.getElementById('1026'), { // заменяем document.body на нужный нам элемент
+//         attributes: true
+//     });
 
 
 </script>

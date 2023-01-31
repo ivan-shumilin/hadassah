@@ -71,18 +71,20 @@ def create_dict_products_lp(products_lp_category):
     excluded_product = ['458']  # Вода "Jеvea" 0,51л.
     for item in products_lp_category:
         if not str(item.id) in excluded_product:
-            list_with_products.append({
-                'id': item.id,
-                'name': item.public_name,
-                'carbohydrate': item.carbohydrate,
-                'fat': item.fat,
-                'fiber': item.fiber,
-                'energy': item.energy,
-                'image': item.image,
-                'description': item.description,
-                'category': item.category
-            })
-    return None if list_with_products == [] else list_with_products
+            # list_with_products.append({
+            #     'id': item.id,
+            #     'name': item.public_name,
+            #     'carbohydrate': item.carbohydrate,
+            #     'fat': item.fat,
+            #     'fiber': item.fiber,
+            #     'energy': item.energy,
+            #     'image': item.image,
+            #     'description': item.description,
+            #     'category': item.category,
+            #     'with_garnis': item.with_garnis
+            # })
+            list_with_products.append(item)
+    return list_with_products
 
 
 def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, user):
@@ -229,3 +231,32 @@ def check_is_comment(patient):
         patient.is_pureed_nutrition:
         return True
     return False
+
+
+def del_if_not_garnish(menu_for_lk_patient):
+    """
+     Если нет гарнира на выбор, тогда удаляем все блюда без
+     гарнира, тк не будет возможности выбрать гарнир.
+    """
+    for meal in ['lunch', 'dinner']:
+        count_garnish = \
+            len(menu_for_lk_patient[meal]['lp']['garnish'] + menu_for_lk_patient[meal]['cafe']['garnish'])
+        if count_garnish == 0:
+            menu_for_lk_patient[meal]['lp']['main'] = \
+                [product for product in menu_for_lk_patient[meal]['lp']['main'] if product.with_garnish]
+            menu_for_lk_patient[meal]['cafe']['main'] = \
+                [product for product in menu_for_lk_patient[meal]['cafe']['main'] if product.with_garnish]
+    return menu_for_lk_patient
+
+def del_if_not_product_without_garnish(menu_for_lk_patient):
+    """
+     Если нет основных блюд для которых требуется гарнир, тогда удаляем гарниры.
+     Но только из дополнительных гарниров (cafe)
+    """
+    for meal in ['lunch', 'dinner']:
+        count_product_without_garnish = \
+            len([product for product in menu_for_lk_patient[meal]['lp']['main'] if not product.with_garnish] + \
+                [product for product in menu_for_lk_patient[meal]['cafe']['main'] if not product.with_garnish])
+        if count_product_without_garnish == 0:
+            menu_for_lk_patient[meal]['cafe']['garnish'] = []
+    return menu_for_lk_patient

@@ -5637,3 +5637,7 @@ font-weight: 200;
 .hide-item {
   display: none !important;
 }
+/* added code */
+.pointer-events-none {
+  pointer-events: none;
+}

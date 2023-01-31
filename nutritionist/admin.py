@@ -9,18 +9,6 @@ from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp
 
 admin.site.register(Base)
 
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'public_name', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category',)
-    fields = ('name', 'public_name', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category', 'description',)
-    list_filter = ('category', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd')
-    list_per_page = 100
-    # list_filter = ('status', 'due_back')
-
-# class ProductLpAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'category',)
-#     fields = ('name', 'category', 'description',)
-
-
 class TimetableAdmin(admin.ModelAdmin):
     list_display = ('item', 'datetime',)
     list_filter = ('datetime',)
@@ -33,12 +21,23 @@ class TimetableLpAdmin(admin.ModelAdmin):
 
 admin.site.register(Timetable, TimetableAdmin)
 admin.site.register(TimetableLp, TimetableLpAdmin)
-admin.site.register(Product, ProductAdmin)
-# admin.site.register(ProductLp, ProductLpAdmin)
 
 class TimetableLpAdmin(admin.TabularInline):
     model = TimetableLp
     list_per_page = 600
+
+class TimetableAdmin(admin.TabularInline):
+    model = Timetable
+    list_per_page = 600
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'public_name', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category',)
+    fields = ('name', 'public_name', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category', 'description',)
+    list_filter = ('category', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd')
+    list_per_page = 100
+
+    inlines = [TimetableAdmin]
 
 @admin.register(ProductLp)
 class ProductLpAdmin(admin.ModelAdmin):
