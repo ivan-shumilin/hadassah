@@ -1614,11 +1614,22 @@ function checkProduct() {
                     document.getElementById("garnish-dinner").classList.add('hide-item');
                     document.getElementById("category-garnish-dinner").classList.add('hide-item');
                 } else {
-                    chooses[0].classList.add('active');
-                    chooses[0].querySelector('.choose a').click();
                     for (var index1 = 0; index1 < chooses.length; index1++ ) {
                             chooses[index1].classList.remove('pointer-events-none');
                         }
+                    let flag = false // встретлся ли актвный элемент (гарнир)
+                    for (var index1 = 0; index1 < chooses.length; index1++ ) {
+                            if ((chooses[index1].classList.contains('active')) & (!flag)) {
+                                chooses[index1].querySelector('.choose a').click();
+                                flag = true 
+                            } else {
+                                chooses[index1].classList.remove('active')
+                            }
+                    }
+                    if (!flag) { // если не встретили активный гарнир, тогда отмечаем первый
+                        chooses[0].classList.add('active');
+                        chooses[0].querySelector('.choose a').click();
+                    }
                     document.getElementById("garnish-dinner").classList.remove('hide-item');
                     document.getElementById("category-garnish-dinner").classList.remove('hide-item');
                 }
@@ -1673,16 +1684,27 @@ function checkProduct1() {
                             chooses[index1].classList.remove('active');
                             chooses[index1].classList.add('pointer-events-none');
                         }
-                        document.getElementById("garnish-lunch").classList.add('hide-item');
-                        document.getElementById("category-garnish-lunch").classList.add('hide-item');
+                    document.getElementById("garnish-lunch").classList.add('hide-item');
+                    document.getElementById("category-garnish-lunch").classList.add('hide-item');
                 } else {
-                    chooses[0].classList.add('active');
-                    chooses[0].querySelector('.choose a').click();
                     for (var index1 = 0; index1 < chooses.length; index1++ ) {
                             chooses[index1].classList.remove('pointer-events-none');
                         }
-                        document.getElementById("garnish-lunch").classList.remove('hide-item');
-                        document.getElementById("category-garnish-lunch").classList.remove('hide-item');
+                    let flag = false // встретлся ли актвный элемент (гарнир)
+                    for (var index1 = 0; index1 < chooses.length; index1++ ) {
+                            if ((chooses[index1].classList.contains('active')) & (!flag)) {
+                                chooses[index1].querySelector('.choose a').click();
+                                flag = true 
+                            } else {
+                                chooses[index1].classList.remove('active')
+                            }
+                    }
+                    if (!flag) { // если не встретили активный гарнир, тогда отмечаем первый
+                        chooses[0].classList.add('active');
+                        chooses[0].querySelector('.choose a').click();
+                    }
+                    document.getElementById("garnish-lunch").classList.remove('hide-item');
+                    document.getElementById("category-garnish-lunch").classList.remove('hide-item');
                 }
             }
         }
