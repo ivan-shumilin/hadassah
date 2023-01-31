@@ -85,7 +85,7 @@
                 <input type="text" id="is_accompanying_{{ form.id.value }}" value="{{ form.is_accompanying.value }}">
                 <input type="text" id="type_pay_{{ form.id.value }}" value="{{ form.type_pay.value }}">
             </div>
-                <div id="{{ form.id.value }}" class="tr product" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.Y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.bed.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
+                <div id="{{ form.id.value }}" class="tr product {% if forloop.first %} round {% endif %}" data-patient-card-show onclick="displayInfoPatient('{{ form.full_name.value }}', '{{ form.receipt_date.value|date:"d.m.Y" }}', '{{ form.receipt_time.value|time:"H:i" }}', '{{ form.department.value }}', '{{ form.type_of_diet.value }}', '{{ form.room_number.value }}', '{{ form.bed.value }}', '{{ form.comment.value|cut:"None"  }}', {{ form.id.value }})">
                     <div class="td">
                         <div class="name ellipsis">{{ form.full_name.value|formatting_full_name }}</div>
                     </div>
