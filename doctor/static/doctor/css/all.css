@@ -5641,3 +5641,8 @@ font-weight: 200;
 .pointer-events-none {
   pointer-events: none;
 }
+
+/* added code */
+.round {
+  border-radius: 0 0 0 16px !important;
+}

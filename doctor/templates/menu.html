@@ -75,6 +75,93 @@
                 
                 <div id="content" data-scrollbar>
                     <div class="eat-grid-block">
+                        {% if products_salad %}
+                            <div class="category">Салат</div>
+                            <div class="eat-grid">
+                                {% for product in products_salad %}
+                                    <div class="item">
+                                        <div class="info">
+                                            <div class="name-and-value">
+                                                {% if product.image %}
+                                                    <div class="img">
+                                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                    </div>
+                                                {% else %}
+                                                    <div class="img mobile">
+                                                        {% load static %}
+                                                        <svg  viewBox="20 -55 180 220" xmlns="http://www.w3.org/2000/svg" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
+                                                        <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.public_name %}
+                                                    <div class="name">{{ product.public_name }}</div>
+                                                {% else %}
+                                                    <div class="name">{{ product.name }}</div>
+                                                {% endif %}
+                                                <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
+                                            </div>
+                                            <div class="text">
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img">
+                                                {% load static %}
+                                                <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if products_soup %}
+                            <div class="category">Суп</div>
+                            <div class="eat-grid">
+                                {% for product in products_soup %}
+                                    <div class="item">
+                                        <div class="info">
+                                            <div class="name-and-value">
+                                                {% if product.image %}
+                                                    <div class="img">
+                                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                    </div>
+                                                {% else %}
+                                                    <div class="img mobile">
+                                                        {% load static %}
+                                                        <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.public_name %}
+                                                    <div class="name">{{ product.public_name }}</div>
+                                                {% else %}
+                                                    <div class="name">{{ product.name }}</div>
+                                                {% endif %}
+                                                <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
+                                            </div>
+                                            <div class="text">
+                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                            </div>
+                                        </div>
+                                        {% if product.image %}
+                                            <div class="img">
+                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                            </div>
+                                        {% else %}
+                                            <div class="img">
+                                                {% load static %}
+                                                <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
                         {% if products_main %}
                             <div class="category">Основное блюдо</div>
                             <div class="eat-grid">
@@ -284,93 +371,6 @@
                                             <div class="img">
                                                 {% load static %}
                                                 <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        {% if products_salad %}
-                            <div class="category">Салат</div>
-                            <div class="eat-grid">
-                                {% for product in products_salad %}
-                                    <div class="item">
-                                        <div class="info">
-                                            <div class="name-and-value">
-                                                {% if product.image %}
-                                                    <div class="img">
-                                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                                    </div>
-                                                {% else %}
-                                                    <div class="img mobile">
-                                                        {% load static %}
-                                                        <svg  viewBox="20 -55 180 220" xmlns="http://www.w3.org/2000/svg" width="120" height="90" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M108 4.5H12A7.5 7.5 0 0 0 4.5 12v66a7.5 7.5 0 0 0 7.5 7.5h96a7.5 7.5 0 0 0 7.5-7.5V12a7.5 7.5 0 0 0-7.5-7.5ZM12 0C5.373 0 0 5.373 0 12v66c0 6.627 5.373 12 12 12h96c6.627 0 12-5.373 12-12V12c0-6.627-5.373-12-12-12H12Z" fill="#FBFCF7"/><path d="M29.891 47.09 0 70.876V74c0 8.837 7.163 16 16 16h88c8.837 0 16-7.163 16-16v-8.75L94.5 31.856c-3.09-4.045-9.12-4.215-12.433-.35L62.022 54.89a8 8 0 0 1-11.058 1.05l-11.107-8.848a8 8 0 0 0-9.966-.002Z" fill="#FBFCF7"/><circle cx="27" cy="27" r="12" fill="#FBFCF7"/></svg>
-                                                        <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
-                                                    </div>
-                                                {% endif %}
-                                                {% if product.public_name %}
-                                                    <div class="name">{{ product.public_name }}</div>
-                                                {% else %}
-                                                    <div class="name">{{ product.name }}</div>
-                                                {% endif %}
-                                                <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
-                                            </div>
-                                            <div class="text">
-                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                            </div>
-                                        </div>
-                                        {% if product.image %}
-                                            <div class="img">
-                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                            </div>
-                                        {% else %}
-                                            <div class="img">
-                                                {% load static %}
-                                                <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        {% if products_soup %}
-                            <div class="category">Суп</div>
-                            <div class="eat-grid">
-                                {% for product in products_soup %}
-                                    <div class="item">
-                                        <div class="info">
-                                            <div class="name-and-value">
-                                                {% if product.image %}
-                                                    <div class="img">
-                                                        <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                                    </div>
-                                                {% else %}
-                                                    <div class="img mobile">
-                                                        {% load static %}
-                                                        <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
-                                                    </div>
-                                                {% endif %}
-                                                {% if product.public_name %}
-                                                    <div class="name">{{ product.public_name }}</div>
-                                                {% else %}
-                                                    <div class="name">{{ product.name }}</div>
-                                                {% endif %}
-                                                <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
-                                            </div>
-                                            <div class="text">
-                                                {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
-                                            </div>
-                                        </div>
-                                        {% if product.image %}
-                                            <div class="img">
-                                                <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                            </div>
-                                        {% else %}
-                                            <div class="img">
-                                                {% load static %}
-                                                <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
                                             </div>
                                         {% endif %}
                                     </div>

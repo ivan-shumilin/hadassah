@@ -67,9 +67,9 @@
 
                 <div id="content" data-scrollbar>
                     <div class="table patients-list"
-                        data-columns="30% 20% 30% 1fr"
-                        data-columns-mobile="30% 15% 30% 1fr">
-                        <div class="tr thead">
+                         data-columns="30% 20% 30% 1fr"
+                         data-columns-mobile="37% 15% 33% 1fr">
+                        <div class="tr thead" data-patient-card-show>
                             <div class="th th-name">
                                     <label id="full_name" onclick="check_function('input_full_name')" class="sort" for="input_full_name">
                                         <span style="cursor: pointer;">фио пациента</span></label>
@@ -106,7 +106,7 @@
                             <input type="text" id="is_without_lactose_{{ form.id.value }}" value="{{ form.is_without_lactose.value }}">
                         </div>
                         <div id="{{ form.id.value }}"
-                        class="tr product" data-patient-card-show 
+                        class="tr product {% if forloop.first %} round {% endif %}" data-patient-card-show 
                         onclick="displayInfoPatient('{{ form.full_name.value }}',
                          '{{ form.birthdate.value|date:"d.m.Y" }}',
                           '{{ form.receipt_date.value|date:"d.m.Y" }}',
