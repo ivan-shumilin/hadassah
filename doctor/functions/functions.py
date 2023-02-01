@@ -541,7 +541,7 @@ def comment_formatting(comment):
 def get_user_name(request):
     first_name = f'{request.user.last_name if request.user.last_name != None else "None"}'
     last_name = f'{request.user.first_name if request.user.first_name != None else "None"}'
-    return formatting_full_name(f'{last_name} {first_name}')
+    return formatting_full_name(f'{first_name} {last_name}')
 
 def is_user_look(user_form, is_accompanying, type_pay, is_probe, is_without_salt, is_without_lactose, is_pureed_nutrition):
     users = CustomUser.objects.filter(full_name=user_form.data['full_name'], status='patient')
