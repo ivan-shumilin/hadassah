@@ -639,8 +639,8 @@ def create_user(user_form, request):
                 update_UsersToday(user)
             if do_messang_send(user.full_name) and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
                 regard = u'\u26a0\ufe0f'
-                messang += f'{regard} <b>Изменение с {meal_order}</b> ({user_name})\n'
-    messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
+                messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+    messang += f'Поступил пациент {formatting_full_name(user.full_name)}\n'
     comment = add_features(user.comment,
                  user.is_probe,
                  user.is_without_salt,
@@ -648,6 +648,7 @@ def create_user(user_form, request):
                 user.is_pureed_nutrition)
     if comment:
         messang += f'Комментарий: "{comment}"'
+    messang += f'({user_name})'
     if user.full_name != "Leslie William Nielsen":
         my_job_send_messang_changes.delay(messang)
 
@@ -835,17 +836,19 @@ def edit_user(user_form, type, request):
             if meal_order == now_show_meal and meal_order != 'завтра':
                 update_UsersToday(user)
             if do_messang_send(user.full_name):  # c 17 до 7 утра не отправляем сообщения
-                messang += f'{regard} <b>Изменение с {meal_order}</b> ({user_name})\n'
+                messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
     if type == 'edit' and len(changes) > 0:
         messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
         for change in changes:
             messang += f'- {change}\n'
         if user.full_name != "Leslie William Nielsen":
+            messang += f'({user_name})'
             my_job_send_messang_changes.delay(messang)
     if type == 'restore':
         messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
         messang += f'Комментарий: "{comment_new}"' if comment_new else ''
         if user.full_name != "Leslie William Nielsen":
+            messang += f'({user_name})'
             my_job_send_messang_changes.delay(messang)
     return True
 
@@ -869,9 +872,10 @@ def archiving_user(user, request):
 
         if do_messang_send(user.full_name):  # c 17 до 7 утра не отправляем сообщения
             regard = u'\u26a0\ufe0f'
-            messang += f'{regard} <b>Изменение с {meal_order}</b> ({user_name})\n'
+            messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
     messang += f'Пациент {formatting_full_name(user.full_name)} ({user.type_of_diet}) выписан\n'
     if user.full_name != "Leslie William Nielsen":
+        messang += f'({user_name})'
         my_job_send_messang_changes.delay(messang)
     return 'archived'
 
