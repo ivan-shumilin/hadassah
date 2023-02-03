@@ -298,7 +298,12 @@ def menu(request):
 
         diet_form = DietChoiceForm(request.GET)
         meal = request.GET['meal']
-    day_of_the_week = get_day_of_the_week(date_get)
+
+    if diet == 'БД':
+        day_of_the_week = 'понедельник' if date_get == date_menu['today'] else 'вторник'
+    else:
+        day_of_the_week = get_day_of_the_week(date_get)
+
     translated_diet = translate_diet(diet)
 
     products_lp: tuple = creating_meal_menu_lp(day_of_the_week, translated_diet, meal)
@@ -307,7 +312,7 @@ def menu(request):
     products_soup, products_porridge, products_dessert, \
     products_fruit, products_drink = products_lp
 
-    if diet != 'ОВД веган (пост) без глютена' and diet != 'Нулевая диета':
+    if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'БД']:
         products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
     else:
         products_cafe: tuple = ([], [], [], [])
