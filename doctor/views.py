@@ -428,8 +428,6 @@ class GetPatientMenuDayAPIView(APIView):
 
 
 def menu_for_staff(request):
-    test_oop()
-    # test() #  удалить
     type = 'menu_for_staff'
     import datetime
 
