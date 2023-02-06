@@ -427,113 +427,113 @@ class GetPatientMenuDayAPIView(APIView):
         return Response(response)
 
 
-def menu_for_staff(request):
-    type = 'menu_for_staff'
-    import datetime
-
-    page = 'menu-menu'
-    date_menu = {
-        'today': str(date.today()),
-        'tomorrow': str(date.today() + datetime.timedelta(days=1)),
-        'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
-    }
-
-    if request.GET == {} or request.method == 'POST':
-        diet_form = DietChoiceForm({'type_of_diet': 'ovd'})
-        diet = 'ovd'
-        date_get = str(date.today())
-
-        meal = 'breakfast'
-
-    else:
-        diet = request.GET['input_type_of_diet']
-        date_get = request.GET['date']
-
-        diet_form = DietChoiceForm(request.GET)
-        meal = request.GET['meal']
-    day_of_the_week = get_day_of_the_week(date_get)
-    translated_diet = translate_diet(diet)
-
-    products_lp: tuple = creating_meal_menu_lp(day_of_the_week, translated_diet, meal)
-
-    products_main, products_garnish, products_salad, \
-    products_soup, products_porridge, products_dessert, \
-    products_fruit, products_drink = products_lp
-
-    products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
-
-    queryset_main_dishes, queryset_garnish, queryset_salad, \
-    queryset_soup = products_cafe
-
-    formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
-
-    if request.method == 'POST' and 'change-email' in request.POST:
-        # сhange_password(request.POST['changed-email'], request)
-
-        user = CustomUser.objects.get(id=request.user.id)
-        user.email = request.POST['changed-email']
-        user.username = request.POST['changed-email']
-        user.save()
-        request.user.email = request.POST['changed-email']
-        data = {
-            'diet_form': diet_form,
-            'date_menu': date_menu,
-            'products_main': products_main + queryset_main_dishes,
-            'products_porridge': products_porridge,
-            'products_dessert': products_dessert,
-            'products_fruit': products_fruit,
-            'products_garnish': products_garnish + queryset_garnish,
-            'products_salad': products_salad + queryset_salad,
-            'products_soup': products_soup + queryset_soup,
-            'products_drink': products_drink,
-            'page': page,
-            'date_get': date_get,
-            'formatted_date': formatted_date,
-            'meal': meal,
-            'modal': 'profile-edited',
-            'type': type
-        }
-        return render(request, 'menu.html', context=data)
-
-    if request.method == 'POST' and 'changed-password' in request.POST:
-        user = CustomUser.objects.get(id=request.user.id)
-        user.set_password(request.POST['changed-password'])
-        user.save()
-        data = {
-            'diet_form': diet_form,
-            'date_menu': date_menu,
-            'products_main': products_main + queryset_main_dishes,
-            'products_porridge': products_porridge,
-            'products_dessert': products_dessert,
-            'products_fruit': products_fruit,
-            'products_garnish': products_garnish + queryset_garnish,
-            'products_salad': products_salad + queryset_salad,
-            'products_soup': products_soup + queryset_soup,
-            'products_drink': products_drink,
-            'page': page,
-            'date_get': date_get,
-            'formatted_date': formatted_date,
-            'meal': meal,
-            'modal': 'password-edited',
-            'type': type
-        }
-        return render(request, 'menu.html', context=data)
-
-    data = {'diet_form': diet_form,
-            'date_menu': date_menu,
-            'products_main': products_main + queryset_main_dishes,
-            'products_porridge': products_porridge,
-            'products_dessert': products_dessert,
-            'products_fruit': products_fruit,
-            'products_garnish': products_garnish + queryset_garnish,
-            'products_salad': products_salad + queryset_salad,
-            'products_soup': products_soup + queryset_soup,
-            'products_drink': products_drink,
-            'page': page,
-            'date_get': date_get,
-            'formatted_date': formatted_date,
-            'meal': meal,
-            'diet': diet,
-            'type': type
-            }
-    return render(request, 'menu.html', context=data)
+# def menu_for_staff(request):
+#     type = 'menu_for_staff'
+#     import datetime
+#
+#     page = 'menu-menu'
+#     date_menu = {
+#         'today': str(date.today()),
+#         'tomorrow': str(date.today() + datetime.timedelta(days=1)),
+#         'day_after_tomorrow': str(date.today() + datetime.timedelta(days=2)),
+#     }
+#
+#     if request.GET == {} or request.method == 'POST':
+#         diet_form = DietChoiceForm({'type_of_diet': 'ovd'})
+#         diet = 'ovd'
+#         date_get = str(date.today())
+#
+#         meal = 'breakfast'
+#
+#     else:
+#         diet = request.GET['input_type_of_diet']
+#         date_get = request.GET['date']
+#
+#         diet_form = DietChoiceForm(request.GET)
+#         meal = request.GET['meal']
+#     day_of_the_week = get_day_of_the_week(date_get)
+#     translated_diet = translate_diet(diet)
+#
+#     products_lp: tuple = creating_meal_menu_lp(day_of_the_week, translated_diet, meal)
+#
+#     products_main, products_garnish, products_salad, \
+#     products_soup, products_porridge, products_dessert, \
+#     products_fruit, products_drink = products_lp
+#
+#     products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
+#
+#     queryset_main_dishes, queryset_garnish, queryset_salad, \
+#     queryset_soup = products_cafe
+#
+#     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
+#
+#     if request.method == 'POST' and 'change-email' in request.POST:
+#         # сhange_password(request.POST['changed-email'], request)
+#
+#         user = CustomUser.objects.get(id=request.user.id)
+#         user.email = request.POST['changed-email']
+#         user.username = request.POST['changed-email']
+#         user.save()
+#         request.user.email = request.POST['changed-email']
+#         data = {
+#             'diet_form': diet_form,
+#             'date_menu': date_menu,
+#             'products_main': products_main + queryset_main_dishes,
+#             'products_porridge': products_porridge,
+#             'products_dessert': products_dessert,
+#             'products_fruit': products_fruit,
+#             'products_garnish': products_garnish + queryset_garnish,
+#             'products_salad': products_salad + queryset_salad,
+#             'products_soup': products_soup + queryset_soup,
+#             'products_drink': products_drink,
+#             'page': page,
+#             'date_get': date_get,
+#             'formatted_date': formatted_date,
+#             'meal': meal,
+#             'modal': 'profile-edited',
+#             'type': type
+#         }
+#         return render(request, 'menu.html', context=data)
+#
+#     if request.method == 'POST' and 'changed-password' in request.POST:
+#         user = CustomUser.objects.get(id=request.user.id)
+#         user.set_password(request.POST['changed-password'])
+#         user.save()
+#         data = {
+#             'diet_form': diet_form,
+#             'date_menu': date_menu,
+#             'products_main': products_main + queryset_main_dishes,
+#             'products_porridge': products_porridge,
+#             'products_dessert': products_dessert,
+#             'products_fruit': products_fruit,
+#             'products_garnish': products_garnish + queryset_garnish,
+#             'products_salad': products_salad + queryset_salad,
+#             'products_soup': products_soup + queryset_soup,
+#             'products_drink': products_drink,
+#             'page': page,
+#             'date_get': date_get,
+#             'formatted_date': formatted_date,
+#             'meal': meal,
+#             'modal': 'password-edited',
+#             'type': type
+#         }
+#         return render(request, 'menu.html', context=data)
+#
+#     data = {'diet_form': diet_form,
+#             'date_menu': date_menu,
+#             'products_main': products_main + queryset_main_dishes,
+#             'products_porridge': products_porridge,
+#             'products_dessert': products_dessert,
+#             'products_fruit': products_fruit,
+#             'products_garnish': products_garnish + queryset_garnish,
+#             'products_salad': products_salad + queryset_salad,
+#             'products_soup': products_soup + queryset_soup,
+#             'products_drink': products_drink,
+#             'page': page,
+#             'date_get': date_get,
+#             'formatted_date': formatted_date,
+#             'meal': meal,
+#             'diet': diet,
+#             'type': type
+#             }
+#     return render(request, 'menu.html', context=data)

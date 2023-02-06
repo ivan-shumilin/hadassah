@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from nutritionist.views import *
 from nutritionist import views
-from doctor.views import menu_for_staff
+# from doctor.views import menu_for_staff
 
 
 
@@ -35,7 +35,7 @@ urlpatterns = [
     path('report/', views.report, name='report'),
     # path('manager/report/', views.reports, name='reports'),
     path('internal-report/', views.internal_report, name='internal_report'),
-    path('menu/', menu_for_staff, name='menu_for_staff'),
+    # path('menu/', menu_for_staff, name='menu_for_staff'),
     path('manager/', views.manager, name='manager'),
     path('manager/printed_form_one', views.printed_form_one, name='printed_form_one'),
     path('manager/printed_form_two_lp', views.printed_form_two_lp, name='printed_form_two'),
