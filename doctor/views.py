@@ -28,7 +28,6 @@ from doctor.functions.for_print_forms import create_user_today, check_time, upda
     add_products_lp, create_product_storage
 from doctor.functions.diet_formation import add_menu_three_days_ahead, update_diet_bd
 from doctor.functions.translator import get_day_of_the_week, translate_diet
-from doctor.functions.create_json_all_products_lp import test
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
