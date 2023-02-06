@@ -18,15 +18,15 @@ ALLOWED_HOSTS = [
         '158.160.6.40',
         '127.0.0.1',
         'loclhost',
-        # 'https://c451-85-117-111-121.eu.ngrok.io',
-        # 'c451-85-117-111-121.eu.ngrok.io',
+        'https://c451-85-117-111-121.eu.ngrok.io',
+        'c451-85-117-111-121.eu.ngrok.io',
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://sk.petrushkagroup.com",
+    # "https://sk.petrushkagroup.com/",
     "http://localhost:8080",
     "http://127.0.0.1:8000",
-    # "https://b467-146-120-93-183.eu.ngrok.io",
+    "https://b467-146-120-93-183.eu.ngrok.io",
 ]
 
 
@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
     'django_apscheduler',
-    # 'django_celery_beat',
+    'django_celery_beat',
     'widget_tweaks',
     'django_extensions',
 ]
@@ -59,7 +59,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -92,7 +92,7 @@ WSGI_APPLICATION = 'hadassah.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hadassah1',
+        'NAME': 'hadassah',
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
         'HOST': 'localhost',

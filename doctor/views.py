@@ -427,23 +427,6 @@ class GetPatientMenuDayAPIView(APIView):
         return Response(response)
 
 
-def test_oop():
-    class Strip:
-        def __init__(self, func):
-            self.__func = func
-
-        def __call__(self, word, *args, **kwargs):
-            return (self.__func(word)).strip(' ')
-
-    def upper_user(word:str):
-        return word.upper()
-
-    upper_user = Srtip(upper_user)
-    print(upper_user())
-
-
-
-
 def menu_for_staff(request):
     test_oop()
     # test() #  удалить
