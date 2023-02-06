@@ -44,6 +44,7 @@ def group_patient_check(user):
 def patient(request, id):
     is_public = True  # используем публичные названия блюд
     is_have = 'ok'
+    user = CustomUser.objects.get(id=id)
 
     date_menu = {
         'today': str(date.today()),
@@ -51,14 +52,40 @@ def patient(request, id):
         'day_after_tomorrow': str(date.today() + timedelta(days=2)),
     }
 
-    user = CustomUser.objects.get(id=id)
-    diet = translate_diet(user.type_of_diet)
-    translated_diet = user.type_of_diet
-    meal = 'lunch'
+    if user.type_of_diet == "БД день 1":
+        day_of_the_week_bd = {
+            str(date.today()): "понедельник",
+            str(date.today() + timedelta(days=1)): "вторник",
+            str(date.today() + timedelta(days=2)): "понедельник",
+        }
+    if user.type_of_diet == "БД день 2":
+        day_of_the_week_bd = {
+            str(date.today()): "вторник",
+            str(date.today() + timedelta(days=1)): "понедельник",
+            str(date.today() + timedelta(days=2)): "вторник",
+        }
+
     if request.GET == {} or request.method == 'POST':
         date_get = str(date.today())
     else:
         date_get = request.GET['date']
+
+    diet = translate_diet(user.type_of_diet)
+    translated_diet = user.type_of_diet
+
+
+    if user.type_of_diet in ['Нулевая диета']:
+        is_have = 'BD'  # выводим сообщение об ошибке
+        return render(request, 'patient.html', context={'is_have': is_have})
+
+    if user.type_of_diet in ['БД день 1', 'БД день 2']:
+        day_of_the_week = day_of_the_week_bd[date_get]
+        diet = "bd"
+        translated_diet = "БД"
+    else:
+        day_of_the_week = get_day_of_the_week(date_get)
+
+    meal = 'lunch'
 
     http_referer = request.META.get('HTTP_REFERER', False)
     if http_referer:
@@ -69,12 +96,6 @@ def patient(request, id):
     # если дата показа меньше даты госпитализации is_have = False
     if parse(date_get).date() < user.receipt_date:
         is_have = 'date'  # выводим сообщение об ошибке
-
-    if user.type_of_diet in ['БД день 1', 'БД день 2', 'Нулевая диета']:
-        is_have = 'BD'  # выводим сообщение об ошибке
-        return render(request, 'patient.html', context={'is_have': is_have})
-
-    day_of_the_week = get_day_of_the_week(date_get)
 
     menu_for_lk_patient = creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, user)
 
@@ -98,9 +119,11 @@ def patient(request, id):
     menu_for_lk_patient = del_if_not_product_without_garnish(menu_for_lk_patient)
 
     # если блюдо ЛП уже с гарниром (плов)
-    lunch_is_with_garnish = menu_for_lk_patient['lunch']['lp']['main'][0].with_garnish
-    dinner_is_with_garnish = menu_for_lk_patient['dinner']['lp']['main'][0].with_garnish
-
+    if user.type_of_diet not in ['БД день 1', 'БД день 2']:
+        lunch_is_with_garnish = menu_for_lk_patient['lunch']['lp']['main'][0].with_garnish
+        dinner_is_with_garnish = menu_for_lk_patient['dinner']['lp']['main'][0].with_garnish
+    else:
+        lunch_is_with_garnish = dinner_is_with_garnish = False
     data = {'is_have': is_have,
             'user': user,
             'breakfast': breakfast,

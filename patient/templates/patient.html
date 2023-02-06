@@ -1502,6 +1502,11 @@ function submitForm() {
     form.submit();
 }
 
+// если БД или есть комментарий, тогда останавлеваем таймер и 
+// кнопку "Подтвердить заказ" дезайблим 
+// if ('{{ diet }}' == '')
+
+
 // Берём элемент для вывода таймера
 let timer_show = document.getElementById("timer");
 let timer_end = document.getElementById("timer_end");

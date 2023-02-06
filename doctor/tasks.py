@@ -1,7 +1,7 @@
 from celery import shared_task
 import telepot
 from nutritionist.models import BotChatId, CustomUser, MenuByDay, UsersReadyOrder
-from doctor.functions.diet_formation import add_default_menu, add_menu_three_days_ahead
+from doctor.functions.diet_formation import add_menu_three_days_ahead, update_diet_bd
 from doctor.functions.for_print_forms import create_user_today, applies_changes, create_user_tomorrow,\
     create_ready_order, create_report, create_product_storage
 from doctor.functions.bot import check_change, formatting_full_name
@@ -92,7 +92,7 @@ def my_job_create_user_today():
 
 @shared_task()
 def my_job_create_user_tomorrow():
-    """ Создаем таблицу с пользователями на завтра """
+    """Создаем таблицу с пользователями на завтра."""
     delele_menu_by_arhived_users()
     create_user_today('tomorrow')
     send_messang("Готово")
@@ -109,3 +109,7 @@ def my_job_create_product_storage_lunch():
 @shared_task()
 def my_job_create_product_storage_dinner():
     create_product_storage('dinner')
+
+@shared_task()
+def my_job_update_diet_bd():
+    update_diet_bd()

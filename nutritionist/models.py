@@ -87,9 +87,13 @@ class CustomUser(AbstractUser):
         default='',
         help_text='Тип оплаты')
 
+    is_change_diet_bd = models.BooleanField(
+        blank=True,
+        default=True,
+        help_text='Чередовать диету БД при следующей смене? (19:00)')
 
     def __str__(self):
-        return f'{self.full_name}'
+        return f'{self.full_name}, {self.type_of_diet}, {self.is_change_diet_bd}'
 
 class UsersToday(models.Model):
     # таблица создаёться 1 раз в сутки, в 00:00.
@@ -314,6 +318,7 @@ class MenuByDay(models.Model):
     drink = models.CharField(max_length=100, null=True, blank=True)
     salad = models.CharField(max_length=100, null=True, blank=True)
     products = models.CharField(max_length=100, null=True, blank=True)
+    hidden = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f'{self.user_id} {self.date}'

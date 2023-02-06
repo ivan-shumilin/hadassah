@@ -13,14 +13,24 @@ import logging, random, telepot
 from doctor.functions.bot import check_change, formatting_full_name, do_messang_send
 from doctor.functions.helpers import check_value, formatting_full_name_mode_full
 from doctor.functions.translator import get_day_of_the_week
-from doctor.functions.diet_formation import add_default_menu, add_default_menu_on_one_day,\
+from doctor.functions.diet_formation import add_default_menu_on_one_day,\
     writes_the_patient_menu_to_the_database, add_the_patient_menu
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes
 from doctor.tasks import my_job_send_messang_changes
 
+def get_is_change_diet(patient):
+    """
+    Устанавливает значение is_change_diet_bd.
+    Если смена происходит с 17 до 19 тогда не меняем диету.
+    """
+    if datetime.today().time().hour >= 17 and datetime.today().time().hour < 19: # поменять на 17
+        patient.is_change_diet_bd = False
+        patient.save()
+
+
 def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup):
-    """Сортировка блюд по приемам пищи"""
+    """Сортировка блюд по приемам пищи."""
 
     if meal == 'breakfast':
         return [], [], [], []
@@ -378,7 +388,7 @@ def check_value_two(menu_all, date_str, meal, category, is_public):
         return value
 
 def creates_dict_with_menu_patients(id):
-    """ Создаем меню на 3 дня для вывода в ЛК врача """
+    """Создаем меню на 3 дня для вывода в ЛК врача."""
     menu_all = MenuByDay.objects.filter(user_id=id)
     menu = {}
     day_date = {
@@ -411,7 +421,7 @@ def creates_dict_with_menu_patients(id):
     return menu
 
 def creates_dict_with_menu_patients_on_day(id, date_show):
-    """ Создаем меню на день для вывода в ЛК пациента(история) """
+    """Создаем меню на день для вывода в ЛК пациента(история)."""
     menu_all = MenuByDay.objects.filter(user_id=id)
     menu = {}
 
@@ -431,21 +441,6 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
             'salad': check_value_two(menu_all, date_show, meal, "salad", is_public=True),
         }
     return menu
-
-def check_have_menu():
-    # посмотреть все даты от регистрации до сегодня -1, если нет меню, тогда добавить.
-    users = CustomUser.objects.filter(status='patient')
-    # days = [date.today() + timedelta(days=delta) for delta in [0, 1, 2]]
-    for user in users:
-        menu_all = MenuByDay.objects.filter(user_id=user.id)
-        # находим кол-во дней от сегодня до даты регитрации
-        count_days = date.today() - user.receipt_date
-        for delta in range(1, count_days.days - 1):
-            # дата сегодня минус delta
-            day = date.today() - timedelta(days=delta)
-            if len(menu_all.filter(date=str(day))) == 0:
-                add_default_menu_on_one_day(day, user)
-    return
 
 def creating_meal_menu_cafe(date_get, diet, meal):
     exception = ['ОВД веган (пост) без глютена', 'БД день 2', 'БД день 1', 'Нулевая диета', 'ЩД без сахара']
@@ -482,7 +477,7 @@ def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
     return products_main, products_garnish, products_salad, products_soup, products_porridge, products_dessert, products_fruit, products_drink
 
 def delete_choices(CustomUserFormSet):
-    """ Удаляем два выбора из formset 'не выбрано', '-------' """
+    """Удаляем два выбора из formset 'не выбрано', '-------'"""
     CustomUserFormSet.form.base_fields['department'].choices.remove(('', '---------'))
     for field in ['type_of_diet', 'room_number']:
         CustomUserFormSet.form.base_fields[field].choices.remove(('', '---------'))
@@ -500,7 +495,7 @@ logging.basicConfig(
 )
 
 def check_meal_user(user):
-    """ Вернет на какой прием пищи успевает пациент. """
+    """Вернет на какой прием пищи успевает пациент."""
     receipt_time = user.receipt_time
     receipt_date = user.receipt_date
     # Если пользователь есть в UsersReadyOrder, тогда вернем "завтрак".
@@ -519,7 +514,7 @@ def check_meal_user(user):
         return 'зактрака', 0
 
 def get_now_show_meal():
-    """ Вернет след прием пищи. """
+    """Вернет след прием пищи."""
     time = datetime.today().time()
     if time.hour > 0 and time.hour < 9:
         return 'зактрака'
@@ -614,6 +609,9 @@ def create_user(user_form, request):
     user.is_pureed_nutrition = is_pureed_nutrition
     user.status = 'patient'
     user.save()
+    if user.type_of_diet in ["БД день 1", "БД день 2"]:
+        get_is_change_diet(user)
+
     user_name = get_user_name(request) # получаем имя пользователя (вносит изменения в ЛК)
     logging.info(f'пользователь ({user_name}), cоздан пациент {user_form.data["full_name"]} ({user_form.data["type_of_diet"]})')
     add_the_patient_menu(user, 'creation')
@@ -736,6 +734,11 @@ def edit_user(user_form, type, request):
         changes.append(f"тип диеты <b>{user.type_of_diet}</b> изменен на <b>{user_form.data['type_of_diet1']}</b>")
         if type == 'edit':
             is_change_diet = True
+        # проверяем, нужно ли чередовать диету в 19 00
+        if user_form.data['type_of_diet1'] in ["БД день 1", "БД день 2"]:
+            get_is_change_diet(user)
+        else:
+            user.is_change_diet = True
     user.type_of_diet = user_form.data['type_of_diet1']
 
     is_probe = False if request.POST['edit_is_probe'] == 'False' else True
@@ -802,6 +805,7 @@ def edit_user(user_form, type, request):
     if type == 'restore':
         user.status = 'patient'
     user.save()
+
     user_name = get_user_name(request)  # получаем имя пользователя (вносит изменения в ЛК)
     logging.info(f'пользователь ({user_name}) пациент отредактирован {user_form.data["full_name1"]}')
     for change in changes:
@@ -857,6 +861,8 @@ def archiving_user(user, request):
         return
     user.status = 'patient_archive'
     user.save()
+    if user.type_of_diet in ["БД день 1", "БД день 2"]:
+        get_is_change_diet(user)
     user_name = get_user_name(request)  # получаем имя пользователя (вносит изменения в ЛК)
     logging.info(f'пользователь ({user_name}), пациент перенесен в архив {user.full_name} ({user.type_of_diet})')
     update_UsersToday(user)
@@ -880,7 +886,7 @@ def archiving_user(user, request):
     return 'archived'
 
 def add_features(comment, is_probe, is_without_salt, is_without_lactose, is_pureed_nutrition):
-    """ Добавляем к комментраию признаки для вывода в Сводный отчет. """
+    """Добавляем к комментраию признаки для вывода в Сводный отчет."""
     items_comment = [f"{None if comment == '' else comment}",
                      f"{None if not is_probe else 'Питание через зонд.'}",
                      f"{None if not is_without_salt else 'Без соли.'}",
@@ -985,7 +991,7 @@ def counting_diets(users, floors):
     return diets_count
 
 def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, is_public):
-    """ Создаем словарь с блюдами на конкретный прием пищи для пациента """
+    """Создаем словарь с блюдами на конкретный прием пищи для пациента."""
 
     if type_order == 'flex-order':
         menu_all = MenuByDay.objects.filter(user_id=id)
@@ -1087,7 +1093,8 @@ def is_active_user(user):
             return user.id
 
 def get_not_active_users_set():
-    """ Проверяем является ли пациент активным
+    """
+    Проверяем является ли пациент активным
     в 9:00 после завтрака все пациенты которые успевают на обед(время регистрации раньше 14:00) становятся активными\
     (нет возможности редактировать дату и время)
     В кейсе (1), когда у нас заранее известно время госпитализации.
@@ -1095,7 +1102,7 @@ def get_not_active_users_set():
     10:00 - 14:00 вкл. поступает – с обеда,
     14:00 - 17:00 вкл. поступает – с полдника,
     17:00 - 21:00 вкл. поступает – с ужина
-     """
+    """
     users = CustomUser.objects.filter(status='patient').filter(receipt_date__gte=date.today())
     not_active_users_set = ''
     for user in users:
@@ -1104,7 +1111,7 @@ def get_not_active_users_set():
     return not_active_users_set[:-1] if len(not_active_users_set) != 0 else 'none'
 
 def get_occupied_rooms(user_script):
-    """ Возвращает список с занятыми палатами """
+    """Возвращает список с занятыми палатами."""
     double_rooms = ['2а-2', '2а-3', '2а-4', '2а-16', '2а-17', '3а-2',
                     '3а-3', '3а-4', '3а-16', '3а-17', '4а-2', '4а-3',
                     '4а-4', '4а-5', '4а-15', '4а-16']

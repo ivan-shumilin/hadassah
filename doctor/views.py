@@ -19,15 +19,16 @@ from dateutil.parser import parse
 from django.db.models.functions import Lower
 from doctor.functions.functions import sorting_dishes, parsing, \
     creates_dict_with_menu_patients, creating_meal_menu_lp, creating_meal_menu_cafe, \
-    creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
+    creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two, archiving_user, get_not_active_users_set, \
     get_occupied_rooms
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes, create_user_tomorrow, create_ready_order, create_report, create_products_lp, add_products_lp,\
     add_products_lp, create_product_storage
-from doctor.functions.diet_formation import add_default_menu, add_menu_three_days_ahead
+from doctor.functions.diet_formation import add_menu_three_days_ahead, update_diet_bd
 from doctor.functions.translator import get_day_of_the_week, translate_diet
+from doctor.functions.create_json_all_products_lp import test
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -72,6 +73,9 @@ def doctor(request):
     # create_product_storage('dinner')
     # check_have_menu()
     #
+    # add_menu_three_days_ahead()
+
+    # update_diet_bd() # УДАЛИТЬ
     # add_menu_three_days_ahead()
 
     not_active_users_set = get_not_active_users_set()
@@ -289,13 +293,10 @@ def menu(request):
         diet_form = DietChoiceForm({'type_of_diet': 'ovd'})
         diet = 'ovd'
         date_get = str(date.today())
-
         meal = 'breakfast'
-
     else:
         diet = request.GET['input_type_of_diet']
         date_get = request.GET['date']
-
         diet_form = DietChoiceForm(request.GET)
         meal = request.GET['meal']
 
@@ -403,7 +404,7 @@ class VerifyPasswordAPIView(APIView):
 
 
 class GetPatientMenuAPIView(APIView):
-    """ Возвращает выбранные блюда пациента. ЛК врача, картачка пациента. """
+    """Возвращает выбранные блюда пациента. ЛК врача, картачка пациента."""
     def post(self, request):
         data = request.data
         response = creates_dict_with_menu_patients(data['id_user'])
@@ -427,7 +428,26 @@ class GetPatientMenuDayAPIView(APIView):
         return Response(response)
 
 
+def test_oop():
+    class Strip:
+        def __init__(self, func):
+            self.__func = func
+
+        def __call__(self, word, *args, **kwargs):
+            return (self.__func(word)).strip(' ')
+
+    def upper_user(word:str):
+        return word.upper()
+
+    upper_user = Srtip(upper_user)
+    print(upper_user())
+
+
+
+
 def menu_for_staff(request):
+    test_oop()
+    # test() #  удалить
     type = 'menu_for_staff'
     import datetime
 

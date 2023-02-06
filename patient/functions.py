@@ -88,8 +88,9 @@ def create_dict_products_lp(products_lp_category):
 
 
 def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, user):
-    """ Создаем словарь со всеми вариантами блюд для пациента, и с отмеченными блюдами
-        которые выбрал пациент. """
+    """Создаем словарь со всеми вариантами блюд для пациента, и с отмеченными блюдами
+        которые выбрал пациент.
+    """
     menu = {}
 
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
@@ -250,8 +251,8 @@ def del_if_not_garnish(menu_for_lk_patient):
 
 def del_if_not_product_without_garnish(menu_for_lk_patient):
     """
-     Если нет основных блюд для которых требуется гарнир, тогда удаляем гарниры.
-     Но только из дополнительных гарниров (cafe)
+    Если нет основных блюд для которых требуется гарнир, тогда удаляем гарниры.
+    Но только из дополнительных гарниров (cafe)
     """
     for meal in ['lunch', 'dinner']:
         count_product_without_garnish = \

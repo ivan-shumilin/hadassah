@@ -32,7 +32,7 @@ from django.core.management.commands import dumpdata
 from django.contrib.auth.models import Group
 from doctor.functions.functions import sorting_dishes, parsing, \
     creates_dict_with_menu_patients, creating_meal_menu_lp, creating_meal_menu_cafe, \
-    creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, check_have_menu, counting_diets, \
+    creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features
 from doctor.functions.bot import check_change
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
@@ -1544,7 +1544,7 @@ def internal_report(request):
 
 
     temporary_report.sort(key=operator.itemgetter('category'))
-    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша', 'товар']
+    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша', 'товар', 'hidden']
     intermediate_option = []
     report = []
     for cat in category:

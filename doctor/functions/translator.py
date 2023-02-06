@@ -1,6 +1,4 @@
-"""
-В этом файле функции, которые "переводят".
-"""
+"""В этом файле функции, которые "переводят"."""
 from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId,\
     UsersToday, MenuByDayReadyOrder, UsersReadyOrder
 from django.db import transaction
@@ -10,7 +8,7 @@ from datetime import datetime, date, timedelta
 from django.utils import dateformat
 
 def get_day_of_the_week(date_get):
-    """Дату в формате Y-M-D в день недели прописью"""
+    """Дату в формате Y-M-D в день недели прописью."""
 
     DAT_OF_THE_WEEK = {
         'Monday': 'понедельник',

@@ -1,6 +1,4 @@
-"""
-В этом файле маленькие функции, которые используют другие функции.
-"""
+"""В этом файле маленькие функции, которые используют другие функции."""
 from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId,\
     UsersToday, MenuByDayReadyOrder, UsersReadyOrder
 from django.db import transaction
@@ -12,7 +10,8 @@ from django.utils import dateformat
 
 def check_value(category, products):
     value: str = ''
-    if category != 'товар' and category != 'напиток':
+    # if category != 'товар' and category != 'напиток':
+    if category not in ['товар', 'напиток', 'hidden']:
         try:
             value = products.get(category=category).id
         except Exception:

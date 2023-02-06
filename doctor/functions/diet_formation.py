@@ -13,7 +13,7 @@ from django.utils import dateformat
 
 
 def get_next_meals():
-    """ Вернет следующий прием пищи. """
+    """Вернет следующий прием пищи."""
     time = datetime.today().time()
     if time.hour > 0 and time.hour < 7:
         return ['breakfast', 'lunch', 'afternoon', 'dinner']
@@ -26,9 +26,10 @@ def get_next_meals():
     return []
 
 def add_the_patient_menu(user, user_change_type):
-    """ Если поменялась диета или добавили комментарий.
-        Удаляем все меню в будущем и добавляем новое.
-     """
+    """
+    Если поменялась диета или добавили комментарий.
+    Удаляем все меню в будущем и добавляем новое.
+    """
     next_meals = get_next_meals()
 
     if next_meals == []:
@@ -42,42 +43,31 @@ def add_the_patient_menu(user, user_change_type):
     writes_the_patient_menu_to_the_database(user, days, next_meals)
 
 def add_menu_three_days_ahead():
-    """ Добовляем меню на 3 дня. """
+    """
+    Добовляем меню на 3 дня.
+    """
     users = CustomUser.objects.filter(status='patient')
     days = [date.today() + timedelta(days=delta) for delta in [0, 1, 2]]
     for user in users:
         menu_all = MenuByDay.objects.filter(user_id=user.id)
+        # порядок дней для формирования меню (БД)
+        if user.type_of_diet == 'БД день 1':
+            days_for_bd = ['понедельник', 'вторник', 'понедельник']
+        elif user.type_of_diet == 'БД день 2':
+            days_for_bd = ['вторник', 'понедельник', 'вторник']
+        else:
+            days_for_bd = []
         for index, day in enumerate(days):
             if len(menu_all.filter(date=str(day))) == 0 and (day >= user.receipt_date):
                 for change_day in days[index:]:
-                    add_default_menu_on_one_day(change_day, user)
-    return
-
-def add_default_menu(user):
-    """
-    Заполняем MenuByDay.
-    В MenuByDay хранится перечень блюд для пациента в определенный день, прием пищи.
-    """
-    # генератор списка return даты на след 3 дня
-    days = [user.receipt_date + timedelta(days=delta) for delta in [0, 1, 2]]
-
-    for index, day_of_the_week in enumerate(days):
-        add_default_menu_on_one_day(day_of_the_week, user)
+                    add_default_menu_on_one_day(change_day, user, index, days_for_bd)
     return
 
 @transaction.atomic
-def add_default_menu_on_one_day(day_of_the_week, user):
-    if user.type_of_diet in ['БД день 1', 'БД день 2']:
-        if type(user.receipt_date) == str:
-            is_even = (day_of_the_week - parse(user.receipt_date) + timedelta(days=1)).days % 2 == 0
-        else:
-            is_even = (day_of_the_week - user.receipt_date + timedelta(days=1)).days % 2 == 0
-        if user.type_of_diet == 'БД день 1':
-            day = 'вторник' if is_even else 'понедельник'
-            translated_diet = 'БД'
-        if user.type_of_diet == 'БД день 2':
-            day = 'понедельник' if is_even else 'вторник'
-            translated_diet = 'БД'
+def add_default_menu_on_one_day(day_of_the_week, user, index, days_for_bd):
+    if days_for_bd:
+        day = days_for_bd[index]
+        translated_diet = 'БД'
     else:
         day = get_day_of_the_week(str(day_of_the_week))
         translated_diet = user.type_of_diet
@@ -101,6 +91,7 @@ def add_default_menu_on_one_day(day_of_the_week, user):
             drink=check_value('напиток', products),
             salad=check_value('салат', products),
             products=check_value('товар', products),
+            hidden=check_value('hidden', products),
             ))
         MenuByDay.objects.bulk_create(to_create)
     return
@@ -108,20 +99,28 @@ def add_default_menu_on_one_day(day_of_the_week, user):
 
 @transaction.atomic
 def writes_the_patient_menu_to_the_database(user, days, next_meals):
+    # если пациент не попал на последний прием пищи (ужин) тогда на следующий день не
+    # происходи чередование диет
+    if next_meals == [] and user.type_of_diet in ['БД день 1', 'БД день 2']:
+        # порядок дней для формирования меню (БД)
+        if user.type_of_diet == 'БД день 1':
+            days_for_bd = ['понедельник', 'понедельник', 'вторник', 'понедельник']
+        if user.type_of_diet == 'БД день 2':
+            days_for_bd = ['вторник', 'вторник', 'понедельник', 'вторник']
+    if next_meals:
+        # порядок дней для формирования меню (БД)
+        if user.type_of_diet == 'БД день 1':
+            days_for_bd = ['понедельник', 'вторник', 'понедельник']
+        if user.type_of_diet == 'БД день 2':
+            days_for_bd = ['вторник', 'понедельник', 'вторник']
+
+
     for index, change_day in enumerate(days):
         next_meals = next_meals if index == 0 else ['breakfast', 'lunch', 'afternoon', 'dinner']
         for meal in next_meals:
             if user.type_of_diet in ['БД день 1', 'БД день 2']:
-                if type(user.receipt_date) == str:
-                    is_even = (change_day - parse(user.receipt_date).date() + timedelta(days=1)).days % 2 == 0
-                else:
-                    is_even = (change_day - user.receipt_date + timedelta(days=1)).days % 2 == 0
-                if user.type_of_diet == 'БД день 1':
-                    day = 'вторник' if is_even else 'понедельник'
-                    translated_diet = 'БД'
-                if user.type_of_diet == 'БД день 2':
-                    day = 'понедельник' if is_even else 'вторник'
-                    translated_diet = 'БД'
+                day = days_for_bd[index]
+                translated_diet = 'БД'
             else:
                 day = get_day_of_the_week(str(change_day))
                 translated_diet = user.type_of_diet
@@ -158,8 +157,10 @@ def delete_menu_for_future(user, days, next_meals):
 
 
 def get_users_on_the_meal(meal):
-    """ Возвращает queryset c пациентами, которые попадают в заявку на приготовление блюд
-        на конкретный прием пищи. """
+    """
+    Возвращает queryset c пациентами, которые попадают в заявку на приготовление блюд
+    на конкретный прием пищи.
+    """
     if meal == 'breakfast':
         users = CustomUser.objects.filter(status='patient') \
             .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='10:00'))
@@ -182,3 +183,26 @@ def get_users_on_the_meal(meal):
             filter(Q(receipt_date__lte=date.today()) | Q(receipt_date__lte=tomorrow) & Q(receipt_time__lte='10:00'))
 
     return users
+
+
+def update_diet_bd():
+    """
+    Обновляет БД диету у пациента по след. правилам:
+    1. меняется как и все диеты (можно менять за 2 часа до приема пищи)
+    2. в 19:00 происходит чередование с БД-1 на БД-2 и наоборот.
+    3. если поменяли после 17 (после попадания на последний прием), тогда на следующий день не меняем.
+    Допустим поменяли в 16:30 с ОВД на БД-1, на ужин будет БД-1, на следующий день БД-2
+    А если в 17:30 с ОВД на БД-1, тогда на следующий день будет БД-1 (не меняем)
+    """
+
+    patients = CustomUser.objects.filter(status="patient")
+    patients_with_bd_diet = patients.filter(Q(type_of_diet="БД день 1") | Q(type_of_diet="БД день 2"))
+    for patient in patients_with_bd_diet:
+        if patient.is_change_diet_bd:
+            patient.type_of_diet = "БД день 1" if patient.type_of_diet == "БД день 2" else "БД день 2"
+        patient.save()
+
+    for patient in patients:
+        patient.is_change_diet_bd = True
+        patient.save()
+    return

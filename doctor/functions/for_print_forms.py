@@ -28,7 +28,8 @@ def create_user_today(meal):
        0 - 10 поступает с завтрака,
        10 - 13 поступает с обеда,
        13 - 17 поступает с полдника,
-       17 - 00 поступает с ужина """
+       17 - 00 поступает с ужина
+    """
     to_create = []
     # В зависимости от приема пищи добавляем разных пациентов в UsersToday
     users = get_users_on_the_meal(meal)
@@ -129,7 +130,8 @@ def create_report(meal):
     report_dict = {}
     for user in users:
         menu = MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
-        products = [menu[0].main, menu[0].garnish, menu[0].porridge, menu[0].soup, menu[0].dessert, menu[0].fruit, menu[0].drink, menu[0].salad, menu[0].products]
+        products = [menu[0].main, menu[0].garnish, menu[0].porridge, menu[0].soup, menu[0].dessert, menu[0].fruit,
+                    menu[0].drink, menu[0].salad, menu[0].products, menu[0].hidden]
         products = [product for product in products if product not in ['', None, 'None']]
         report_dict[user.id] = {'type_of_diet': user.type_of_diet,
                                   'meal': meal,
@@ -151,7 +153,8 @@ def create_report(meal):
 @transaction.atomic
 def create_user_tomorrow():
     """Создает таблицу со всеми пользователями,
-       которые уже поступили или поступят завтра."""
+       которые уже поступили или поступят завтра.
+    """
     to_create = []
     tomorrow = date.today() + timedelta(days=1)
     users = CustomUser.objects.filter(status='patient').filter(receipt_date__lte=tomorrow)
@@ -403,10 +406,10 @@ def add_products_lp():
 @transaction.atomic
 def create_product_storage(meal):
     """
-        Функция для вывода данных в "Заявку по блюдам раздачи"
-        В 11 записывает блюда раздачи на обед в ProductStorage для корректного отображения
-        блюд раздачи в течение всего дня.
-        В 17 блюда на ужин.
+    Функция для вывода данных в "Заявку по блюдам раздачи"
+    В 11 записывает блюда раздачи на обед в ProductStorage для корректного отображения
+    блюд раздачи в течение всего дня.
+    В 17 блюда на ужин.
     """
     users = get_users_on_the_meal(meal)
     ProductStorage.objects.filter(date_create=(date.today() - timedelta(days=1))).delete()

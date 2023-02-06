@@ -18,16 +18,17 @@ ALLOWED_HOSTS = [
         '158.160.6.40',
         '127.0.0.1',
         'loclhost',
-        # 'https://3126-176-59-40-85.eu.ngrok.io',
-        # '3126-176-59-40-85.eu.ngrok.io',
+        'https://c451-85-117-111-121.eu.ngrok.io',
+        'c451-85-117-111-121.eu.ngrok.io',
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://sk.petrushkagroup.com",
+    # "https://sk.petrushkagroup.com/",
     "http://localhost:8080",
     "http://127.0.0.1:8000",
-    # "https://3126-176-59-40-85.eu.ngrok.io",
+    "https://b467-146-120-93-183.eu.ngrok.io",
 ]
+
 
 
 
@@ -47,7 +48,9 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
     'django_apscheduler',
+    'django_celery_beat',
     'widget_tweaks',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +59,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -89,7 +92,7 @@ WSGI_APPLICATION = 'hadassah.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hadassah1',
+        'NAME': 'hadassah',
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
         'HOST': 'localhost',
@@ -127,6 +130,13 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
 
 TIME_ZONE = 'Europe/Moscow'
+# TIME_ZONE = 'Europe/Riga' # минус 1 часа от московского
+# TIME_ZONE = 'Europe/Berlin' # минус 2 часа от московского
+# TIME_ZONE = 'Europe/London'  # минус 3 часа от московского
+# TIME_ZONE = 'America/Noronha' # минус 5 часа от московского
+# TIME_ZONE = 'America/Miquelon' # минус 6 часа от московского
+# TIME_ZONE = 'Australia/Sydney'
+# TIME_ZONE = 'Asia/Shanghai' # плюс 5 часов от московского
 
 USE_I18N = True
 USE_L10N = False
