@@ -300,7 +300,11 @@ def menu(request):
         meal = request.GET['meal']
 
     if diet == 'БД':
-        day_of_the_week = 'понедельник' if date_get == date_menu['today'] else 'вторник'
+        if date_get == date_menu['today']:
+            day_of_the_week = 'понедельник'
+        else:
+            day_of_the_week = 'вторник'
+            date_get = date_menu['tomorrow']
     else:
         day_of_the_week = get_day_of_the_week(date_get)
 
