@@ -93,7 +93,7 @@ def my_job_create_user_today():
 @shared_task()
 def my_job_create_user_tomorrow():
     """Создаем таблицу с пользователями на завтра."""
-    delele_menu_by_arhived_users()
+    delete_menu_by_arhived_users()
     create_user_today('tomorrow')
     send_messang("Готово")
 
