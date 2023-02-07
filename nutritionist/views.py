@@ -295,7 +295,7 @@ def index(request):
 @user_passes_test(group_nutritionists_check, login_url='login')
 @login_required(login_url='login')
 def search(request):
-    load_product()
+    # load_product()
     error = ''
     ProductFormSet = modelformset_factory(Product,
                                           fields=(
