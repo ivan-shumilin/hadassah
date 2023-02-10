@@ -1103,9 +1103,12 @@ def printed_form_two_lp(request):
                 # result = [comment for comment in product['comments'] if comment['comment'] != 'Без комментария.']
                 # if count > 0:
                 #     result.insert(0, {'comment': 'Без комментария.', 'count': count})
-                catalog_key_set = set([item['comment'] for item in product['comments']])
-
+                catalog_key_set = list(set([item['comment'] for item in product['comments']]))
+                catalog_key_set.remove('Без комментария.')
+                catalog_key_set.insert(0, 'Без комментария.')
                 result = []
+                if 'Без комментария.' in catalog_key_set:
+                    catalog_key_set
                 for key in catalog_key_set:
                     result.append({'comment': key,
                                    'count': sum([item['count'] for item in product['comments'] if key == item['comment']])})
