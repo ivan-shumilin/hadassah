@@ -389,6 +389,8 @@ def check_value_two(menu_all, date_str, meal, category, is_public):
     if category == 'bouillon':
         try:
             id = menu_all.filter(date=date_str).get(meal=meal).bouillon
+            print('check_value_two', id)
+            logging.info(f'check_value_two - {id}')
             if id == '':
                 return None
             if 'cafe' in id:
@@ -398,6 +400,8 @@ def check_value_two(menu_all, date_str, meal, category, is_public):
             value = create_value(product, id, is_public)
         except Exception:
             value = None
+        print('return', value)
+        logging.info(f'return - {value}')
         return value
 
 def creates_dict_with_menu_patients(id):
