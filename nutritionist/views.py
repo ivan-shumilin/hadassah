@@ -1083,26 +1083,9 @@ def printed_form_two_lp(request):
 
                         cat[ii] = None
 
-    number = 1
     for item in catalog.values():
         for product in item:
             if product != None:
-                # product['number'] = number
-                # number += 1
-                # without_comment = {'comment': 'Без комментария.', 'count': 1}
-                # count_without_comment = product['comments'].count(without_comment)
-                # try:
-                #     while True:
-                #         product['comments'].remove(without_comment)
-                # except:
-                #     product['comments'].insert(0, {'comment': 'Без комментария.', 'count': count_without_comment})
-                # count = 0
-                # for comment in product['comments']:
-                #     if comment['comment'] == 'Без комментария.':
-                #         count += comment['count']
-                # result = [comment for comment in product['comments'] if comment['comment'] != 'Без комментария.']
-                # if count > 0:
-                #     result.insert(0, {'comment': 'Без комментария.', 'count': count})
                 catalog_key_set = list(set([item['comment'] for item in product['comments']]))
                 if 'Без комментария.' in catalog_key_set:
                     catalog_key_set.remove('Без комментария.')
