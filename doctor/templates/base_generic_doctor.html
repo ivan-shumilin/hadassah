@@ -179,6 +179,7 @@
                         </div>
                 </div>
             </div>
+
         
         {% block content %}
 
@@ -236,12 +237,22 @@
             <input id="test_room_number" name="room_number">
             <input id="test_bed" name="bed">
             <input id="test_comment" name="comment">
-            <input id="is_accompanying" name="is_accompanying">
-            <input id="type_pay" name="type_pay">
+
+            <input id="is_bouillon" name="is_bouillon_add">
+            <input id="test_breakfastBouillon" name="breakfast_add">
+            <input id="test_lunchBouillon" name="lunch_add">
+            <input id="test_afternoonBouillon" name="afternoon_add">
+            <input id="test_dinnerBouillon" name="dinner_add">
+
             <input id="test_is_probe" name="is_probe">
             <input id="test_is_pureed_nutrition" name="is_pureed_nutrition">
             <input id="test_is_without_salt" name="is_without_salt">
             <input id="test_is_without_lactose" name="is_without_lactose">
+
+            <input id="is_accompanying" name="is_accompanying">
+            <input id="type_pay" name="type_pay">
+
+
         </div>
 
         <div data-modal="patient-add-test1" data-modal-width="480">
@@ -261,6 +272,13 @@
             <input id="edit_is_pureed_nutrition" name="edit_is_pureed_nutrition">
             <input id="edit_is_without_salt" name="edit_is_without_salt">
             <input id="edit_is_without_lactose" name="edit_is_without_lactose">
+
+
+            <input id="edit_is_bouillon" name="is_bouillon">
+            <input id="edit_breakfastBouillon" name="breakfast">
+            <input id="edit_lunchBouillon" name="lunch">
+            <input id="edit_afternoonBouillon" name="afternoon">
+            <input id="edit_dinnerBouillon" name="dinner">
         </div>
         {% if messages %}
                 {% for message in messages %}
@@ -375,10 +393,40 @@
                         <span>Без лактозы</span>
                     </label>
                 </div>
+
+                <div class="form-group checkbox">
+                    <label class="custom-checkbox">
+                        <input onchange="showPaymentChoiceBouillon()" class="custom-checkbox" id="bouillon" type="checkbox" name="bouillon">
+                        <span>+ Доп. бульон</span>
+                    </label>
+                </div>
+                <div id="addMeal" class="form-group hidden-edit">
+                    <label class="custom-checkbox mr-left">
+                        <input onchange="showPaymentChoiceBouillon()" id="breakfastBouillon" type="checkbox" name="breakfast">
+                        <span>Завтрак</span>
+                    </label>
+                    <label class="custom-checkbox mr-left">
+                        <input onchange="showPaymentChoiceBouillon()" id="lunchBouillon" type="checkbox" name="lunch">
+                        <span>Обед</span>
+                    </label>
+                    <label class="custom-checkbox mr-left">
+                        <input onchange="showPaymentChoiceBouillon()" id="afternoonBouillon" type="checkbox" name="afternoon">
+                        <span>Полдник</span>
+                    </label>
+                    <label class="custom-checkbox mr-left">
+                        <input onchange="showPaymentChoiceBouillon()" id="dinnerBouillon" type="checkbox" name="dinner">
+                        <span>Ужин</span>
+                    </label>
+                </div>
+
                 <div class="form-group">
                     {{ user_form.comment.label }}
                     {{ user_form.comment|attr:"rows='4'" }}
                     <div id ='error_receipt_date' class="error-field"></div>
+                </div>
+
+                <div id='error_bouillion_div' class="form-group">
+                    <div id ='error_bouillion' class="error-field"></div>
                 </div>
 
                 <div class="form-group item-actions flex flex-center last_form_group">

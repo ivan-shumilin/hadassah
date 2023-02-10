@@ -386,6 +386,19 @@ def check_value_two(menu_all, date_str, meal, category, is_public):
         except Exception:
             value = [None]
         return value
+    if category == 'bouillon':
+        try:
+            id = menu_all.filter(date=date_str).get(meal=meal).bouillon
+            if id == '':
+                return None
+            if 'cafe' in id:
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                product = ProductLp.objects.get(id=id)
+            value = create_value(product, id, is_public)
+        except Exception:
+            value = None
+        return value
 
 def creates_dict_with_menu_patients(id):
     """Создаем меню на 3 дня для вывода в ЛК врача."""
@@ -408,6 +421,7 @@ def creates_dict_with_menu_patients(id):
                 'dessert': check_value_two(menu_all, date_str, meal, "dessert", is_public=True),
                 'fruit': check_value_two(menu_all, date_str, meal, "fruit", is_public=True),
                 'drink': check_value_two(menu_all, date_str, meal, "drink", is_public=True),
+                'bouillon': check_value_two(menu_all, date_str, meal, "bouillon", is_public=True),
             }
             flag_no_products = True
             for category in ['main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad']:
@@ -568,6 +582,17 @@ def create_user(user_form, request):
     is_without_salt = False if request.POST['is_without_salt'] == 'False' else True
     is_without_lactose = False if request.POST['is_without_lactose'] == 'False' else True
     is_pureed_nutrition = False if request.POST['is_pureed_nutrition'] == 'False' else True
+    extra_bouillon = []
+    if request.POST['is_bouillon_add'] == 'True':
+        for meal in [('breakfast', 'breakfast_add'),\
+                     ('lunch', 'lunch_add'), \
+                     ('afternoon','afternoon_add'), \
+                     ('dinner', 'dinner_add')]:
+            if request.POST[meal[1]] == 'True':
+                extra_bouillon.append(meal[0])
+    extra_bouillon = ", ".join(extra_bouillon)
+
+
 
     is_user = is_user_look(
         user_form,
@@ -608,13 +633,16 @@ def create_user(user_form, request):
     user.is_without_lactose = is_without_lactose
     user.is_pureed_nutrition = is_pureed_nutrition
     user.status = 'patient'
+    user.extra_bouillon = extra_bouillon
     user.save()
     if user.type_of_diet in ["БД день 1", "БД день 2"]:
         get_is_change_diet(user)
 
     user_name = get_user_name(request) # получаем имя пользователя (вносит изменения в ЛК)
-    logging.info(f'пользователь ({user_name}), cоздан пациент {user_form.data["full_name"]} ({user_form.data["type_of_diet"]})')
-    add_the_patient_menu(user, 'creation')
+    logging_messang = f'пользователь ({user_name}), cоздан пациент {user_form.data["full_name"]} ({user_form.data["type_of_diet"]})'
+    logging_messang += f', доп. бульон: {extra_bouillon}]'
+    logging.info(logging_messang)
+    add_the_patient_menu(user, 'creation', extra_bouillon)
     messang = ''
     if datetime.today().time().hour >= 19:
         if parse(str(user.receipt_date)).date() == (date.today() + timedelta(days=1)) and \
@@ -688,11 +716,29 @@ def load_menu_for_future(user, meal, change_day):
     ))
     MenuByDay.objects.bulk_create(to_create)
 
+def create_message(extra_bouillon_old, extra_bouillon_new):
+    meals = {
+        'breakfast': 'завтрак',
+        'lunch': 'обед',
+        'afternoon': 'полдник',
+        'dinner': 'ужин',
+    }
+    result = []
+    for extra_bouillon in [extra_bouillon_old, extra_bouillon_new]:
+        if extra_bouillon == '':
+            result.append("без доп. бульона")
+        else:
+            result.append(f'доп. бульон: {", ".join([meals[item] for item in extra_bouillon.split(", ")])}')
+    return f'{result[0]} изменен на {result[1]}'.capitalize()
+
+
 def edit_user(user_form, type, request):
     changes = []
     is_change_diet = False
     flag_add_comment = False
+    flag_change_bouillon = False
     user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
+
     # если пациента уже восстоновлен из архива
     if type == 'restore' and user.status == 'patient' or\
         type == 'edit' and user.status == 'patient_archive':
@@ -801,6 +847,19 @@ def edit_user(user_form, type, request):
     type_pay = request.POST['edit_type_pay']
     user.is_accompanying = is_accompanying
     user.type_pay = type_pay
+
+    extra_bouillon = []
+    if request.POST['is_bouillon'] == 'True':
+        for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+            if request.POST[meal] == 'True':
+                extra_bouillon.append(meal)
+    extra_bouillon = ", ".join(extra_bouillon)
+    if user.extra_bouillon != extra_bouillon:
+        changes.append(create_message(user.extra_bouillon, extra_bouillon))
+        flag_change_bouillon = True
+
+    user.extra_bouillon = extra_bouillon
+
     # если надо восстановить учетную запись пациента
     if type == 'restore':
         user.status = 'patient'
@@ -813,11 +872,11 @@ def edit_user(user_form, type, request):
 
     flag_is_change_diet = is_change_diet
 
-    if type == 'restore' or flag_is_change_diet or flag_add_comment:
+    if type == 'restore' or flag_is_change_diet or flag_add_comment or flag_change_bouillon:
         # если добавили коммент переписываем меню для пациента на
         # следующие приемы пищи тк если есть коммент, тогда не могут быть
         # выбранны блюда по меню кафе
-        add_the_patient_menu(user, type)
+        add_the_patient_menu(user, type, extra_bouillon)
     regard = u'\u26a0\ufe0f'
     messang = ''
     if datetime.today().time().hour >= 19:
@@ -1000,7 +1059,10 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, 
     menu_list = []
     menu = {
         'salad': [check_value_two(menu_all, date_show, meal, "salad", is_public)],
-        'soup': [check_value_two(menu_all, date_show, meal, "soup", is_public)],
+        'soup': [check_value_two(menu_all, date_show, meal, "soup", is_public)]+ [check_value_two(menu_all,
+                                                                                                  date_show, meal,
+                                                                                                  "bouillon",
+                                                                                                  is_public)],
         'main': [check_value_two(menu_all, date_show, meal, "main", is_public)],
         'garnish': [check_value_two(menu_all, date_show, meal, "garnish", is_public)],
         'porridge': [check_value_two(menu_all, date_show, meal, "porridge", is_public)],

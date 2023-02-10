@@ -99,7 +99,8 @@ def create_ready_order(meal):
                                 fruit=menu[0].fruit,
                                 drink=menu[0].drink,
                                 salad=menu[0].salad,
-                                products=menu[0].products))
+                                products=menu[0].products,
+                                bouillon=menu[0].bouillon))
     MenuByDayReadyOrder.objects.bulk_create(to_create)
 
 
@@ -131,7 +132,7 @@ def create_report(meal):
     for user in users:
         menu = MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
         products = [menu[0].main, menu[0].garnish, menu[0].porridge, menu[0].soup, menu[0].dessert, menu[0].fruit,
-                    menu[0].drink, menu[0].salad, menu[0].products, menu[0].hidden]
+                    menu[0].drink, menu[0].salad, menu[0].products, menu[0].hidden, menu[0].bouillon]
         products = [product for product in products if product not in ['', None, 'None']]
         report_dict[user.id] = {'type_of_diet': user.type_of_diet,
                                   'meal': meal,

@@ -25,11 +25,12 @@ def get_next_meals():
         return ['dinner']
     return []
 
-def add_the_patient_menu(user, user_change_type):
+def add_the_patient_menu(user, user_change_type, extra_bouillon):
     """
     Если поменялась диета или добавили комментарий.
     Удаляем все меню в будущем и добавляем новое.
     """
+    extra_bouillon = extra_bouillon.split(", ")
     next_meals = get_next_meals()
 
     if next_meals == []:
@@ -40,7 +41,7 @@ def add_the_patient_menu(user, user_change_type):
     if user_change_type == 'edit':
         delete_menu_for_future(user, days, next_meals)
 
-    writes_the_patient_menu_to_the_database(user, days, next_meals)
+    writes_the_patient_menu_to_the_database(user, days, next_meals, extra_bouillon)
 
 def add_menu_three_days_ahead():
     """
@@ -92,13 +93,14 @@ def add_default_menu_on_one_day(day_of_the_week, user, index, days_for_bd):
             salad=check_value('салат', products),
             products=check_value('товар', products),
             hidden=check_value('hidden', products),
+            bouillon=f'{"426" if meal in user.extra_bouillon.strip(", ") else ""}'
             ))
         MenuByDay.objects.bulk_create(to_create)
     return
 
 
 @transaction.atomic
-def writes_the_patient_menu_to_the_database(user, days, next_meals):
+def writes_the_patient_menu_to_the_database(user, days, next_meals, extra_bouillon):
     # если пациент не попал на последний прием пищи (ужин) тогда на следующий день не
     # происходи чередование диет
     if next_meals == [] and user.type_of_diet in ['БД день 1', 'БД день 2']:
@@ -143,6 +145,7 @@ def writes_the_patient_menu_to_the_database(user, days, next_meals):
                 drink=check_value('напиток', products),
                 salad=check_value('салат', products),
                 products=check_value('товар', products),
+                bouillon=f"{'426' if meal in extra_bouillon else ''}"
             ))
             MenuByDay.objects.bulk_create(to_create)
     return

@@ -58,7 +58,7 @@ class CommentProductAdmin(admin.ModelAdmin):
 class MenuByDayAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'date', 'meal', 'type_of_diet')
     fields = ('user_id', 'date', 'type_of_diet', 'meal', 'main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit',
-              'drink', 'salad', 'products', 'hidden')
+              'drink', 'salad', 'products', 'hidden', 'bouillon')
     list_per_page = 600
 
 @admin.register(UsersToday)
@@ -90,7 +90,8 @@ class BotChatIdAdmin(admin.ModelAdmin):
 @admin.register(MenuByDayReadyOrder)
 class MenuByDayReadyOrderAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'date', 'meal')
-    fields = ('user_id', 'date', 'meal', 'main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad', 'products')
+    fields = ('user_id', 'date', 'meal', 'main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad',
+              'products', 'bouillon')
     list_per_page = 600
 
 

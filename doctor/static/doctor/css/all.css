@@ -5749,3 +5749,7 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
   .round {
     border-radius: 0 0 0 16px !important;
   }
+
+  .mr-left {
+    margin-left: 15px;
+  }

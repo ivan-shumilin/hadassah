@@ -92,6 +92,14 @@ class CustomUser(AbstractUser):
         default=True,
         help_text='Чередовать диету БД при следующей смене? (19:00)')
 
+    # если есть доп. бульон, тогда будут указаны приемы пищи через запятую
+    extra_bouillon = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        default='',
+        help_text='Дополнительный бульон')
+
     def __str__(self):
         return f'{self.full_name}, {self.type_of_diet}, {self.is_change_diet_bd}'
 
@@ -319,6 +327,7 @@ class MenuByDay(models.Model):
     salad = models.CharField(max_length=100, null=True, blank=True)
     products = models.CharField(max_length=100, null=True, blank=True)
     hidden = models.CharField(max_length=100, null=True, blank=True)
+    bouillon = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f'{self.user_id} {self.date}'
@@ -432,6 +441,7 @@ class MenuByDayReadyOrder(models.Model):
     drink = models.CharField(max_length=100, null=True)
     salad = models.CharField(max_length=100, null=True)
     products = models.CharField(max_length=100, null=True)
+    bouillon = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f'{self.user_id} {self.date}'

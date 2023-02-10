@@ -46,8 +46,9 @@ def doctor(request):
     CustomUserFormSet = modelformset_factory(CustomUser,
                                              fields=(
                                                  'full_name', 'birthdate', 'receipt_date', 'receipt_time', 'department',
-                                                 'floor', 'room_number', 'bed', 'type_of_diet', 'comment', 'id', 'is_accompanying',
-                                                 'is_probe', 'is_without_salt', 'is_pureed_nutrition', 'is_without_lactose', 'type_pay'),
+                                                 'floor', 'room_number', 'bed', 'type_of_diet', 'comment', 'id',
+                                                 'is_accompanying', 'is_probe', 'is_without_salt',
+                                                 'is_pureed_nutrition', 'is_without_lactose', 'type_pay', 'extra_bouillon'),
                                              widgets={
                                                  'full_name': TextInput(attrs={'required': "True"}),
                                                  'birthdate': TextInput(),
@@ -66,16 +67,9 @@ def doctor(request):
                                                  'is_without_salt': TextInput(attrs={'required': "True"}),
                                                  'is_pureed_nutrition': TextInput(attrs={'required': "True"}),
                                                  'is_without_lactose': TextInput(attrs={'required': "True"}),
+                                                 'extra_bouillon': TextInput(attrs={'required': "True"}),
                                              },
-                                             extra=0, )
-    # create_product_storage('lunch')
-    # create_product_storage('dinner')
-    # check_have_menu()
-    #
-    # add_menu_three_days_ahead()
-
-    # update_diet_bd() # УДАЛИТЬ
-    # add_menu_three_days_ahead()
+                                             extra=0,)
 
     not_active_users_set = get_not_active_users_set()
 

@@ -929,7 +929,7 @@ def printed_form_one(request):
                      '2а-16', '2а-17'],
     'third': ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
                     '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4',
-                    '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
+                    '3b-5', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
     'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
                       '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
     }
@@ -1019,6 +1019,13 @@ def printed_form_two_lp(request):
                     menu_all = MenuByDayReadyOrder.objects.filter(user_id=user.id)
                 if category == 'products' or category ==  'drink':
                     pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
+                elif category == 'soup':
+                    pr = [check_value_two(menu_all, str((date_create)), meal, 'soup', is_public)] + [check_value_two(
+                        menu_all, str((date_create)), meal, 'bouillon', is_public)]
+                    try:
+                        pr.remove(None)
+                    except:
+                        pass
                 else:
                     pr = [check_value_two(menu_all, str((date_create)), meal, category, is_public)]
                 # if pr != None:
@@ -1588,7 +1595,7 @@ def create_сatalog(is_public):
                      '2а-16', '2а-17'],
     'third': ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
                     '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4',
-                    '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
+                    '3b-5', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
     'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
                       '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
     }

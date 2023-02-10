@@ -202,10 +202,52 @@
                                 <span>Без лактозы</span>
                             </label>
                         </div>
+
+
+
+                        <div class="form-group checkbox">
+                            <label for="is_bouillon_form_{{ form.id.value }}" class="custom-checkbox">
+                                <input class="custom-checkbox" onchange="showPaymentChoiceEdit('is_bouillon_form_{{ form.id.value }}', 'typeMeal-{{ form.id.value }}')" id="is_bouillon_form_{{ form.id.value }}" type="checkbox" name="is_bouillon">
+                                <span>+ Доп. бульон</span>
+                            </label>
+                        </div>
+
+                        <div id="typeMeal-{{ form.id.value }}" class="form-group hidden-edit" id='typeMeal-{{ form.id.value }}}'>
+
+                            <label class="custom-radio" for="breakfast{{ form.id.value }}">
+                                <input id="breakfast{{ form.id.value }}" onchange="deleteError()" type="checkbox" name="breakfast{{ form.id.value }}" >
+                                <span>Завтрак</span>
+                            </label>
+
+                            <label class="custom-radio" for="lunch{{ form.id.value }}">
+                                <input id="lunch{{ form.id.value }}" onchange="deleteError()" type="checkbox" name="lunch{{ form.id.value }}" >
+                                <span>Обед</span>
+                            </label>
+
+                            <label class="custom-radio" for="afternoon{{ form.id.value }}">
+                                <input id="afternoon{{ form.id.value }}" onchange="deleteError()" type="checkbox" name="afternoon{{ form.id.value }}" >
+                                <span>Полдник</span>
+                            </label>
+
+                            <label class="custom-radio" for="dinner{{ form.id.value }}">
+                                <input id="dinner{{ form.id.value }}" onchange="deleteError()" type="checkbox" name="dinner{{ form.id.value }}" >
+                                <span>Ужин</span>
+                            </label>
+
+                        </div>
+
+
+
+
+
                         <div class="form-group">
                             <label>Комментарий</label>
                             {{ form.comment|attr:"rows='4'" }}
                             <p id ='error_comment' class="error-field"></p>
+                        </div>
+
+                        <div id='error_not_change_div' class="form-group">
+                            <div id ='error_not_change' class="error-field"></div>
                         </div>
 
 
@@ -225,7 +267,12 @@
                                       'is_without_salt_form_{{ form.id.value }}',
                                        'is_without_lactose_form_{{ form.id.value }}',
                                         'is_pureed_nutrition_{{ form.id.value }}',
-                                         'btn-edit-{{ form.id.value }}')">Сохранить</button>
+                                         'btn-edit-{{ form.id.value }}',
+                                          'is_bouillon_form_{{ form.id.value }}',
+                                           'breakfast{{ form.id.value }}',
+                                           'lunch{{ form.id.value }}',
+                                            'afternoon{{ form.id.value }}',
+                                             'dinner{{ form.id.value }}')">Сохранить</button>
                             <a class="button white" data-modal-close>Отменить</a>
                         </div>
 
@@ -673,7 +720,11 @@ function filtration() {
     }
 }
 
-
+function deleteError() {
+    document.getElementById('error_not_change').innerHTML = ''
+    document.getElementById('error_not_change').classList.remove('error')
+    document.getElementById('error_not_change_div').classList.remove('error')
+}
 
 function validationEditForm(id_full_name,
  birthdate,
@@ -689,7 +740,8 @@ function validationEditForm(id_full_name,
            typePayHadassah,
             isProbeId, isWithoutSaltId,
              isWithoutLactoseId,
-              isPureedNutritionId, btnId)  {
+              isPureedNutritionId, btnId,
+               bouillionId, breakfastId, lunchId, afternoonId, dinnerId)  {
     var btn = document.getElementById(btnId);
     btn.setAttribute('disabled', true);
     var form = document.getElementById('main-form');
@@ -782,6 +834,58 @@ function validationEditForm(id_full_name,
         document.getElementById('error_type_of_diet').classList.add('error')
         document.getElementById('type_of_diet_edit').classList.add('error')
         error = error + 1
+    }
+
+// указываем дополнительный бульон
+    var BouillionsValue = document.getElementById(bouillionId)
+    var isBreakfast = document.getElementById(breakfastId);
+    var isLunch = document.getElementById(lunchId);
+    var isAfretnoon = document.getElementById(afternoonId);
+    var isDinner = document.getElementById(dinnerId);
+    var strExBouillon = []
+// если стоит галка у + дополнительный бульон
+    if (BouillionsValue.checked) {
+        document.getElementById('edit_is_bouillon').value = 'True'
+
+        if (isBreakfast.checked) {
+            document.getElementById('edit_breakfastBouillon').value = 'True'
+            strExBouillon.push("breakfast");
+        } else {
+            document.getElementById('edit_breakfastBouillon').value = 'False'
+        }
+        if (isLunch.checked) {
+            document.getElementById('edit_lunchBouillon').value = 'True'
+            strExBouillon.push("lunch");
+        } else {
+            document.getElementById('edit_lunchBouillon').value = 'False'
+        }
+        if (isAfretnoon.checked) {
+            document.getElementById('edit_afternoonBouillon').value = 'True'
+            strExBouillon.push("afternoon");
+        } else {
+            document.getElementById('edit_afternoonBouillon').value = 'False'
+        }
+        if (isDinner.checked) {
+            document.getElementById('edit_dinnerBouillon').value = 'True'
+            strExBouillon.push("dinner");
+        } else {
+            document.getElementById('edit_dinnerBouillon').value = 'False'
+        }
+
+        if (strExBouillon.length == 0) {
+            error = 1
+            document.getElementById('error_not_change').innerHTML = 'Необходимо выбрать приемы пищи для доп. бульона'
+            document.getElementById('error_not_change').classList.add('error')
+            document.getElementById('error_not_change_div').classList.add('error')
+        }
+
+    } else {
+        document.getElementById('edit_is_bouillon').value = 'False'
+        document.getElementById('edit_breakfastBouillon').value = 'False'
+        document.getElementById('edit_lunchBouillon').value = 'False'
+        document.getElementById('edit_afternoonBouillon').value = 'False'
+        document.getElementById('edit_dinnerBouillon').value = 'False'
+        strExBouillon = [];
     }
 
     if (error == 0) {
