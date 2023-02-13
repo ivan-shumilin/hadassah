@@ -1154,8 +1154,11 @@ def create_external_report(filtered_report):
         report[key1] = {}
         count_all = 0 # все рационы кроме "Нулевой диеты"
         count_just_wather = 0
+        count_bd_2 = 0
         price_all = 750
         price_just_wather = 150
+        price_count_bd_2 = 150
+        price_bouillon = 90
         for key2, value2 in value1.items():
             report[key1][key2] = {}
             for index, item in enumerate(value2):
@@ -1163,15 +1166,28 @@ def create_external_report(filtered_report):
                 test_dict = {}
             for key3, value3 in report[key1][key2].items():
                 count_items = len(set([user.user_id for user in (report[key1][key2][key3])]))
-                price = price_just_wather if key3 == 'Нулевая диета'\
-                    else price_all
-                report[key1][key2][key3] = {'count': count_items,
-                                            'money': count_items * price}
+                count_bouillon = \
+                    len(set([user.user_id for user in (report[key1][key2][key3])
+                                if user.product_id == '426']))
+
                 if key3 == 'Нулевая диета':
+                    price = price_just_wather
                     count_just_wather += count_items
+                elif key3 == 'БД день 2' and key2 == 'afternoon':
+                    price = price_count_bd_2
+                    count_bd_2 += count_items
+                else:
+                    price = price_all
                 count_all += count_items
-        money = (count_all - count_just_wather) * price_all + \
-                (count_just_wather * price_just_wather)
+
+                report[key1][key2][key3] = {'count': count_items,
+                                            'count_bouillon': count_bouillon,
+                                            'money': (count_items * price) + (count_bouillon * price_bouillon)}
+
+        money = (count_all - count_just_wather - count_bd_2) * price_all + \
+                (count_just_wather * price_just_wather) + \
+                (count_bd_2 * price_count_bd_2) + \
+                (count_bouillon * price_bouillon)
         report[key1]['Всего'] = {'count': count_all,
                                  'money': money}
         money_total += money
