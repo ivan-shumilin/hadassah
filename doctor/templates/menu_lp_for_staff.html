@@ -68,7 +68,7 @@
                                 {% if name_meal != "Общий КБЖУ" %}
                                     <ul class="pd-ul">
                                         {% for product in meal %}
-                                            <li>{{ product }}</li>
+                                            <li>{{ product.name }} <span class="font-weight-normal">({{ product.energy_value }})</span></li>
                                         {% endfor %}
                                     </ul>
                                 {% else %}

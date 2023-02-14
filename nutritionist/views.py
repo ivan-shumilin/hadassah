@@ -1674,15 +1674,24 @@ def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):
                                         Q(timetablelp__type_of_diet=translated_diet) &
                                         Q(timetablelp__meals=meal))
 
-    products_porridge = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='каша')]
-    products_salad = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='салат')]
-    products_soup = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='суп')]
-    products_main = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='основной')]
-    products_garnish = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='гарнир')]
-    products_dessert = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='десерт')]
-    products_fruit = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='фрукты')]
-    products_drink = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='напиток')]
-    products_product = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='товар')]
+    products_porridge = [{'name': product.name, 'energy_value':get_energy_value(product)}
+                         for product in products.filter(category='каша')]
+    products_salad = [{'name': product.name, 'energy_value':get_energy_value(product)}
+                         for product in products.filter(category='салат')]
+    products_soup = [{'name': product.name, 'energy_value':get_energy_value(product)}
+                     for product in products.filter(category='суп')]
+    products_main = [{'name': product.name, 'energy_value':get_energy_value(product)}
+                     for product in products.filter(category='основной')]
+    products_garnish = [{'name': product.name, 'energy_value':get_energy_value(product)}
+                        for product in products.filter(category='гарнир')]
+    products_dessert = [{'name': product.name, 'energy_value':get_energy_value(product)}
+                        for product in products.filter(category='десерт')]
+    products_fruit = [{'name': product.name, 'energy_value':get_energy_value(product)}
+                      for product in products.filter(category='фрукты')]
+    products_drink = [{'name': product.name, 'energy_value':get_energy_value(product)}
+                      for product in products.filter(category='напиток')]
+    products_product = [{'name': product.name, 'energy_value':get_energy_value(product)}
+                        for product in products.filter(category='товар')]
 
     all_products = products_salad,\
         products_soup,\
