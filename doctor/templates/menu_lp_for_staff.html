@@ -65,11 +65,17 @@
                             <td class="pd-left-right">{{ name_meal }}</td>
                             <td>
                         {% endif %}
-                                <ul class="pd-ul">
-                                {% for product in meal %}
-                                    <li>{{ product }}</li>
-                                {% endfor %}
-                                </ul>
+                                {% if name_meal != "Общий КБЖУ" %}
+                                    <ul class="pd-ul">
+                                        {% for product in meal %}
+                                            <li>{{ product }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <ul style="list-style-type: none;" class="pd-ul">
+                                        <li>{{ meal }}</li>
+                                    </ul>
+                                {% endif %}
                             </td>
                     </tr>
             {% endfor %}

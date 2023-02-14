@@ -1636,6 +1636,35 @@ class CreateSitckers(APIView):
         response = json.dumps(response)
         return Response(response)
 
+def get_total_energy_value(day_of_the_week, translated_diet):
+    """Возвращает суммарное КБЖУ за день."""
+    products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
+                                        Q(timetablelp__type_of_diet=translated_diet))
+
+    carbohydrate, fat, fiber, energy = 0, 0, 0, 0
+    for product in products:
+        carbohydrate += float(product.carbohydrate) if product.carbohydrate != None else 0
+        fat += float(product.fat) if product.fat != None else 0
+        fiber += float(product.fiber) if product.fiber != None else 0
+        energy += float(product.energy) if product.energy != None else 0
+    return f'Б - {round(fiber, 3)}, Ж - {round(fat, 3)}, У - {round(carbohydrate, 3)}, Ккал - {round(energy, 3)}'
+
+
+
+
+
+def get_energy_value(product):
+    """Возвращает КБЖУ продукта на порцию"""
+    try:
+        carbohydrate = round((float(product.carbohydrate) * float(product.weight) * 10), 2)
+        fat = round((float(product.fat) * float(product.weight) * 10), 2)
+        fiber = round((float(product.fiber) * float(product.weight) * 10), 2)
+        energy = round((float(product.energy) * float(product.weight) * 10), 2)
+        energy_value = f'Б - {fiber}, Ж - {fat}, У - {carbohydrate}, Ккал - {energy}'
+    except:
+        energy_value = "Нет данных"
+    return energy_value
+
 def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):
     if day_of_the_week == 'день 1':
         day_of_the_week = 'понедельник'
@@ -1645,16 +1674,15 @@ def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):
                                         Q(timetablelp__type_of_diet=translated_diet) &
                                         Q(timetablelp__meals=meal))
 
-    products_porridge = [product.name for product in products.filter(category='каша')]
-    products_salad = [product.name for product in products.filter(category='салат')]
-    products_soup = [product.name for product in products.filter(category='суп')]
-    products_main = [product.name for product in products.filter(category='основной')]
-    products_garnish = [product.name for product in products.filter(category='гарнир')]
-    products_dessert = [product.name for product in products.filter(category='десерт')]
-    products_fruit = [product.name for product in products.filter(category='фрукты')]
-    products_drink = [product.name for product in products.filter(category='напиток')]
-    products_product = [product.name for product in products.filter(category='товар')]
-
+    products_porridge = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='каша')]
+    products_salad = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='салат')]
+    products_soup = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='суп')]
+    products_main = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='основной')]
+    products_garnish = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='гарнир')]
+    products_dessert = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='десерт')]
+    products_fruit = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='фрукты')]
+    products_drink = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='напиток')]
+    products_product = [f'{product.name} ({get_energy_value(product)})' for product in products.filter(category='товар')]
 
     all_products = products_salad,\
         products_soup,\
@@ -1693,5 +1721,7 @@ def menu_lp_for_staff(request):
         for meal in MEALS:
             meal_in_russian = translate_meal(meal)
             menu[day.capitalize()][meal_in_russian] = creating_meal_menu_lp_new(day, diet, meal)
+        menu[day.capitalize()]['Общий КБЖУ'] = get_total_energy_value(day, diet)
     data = {'menu': menu, 'diet': diet, 'day_of_the_week': day_of_the_week}
+
     return render(request, 'menu_lp_for_staff.html', context=data)
