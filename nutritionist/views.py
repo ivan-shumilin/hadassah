@@ -1647,7 +1647,7 @@ def get_total_energy_value(day_of_the_week, translated_diet):
         fat += float(product.fat) if product.fat != None else 0
         fiber += float(product.fiber) if product.fiber != None else 0
         energy += float(product.energy) if product.energy != None else 0
-    return f'Б - {round(fiber, 3)}, Ж - {round(fat, 3)}, У - {round(carbohydrate, 3)}, Ккал - {round(energy, 3)}'
+    return f'Б - {round(fiber, 2)}, Ж - {round(fat, 2)}, У - {round(carbohydrate, 2)}, Ккал - {round(energy, 2)}'
 
 
 
