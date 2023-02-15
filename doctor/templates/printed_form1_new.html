@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-report-page">
+    <head>
+        <meta charset="utf-8">
+        <title>Сводный отчет</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <!-- Add additional CSS in static file -->
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
+    </head>
+    <body>
+
+        <div class="report-header-block">
+            <div class="container inner">
+                <h1>Сводный отчёт</h1>
+
+                <div class="item item-eat">
+                    <div class="text">{{ catalog.meal }} {% if day %}<span>(Заказ на завтра, {{ date_create }})</span> {% endif %}</div>
+                </div>
+                <div class="dot"></div>
+                <div class="item item-date">
+                    <div class="text">{{ formatted_date }}</div>
+                </div>
+                <div class="item item-time">
+                    <div class="time">{{ time_now }}</div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="report-block">
+            <div class="report main">
+                <div class="container inner">
+                    <div class="head">
+                        <div class="tr">
+                            <div class="th">диета</div>
+                            <div class="th value total">Всего</div>
+                            <div class="th value">этаж 2</div>
+                            <div class="th value">этаж 3</div>
+                            <div class="th value">этаж 4</div>
+                            <div class="th value">
+                                <div class="only-desktop">
+                                    не выбран
+                                </div>
+                                <div class="only-tablet-or-mobile">
+                                    —
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body">
+                        <div class="tr blue">
+                            <div class="td">Все пациенты</div>
+                            <div class="td value total">{{ catalog.count }}</div>
+                            <div class="td value">{{ catalog.count_2nd_floor }}</div>
+                            <div class="td value">{{ catalog.count_3nd_floor }}</div>
+                            <div class="td value">{{ catalog.count_4nd_floor }}</div>
+                            <div class="td value">{{ catalog.count_not_floor }}</div>
+                        </div>
+                        {% for diet in catalog.count_diet %}
+                            <div class="tr group">
+                                <div class="td inline">
+                                        {% if diet.name == "Нулевая диета" %}
+                                            <div class="tag green">{{ diet.name }}</div>
+                                        {% elif diet.name == "БД день 1" or diet.name == "БД день 2" %}
+                                            <div class="tag pink">{{ diet.name }}</div>
+                                        {% elif diet.name == "ОВД" %}
+                                            <div class="tag blue">{{ diet.name }}</div>
+                                        {% elif diet.name == "ОВД б/с" %}
+                                            <div class="tag mint">{{ diet.name }}</div>
+                                        {% elif diet.name == "ОВД веган (пост) без глютена" %}
+                                            <div class="tag green">{{ diet.name }}</div>
+                                        {% elif diet.name == "ВБД" %}
+                                            <div class="tag orange">{{ diet.name }}</div>
+                                        {% elif diet.name == "ЩД" %}
+                                            <div class="tag yellow">{{ diet.name }}</div>
+                                        {% elif diet.name == "'ЩД без сахара" %}
+                                            <div class="tag yellow">{{ diet.name }}</div>
+                                        {% elif diet.name == "НБД" %}
+                                            <div class="tag red">{{ diet.name }}</div>
+                                        {% elif diet.name == "НКД" %}
+                                            <div class="tag red">{{ diet.name }}</div>
+                                        {% elif diet.name == "ВКД" %}
+                                            <div class="tag purple">{{ diet.name }}</div>
+                                        {% else %}
+                                            <div class="tag pink">{{ diet.name }}</div>
+                                        {% endif %}
+                                    
+                                </div>
+                                <div class="td value total">{{ diet.total }}</div>
+                                <div class="td value">{{ diet.2nd_floor }}</div>
+                                <div class="td value">{{ diet.3nd_floor }}</div>
+                                <div class="td value">{{ diet.4nd_floor }}</div>
+                                <div class="td value">{{ diet.not_floor }}</div>
+                            </div>
+                            {% for diet1 in diet.without_comment %}
+                                <div class="tr dashed">
+                                    <div class="td">
+                                        <div class="comment" data-tooltip="Без комментария">Без комментария</div>
+                                    </div>
+                                    <div class="td value total">{{ diet1.total }}</div>
+                                    <div class="td value">{{ diet1.2nd_floor }}</div>
+                                    <div class="td value">{{ diet1.3nd_floor }}</div>
+                                    <div class="td value">{{ diet1.4nd_floor }}</div>
+                                    <div class="td value">{{ diet1.not_floor }}</div>
+                                </div>
+                            {% endfor %}
+                            {% for diet1 in diet.with_comment %}
+                                <div class="tr dashed">
+                                    <div class="td">
+                                        <div class="comment" data-tooltip="{{ diet1.name }}">{{ diet1.name }}</div>
+                                    </div>
+                                    <div class="td value total">{{ diet1.total }}</div>
+                                    <div class="td value">{{ diet1.2nd_floor }}</div>
+                                    <div class="td value">{{ diet1.3nd_floor }}</div>
+                                    <div class="td value">{{ diet1.4nd_floor }}</div>
+                                    <div class="td value">{{ diet1.not_floor }}</div>
+                                </div>
+                            {% endfor %}
+
+                        {% endfor %}
+                       
+
+                        <div class="tr blue">
+                            <div class="td">
+                                <div class="text">Рационов с блюдами раздачи</div>
+                            </div>
+                            <div class="td value total">{{ count_users_with_cafe_prod }}</div>
+                            <div class="td value"></div>
+                            <div class="td value"></div>
+                            <div class="td value"></div>
+                            <div class="td value"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="report patients">
+                <div class="container inner">
+                    <div class="head">
+                        <div class="tr">
+                            <div class="th th-patient">фио пациента</div>
+                            <div class="th th-ward">палата</div>
+                            <div class="th th-diet center">диета</div>
+                            <div class="th th-eat">цех лечебного питания</div>
+                            <div class="th th-distribution">цех линии раздачи</div>
+                        </div>
+                    </div>
+                    <div class="body">
+                        {% load formatting_full_name %}
+                        {% if catalog.users_2nd_floor %}
+                            <div class="tr floor">
+                                <div class="td">
+                                    <span>этаж 2</span>
+                                </div>
+                            </div>
+                            {% for user in catalog.users_2nd_floor %}
+                                <div class="tr">
+                                    <div class="td td-patient">
+                                        <div class="patient">{{ user.name|formatting_full_name }}</div>
+                                        {% if user.comment %}
+                                            <div class="comment" data-tooltip="{{ user.comment }}">
+                                                {{ user.comment }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="td td-ward center">
+                                        {% if user.room_number == 'Не выбрано' %}
+                                            <div class="text">——</div>
+                                        {% else %}
+                                            <div class="text">{{ user.room_number }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="td td-diet inline">
+                                        {% if user.diet == "Нулевая диета" %}
+                                            <div class="tag grey">000</div>
+                                            <div class="diet">Нулевая диета</div>
+                                        {% elif user.diet == "БД день 1" %}
+                                            <div class="tag pink">БД</div>
+                                            <div class="diet">день 1</div>
+                                        {% elif user.diet == "БД день 2" %}
+                                            <div class="tag pink">БД</div>
+                                            <div class="diet">день 2</div>
+                                        {% elif user.diet == "ОВД" %}
+                                            <div class="tag blue">ОВД</div>
+                                        {% elif user.diet == "ОВД б/с" %}
+                                            <div class="tag mint">ОВД б/с</div>
+                                        {% elif user.diet == "ОВД веган (пост) без глютена" %}
+                                            <div class="tag green">ОВД веган</div>
+                                        {% elif user.diet == "ВБД" %}
+                                            <div class="tag orange">ВБД</div>
+                                        {% elif user.diet == "ЩД" %}
+                                            <div class="tag yellow">ЩД</div>
+                                        {% elif user.diet == "'ЩД без сахара" %}
+                                            <div class="tag yellow">'ЩД без сахара</div>
+                                        {% elif user.diet == "НБД" %}
+                                            <div class="tag red">НБД</div>
+                                        {% elif user.diet == "НКД" %}
+                                            <div class="tag red">НКД</div>
+                                        {% elif user.diet == "ВКД" %}
+                                            <div class="tag purple">ВКД</div>
+                                        {% else %}
+                                            <div class="tag green">{{ user.diet }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="td td-eat">
+                                        <ul>
+                                            {% for item in user.products_lp %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="td td-distribution">
+                                        <ul>
+                                            {% for item in user.products_cafe %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% if user.comment %}
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ user.comment }}">
+                                                {{ user.comment }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if catalog.users_3nd_floor %}
+                            <div class="tr floor">
+                                <div class="td">
+                                    <span>этаж 3</span>
+                                </div>
+                            </div>
+                                {% for user in catalog.users_3nd_floor %}
+                                <div class="tr">
+                                    <div class="td td-patient">
+                                        <div class="patient">{{ user.name|formatting_full_name }}</div>
+                                        {% if user.comment %}
+                                            <div class="comment" data-tooltip="{{ user.comment }}">
+                                                {{ user.comment }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="td td-ward center">
+                                        {% if user.room_number == 'Не выбрано' %}
+                                            <div class="text">——</div>
+                                        {% else %}
+                                            <div class="text">{{ user.room_number }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="td td-diet inline">
+                                        {% if user.diet == "Нулевая диета" %}
+                                            <div class="tag grey">000</div>
+                                            <div class="diet">Нулевая диета</div>
+                                        {% elif user.diet == "БД день 1" %}
+                                            <div class="tag pink">БД</div>
+                                            <div class="diet">день 1</div>
+                                        {% elif user.diet == "БД день 2" %}
+                                            <div class="tag pink">БД</div>
+                                            <div class="diet">день 2</div>
+                                        {% elif user.diet == "ОВД" %}
+                                            <div class="tag blue">ОВД</div>
+                                        {% elif user.diet == "ОВД б/с" %}
+                                            <div class="tag mint">ОВД б/с</div>
+                                        {% elif user.diet == "ОВД веган (пост) без глютена" %}
+                                            <div class="tag green">ОВД веган</div>
+                                        {% elif user.diet == "ВБД" %}
+                                            <div class="tag orange">ВБД</div>
+                                        {% elif user.diet == "ЩД" %}
+                                            <div class="tag yellow">ЩД</div>
+                                        {% elif user.diet == "'ЩД без сахара" %}
+                                            <div class="tag yellow">'ЩД без сахара</div>
+                                        {% elif user.diet == "НБД" %}
+                                            <div class="tag red">НБД</div>
+                                        {% elif user.diet == "НКД" %}
+                                            <div class="tag red">НКД</div>
+                                        {% elif user.diet == "ВКД" %}
+                                            <div class="tag purple">ВКД</div>
+                                        {% else %}
+                                            <div class="tag green">{{ user.diet }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="td td-eat">
+                                        <ul>
+                                            {% for item in user.products_lp %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="td td-distribution">
+                                        <ul>
+                                            {% for item in user.products_cafe %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% if user.comment %}
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ user.comment }}">
+                                                {{ user.comment }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if catalog.users_4nd_floor %}
+                            <div class="tr floor">
+                                <div class="td">
+                                    <span>этаж 4</span>
+                                </div>
+                            </div>
+                            {% for user in catalog.users_4nd_floor %}
+                                <div class="tr">
+                                    <div class="td td-patient">
+                                        <div class="patient">{{ user.name|formatting_full_name }}</div>
+                                        {% if user.comment %}
+                                            <div class="comment" data-tooltip="{{ user.comment }}">
+                                                {{ user.comment }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="td td-ward center">
+                                        {% if user.room_number == 'Не выбрано' %}
+                                            <div class="text">——</div>
+                                        {% else %}
+                                            <div class="text">{{ user.room_number }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="td td-diet inline">
+                                        {% if user.diet == "Нулевая диета" %}
+                                            <div class="tag grey">000</div>
+                                            <div class="diet">Нулевая диета</div>
+                                        {% elif user.diet == "БД день 1" %}
+                                            <div class="tag pink">БД</div>
+                                            <div class="diet">день 1</div>
+                                        {% elif user.diet == "БД день 2" %}
+                                            <div class="tag pink">БД</div>
+                                            <div class="diet">день 2</div>
+                                        {% elif user.diet == "ОВД" %}
+                                            <div class="tag blue">ОВД</div>
+                                        {% elif user.diet == "ОВД б/с" %}
+                                            <div class="tag mint">ОВД б/с</div>
+                                        {% elif user.diet == "ОВД веган (пост) без глютена" %}
+                                            <div class="tag green">ОВД веган</div>
+                                        {% elif user.diet == "ВБД" %}
+                                            <div class="tag orange">ВБД</div>
+                                        {% elif user.diet == "ЩД" %}
+                                            <div class="tag yellow">ЩД</div>
+                                        {% elif user.diet == "'ЩД без сахара" %}
+                                            <div class="tag yellow">'ЩД без сахара</div>
+                                        {% elif user.diet == "НБД" %}
+                                            <div class="tag red">НБД</div>
+                                        {% elif user.diet == "НКД" %}
+                                            <div class="tag red">НКД</div>
+                                        {% elif user.diet == "ВКД" %}
+                                            <div class="tag purple">ВКД</div>
+                                        {% else %}
+                                            <div class="tag green">{{ user.diet }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="td td-eat">
+                                        <ul>
+                                            {% for item in user.products_lp %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="td td-distribution">
+                                        <ul>
+                                            {% for item in user.products_cafe %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% if user.comment %}
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ user.comment }}">
+                                                {{ user.comment }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if catalog.users_not_floor %}
+                            <div class="tr floor">
+                                <div class="td">
+                                    <span>не выбран</span>
+                                </div>
+                            </div>
+                            {% for user in catalog.users_not_floor %}
+                                <div class="tr">
+                                    <div class="td td-patient">
+                                        <div class="patient">{{ user.name|formatting_full_name }}</div>
+                                        {% if user.comment %}
+                                            <div class="comment" data-tooltip="{{ user.comment }}">
+                                                {{ user.comment }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="td td-ward center">
+                                        {% if user.room_number == 'Не выбрано' %}
+                                            <div class="text">——</div>
+                                        {% else %}
+                                            <div class="text">{{ user.room_number }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="td td-diet inline">
+                                        {% if user.diet == "Нулевая диета" %}
+                                            <div class="tag grey">000</div>
+                                            <div class="diet">Нулевая диета</div>
+                                        {% elif user.diet == "БД день 1" %}
+                                            <div class="tag pink">БД</div>
+                                            <div class="diet">день 1</div>
+                                        {% elif user.diet == "БД день 2" %}
+                                            <div class="tag pink">БД</div>
+                                            <div class="diet">день 2</div>
+                                        {% elif user.diet == "ОВД" %}
+                                            <div class="tag blue">ОВД</div>
+                                        {% elif user.diet == "ОВД б/с" %}
+                                            <div class="tag mint">ОВД б/с</div>
+                                        {% elif user.diet == "ОВД веган (пост) без глютена" %}
+                                            <div class="tag green">ОВД веган</div>
+                                        {% elif user.diet == "ВБД" %}
+                                            <div class="tag orange">ВБД</div>
+                                        {% elif user.diet == "ЩД" %}
+                                            <div class="tag yellow">ЩД</div>
+                                        {% elif user.diet == "'ЩД без сахара" %}
+                                            <div class="tag yellow">'ЩД без сахара</div>
+                                        {% elif user.diet == "НБД" %}
+                                            <div class="tag red">НБД</div>
+                                        {% elif user.diet == "НКД" %}
+                                            <div class="tag red">НКД</div>
+                                        {% elif user.diet == "ВКД" %}
+                                            <div class="tag purple">ВКД</div>
+                                        {% else %}
+                                            <div class="tag green">{{ user.diet }}</div>
+                                        {% endif %}
+                                    </div>  
+                                    <div class="td td-eat">
+                                        <ul>
+                                            {% for item in user.products_lp %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="td td-distribution">
+                                        <ul>
+                                            {% for item in user.products_cafe %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% if user.comment %}
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ user.comment }}">
+                                                {{ user.comment }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="{% static 'doctor/js/all.js' %}"></script>
+    </body>
+</html>
+
