@@ -15,6 +15,8 @@ ALLOWED_HOSTS = [
         '.petrushkagroup.com',
         'petrushkagroup.com',
         'lk-doctor.petrushkagroup.com',
+        '.petrushkagroup.ru',
+        'petrushkagroup.ru',
         '158.160.6.40',
         '127.0.0.1',
         'loclhost',
