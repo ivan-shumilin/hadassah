@@ -119,7 +119,7 @@ def patient(request, id):
     menu_for_lk_patient = del_if_not_product_without_garnish(menu_for_lk_patient)
 
     # если блюдо ЛП уже с гарниром (плов)
-    if user.type_of_diet not in ['БД день 1', 'БД день 2']:
+    if user.type_of_diet not in ['БД день 1', 'БД день 2', 'Безйодовая']:
         lunch_is_with_garnish = menu_for_lk_patient['lunch']['lp']['main'][0].with_garnish
         dinner_is_with_garnish = menu_for_lk_patient['dinner']['lp']['main'][0].with_garnish
     else:

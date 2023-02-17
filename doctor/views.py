@@ -310,7 +310,7 @@ def menu(request):
     products_soup, products_porridge, products_dessert, \
     products_fruit, products_drink = products_lp
 
-    if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'БД']:
+    if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'БД', 'Безйодовая']:
         products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
     else:
         products_cafe: tuple = ([], [], [], [])
