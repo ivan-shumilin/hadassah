@@ -25,8 +25,8 @@ ALLOWED_HOSTS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://sk.petrushkagroup.com/",
-    "https://sk.petrushkagroup.ru/",
+    "https://sk.petrushkagroup.com",
+    "https://sk.petrushkagroup.ru",
     "http://localhost:8080",
     "http://127.0.0.1:8000",
     "https://b467-146-120-93-183.eu.ngrok.io",
