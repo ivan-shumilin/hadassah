@@ -32,9 +32,11 @@ class TimetableAdmin(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'public_name', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category',)
-    fields = ('name', 'public_name', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category', 'description',)
-    list_filter = ('category', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd')
+    list_display = ('name', 'public_name', 'with_garnish', 'ovd', 'ovd_vegan', 'ovd_sugarless', 'shd',
+                    'shd_sugarless', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category', 'iodine_free',)
+    fields = ('name', 'public_name', 'with_garnish', 'ovd', 'ovd_vegan', 'ovd_sugarless', 'shd', 'shd_sugarless',
+              'iodine_free', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category', 'description',)
+    list_filter = ('category', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd',)
     list_per_page = 100
 
     inlines = [TimetableAdmin]

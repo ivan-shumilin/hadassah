@@ -18,14 +18,6 @@
     </div>
 </div>
 <div class="row" style="margin-bottom: 50px">
-    <div>
-        <input type='text' list='queryset' placeholder='блюда' class='form-control'>
-            <datalist id='queryset'>
-                {% for product in queryset %}
-                    <option value="{{ product.name }}"></option>
-                {% endfor %}
-            </datalist>
-    </div>
     <nav aria-label="Page navigation example">
         <ul class="pagination">
         {% if page_prev == '0' %}
@@ -96,57 +88,51 @@
     {{ form.energy }}
     {{ form.category }}
     {{ form.cooking_method }}
-
-
-
-
-
-
-
     {% if form.not_suitable.value == True %}
     <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px; background: #fadada;" >
     {% else %}
     <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px;" >
     {% endif %}
         <div class="col-3">{{ form.name.value }}</div>
-        <div class="col" style="margin-right: 20px;">
+        <div class="col discr">
             <button type="button" class="btn btn-outline-primary" style="margin-bottom: 10px;" data-bs-toggle="modal"
                     data-bs-target="#modal-start{{ form.iditem.value }}">Состав
             </button>
         </div>
-        <div class="col form-check form-switch" style="margin-left: 1px;">
+
+        <div class="col form-check form-switch" style="margin-left: 0px;">
             {{ form.ovd }}
-            <label class="form-check-label">ОВД</label>
+            <label class="form-check-label diet">ОВД</label>
         </div>
-        <div class="col form-check form-switch" style="margin-left: 1px; padding-right: 0px; padding-left: 20px;">
+        <div class="col form-check form-switch">
             {{ form.ovd_sugarless }}
-            <label class="form-check-label">ОВД</label>
-            <p style="font-size: 0.7rem;">без сахара</p>
+            <label class="form-check-label diet">ОВД</label>
+            <p style="font-size: 0.7rem;" class="center-diet">без сахара</p>
         </div>
-        <div class="col form-check form-switch" style="margin-left: 1px;">
-            {{ form.shd }}
-            <label class="form-check-label">ЩД</label>
+        <div class="col form-check form-switch">
+            {{ form.ovd_vegan }}
+            <label class="form-check-label diet">ОВД</label>
+            <p style="font-size: 0.7rem;" class="center-diet">веган</p>
         </div>
-        <div class=" col form-check form-switch" style="margin-left: 1px;">
-            {{ form.bd }}
-            <label class="form-check-label">БД</label>
+        <div class="col form-check form-switch">{{ form.shd }}
+            <label class="form-check-label diet">ЩД</label></div>
+        <div class="col form-check form-switch">
+            {{ form.shd_sugarless }}
+            <label class="form-check-label diet">ЩД</label>
+            <p style="font-size: 0.7rem;" class="center-diet">без сахара</p>
         </div>
-        <div class=" col form-check form-switch" style="margin-left: 1px;">
-            {{ form.vbd }}
-            <label class="form-check-label">ВБД</label>
-        </div>
-        <div class=" col form-check form-switch" style="margin-left: 1px;">
-            {{ form.nbd }}
-            <label class="form-check-label">НБД</label>
-        </div>
-        <div class=" col form-check form-switch" style="margin-left: 1px;">
-            {{ form.nkd }}
-            <label class="form-check-label">НКД</label>
-        </div>
-        <div class=" col form-check form-switch" style="margin-left: 1px;">
-            {{ form.vkd }}
-            <label class="form-check-label">ВКД</label>
-        </div>
+        <div class="col form-check form-switch">{{ form.bd }}
+            <label class="form-check-label diet">БД</label></div>
+        <div class="col form-check form-switch">{{ form.vbd }}
+            <label class="form-check-label diet">ВБД</label></div>
+        <div class="col form-check form-switch">{{ form.nbd }}
+            <label class="form-check-label diet">НБД</label></div>
+        <div class="col form-check form-switch">{{ form.nkd }}
+            <label class="form-check-label diet">НКД</label></div>
+        <div class="col form-check form-switch">{{ form.vkd }}
+            <label class="form-check-label diet">ВКД</label></div>
+        <div class="col form-check form-switch">{{ form.iodine_free }}
+            <label class="form-check-label diet">Безйодовая</label></div>
 <!--        <hr style="opacity: 0.11">-->
 
         <div id="modal-start{{ form.iditem.value }}" class="modal" tabindex="-1">
@@ -168,7 +154,7 @@
                     <hr>
                     <div class="modal-body">{{ form.comment }}</div>
                     <div class="modal-footer">
-                        <div class="col form-check form-switch" style="margin-left: 1px;">
+                        <div class="col form-check form-switch" style="margin-left: 30px;">
                             {{ form.not_suitable }}
                             <label class="form-check-label">не походит</label>
                         </div>
@@ -183,21 +169,7 @@
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
-
-
     {% endfor %}
     <nav style="margin-top: 10px;" aria-label="Page navigation example">
         <ul class="pagination">
@@ -229,7 +201,7 @@
   </ul>
 </nav>
     {% if user.is_staff %}
-    <input name="save" class="btn btn-primary btn-lg btn-block" type="submit" value="Сохранить">
+    <input name="save" class="btn btn-primary btn-block btn-custom" type="submit" value="Сохранить">
     {% endif %}
     </div>
 </form>

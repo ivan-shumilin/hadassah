@@ -2132,7 +2132,7 @@ async function validationChangePasswordForm() {
 }
 
 const checkPassword = async function(userId, oldPassword) {
-    let url = 'https://www.sk.petrushkagroup.com/doctor/api/v1/password/verify'
+    let url = '/doctor/api/v1/password/verify'
     let body = {
         "id_user": userId,
         "row_password": oldPassword
