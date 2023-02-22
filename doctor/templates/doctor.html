@@ -369,87 +369,92 @@
                     <div class="overlay" data-patient-card-toggle></div>
                     <div class="content">
                         <div class="inner">
-                            <div class="toggle" data-patient-card-toggle>
-                                <div class="i i-arrow"></div>
-                            </div>
-                            <div class="block-title">Карточка пациента</div>
-                            <div class="tabs">
-                                <a class="active" data-tab="profile">Профиль</a>
-                                <a data-tab="eat">Выбранные блюда</a>
-                            </div>
-                            
-                            <div class="profile active" data-tab-content="profile">
-                                <div id="full_name_field" class="name"></div>
-                                <div class="fields">
-                                    <div class="field">
-                                        <div class="label">Дата рождения</div>
-                                        <div id="birthdate_field" class="value"></div>
-                                    </div>
-                                    <div class="field">
-                                        <div class="label">Дата госпитализации</div>
-                                        <div id="receipt_datetime_field" class="value"></div>
-                                    </div>
-                                    <div class="field" style="display: none;">
-                                        <div class="label">Дата госпитализации</div>
-                                        <div id="receipt_date_field_hidden" class="value"></div>
-                                    </div>
-                                    <div class="field" style="display: none;">
-                                        <div class="label">Время госпитализации</div>
-                                        <div id="receipt_time_field_hidden" class="value"></div>
-                                    </div>
-                                    <div class="field">
-                                        <div class="label">Отделение</div>
-                                        <div id="department_field" class="value"></div>
-                                    </div>
-                                    <div class="field">
-                                        <div class="label">Диета</div>
-                                        <div id="type_of_diet_field" class="value"></div>
-                                    </div>
-                                    <div class="field" style="display: none;">
-                                        <div id="floor_field_hidden" class="value"></div>
-                                    </div>
-                                    <div class="field">
-                                        <div class="label">Номер палаты</div>
-                                        <div id="room_number_field" class="value"></div>
-                                    </div>
-                                    <div class="field">
-                                        <div class="label">Койко-место</div>
-                                        <div id="bed_field" class="value"></div>
-                                    </div>
-                                    <div class="field">
-                                        <div id="link_lk_patient" class="label"></div>
-                                        <div class="value"></div>
-                                    </div>
-                                    <div class="field">
-                                        <input id="card-user-id" class="hidden-edit" type="text">
-                                        <input id="card-full_name" class="hidden-edit" type="text">
-                                        <input id="card-floor" class="hidden-edit" type="text">
-                                        <input id="card-room" class="hidden-edit" type="text">
-                                        <input id="card-receipt_date" class="hidden-edit" type="text">
-                                        <input id="card-bed" class="hidden-edit" type="text">
-                                    </div>
+                            <div class="content-header">
+                                <div class="toggle" data-patient-card-toggle>
+                                    <div class="i i-arrow"></div>
                                 </div>
-                                <div id="comment_field" class="help"></div>
-                                <div id="patient-card-button" class="actions">
-                                    <a id="modal_field" class="button">Редактировать</a>
-                                    <a id="archive_field" class="button white">Архивировать</a>
-                                </div>
-                            </div>
-                            <div class="eat" data-tab-content="eat">
-                                <div class="switch">
-                                    <a href="#" class="active" data-tab="today">Сегодня</a>
-                                    <a href="#" data-tab="tomorrow">Завтра</a>
-                                    <a href="#" data-tab="day_after_tomorrow">Послезавтра</a>
+                                <div class="block-title">Карточка пациента</div>
+                                <div class="tabs">
+                                    <a class="active" data-tab="profile">Профиль</a>
+                                    <a data-tab="eat">Выбранные блюда</a>
                                 </div>
                                 
-                                <div id="today" class="boxes active" data-tab-content="today">
-                                    <div class="date">12 июля, вторник</div>
+                                <div class="profile active" data-tab-content="profile">
+                                    <div id="full_name_field" class="name"></div>
+                                    <div class="fields">
+                                        <div class="field">
+                                            <div class="label">Дата рождения</div>
+                                            <div id="birthdate_field" class="value"></div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="label">Дата госпитализации</div>
+                                            <div id="receipt_datetime_field" class="value"></div>
+                                        </div>
+                                        <div class="field" style="display: none;">
+                                            <div class="label">Дата госпитализации</div>
+                                            <div id="receipt_date_field_hidden" class="value"></div>
+                                        </div>
+                                        <div class="field" style="display: none;">
+                                            <div class="label">Время госпитализации</div>
+                                            <div id="receipt_time_field_hidden" class="value"></div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="label">Отделение</div>
+                                            <div id="department_field" class="value"></div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="label">Диета</div>
+                                            <div id="type_of_diet_field" class="value"></div>
+                                        </div>
+                                        <div class="field" style="display: none;">
+                                            <div id="floor_field_hidden" class="value"></div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="label">Номер палаты</div>
+                                            <div id="room_number_field" class="value"></div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="label">Койко-место</div>
+                                            <div id="bed_field" class="value"></div>
+                                        </div>
+                                        <div class="field">
+                                            <div id="link_lk_patient" class="label"></div>
+                                            <div class="value"></div>
+                                        </div>
+                                        <div class="field">
+                                            <input id="card-user-id" class="hidden-edit" type="text">
+                                            <input id="card-full_name" class="hidden-edit" type="text">
+                                            <input id="card-floor" class="hidden-edit" type="text">
+                                            <input id="card-room" class="hidden-edit" type="text">
+                                            <input id="card-receipt_date" class="hidden-edit" type="text">
+                                            <input id="card-bed" class="hidden-edit" type="text">
+                                        </div>
+                                    </div>
+                                    <div id="comment_field" class="help"></div>
+                                    <div id="patient-card-button" class="actions">
+                                        <a id="modal_field" class="button">Редактировать</a>
+                                        <a id="archive_field" class="button white">Архивировать</a>
+                                    </div>
                                 </div>
-                                <div id="tomorrow" class="boxes" data-tab-content="tomorrow">
-                                    <div class="date">12 июля, вторник</div>
-                                </div>
-                                <div id="day_after_tomorrow" class="boxes" data-tab-content="day_after_tomorrow">
-                                    <div class="date">12 июля, вторник</div>
+                            </div>
+                            <div class="content-body">
+                                <div class="eat" data-tab-content="eat">
+                                    <div class="switch">
+                                        <a href="#" class="active" data-tab="today">Сегодня</a>
+                                        <a href="#" data-tab="tomorrow">Завтра</a>
+                                        <a href="#" data-tab="day_after_tomorrow">Послезавтра</a>
+                                    </div>
+                                    <div class="eat-body">
+                                        <div id="today" class="boxes active" data-tab-content="today">
+                                            <div class="date">12 июля, вторник</div>
+                                        </div>
+                                        <div id="tomorrow" class="boxes" data-tab-content="tomorrow">
+                                            <div class="date">12 июля, вторник</div>
+                                        </div>
+                                        <div id="day_after_tomorrow" class="boxes" data-tab-content="day_after_tomorrow">
+                                            <div class="date">12 июля, вторник</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
