@@ -1534,8 +1534,13 @@ def create_сatalog(is_public):
 class CreateSitckers(APIView):
     def post(self, request):
         is_public = True  # используем публичные названия для блюд
-        catalog = create_сatalog(is_public)
-        create_stickers_pdf(catalog)
+        try:
+            catalog = create_сatalog(is_public)
+            create_stickers_pdf(catalog)
+        except:
+            response = {"response": "no"}
+            response = json.dumps(response)
+            return Response(response)
         response = {"response": "yes"}
         response = json.dumps(response)
         return Response(response)

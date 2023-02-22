@@ -46,7 +46,7 @@ urlpatterns = [
     path('password_reset/', views.password_reset, name='reset_password'),
     path('logout/', views.user_logout, name='logout'),
     path('api/v1/get/downloadreport', views.DownloadReportAPIView.as_view()),
-    path('manager/api/v1/get/downloadsstickers', views.CreateSitckers.as_view()),
+    path('manager/api/v1/get/downloadsstickers', views.CreateSitckers.as_view(), name='create_stickers'),
 ]
 
 
