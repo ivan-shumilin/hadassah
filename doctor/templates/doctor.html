@@ -1,6 +1,6 @@
 {% extends "base_generic_doctor.html" %}
 {% block content %}
-            <div id="center">
+            <div id="center" data-simplebar>
                 <div id="header">
                     <div class="mobile-header-block">
                         <div class="logo">
@@ -13,7 +13,6 @@
                             <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
                         </div>
                     </div>
-
                     <div class="header-block columns-2">
                         <div class="menu-link-and-name">
                             <a class="menu-link" data-sidebar-toggle>
@@ -21,31 +20,25 @@
                             </a>
                             <div class="title">Ваши пациенты</div>
                         </div>
-
                         <a onclick="changeSymbol('id_full_name', 'id_birthdate')" class="button" data-modal-link="patient-add">
                             <span class="i i-plus"></span>
                             <span>Добавить</span>
                         </a>
                     </div>
                 </div>
-
                 <div>
                     {# какая форма сработала  #}
                     <input style="display: none;" type="checkbox" id="add_patient_flag"  name="add_patient">
                     <input style="display: none;" type="checkbox" id="edit_patient_flag"  name="edit_patient_flag">
                     <input style="display: none;" type="checkbox" id="archive"  name="archive">
                     <input style="display: none;" type="text" id="id_edit_user" name="id_edit_user">
-
                     <input style="display: none;" type="checkbox" id="filter_by_flag"  name="filter_by_flag">
                     <input style="display: none;" type="text" id="filter_by_value"  name="filter_by_value">
                     <input style="display: none;" type="text" id="sorting_value"  name="sorting_value">
                     <input style="display: none;" type="text" id="is_pressing_again"  name="is_pressing_again">
-
                 </div>
-
                 <div style="display: none;" id="filter_by">{{ filter_by }}</div>
                 <div style="display: none;" id="sorting">{{ sorting }}</div>
-
                 
                 <!-- <a style="display: none;" id="archived" data-modal-link="patient was discharged">Пациент уже выписан</a> -->
                 <a style="display: none;"  id="archived" data-modal-link="patient-archived">Пациент перенесен в архив</a>
@@ -64,7 +57,6 @@
                         <div class="title">Учётная запись архивирована</div>
                     </div>
                 </div>
-
                 <div id="content" data-scrollbar>
                     <div class="table patients-list"
                          data-columns="30% 20% 30% 1fr"
@@ -119,7 +111,6 @@
                                '{{ form.bed.value }}',
                                 '{{ form.comment.value|cut:"None"  }}',
                                  '{{ form.id.value }}', '{{ form.floor.value }}')">
-
                             <div class="td td-name">
                                 <div class="name ellipsis">{{ forloop.counter }}. {{ form.full_name.value|formatting_full_name }}</div>
                             </div>
@@ -143,7 +134,6 @@
                                 <span class="tag">{{ form.type_of_diet.value }}</span>
                             </div>
                         </div>
-
                         <div data-modal="modal-start{{ form.id.value }}" data-modal-width="480">
                                 <div class="title">Редактировать профиль пациента</div>
                                     <div id ='full_name_edit' class="form-group">
@@ -267,19 +257,12 @@
                                             <span>Без лактозы</span>
                                         </label>
                                     </div>
-
-
-
-
-
                                     <div class="form-group checkbox">
                                         <label for="is_bouillon_form_{{ form.id.value }}" class="custom-checkbox">
                                             <input class="custom-checkbox" onchange="showPaymentChoiceEdit('is_bouillon_form_{{ form.id.value }}', 'typeMeal-{{ form.id.value }}')" id="is_bouillon_form_{{ form.id.value }}" type="checkbox" name="is_bouillon">
                                             <span>+ Доп. бульон</span>
                                         </label>
                                     </div>
-
-
                                     {% if form.extra_bouillon.value == '' %}
                                         <div id="typeMeal-{{ form.id.value }}" class="form-group hidden-edit" id='typeMeal-{{ form.id.value }}}'>
                                     {% else %}
@@ -330,18 +313,11 @@
                                         </label>
                                     {% endif %}
                                     </div>
-
-
-
-
-
                                     <div class="form-group">
                                         <label>Комментарий</label>
                                         {{ form.comment|attr:"rows='4'"|attr:"onchange=deleteError();" }}
                                         <p id ='error_comment' class="error-field"></p>
                                     </div>
-
-
                                     <div id='error_not_change_div' class="form-group">
                                         <div id ='error_not_change' class="error-field"></div>
                                     </div>
@@ -374,7 +350,6 @@
                                                          'is_bouillon_form_{{ form.id.value }}')">Сохранить</button>
                                         <a class="button white" data-modal-close>Отменить</a>
                                     </div>
-
                         </div>
                         <div id="patient-archived{{ form.id.value }}" data-modal="patient-archive{{ form.id.value }}" data-modal-width="400">
                             <div class="title align-center">Перенести учётную запись пациента в архив?</div>
@@ -388,117 +363,103 @@
                                         {% endfor %}
                     </div>
                 </div>
-                </div>
-                </div>
             </div>
-
-
             <div id="right" data-scrollbar>
                 <div class="patient-card-block">
                     <div class="overlay" data-patient-card-toggle></div>
                     <div class="content">
                         <div class="inner">
-                            <div class="content-header">
-                                <div class="toggle" data-patient-card-toggle>
-                                    <div class="i i-arrow"></div>
-                                </div>
-                                <div class="block-title">Карточка пациента</div>
-                                <div class="tabs">
-                                    <a class="active" data-tab="profile">Профиль</a>
-                                    <a data-tab="eat">Выбранные блюда</a>
-                                </div>
-                                
-                                <div class="profile active" data-tab-content="profile">
-                                    <div id="full_name_field" class="name"></div>
-                                    <div class="fields">
-                                        <div class="field">
-                                            <div class="label">Дата рождения</div>
-                                            <div id="birthdate_field" class="value"></div>
-                                        </div>
-                                        <div class="field">
-                                            <div class="label">Дата госпитализации</div>
-                                            <div id="receipt_datetime_field" class="value"></div>
-                                        </div>
-                                        <div class="field" style="display: none;">
-                                            <div class="label">Дата госпитализации</div>
-                                            <div id="receipt_date_field_hidden" class="value"></div>
-                                        </div>
-                                        <div class="field" style="display: none;">
-                                            <div class="label">Время госпитализации</div>
-                                            <div id="receipt_time_field_hidden" class="value"></div>
-                                        </div>
-                                        <div class="field">
-                                            <div class="label">Отделение</div>
-                                            <div id="department_field" class="value"></div>
-                                        </div>
-                                        <div class="field">
-                                            <div class="label">Диета</div>
-                                            <div id="type_of_diet_field" class="value"></div>
-                                        </div>
-                                        <div class="field" style="display: none;">
-                                            <div id="floor_field_hidden" class="value"></div>
-                                        </div>
-                                        <div class="field">
-                                            <div class="label">Номер палаты</div>
-                                            <div id="room_number_field" class="value"></div>
-                                        </div>
-                                        <div class="field">
-                                            <div class="label">Койко-место</div>
-                                            <div id="bed_field" class="value"></div>
-                                        </div>
-                                        <div class="field">
-                                            <div id="link_lk_patient" class="label"></div>
-                                            <div class="value"></div>
-                                        </div>
-                                        <div class="field">
-                                            <input id="card-user-id" class="hidden-edit" type="text">
-                                            <input id="card-full_name" class="hidden-edit" type="text">
-                                            <input id="card-floor" class="hidden-edit" type="text">
-                                            <input id="card-room" class="hidden-edit" type="text">
-                                            <input id="card-receipt_date" class="hidden-edit" type="text">
-                                            <input id="card-bed" class="hidden-edit" type="text">
-                                        </div>
+                            <div class="toggle" data-patient-card-toggle>
+                                <div class="i i-arrow"></div>
+                            </div>
+                            <div class="block-title">Карточка пациента</div>
+                            <div class="tabs">
+                                <a class="active" data-tab="profile">Профиль</a>
+                                <a data-tab="eat">Выбранные блюда</a>
+                            </div>
+                            
+                            <div class="profile active" data-tab-content="profile">
+                                <div id="full_name_field" class="name"></div>
+                                <div class="fields">
+                                    <div class="field">
+                                        <div class="label">Дата рождения</div>
+                                        <div id="birthdate_field" class="value"></div>
                                     </div>
-                                    <div id="comment_field" class="help"></div>
-                                    <div id="patient-card-button" class="actions">
-                                        <a id="modal_field" class="button">Редактировать</a>
-                                        <a id="archive_field" class="button white">Архивировать</a>
+                                    <div class="field">
+                                        <div class="label">Дата госпитализации</div>
+                                        <div id="receipt_datetime_field" class="value"></div>
                                     </div>
+                                    <div class="field" style="display: none;">
+                                        <div class="label">Дата госпитализации</div>
+                                        <div id="receipt_date_field_hidden" class="value"></div>
+                                    </div>
+                                    <div class="field" style="display: none;">
+                                        <div class="label">Время госпитализации</div>
+                                        <div id="receipt_time_field_hidden" class="value"></div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="label">Отделение</div>
+                                        <div id="department_field" class="value"></div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="label">Диета</div>
+                                        <div id="type_of_diet_field" class="value"></div>
+                                    </div>
+                                    <div class="field" style="display: none;">
+                                        <div id="floor_field_hidden" class="value"></div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="label">Номер палаты</div>
+                                        <div id="room_number_field" class="value"></div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="label">Койко-место</div>
+                                        <div id="bed_field" class="value"></div>
+                                    </div>
+                                    <div class="field">
+                                        <div id="link_lk_patient" class="label"></div>
+                                        <div class="value"></div>
+                                    </div>
+                                    <div class="field">
+                                        <input id="card-user-id" class="hidden-edit" type="text">
+                                        <input id="card-full_name" class="hidden-edit" type="text">
+                                        <input id="card-floor" class="hidden-edit" type="text">
+                                        <input id="card-room" class="hidden-edit" type="text">
+                                        <input id="card-receipt_date" class="hidden-edit" type="text">
+                                        <input id="card-bed" class="hidden-edit" type="text">
+                                    </div>
+                                </div>
+                                <div id="comment_field" class="help"></div>
+                                <div id="patient-card-button" class="actions">
+                                    <a id="modal_field" class="button">Редактировать</a>
+                                    <a id="archive_field" class="button white">Архивировать</a>
                                 </div>
                             </div>
-
-                            <div class="content-body">
-                                <div class="eat" data-tab-content="eat">
-                                    <div class="eat-header">
-                                    <div class="switch">
-                                        <a href="#" class="active" data-tab="today">Сегодня</a>
-                                        <a href="#" data-tab="tomorrow">Завтра</a>
-                                        <a href="#" data-tab="day_after_tomorrow">Послезавтра</a>
-                                    </div>
-                                    </div>
-                                    <div class="eat-body">
-                                    <div id="today" class="boxes active" data-tab-content="today">
-                                        <div class="date">12 июля, вторник</div>
-                                    </div>
-                                    <div id="tomorrow" class="boxes" data-tab-content="tomorrow">
-                                        <div class="date">12 июля, вторник</div>
-                                    </div>
-                                    <div id="day_after_tomorrow" class="boxes" data-tab-content="day_after_tomorrow">
-                                        <div class="date">12 июля, вторник</div>
-                                    </div>
-                                    </div>
+                            <div class="eat" data-tab-content="eat">
+                                <div class="switch">
+                                    <a href="#" class="active" data-tab="today">Сегодня</a>
+                                    <a href="#" data-tab="tomorrow">Завтра</a>
+                                    <a href="#" data-tab="day_after_tomorrow">Послезавтра</a>
+                                </div>
+                                
+                                <div id="today" class="boxes active" data-tab-content="today">
+                                    <div class="date">12 июля, вторник</div>
+                                </div>
+                                <div id="tomorrow" class="boxes" data-tab-content="tomorrow">
+                                    <div class="date">12 июля, вторник</div>
+                                </div>
+                                <div id="day_after_tomorrow" class="boxes" data-tab-content="day_after_tomorrow">
+                                    <div class="date">12 июля, вторник</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
 <!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script> -->
 <script>
 console.log("{{ message }}")
 document.getElementById("modal_field").onclick = function() {clickEditForm()};
-
 function showPaymentChoice() {
     let accompanying = document.getElementById('accompanying')
     let typePay = document.getElementById('typePay')
@@ -508,7 +469,6 @@ function showPaymentChoice() {
         typePay.classList.add('hidden-edit');
     }
 }
-
 function showPaymentChoiceBouillon() {
     let bouillon = document.getElementById('bouillon')
     let typePay = document.getElementById('addMeal')
@@ -518,7 +478,6 @@ function showPaymentChoiceBouillon() {
         typePay.classList.add('hidden-edit');
     }
 }
-
 function showPaymentChoiceEdit(accompanyingId, typePayId) {
     deleteError();
     let accompanying = document.getElementById(accompanyingId)
@@ -529,7 +488,6 @@ function showPaymentChoiceEdit(accompanyingId, typePayId) {
         typePay.classList.add('hidden-edit');
     }
 }
-
 async function clickEditForm() {
     var bedDivs = document.querySelectorAll('.bed_edit')
         bedDivs.forEach(function(bedDiv, i, arr) {
@@ -558,18 +516,15 @@ async function clickEditForm() {
     let fourthFloor = ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'];
     let divRoomNumber = document.getElementById(divRoomId);
     let divBed = document.getElementById('bed_edit');
-
     let res = await getOccupiedRooms('departments');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
     console.log(occupiedRooms)
-
     let result = '' 
     result += `<option selected value="${userRoom}">${userRoom}</option>`
     if (userBed != "Не выбрано") {
          result += `<option value="Не выбрано">Не выбрано</option>`;
     }
-
     if (userFloor == "2") {
         secondFloor.forEach(function(roomNumber, i, arr) {
             if (roomNumber !== userRoom) {
@@ -578,7 +533,6 @@ async function clickEditForm() {
         });
         divRoomNumber.classList.remove('hidden-edit');
     }
-
     if (userFloor == "3") {
         thirdFloor.forEach(function(roomNumber, i, arr) {
             if (roomNumber !== userRoom) {
@@ -587,7 +541,6 @@ async function clickEditForm() {
         });
         divRoomNumber.classList.remove('hidden-edit');
     }
-
     if (userFloor == "4") {
         fourthFloor.forEach(function(roomNumber, i, arr) {
             if (roomNumber !== userRoom) {
@@ -596,7 +549,6 @@ async function clickEditForm() {
         });
         divRoomNumber.classList.remove('hidden-edit');
     }
-
     if (userFloor == "Не выбрано") {
         document.getElementById(divRoomId).classList.add('hidden-edit');
         var bedDivs = document.querySelectorAll('.bed_edit')
@@ -606,9 +558,6 @@ async function clickEditForm() {
  
     }
     item.insertAdjacentHTML("beforeend", result);
-
-
-
     var userBedId = `id_bed-${userId}`
     item = document.getElementById(userBedId);
     console.log(userBedId)
@@ -624,18 +573,14 @@ async function clickEditForm() {
                         '4а-4', '4а-15', '4а-16'];
     let tripleRooms = ['4а-5'];
     divRoomNumber = document.getElementById('bed_edit');
-
-
     while (item.firstChild) {
         item.removeChild(item.firstChild);
     }
     result = '';
-
     res = await getOccupiedRooms('rooms');
     occupiedRooms1 = JSON.parse(res);
     occupiedRooms1 = JSON.parse(occupiedRooms1);
     console.log(occupiedRooms1)
-
     if (singleRooms.includes(userRoom)) {
         
         item.setAttribute("disabled", "disabled");
@@ -643,7 +588,6 @@ async function clickEditForm() {
         document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.add('hidden-edit')
         item.insertAdjacentHTML("beforeend", result);
     }
-
     if (doubleRooms.includes(userRoom)) {
         result += `<option value="${userBed}">${userBed}</option>`;
         
@@ -663,7 +607,6 @@ async function clickEditForm() {
         item.insertAdjacentHTML("beforeend", result);
     
     }
-
     if (tripleRooms.includes(userRoom)) {
         
         item.removeAttribute("disabled");
@@ -684,18 +627,10 @@ async function clickEditForm() {
         item.insertAdjacentHTML("beforeend", result);
         
     }
-
     if (userRoom == 'Не выбрано') {
         result += `<option value="Не выбрано">Не выбрано</option>`;
         item.insertAdjacentHTML("beforeend", result);
     }
-
-
-
-
-
-
-
     var isAccompanyingId = `is_accompanying_${userId}`;
     var typePayId = `type_pay_${userId}`; 
     var isAccompanying = document.getElementById(isAccompanyingId).value
@@ -705,7 +640,6 @@ async function clickEditForm() {
     if (isAccompanying == 'True') {
         document.getElementById(isAccompanyingFormId).setAttribute('checked', 'true');
     }
-
 // ставим checked если есть доп. бульон
     var isBouillonId = `is_bouillon_${userId}`;
     var isBouillon = document.getElementById(isBouillonId).value
@@ -713,8 +647,6 @@ async function clickEditForm() {
     if (isBouillon != '') {
         document.getElementById(isBouillonFormId).setAttribute('checked', 'true');
     }
-
-
 // получаем id
     var isProbeId = `is_probe_${userId}`;
     var isPureedNutritionId = `is_pureed_nutrition_${userId}`;
@@ -744,11 +676,9 @@ async function clickEditForm() {
         document.getElementById(isPureedNutritionFormId).setAttribute('checked', 'true');
     }
 }
-
 var depList = document.querySelectorAll('.floor-list');
 var roomList = document.querySelectorAll('.room-list');
 var idList = document.querySelectorAll('.id-list');
-
 for (var ii = 0; ii < depList.length; ii++) {
     let selectDepartmentId = `#id-floor-${idList[ii].value} .optionValue`
     var optionDepartment = document.querySelectorAll(selectDepartmentId);
@@ -762,11 +692,9 @@ for (var ii = 0; ii < depList.length; ii++) {
     }
 }
 }
-
 const getOccupiedRooms = async function(userScript) {
     let url = 'api/v1/get/occupiedrooms'
     let body = {'user_script': userScript};
-
     let response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -777,8 +705,6 @@ const getOccupiedRooms = async function(userScript) {
     let result = await response.text();
     return result;
 }
-
-
 async function addRoomNumber(value, idRoomNumber) {
     selectRoomNumber = document.getElementById(idRoomNumber);
     let secondFloor = ['2а-1',  '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13', '2а-14', '2а-15', '2а-16', '2а-17'];
@@ -786,17 +712,14 @@ async function addRoomNumber(value, idRoomNumber) {
     '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4', '3b-5', '3b-6', '3b-7',
     '3b-8', '3b-9', '3b-10'];
     let fourthFloor = ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'];
-
     let divRoomNumber = document.getElementById('room_number_add');
     let divBed = document.getElementById('bed_add');
-
     let result = ''
     result += `<option value="Не выбрано">Не выбрано</option>`;
 // удаляем все варианты select
     while (selectRoomNumber.firstChild) {
         selectRoomNumber.removeChild(selectRoomNumber.firstChild);
     }
-
     if (value == "2") {
         secondFloor.forEach(function(roomNumber, i, arr) {
                 result += `<option value="${roomNumber}">${roomNumber}</option>`;
@@ -804,8 +727,6 @@ async function addRoomNumber(value, idRoomNumber) {
         divRoomNumber.classList.remove('hidden-edit')
         divBed.classList.add('hidden-edit')
     }
-
-
     if (value == "3") {
         thirdFloor.forEach(function(roomNumber, i, arr) {
                 result += `<option value="${roomNumber}">${roomNumber}</option>`;
@@ -813,8 +734,6 @@ async function addRoomNumber(value, idRoomNumber) {
         divRoomNumber.classList.remove('hidden-edit')
         divBed.classList.add('hidden-edit')
     }
-
-
     if (value == "4") {
         fourthFloor.forEach(function(roomNumber, i, arr) {
                 result += `<option value="${roomNumber}">${roomNumber}</option>`;
@@ -822,7 +741,6 @@ async function addRoomNumber(value, idRoomNumber) {
         divRoomNumber.classList.remove('hidden-edit')
         divBed.classList.add('hidden-edit')
     }
-
     if (value == "Не выбрано") {
         roomNumberOncology.forEach(function(roomNumber, i, arr) {
             result += `<option value="${roomNumber}">${roomNumber}</option>`;
@@ -832,7 +750,6 @@ async function addRoomNumber(value, idRoomNumber) {
     }
     selectRoomNumber.insertAdjacentHTML("beforeend", result);
 }
-
 async function addRoomNumberEditForm(value, idRoomNumber, floor, room, bed, divRoomId) {
     deleteError()
     selectRoomNumber = document.getElementById(idRoomNumber);
@@ -842,25 +759,21 @@ async function addRoomNumberEditForm(value, idRoomNumber, floor, room, bed, divR
     '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4', '3b-5', '3b-6', '3b-7',
     '3b-8', '3b-9', '3b-10'];
     let fourthFloor = ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'];
-
     let divRoomNumber = document.getElementById(divRoomId);
     let divBed = document.getElementById('bed_edit');
     let res = await getOccupiedRooms('departments');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
     console.log(occupiedRooms)
-
     let result = ''
     result += `<option selected value="Не выбрано">Не выбрано</option>`;
 // удаляем все варианты select
     while (selectRoomNumber.firstChild) {
         selectRoomNumber.removeChild(selectRoomNumber.firstChild);
     }
-
     if (value == floor) {
         result += `<option value="${room}">${room}</option>`;
     }
-
     if (value == "2") {
         secondFloor.forEach(function(roomNumber, i, arr) {
             if (roomNumber !== room) {
@@ -870,7 +783,6 @@ async function addRoomNumberEditForm(value, idRoomNumber, floor, room, bed, divR
         divRoomNumber.classList.remove('hidden-edit')
         divBed.classList.add('hidden-edit')
     }
-
     if (value == "3") {
         thirdFloor.forEach(function(roomNumber, i, arr) {
             if (roomNumber !== room) {
@@ -880,7 +792,6 @@ async function addRoomNumberEditForm(value, idRoomNumber, floor, room, bed, divR
         divRoomNumber.classList.remove('hidden-edit')
         divBed.classList.add('hidden-edit')
     }
-
     if (value == "4") {
         fourthFloor.forEach(function(roomNumber, i, arr) {
             if (roomNumber !== room) {
@@ -890,15 +801,12 @@ async function addRoomNumberEditForm(value, idRoomNumber, floor, room, bed, divR
         divRoomNumber.classList.remove('hidden-edit')
         divBed.classList.add('hidden-edit')
     }
-
     if (value == "Не выбрано") {
         divRoomNumber.classList.add('hidden-edit')
         divBed.classList.add('hidden-edit')
     }
     selectRoomNumber.insertAdjacentHTML("beforeend", result);
 }
-
-
 async function addBed(value) {
     document.getElementById('error_bed').innerHTML = ''
     document.getElementById('error_bed').classList.remove('error')
@@ -917,26 +825,20 @@ async function addBed(value) {
                         '4а-4', '4а-15', '4а-16'];
     let tripleRooms = ['4а-5'];
     let divRoomNumber = document.getElementById('bed_add');
-
-
     while (selectBed.firstChild) {
         selectBed.removeChild(selectBed.firstChild);
     }
     let result = '';
-
     let res = await getOccupiedRooms('easy_mode');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
     console.log(occupiedRooms)
-
-
     if (singleRooms.includes(value)) {
         selectBed.setAttribute("disabled", "disabled");
         result += `<option value="K1">K1</option>`;
         divRoomNumber.classList.remove('hidden-edit')
         document.querySelector('#bed_add .selection .select2-selection__arrow').classList.add('hidden-edit')
         selectBed.insertAdjacentHTML("beforeend", result);
-
         if (typeof occupiedRooms[room_number.value] !== "undefined") {
         //ключ есть
             if (occupiedRooms[room_number.value].includes(selectBed.value) ) {
@@ -951,8 +853,6 @@ async function addBed(value) {
         //ключа нет
         }
     }
-
-
     if (doubleRooms.includes(value)) {
         selectBed.removeAttribute("disabled");
             result += `<option value="Не выбрано">Не выбрано</option>`;
@@ -962,7 +862,6 @@ async function addBed(value) {
             document.querySelector('#bed_add .selection .select2-selection__arrow').classList.remove('hidden-edit')
             selectBed.insertAdjacentHTML("beforeend", result);
     }
-
     if (tripleRooms.includes(value)) {
         selectBed.removeAttribute("disabled");
             result += `<option value="Не выбрано">Не выбрано</option>`;
@@ -977,7 +876,6 @@ async function addBed(value) {
         divRoomNumber.classList.add('hidden-edit');
     }
 }
-
 async function addBedEditForm(value, idBed, userRoom, userBed) {
     deleteError()
     document.getElementById('error_bed').innerHTML = ''
@@ -996,14 +894,10 @@ async function addBedEditForm(value, idBed, userRoom, userBed) {
                         '4а-4', '4а-15', '4а-16'];
     let tripleRooms = ['4а-5'];
     let divRoomNumber = document.getElementById('bed_edit');
-
-
-
     while (selectBed.firstChild) {
         selectBed.removeChild(selectBed.firstChild);
     }
     let result = '';
-
     let res = await getOccupiedRooms('easy_mode');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
@@ -1014,7 +908,6 @@ async function addBedEditForm(value, idBed, userRoom, userBed) {
         divRoomNumber.classList.remove('hidden-edit')
         document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.add('hidden-edit')
         selectBed.insertAdjacentHTML("beforeend", result);
-
         if (typeof occupiedRooms[value] !== "undefined") {
         //ключ есть
             if (occupiedRooms[value].includes(selectBed.value)) {
@@ -1044,9 +937,6 @@ async function addBedEditForm(value, idBed, userRoom, userBed) {
         // //ключа нет
         // }
     }
-
-
-
     if (doubleRooms.includes(value)) {
         selectBed.removeAttribute("disabled");
             result += `<option value="Не выбрано">Не выбрано</option>`;
@@ -1055,7 +945,6 @@ async function addBedEditForm(value, idBed, userRoom, userBed) {
             divRoomNumber.classList.remove('hidden-edit')
             document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.remove('hidden-edit')
             selectBed.insertAdjacentHTML("beforeend", result);
-
             if (typeof occupiedRooms[value] !== "undefined") {
         //ключ есть
             if (occupiedRooms[value].includes(selectBed.value) ) {
@@ -1070,7 +959,6 @@ async function addBedEditForm(value, idBed, userRoom, userBed) {
         //ключа нет
         }
     }
-
     if (tripleRooms.includes(value)) {
         selectBed.removeAttribute("disabled");
             result += `<option value="Не выбрано">Не выбрано</option>`;
@@ -1080,7 +968,6 @@ async function addBedEditForm(value, idBed, userRoom, userBed) {
             divRoomNumber.classList.remove('hidden-edit')
             document.querySelector('#bed_edit .selection .select2-selection__arrow').classList.remove('hidden-edit')
             selectBed.insertAdjacentHTML("beforeend", result);
-
             if (typeof occupiedRooms[value] !== "undefined") {
         //ключ есть
             if (occupiedRooms[value].includes(selectBed.value) ) {
@@ -1104,21 +991,16 @@ async function addBedEditForm(value, idBed, userRoom, userBed) {
     }
     // divRoomNumber.classList.remove('hidden-edit')
 }
-
 async function checkBed(value) {
     document.getElementById('error_bed').innerHTML = ''
     document.getElementById('error_bed').classList.remove('error')
     document.getElementById('bed_add').classList.remove('error')
-
-
     let room_number = document.getElementById('id_room_number');
     let bed = document.getElementById('id_bed');
-
     let res = await getOccupiedRooms('easy_mode');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
     console.log(occupiedRooms)
-
     if (typeof occupiedRooms[room_number.value] !== "undefined") {
     //ключ есть
         if (occupiedRooms[room_number.value].includes(bed.value) ) {
@@ -1132,25 +1014,19 @@ async function checkBed(value) {
         document.getElementById('bed_add').classList.remove('error')
     //ключа нет
     }
-
 } 
-
-
 async function checkBedEditForm(value, id_bed, id_room_number) {
     document.getElementById('error_bed').innerHTML = ''
     document.getElementById('error_bed').classList.remove('error')
     document.getElementById('bed_edit').classList.remove('error')
-
     var room_numberOld = document.getElementById("room_number_field").innerText
     var bedOld = document.getElementById("bed_field").innerText
     let room_number = document.getElementById(id_room_number);
     let bed = document.getElementById(id_bed);
-
     let res = await getOccupiedRooms('easy_mode');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
     console.log(occupiedRooms)
-
     if (typeof occupiedRooms[room_number.value] !== "undefined") {
     //ключ есть
         if (occupiedRooms[room_number.value].includes(bed.value)) {
@@ -1168,11 +1044,7 @@ async function checkBedEditForm(value, id_bed, id_room_number) {
         document.getElementById('bed_edit').classList.remove('error')
     //ключа нет
     }
-
 }
-
-
-
 let not_active_users_set = '{{not_active_users_set}}'.split(",");
 if (not_active_users_set[0] != 'none') {
     for (var index in not_active_users_set ) {
@@ -1180,8 +1052,6 @@ if (not_active_users_set[0] != 'none') {
         }
 }
 filtration()
-
-
 async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_time, department, type_of_diet, room_number, bed, comment, id, floor) {
     document.getElementById("full_name_field").innerText = full_name;
     document.getElementById("card-full_name").value = full_name;
@@ -1216,7 +1086,6 @@ async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_ti
     document.getElementById("archive_field").setAttribute('data-modal-link', 'patient-archive'+id); 
     document.getElementById("receipt_date_field_hidden").innerHTML = receipt_date;
     document.getElementById("receipt_time_field_hidden").innerHTML = receipt_time;
-
     let receiptDate = receipt_date
     let res = await getMenuForPatient(id)
     var obj = JSON.parse(res);
@@ -1238,12 +1107,9 @@ async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_ti
         addHtml(day, obj, meals, item, result, product, receiptDate);
     }
 }
-
-
 function addHtml(day, obj, meals, item, result, product, receiptDate) {
     // Добавляет меню на один день в выборе пациента
     item = document.getElementById(day)
-
     while (item.firstChild) {
         item.removeChild(item.firstChild);
     }
@@ -1254,12 +1120,9 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
 // проверяем, если дата раньше даты госпитализации, выводим сообщение
     receiptDate = receiptDate.split(".");
     receiptDate = new Date(receiptDate[2], receiptDate[1] - 1, receiptDate[0]);
-
     let menuDate = obj[day].date
     menuDate = menuDate.split("-");
     menuDate = new Date(menuDate[0], menuDate[1] - 1, menuDate[2]);
-
-
     if (moment(receiptDate).isBefore(menuDate, 'days') || moment(receiptDate).isSame(menuDate, 'days')) {
         for (var meal in meals ) {
             if (obj[day][meal] != null) {
@@ -1267,9 +1130,7 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
                 for (var key in obj[day][meal]) {
                     if (obj[day][meal][key] != null) {
                         product = obj[day][meal][key]
-
                         isNotProducts = false
-
                         if ((key == 'drink') && (product[0] != null)) {
                             for (var i in product) {
                                 result += '<div class="item">'
@@ -1282,7 +1143,6 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
                                 result += '<div class="text">' + product[i].description + '</div>' 
                                 result += '</div></div>'}
                         } else {
-
                             result += '<div class="item">'
                             if (product.image == null) {
                                 result += '<div class="img">'
@@ -1322,7 +1182,6 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
                                     result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt=""></div>'
                                 }
                                 if (key == 'drink') {
-
                                     result +='<img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt="">'
                                     result +='</div>'
                                     result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt=""></div>'
@@ -1350,9 +1209,7 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
         result += 'Выбранная дата раньше даты госпитализации, данные недоступны'
     }
         item.insertAdjacentHTML("beforeend", result);
-
 }
-
 function formattingFFC(value) {
     if (value == null) {
         return '0'
@@ -1361,14 +1218,11 @@ function formattingFFC(value) {
         return value
     }
 }
-
-
 const getMenuForPatient = async function(userId) {
     let url = '/doctor/api/v1/patient/menu'
     let body = {
         "id_user": userId
     };
-
     let response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -1377,12 +1231,8 @@ const getMenuForPatient = async function(userId) {
       body: JSON.stringify(body)
     });
     let result = await response.text();
-
     return result;
 }
-
-
-
 const list = document.querySelectorAll('.product')
     list.forEach(item =>{
         item.addEventListener('click', (e) =>{
@@ -1390,8 +1240,6 @@ const list = document.querySelectorAll('.product')
         item.classList.add('active')
     })
 })
-
-
 const list1 = document.querySelectorAll('.tag')
  list1.forEach(item1 =>{
         if (item1.innerHTML == 'ОВД') {
@@ -1443,18 +1291,14 @@ const list1 = document.querySelectorAll('.tag')
             item1.classList.add('purple')
         }
 })
-
-
 // фильтрация/сортировка страницы
 function check_function(value) {
     
     var form = document.getElementById('main-form');
     let filterBy = document.getElementById('filter_by').innerHTML
-
     if (document.getElementById(value).checked) {
         document.getElementById('is_pressing_again').value = 'True'
     } else {
-
         document.getElementById('is_pressing_again').value = 'False'
     }
     document.getElementById(value).setAttribute('checked', 'true');
@@ -1466,8 +1310,6 @@ function check_function(value) {
     }
     form.submit();
 }
-
-
 function filtration() {
     let sorting = document.getElementById('sorting').innerHTML
     let filterBy = document.getElementById('filter_by').innerHTML
@@ -1481,8 +1323,6 @@ function checkDate(year, month, day) {
         let date = new Date(year, month - 1, day);
         return date.getFullYear() == year && date.getMonth() == month - 1 && date.getDate() == day;
     }
-
-
 async function validationForm() {
     var btn = document.getElementById('btn-save');
     btn.setAttribute('disabled', true);
@@ -1504,21 +1344,15 @@ async function validationForm() {
     var accompanying = document.getElementById('accompanying');
     var typePayPetrushka = document.getElementById('typePayPetrushka');
     var typePayHadassah = document.getElementById('typePayHadassah');
-
     var bouillon = document.getElementById('bouillon');
     var breakfastBouillon = document.getElementById('breakfastBouillon');
     var lunchBouillon = document.getElementById('lunchBouillon');
     var afternoonBouillon = document.getElementById('afternoonBouillon');
     var dinnerBouillon = document.getElementById('dinnerBouillon');
-
-
     var isProbe = document.getElementById('is_probe');
     var isPureedNutrition = document.getElementById('is_pureed_nutrition');
     var isWithoutSalt = document.getElementById('is_without_salt');
     var isWithoutLactose = document.getElementById('is_without_lactose');
-
-
-
     for (var i = 0; i < errors.length; i++) {
         errors[i].innerHTML = '';
         errors[i].classList.remove('error');
@@ -1544,7 +1378,6 @@ async function validationForm() {
         document.getElementById('birthdate_add').classList.add('error');
         error = error + 1
     }
-
     let birthdateArr = birthdate.value.split(".");
     if (!checkDate(birthdateArr[2], birthdateArr[1], birthdateArr[0])) {
         document.getElementById('error_birthdate').innerHTML = 'Неверная дата';
@@ -1552,21 +1385,17 @@ async function validationForm() {
         document.getElementById('birthdate_add').classList.add('error');
         error = error + 1
     }
-
-
     if (!receipt_date.value) {
         document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле';
         document.getElementById('error_receipt_date').classList.add('error');
         document.getElementById('receipt_date_add').classList.add('error');
         error = error + 1
     }
-
     let nowDate = new Date();
     let todayDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), nowDate.getHours(), nowDate.getMinutes());
     let receiptDateListNew = (receipt_date.value).split(".");
     let receiptTimeListNew = (receipt_time.value).split(":");
     receiptDateNew = new Date(receiptDateListNew[2], receiptDateListNew[1] - 1, receiptDateListNew[0], receiptTimeListNew[0], receiptTimeListNew[1])
-
     if (moment(receiptDateNew).isBefore(todayDate, 'day')) {
             document.getElementById('error_receipt_date').innerHTML = 'Дата госпитализации не может быть раньше текущей даты';
             document.getElementById('error_receipt_date').classList.add('error');
@@ -1582,65 +1411,53 @@ async function validationForm() {
             
         }
     }
-
-
     if (!receipt_time.value) {
         document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
         document.getElementById('error_receipt_time').classList.add('error')
         document.getElementById('receipt_time_add').classList.add('error')
         error = error + 1
     }
-
-
-
     if (type_of_diet.value == 'Не выбрано') {
         document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
         document.getElementById('error_type_of_diet').classList.add('error')
         document.getElementById('type_of_diet_add').classList.add('error')
         error = error + 1
     }
-
 // указываем дополнительный бульон
     var strExBouillon = []
 // если стоит галка у + дополнительный бульон
     if (bouillon.checked) { 
         document.getElementById('is_bouillon').value = 'True'
-
         if (breakfastBouillon.checked) {
             document.getElementById('test_breakfastBouillon').value = 'True'
             strExBouillon.push("breakfast");
         } else {
             document.getElementById('test_breakfastBouillon').value = 'False'
         }
-
         if (lunchBouillon.checked) {
             document.getElementById('test_lunchBouillon').value = 'True'
             strExBouillon.push("lunch");
         } else {
             document.getElementById('test_lunchBouillon').value = 'False'
         }
-
         if (afternoonBouillon.checked) {
             document.getElementById('test_afternoonBouillon').value = 'True'
             strExBouillon.push("afternoon");
         } else {
             document.getElementById('test_afternoonBouillon').value = 'False'
         }
-
         if (dinnerBouillon.checked) {
             document.getElementById('test_dinnerBouillon').value = 'True'
             strExBouillon.push("dinner");
         } else {
             document.getElementById('test_dinnerBouillon').value = 'False'
         }
-
         if (strExBouillon.length == 0) {
             error = 1
             document.getElementById('error_bouillion').innerHTML = 'Необходимо выбрать приемы пищи для доп. бульона'
             document.getElementById('error_bouillion').classList.add('error')
             document.getElementById('error_bouillion_div').classList.add('error')
         }
-
     } else {
         document.getElementById('is_bouillon').value = 'False'
         document.getElementById('test_breakfastBouillon').value = 'False'
@@ -1648,9 +1465,6 @@ async function validationForm() {
         document.getElementById('test_afternoonBouillon').value = 'False'
         document.getElementById('test_dinnerBouillon').value = 'False'
     }
-
-
-
     if (error == 0) {
         document.getElementById('add_patient_flag').setAttribute('checked', 'true');
         document.getElementById('test_full_name').value = full_name.value
@@ -1663,7 +1477,6 @@ async function validationForm() {
         document.getElementById('test_room_number').value = room_number.value
         document.getElementById('test_bed').value = bed.value
         document.getElementById('test_comment').value = id_comment.value
-
         // if (bouillon.checked) {
         //     document.getElementById('is_bouillon').value = 'True'
         //     if (breakfastBouillon.checked) {
@@ -1671,19 +1484,16 @@ async function validationForm() {
         //     } else {
         //         document.getElementById('test_breakfastBouillon').value = 'False'
         //     }
-
         //     if (lunchBouillon.checked) {
         //         document.getElementById('test_lunchBouillon').value = 'True'
         //     } else {
         //         document.getElementById('test_lunchBouillon').value = 'False'
         //     }
-
         //     if (afternoonBouillon.checked) {
         //         document.getElementById('test_afternoonBouillon').value = 'True'
         //     } else {
         //         document.getElementById('test_afternoonBouillon').value = 'False'
         //     }
-
         //     if (dinnerBouillon.checked) {
         //         document.getElementById('test_dinnerBouillon').value = 'True'
         //     } else {
@@ -1692,9 +1502,6 @@ async function validationForm() {
         // } else {
         //     document.getElementById('is_bouillon').value = 'False'
         // }
-
-
-
         
         isAccompanying = document.getElementById('is_accompanying')
         typePay = document.getElementById('type_pay')
@@ -1715,7 +1522,6 @@ async function validationForm() {
         } else {
             document.getElementById('test_is_probe').value = 'False'
         }
-
         if (isPureedNutrition.checked) {
             document.getElementById('test_is_pureed_nutrition').value = 'True'
         } else {
@@ -1737,14 +1543,11 @@ async function validationForm() {
     btn.removeAttribute('disabled');
     }
 }
-
-
 function deleteError() {
     document.getElementById('error_not_change').innerHTML = ''
     document.getElementById('error_not_change').classList.remove('error')
     document.getElementById('error_not_change_div').classList.remove('error')
 }
-
 function validationEditForm(id_full_name,
  id_birthdate,
   id_receipt_date,
@@ -1778,7 +1581,6 @@ function validationEditForm(id_full_name,
     var isAccompanying = document.getElementById('edit_is_accompanying')
     var typePayPetrushka = document.getElementById(typePayPetrushka);
     var typePayHadassah = document.getElementById(typePayHadassah);
-
     var full_nameOld = document.getElementById("card-full_name").value
     var birthdateOld = document.getElementById("birthdate_field").innerText
     var receipt_dateOld = document.getElementById("card-receipt_date").value
@@ -1821,12 +1623,10 @@ function validationEditForm(id_full_name,
             isAccompanying.value = 'False'
             typePay.value = 'None'
         }
-
     var isProbe = document.getElementById(isProbeId)
     var isWithoutSalt = document.getElementById(isWithoutSaltId)
     var isWithoutLactose = document.getElementById(isWithoutLactoseId)
     var isPureedNutrition = document.getElementById(isPureedNutritionId)
-
     if (isProbe.checked) {
         document.getElementById('edit_is_probe').value = 'True'
         var isProbeValue = 'True'
@@ -1856,14 +1656,11 @@ function validationEditForm(id_full_name,
         var isWithoutLactoseValue = 'False'
     }
     var typePayOld = document.getElementById(typePayId).value
-
-
     var isProbeOldId = `is_probe_${id}`
     var isPureedNutritionOldId = `is_pureed_nutrition_${id}`
     var isWithoutSaltOldId = `is_without_salt_${id}`
     var isWithoutLactoseOldId = `is_without_lactose_${id}`
     var isProbeOld = document.getElementById(isProbeOldId)
-
     if (isProbeOld.value == '') {
         isProbeOld.value = 'False'
     }
@@ -1875,12 +1672,10 @@ function validationEditForm(id_full_name,
     if (isWithoutLactoseOld.value == '') {
         isWithoutLactoseOld.value = 'False'
     }
-
     isPureedNutritionOld = document.getElementById(isPureedNutritionOldId)
     if (isPureedNutritionOld.value == '') {
         isPureedNutritionOld.value = 'False'
     }
-
 // удаляем все сообщения об ошибках
     var errors = document.querySelectorAll('.error-field')
     var formGroup = document.querySelectorAll('.form-group')
@@ -1890,9 +1685,6 @@ function validationEditForm(id_full_name,
         formGroup[i].classList.remove('error');
     }
     
-
-
-
     var error = 0
 // отправляем значения с формы, для сохранения.
     var isBreakfast = document.getElementById(isBreakfastId);
@@ -1906,7 +1698,6 @@ function validationEditForm(id_full_name,
 // если стоит галка у + дополнительный бульон
     if (BouillionsValue.checked) {
         document.getElementById('edit_is_bouillon').value = 'True'
-
         if (isBreakfast.checked) {
             document.getElementById('edit_breakfastBouillon').value = 'True'
             strExBouillon.push("breakfast");    
@@ -1931,14 +1722,12 @@ function validationEditForm(id_full_name,
         } else {
             document.getElementById('edit_dinnerBouillon').value = 'False'
         }
-
         if (strExBouillon.length == 0) {
             error = 1
             document.getElementById('error_not_change').innerHTML = 'Необходимо выбрать приемы пищи для доп. бульона'
             document.getElementById('error_not_change').classList.add('error')
             document.getElementById('error_not_change_div').classList.add('error')
         }
-
     } else {
         document.getElementById('edit_is_bouillon').value = 'False'
         document.getElementById('edit_breakfastBouillon').value = 'False'
@@ -1947,7 +1736,6 @@ function validationEditForm(id_full_name,
         document.getElementById('edit_dinnerBouillon').value = 'False'
         strExBouillon = [];
     }
-
 // проверяем есть ли изменения
     if (error != 1) {
         if ((full_name.value == full_nameOld) &&
@@ -1973,7 +1761,6 @@ function validationEditForm(id_full_name,
             document.getElementById('error_not_change_div').classList.add('error')
         }
     }
-
     var st = new RegExp("[^а-яА-Яa-zA-Z0-9ёЁ+/)/(/-/'/ /./,-]+");
     if (!full_name.value) {
         document.getElementById('error_full_name').innerHTML = 'Обязательное поле'
@@ -1981,14 +1768,12 @@ function validationEditForm(id_full_name,
         document.getElementById('full_name_edit').classList.add('error')
         error = error + 1
     }
-
     if (!birthdate.value) {
         document.getElementById('error_birthdate').innerHTML = 'Обязательное поле';
         document.getElementById('error_birthdate').classList.add('error');
         document.getElementById('birthdate_edit').classList.add('error');
         error = error + 1
     }
-
     let birthdateArr = birthdate.value.split(".");
     if (!checkDate(birthdateArr[2], birthdateArr[1], birthdateArr[0])) {
         document.getElementById('error_birthdate').innerHTML = 'Неверная дата';
@@ -1996,7 +1781,6 @@ function validationEditForm(id_full_name,
         document.getElementById('birthdate_edit').classList.add('error');
         error = error + 1
     }
-
     if (st.test(full_name.value)) {
         document.getElementById('error_full_name').innerHTML = "Поле может содержать только буквы и символы ()-,'."
         document.getElementById('error_full_name').classList.add('error')
@@ -2007,16 +1791,13 @@ function validationEditForm(id_full_name,
         document.getElementById('error_receipt_date').innerHTML = 'Обязательное поле'
         document.getElementById('error_receipt_date').classList.add('error')
         document.getElementById('receipt_date_edit').classList.add('error')
-
         error = error + 1
     }
-
     let nowDate = new Date();
     let todayDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), nowDate.getHours(), nowDate.getMinutes());
     let receiptDateListNew = (receipt_date.value).split(".");
     let receiptTimeListNew = (receipt_time.value).split(":");
     receiptDateNew = new Date(receiptDateListNew[2], receiptDateListNew[1] - 1, receiptDateListNew[0], receiptTimeListNew[0], receiptTimeListNew[1])
-
     let receiptDateOld = document.getElementById("receipt_date_field_hidden").innerHTML
     let receiptTimeOld = document.getElementById("receipt_time_field_hidden").innerHTML
     let receiptDateListOld = (receiptDateOld).split(".");
@@ -2038,23 +1819,18 @@ function validationEditForm(id_full_name,
             error = error + 1;
         }
     }
-
-
     if (!receipt_time.value) {
         document.getElementById('error_receipt_time').innerHTML = 'Обязательное поле'
         document.getElementById('error_receipt_time').classList.add('error')
         document.getElementById('receipt_time_edit').classList.add('error')
         error = error + 1
     }
-
     if (type_of_diet.value == 'Не выбрано') {
         document.getElementById('error_type_of_diet').innerHTML = 'Обязательное поле'
         document.getElementById('error_type_of_diet').classList.add('error')
         document.getElementById('type_of_diet_edit').classList.add('error')
         error = error + 1
     }
-
-
     if (error == 0) {
         document.getElementById('edit_patient_flag').setAttribute('checked', 'true');
         document.getElementById('id_edit_user').value = id
@@ -2074,7 +1850,6 @@ function validationEditForm(id_full_name,
     btn.removeAttribute('disabled');
     }
  }
-
 function patientArchive(id, btnId) {
     var btn1 = document.getElementById(btnId);
     btn1.setAttribute('disabled', true);
@@ -2083,7 +1858,6 @@ function patientArchive(id, btnId) {
     document.getElementById('archive').setAttribute('checked', 'true');
     form.submit()
 }
-
 async function validationChangeEmailForm() {
     var form1 = document.getElementById('profile-form-id');
     var email = document.getElementById('change-email')
@@ -2104,14 +1878,12 @@ async function validationChangeEmailForm() {
         document.getElementById('change-email-form').classList.add('error')
         error = error + 1
     }
-
     if (error == 0) {
         document.getElementById('change-email_flag').setAttribute('checked', 'true');
         document.getElementById('changed-email').value = email.value
         form1.submit();
     }
 }
-
 async function validationChangePasswordForm() {
     var form1 = document.getElementById('profile-form-id');
     var old_password = document.getElementById('old_password');
@@ -2147,8 +1919,17 @@ const checkPassword = async function(userId, oldPassword) {
     let body = {
         "id_user": userId,
         "row_password": oldPassword
-    };
 
+    
+          
+            
+    
+
+          
+    
+    
+  
+    };
     let response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -2168,15 +1949,12 @@ const checkPassword = async function(userId, oldPassword) {
         return false;
     }
 }
-
 const checkPasswordTest = async function(userId, oldPassword) { 
     let promise = new Promise((resolve, reject) => {
         setTimeout(() => resolve("готово!"), 1000)
   });
-
   let result = await promise;
 }
-
 function clickOnElement () {
     if ('{{ id_edited_user }}' == '') {
         const elements = document.querySelectorAll('.product')
@@ -2187,15 +1965,9 @@ function clickOnElement () {
         clickOnEditedElement();
     }    
 }
-
-
 function clickOnEditedElement() {
     document.getElementById('{{ id_edited_user }}').click();
 }
-
-
-
-
 clickOnElement();
 function changeSymbol(idName, idBirthdate) {
     let symbol = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
@@ -2244,22 +2016,8 @@ function changeSymbol(idName, idBirthdate) {
         old = this.value.length
     })
 }
-
-
-
-
-
-
-
 // $('.test').magnificPopup();
-
-
-
-
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
-
-
-
 {% endblock %}
