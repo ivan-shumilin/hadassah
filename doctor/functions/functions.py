@@ -1027,7 +1027,7 @@ def create_without_comment(users_diet, floors, diet):
     return without_comment
 
 def counting_diets(users, floors):
-    diets_name = ['ОВД', 'ОВД без сахара', 'ЩД', 'ЩД без сахара', 'БД день 1', 'БД день 2', 'ОВД веган (пост) без глютена', 'Нулевая диета', 'ВБД', 'НБД', 'НКД', 'ВКД', 'Безйодовая']
+    diets_name = ['ОВД', 'ОВД без сахара', 'ЩД', 'ЩД без сахара', 'БД день 1', 'БД день 2', 'ОВД веган (пост) без глютена', 'Нулевая диета', 'ВБД', 'НКД', 'ВКД', 'Безйодовая']
     diets_count = []
     for diet in diets_name:
         users_diet = users.filter(type_of_diet=diet)
