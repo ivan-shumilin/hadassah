@@ -202,7 +202,7 @@
                                     </div>
                                     <div id='type_of_diet_edit' class="form-group">
                                         <label>Диета</label>
-                                        {{ form.type_of_diet|attr:"onchange=deleteError();" }}
+                                        {{ form.type_of_diet|attr:"onchange=changeDietEditForm(this.value);" }}
                                         <div id ='error_type_of_diet' class="error-field"></div>
                                     </div>
                                     <div id='department_edit' class="form-group">
@@ -428,6 +428,7 @@
                                             <input id="card-room" class="hidden-edit" type="text">
                                             <input id="card-receipt_date" class="hidden-edit" type="text">
                                             <input id="card-bed" class="hidden-edit" type="text">
+                                            <input id="card-diet" class="hidden-edit" type="text">
                                         </div>
                                     </div>
                                     <div id="comment_field" class="help"></div>
@@ -463,7 +464,32 @@
             </div>
 <!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script> -->
 <script>
-console.log("{{ message }}")
+function changeDiet(value) {
+    console.log(value);
+    if (value == 'НБД') {
+        document.getElementById('is_without_salt').checked = true;
+        document.getElementById('is_without_salt').disabled = true;
+    } else {
+        document.getElementById('is_without_salt').checked = false;
+        document.getElementById('is_without_salt').disabled = false;
+    }
+}
+
+function changeDietEditForm(value) {
+    deleteError();
+    var userId = document.getElementById("card-user-id").value;
+    var isWithoutSaltId = `is_without_salt_form_${userId}`;
+
+    console.log(userId);
+    if (value == 'НБД') {
+        document.getElementById(isWithoutSaltId).checked = true;
+        document.getElementById(isWithoutSaltId).disabled = true;
+    } else {
+        document.getElementById(isWithoutSaltId).checked = false;
+        document.getElementById(isWithoutSaltId).disabled = false;
+    }
+}
+
 document.getElementById("modal_field").onclick = function() {clickEditForm()};
 function showPaymentChoice() {
     let accompanying = document.getElementById('accompanying')
@@ -507,6 +533,13 @@ async function clickEditForm() {
     // var divBedId = `room_number_edit-${userId}`;
     var userNameId = `full_name_${userId}`;
     var userBdate = `id-birthdate-${userId}`;
+
+    var userDiet = document.getElementById("card-diet").value;
+    if (userDiet == 'НБД') {
+        var isWithoutSaltId = `is_without_salt_form_${userId}`;
+        document.getElementById(isWithoutSaltId).checked = true;
+        document.getElementById(isWithoutSaltId).disabled = true;
+    }
     
     changeSymbol(userNameId, userBdate);
     item = document.getElementById(userRoomId);
@@ -1085,6 +1118,8 @@ async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_ti
     }
     document.getElementById("comment_field").innerHTML = comment;
     document.getElementById("card-user-id").value = id;
+
+    document.getElementById("card-diet").value = type_of_diet;
     
     document.getElementById("modal_field").setAttribute('data-modal-link', 'modal-start'+id);
     // document.getElementById("modal_field").classList.add("modal-link-processed");

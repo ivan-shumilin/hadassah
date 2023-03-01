@@ -5660,7 +5660,7 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
 
   /* стили для чекбокса, находящегося в состоянии disabled */
   .custom-checkbox>input:disabled+span::before {
-  background-color: #e9ecef;
+  background-color: #8babbf;
   }
 
   /* для элемента input c type="radio" */
@@ -5722,8 +5722,8 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
   }
 
-  /* стили для радиокнопки, находящейся в состоянии disabled
-  .custom-radio>input:disabled+span::before {
+  /* стили для радиокнопки, находящейся в состоянии disabled */
+  /* .custom-radio>input:disabled+span::before {
   background-color: #e9ecef;
   } */
 

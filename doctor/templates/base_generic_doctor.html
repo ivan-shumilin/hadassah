@@ -337,7 +337,7 @@
                 </div>
                 <div id='type_of_diet_add' class="form-group">
                     {{ user_form.type_of_diet.label }}
-                    {{ user_form.type_of_diet }}
+                    {{ user_form.type_of_diet|attr:"onchange=changeDiet(this.value);" }}
                     <div id ='error_type_of_diet' class="error-field"></div>
                 </div>
 
