@@ -1442,11 +1442,14 @@ def internal_report(request):
         else:
             if ',' in item.product_id:
                 for id in item.product_id.split(','):
-                    product = ProductLp.objects.get(id=id)
-                    report.setdefault(id, []).append(
-                        {'category': product.category,
-                         'name': product.name,
-                         })
+                    try:
+                        product = ProductLp.objects.get(id=id)
+                        report.setdefault(id, []).append(
+                            {'category': product.category,
+                             'name': product.name,
+                             })
+                    except:
+                        pass
             else:
                 try:
                     product = ProductLp.objects.get(id=item.product_id)
