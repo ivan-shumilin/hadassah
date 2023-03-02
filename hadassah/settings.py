@@ -132,8 +132,8 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 
-TIME_ZONE = 'Europe/Moscow'
-# TIME_ZONE = 'Europe/Riga' # минус 1 часа от московского
+# TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = 'Europe/Riga' # минус 1 часа от московского
 # TIME_ZONE = 'Europe/Berlin' # минус 2 часа от московского
 # TIME_ZONE = 'Europe/London'  # минус 3 часа от московского
 # TIME_ZONE = 'America/Noronha' # минус 5 часа от московского
