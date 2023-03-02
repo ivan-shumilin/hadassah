@@ -51,7 +51,7 @@ def create_external_report(filtered_report):
                 count_items = len(set([user.user_id for user in (report[date_key][meal_key][diet_key])]))
                 count_bouillon = \
                     len(set([user.user_id for user in (report[date_key][meal_key][diet_key])
-                                if user.product_id == '426']))
+                                if user.product_id == '426' and meal_key != 'dinner' and diet_key != 'БД день 2']))
 
                 if diet_key == 'Нулевая диета':
                     price = price_just_wather
