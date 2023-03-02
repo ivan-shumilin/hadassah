@@ -38,20 +38,24 @@ def create_external_report(filtered_report):
             for user in users:
                 report_user_set = [report for report in meal_report if report.user_id==user]
                 if len([report_item for report_item in report_user_set if report_item.product_id=='426']) > 0 and \
-                        report_user_set[0].meal != 'dinner' and report_user_set[0].type_of_diet != 'БД день 2':
+                        report_user_set[0].meal == 'dinner' and report_user_set[0].type_of_diet == 'БД день 2' or \
+                        len([report_item for report_item in report_user_set if report_item.product_id == '426']) == 0:
 
                     for report_user in report_user_set:
-                        report[date_key][meal_key].setdefault(f'{report_user.type_of_diet} + бульон', []).append(report_user)
+                        report[date_key][meal_key].setdefault(str(report_user.type_of_diet), []).append(report_user)
+
 
                 else:
                     for report_user in report_user_set:
-                        report[date_key][meal_key].setdefault(str(report_user.type_of_diet), []).append(report_user)
+                        report[date_key][meal_key].setdefault(f'{report_user.type_of_diet} + бульон', []).append(report_user)
+
 
             for diet_key, on_diet_report in report[date_key][meal_key].items():
                 count_items = len(set([user.user_id for user in (report[date_key][meal_key][diet_key])]))
                 count_bouillon = \
                     len(set([user.user_id for user in (report[date_key][meal_key][diet_key])
-                                if user.product_id == '426' and meal_key != 'dinner' and diet_key != 'БД день 2']))
+                                if user.product_id == '426' and\
+                                not (meal_key == 'dinner' and diet_key == 'БД день 2')]))
 
                 if diet_key == 'Нулевая диета':
                     price = price_just_wather
