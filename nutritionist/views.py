@@ -700,7 +700,7 @@ def register(request):
                 send_mail(
                     'Регистрация в личном кабинете врача.',
                     text_email,
-                    'info@petrushkagroup.com',
+                    'info@petrushkagroup.ru',
                     [user_form.data['email']],
                     fail_silently=False,
                     html_message=text_email,
@@ -736,7 +736,7 @@ def password_reset(request):
                 send_mail(
                     'Сброс пароля',
                     text_email,
-                    'info@petrushkagroup.com',
+                    'info@petrushkagroup.ru',
                     [user_form.data['email']],
                     fail_silently=False,
                     html_message=text_email,
