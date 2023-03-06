@@ -62,10 +62,10 @@ app.conf.beat_schedule = {
         'task': 'doctor.tasks.my_job_create_product_storage_dinner',
         'schedule': crontab(minute=0, hour='17'),
     },
-    'my_job_update_diet_bd': {
-        'task': 'doctor.tasks.my_job_update_diet_bd',
-        'schedule': crontab(minute=0, hour='19'),
-    },
+    # 'my_job_update_diet_bd': {
+    #     'task': 'doctor.tasks.my_job_update_diet_bd',
+    #     'schedule': crontab(minute=0, hour='19'),
+    # },
 }
 app.conf.timezone = 'Europe/Moscow'
 app.autodiscover_tasks()
