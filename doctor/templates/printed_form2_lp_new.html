@@ -21,9 +21,9 @@
                 <div class="back">
                     <a href="{% url 'printed_form_one_new' %}">Назад к сводному отчёту</a>
                 </div>
-                <div class="change">
+                <!-- <div class="change">
                     <div id="timer_end" class="value">Изменения ещё принимаются <span id="timer" class="time"></span></div>
-                </div>
+                </div> -->
 
                 <h1>Производственный отчёт <span>{{ type }}</span></h1>
 
@@ -641,78 +641,78 @@ const list1 = document.querySelectorAll('.tag')
 })
 
 // Берём элемент для вывода таймера
-let timer_show = document.getElementById("timer");
-let timer_end = document.getElementById("timer_end");
+// let timer_show = document.getElementById("timer");
+// let timer_end = document.getElementById("timer_end");
 
  
-// Функция для вычисления разности времени
-function diffSubtract(date1, date2) {
-    return date2 - date1;
-}
-let str_day = ''
-let str_hours = ''
-let minutes = ''
-// Массив данных о времени
+// // Функция для вычисления разности времени
+// function diffSubtract(date1, date2) {
+//     return date2 - date1;
+// }
+// let str_day = ''
+// let str_hours = ''
+// let minutes = ''
+// // Массив данных о времени
 
-let day_finish = moment().subtract('{{ delta_day }}', 'days')
-let end_date_obj = {
-    "breakfast": {
-        "hours": "07", // Час
-        },
-    "lunch": {
-        "hours": "11", // Час
-        },
-    "afternoon": {
-        "hours": "14", // Час
-        },
-    "dinner": {
-        "hours": "17", // Час
-        },
-    "tomorrow": {
-        "hours": "07", // Час
-        },
-}
+// let day_finish = moment().subtract('{{ delta_day }}', 'days')
+// let end_date_obj = {
+//     "breakfast": {
+//         "hours": "07", // Час
+//         },
+//     "lunch": {
+//         "hours": "11", // Час
+//         },
+//     "afternoon": {
+//         "hours": "14", // Час
+//         },
+//     "dinner": {
+//         "hours": "17", // Час
+//         },
+//     "tomorrow": {
+//         "hours": "07", // Час
+//         },
+// }
 
-let end_date = end_date_obj['{{ meal_en }}'];
+// let end_date = end_date_obj['{{ meal_en }}'];
  
-// Строка для вывода времени
-let end_date_str = `${day_finish.format("YYYY")}-${day_finish.format("MM")}-${day_finish.format("DD")}T${end_date.hours}:${"00"}:${"00"}`;
-console.log(end_date_str)
-// Запуск интервала таймера
-timer = setInterval(function () {
-    // Получение времени сейчас
-    let now = new Date();
-    // Получение заданного времени
-    let date = new Date(end_date_str);
-    console.log(date)
-    // Вычисление разницы времени 
-    let ms_left = diffSubtract(now, date);
-    // Если разница времени меньше или равна нулю 
-    if (ms_left <= 0) { // То
-        // Выключаем интервал
-        clearInterval(timer);
-        // Выводим сообщение об окончание
-        console.log('END!!!')
+// // Строка для вывода времени
+// let end_date_str = `${day_finish.format("YYYY")}-${day_finish.format("MM")}-${day_finish.format("DD")}T${end_date.hours}:${"00"}:${"00"}`;
+// console.log(end_date_str)
+// // Запуск интервала таймера
+// timer = setInterval(function () {
+//     // Получение времени сейчас
+//     let now = new Date();
+//     // Получение заданного времени
+//     let date = new Date(end_date_str);
+//     console.log(date)
+//     // Вычисление разницы времени 
+//     let ms_left = diffSubtract(now, date);
+//     // Если разница времени меньше или равна нулю 
+//     if (ms_left <= 0) { // То
+//         // Выключаем интервал
+//         clearInterval(timer);
+//         // Выводим сообщение об окончание
+//         console.log('END!!!')
 
         
-    } else { // Иначе
-        // Получаем время зависимую от разницы
-        let res = new Date(ms_left);
+//     } else { // Иначе
+//         // Получаем время зависимую от разницы
+//         let res = new Date(ms_left);
 
-        if (res.getUTCDate() - 1 > 0) {
-            str_day = `${res.getUTCDate() - 1} д `
-        }
-        if (res.getUTCHours() > 0) {
-            str_hours = `${res.getUTCHours()} ч `
-        }
-        if (res.getUTCMinutes() > 0) {
-            str_minutes = `${res.getUTCMinutes()} м`
-        }
-        // Делаем строку для вывода
-        let str_timer = str_day + str_hours + str_minutes;
-        // Выводим время
-        timer_show.innerHTML = str_timer;
-    }
-}, 1000)
+//         if (res.getUTCDate() - 1 > 0) {
+//             str_day = `${res.getUTCDate() - 1} д `
+//         }
+//         if (res.getUTCHours() > 0) {
+//             str_hours = `${res.getUTCHours()} ч `
+//         }
+//         if (res.getUTCMinutes() > 0) {
+//             str_minutes = `${res.getUTCMinutes()} м`
+//         }
+//         // Делаем строку для вывода
+//         let str_timer = str_day + str_hours + str_minutes;
+//         // Выводим время
+//         timer_show.innerHTML = str_timer;
+//     }
+// }, 1000)
 
 </script>
