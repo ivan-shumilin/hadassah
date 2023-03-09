@@ -185,3 +185,13 @@ def add_try(report):
     for product in report:
         if product['name'] not in exception:
             product['count'] += 1
+
+
+def cleaning_null(catalog):
+    catalog_ = {}
+    for key1, meal in catalog.items():
+        catalog_[key1] = {}
+        for key2, category in meal.items():
+            if len(category) > 0:
+                catalog_[key1][key2] = category
+    return catalog_

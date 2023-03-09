@@ -81,6 +81,7 @@
                         {% for diet in catalog.count_diet %}
                             <div class="tr group">
                                 <div class="td inline">
+                                    <div class="tags">
                                         {% if diet.name == "Нулевая диета" %}
                                             <div class="tag green">{{ diet.name }}</div>
                                         {% elif diet.name == "БД день 1" or diet.name == "БД день 2" %}
@@ -106,7 +107,7 @@
                                         {% else %}
                                             <div class="tag pink">{{ diet.name }}</div>
                                         {% endif %}
-                                    
+                                    </div>
                                 </div>
                                 <div class="td value total">{{ diet.total }}</div>
                                 <div class="td value">{{ diet.2nd_floor }}</div>

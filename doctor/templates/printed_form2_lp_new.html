@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-report-page">
+<head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
+
+</head>
+<script src="{% static 'doctor/js/moment.js' %}"></script>
+    <body>
+
+        <div class="report-header-block">
+            <div class="container inner">
+                <div class="back">
+                    <a href="{% url 'printed_form_one_new' %}">Назад к сводному отчёту</a>
+                </div>
+                <div class="change">
+                    <div id="timer_end" class="value">Изменения ещё принимаются <span id="timer" class="time"></span></div>
+                </div>
+
+                <h1>Производственный отчёт <span>{{ type }}</span></h1>
+
+                <div class="item item-eat">
+                    <div class="text">{{ meal }} {% if day %}<span>(Заказ на завтра, {{ date_create }})</span> {% endif %}</div>
+                </div>
+                <div class="dot"></div>
+                <div class="item item-date">
+                    <div class="text">{{ formatted_date|lower }}</div>
+                </div>
+                <div class="item item-time">
+                    <div id="time-node"  class="time"></div>
+                </div>
+            </div>
+        </div>
+        <div class="report-block">
+            <div class="report production">
+                <div class="container inner">
+                    <div class="head">
+                        <div class="tr">
+                            <div class="th center">№</div>
+                            <div class="th center">диета</div>
+                            <div class="th">Название блюда</div>
+                            <div class="th center">
+                                <div class="only-desktop">Кол-во порций</div>
+                                <div class="only-mobile">Порций</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body">
+                        {% if catalog.porridge %}
+                        <div class="tr group">
+                            <div class="td"></div>
+                            <div class="td"></div>
+                            <div class="td td-group-name">
+                                <div class="group-name">каши</div>
+                            </div>
+                            <div class="td"></div>
+                        </div>
+                        {% for product in catalog.porridge %}
+                            {% if product %}
+                                <div class="tr eat">
+                                    <div class="td center">{{ product.number }}</div>
+                                    {% if product.diet.many  %}
+                                        <div class="td td-diet inline">
+                                            <div class="tags has-more">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                                <div class="only-mobile">
+                                                    <div class="more">
+                                                        <span class="show">+ ещё 5</span>
+                                                        <span class="hide">скрыть</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="td td-diet">
+                                            <div class="tags">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+
+                                    <div class="td">{{ product.name }}</div>
+                                    <div class="td center">{{ product.count }}</div>
+                                </div>
+                            {% endif %}
+                            {% for comment in product.comments %}
+                                {% if comment %}
+                                    <div class="tr tr-comment">
+                                        <div class="td"></div>
+                                        <div class="td"></div>
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ comment.comment }}">{{ comment.comment }}</div>
+                                        </div>
+                                        <div class="td center">{{ comment.count }}</div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if catalog.salad %}
+                        <div class="tr group">
+                            <div class="td"></div>
+                            <div class="td"></div>
+                            <div class="td td-group-name">
+                                <div class="group-name">салаты</div>
+                            </div>
+                            <div class="td"></div>
+                        </div>
+                        {% for product in catalog.salad %}
+                            {% if product %}
+                                <div class="tr eat">
+                                    <div class="td center">{{ product.number }}</div>
+                                    {% if product.diet.many  %}
+                                        <div class="td td-diet inline">
+                                            <div class="tags has-more">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                                <div class="only-mobile">
+                                                    <div class="more">
+                                                        <span class="show">+ ещё 5</span>
+                                                        <span class="hide">скрыть</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="td td-diet">
+                                            <div class="tags">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+
+                                    <div class="td">{{ product.name }}</div>
+                                    <div class="td center">{{ product.count }}</div>
+                                </div>
+                            {% endif %}
+                            {% for comment in product.comments %}
+                                {% if comment %}
+                                    <div class="tr tr-comment">
+                                        <div class="td"></div>
+                                        <div class="td"></div>
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ comment.comment }}">{{ comment.comment }}</div>
+                                        </div>
+                                        <div class="td center">{{ comment.count }}</div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if catalog.soup %}
+                        <div class="tr group">
+                            <div class="td"></div>
+                            <div class="td"></div>
+                            <div class="td td-group-name">
+                                <div class="group-name">первые блюда</div>
+                            </div>
+                            <div class="td"></div>
+                        </div>
+                        {% for product in catalog.soup %}
+                            {% if product %}
+                                <div class="tr eat">
+                                    <div class="td center">{{ product.number }}</div>
+                                    {% if product.diet.many  %}
+                                        <div class="td td-diet inline">
+                                            <div class="tags has-more">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                                <div class="only-mobile">
+                                                    <div class="more">
+                                                        <span class="show">+ ещё 5</span>
+                                                        <span class="hide">скрыть</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="td td-diet">
+                                            <div class="tags">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+
+                                    <div class="td">{{ product.name }}</div>
+                                    <div class="td center">{{ product.count }}</div>
+                                </div>
+                            {% endif %}
+                            {% for comment in product.comments %}
+                                {% if comment %}
+                                    <div class="tr tr-comment">
+                                        <div class="td"></div>
+                                        <div class="td"></div>
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ comment.comment }}">{{ comment.comment }}</div>
+                                        </div>
+                                        <div class="td center">{{ comment.count }}</div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
+
+                    {% if catalog.main %}
+                        <div class="tr group">
+                            <div class="td"></div>
+                            <div class="td"></div>
+                            <div class="td td-group-name">
+                                <div class="group-name">вторые блюда</div>
+                            </div>
+                            <div class="td"></div>
+                        </div>
+                        {% for product in catalog.main %}
+                            {% if product %}
+                                <div class="tr eat">
+                                    <div class="td center">{{ product.number }}</div>
+                                    {% if product.diet.many  %}
+                                        <div class="td td-diet inline">
+                                            <div class="tags has-more">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                                <div class="only-mobile">
+                                                    <div class="more">
+                                                        <span class="show">+ ещё 5</span>
+                                                        <span class="hide">скрыть</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="td td-diet">
+                                            <div class="tags">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+
+                                    <div class="td">{{ product.name }}</div>
+                                    <div class="td center">{{ product.count }}</div>
+                                </div>
+                            {% endif %}
+                            {% for comment in product.comments %}
+                                {% if comment %}
+                                    <div class="tr tr-comment">
+                                        <div class="td"></div>
+                                        <div class="td"></div>
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ comment.comment }}">{{ comment.comment }}</div>
+                                        </div>
+                                        <div class="td center">{{ comment.count }}</div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
+
+                    {% if catalog.garnish %}
+                        <div class="tr group">
+                            <div class="td"></div>
+                            <div class="td"></div>
+                            <div class="td td-group-name">
+                                <div class="group-name">гарниры</div>
+                            </div>
+                            <div class="td"></div>
+                        </div>
+                        {% for product in catalog.garnish %}
+                            {% if product %}
+                                <div class="tr eat">
+                                    <div class="td center">{{ product.number }}</div>
+                                    {% if product.diet.many  %}
+                                        <div class="td td-diet inline">
+                                            <div class="tags has-more">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                                <div class="only-mobile">
+                                                    <div class="more">
+                                                        <span class="show">+ ещё 5</span>
+                                                        <span class="hide">скрыть</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="td td-diet">
+                                            <div class="tags">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+
+                                    <div class="td">{{ product.name }}</div>
+                                    <div class="td center">{{ product.count }}</div>
+                                </div>
+                            {% endif %}
+                            {% for comment in product.comments %}
+                                {% if comment %}
+                                    <div class="tr tr-comment">
+                                        <div class="td"></div>
+                                        <div class="td"></div>
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ comment.comment }}">{{ comment.comment }}</div>
+                                        </div>
+                                        <div class="td center">{{ comment.count }}</div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
+
+                    {% if catalog.dessert %}
+                        <div class="tr group">
+                            <div class="td"></div>
+                            <div class="td"></div>
+                            <div class="td td-group-name">
+                                <div class="group-name">десерты</div>
+                            </div>
+                            <div class="td"></div>
+                        </div>
+                        {% for product in catalog.dessert %}
+                            {% if product %}
+                                <div class="tr eat">
+                                    <div class="td center">{{ product.number }}</div>
+                                    {% if product.diet.many  %}
+                                        <div class="td td-diet inline">
+                                            <div class="tags has-more">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                                <div class="only-mobile">
+                                                    <div class="more">
+                                                        <span class="show">+ ещё 5</span>
+                                                        <span class="hide">скрыть</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="td td-diet">
+                                            <div class="tags">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+
+                                    <div class="td">{{ product.name }}</div>
+                                    <div class="td center">{{ product.count }}</div>
+                                </div>
+                            {% endif %}
+                            {% for comment in product.comments %}
+                                {% if comment %}
+                                    <div class="tr tr-comment">
+                                        <div class="td"></div>
+                                        <div class="td"></div>
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ comment.comment }}">{{ comment.comment }}</div>
+                                        </div>
+                                        <div class="td center">{{ comment.count }}</div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
+
+                    {% if catalog.fruit %}
+                        <div class="tr group">
+                            <div class="td"></div>
+                            <div class="td"></div>
+                            <div class="td td-group-name">
+                                <div class="group-name">фрукты</div>
+                            </div>
+                            <div class="td"></div>
+                        </div>
+                        {% for product in catalog.fruit %}
+                            {% if product %}
+                                <div class="tr eat">
+                                    <div class="td center">{{ product.number }}</div>
+                                    {% if product.diet.many  %}
+                                        <div class="td td-diet inline">
+                                            <div class="tags has-more">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                                <div class="only-mobile">
+                                                    <div class="more">
+                                                        <span class="show">+ ещё 5</span>
+                                                        <span class="hide">скрыть</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="td td-diet">
+                                            <div class="tags">
+                                                {% for diet in product.diet.diet %}
+                                                    <div class="tag">{{ diet.name }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+
+                                    <div class="td">{{ product.name }}</div>
+                                    <div class="td center">{{ product.count }}</div>
+                                </div>
+                            {% endif %}
+                            {% for comment in product.comments %}
+                                {% if comment %}
+                                    <div class="tr tr-comment">
+                                        <div class="td"></div>
+                                        <div class="td"></div>
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ comment.comment }}">{{ comment.comment }}</div>
+                                        </div>
+                                        <div class="td center">{{ comment.count }}</div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
+
+                    {% if catalog.drink %}
+                    <div class="tr group">
+                        <div class="td"></div>
+                        <div class="td"></div>
+                        <div class="td td-group-name">
+                            <div class="group-name">напитки</div>
+                        </div>
+                        <div class="td"></div>
+                    </div>
+                    {% for product in catalog.drink %}
+                        {% if product %}
+                            <div class="tr eat">
+                                <div class="td center">{{ product.number }}</div>
+                                {% if product.diet.many  %}
+                                    <div class="td td-diet inline">
+                                        <div class="tags has-more">
+                                            {% for diet in product.diet.diet %}
+                                                <div class="tag">{{ diet.name }}</div>
+                                            {% endfor %}
+                                            <div class="only-mobile">
+                                                <div class="more">
+                                                    <span class="show">+ ещё 5</span>
+                                                    <span class="hide">скрыть</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="td td-diet">
+                                        <div class="tags">
+                                            {% for diet in product.diet.diet %}
+                                                <div class="tag">{{ diet.name }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+
+                                <div class="td">{{ product.name }}</div>
+                                <div class="td center">{{ product.count }}</div>
+                            </div>
+                        {% endif %}
+                        {% for comment in product.comments %}
+                            {% if comment %}
+                                <div class="tr tr-comment">
+                                    <div class="td"></div>
+                                    <div class="td"></div>
+                                    <div class="td td-comment">
+                                        <div class="comment" data-tooltip="{{ comment.comment }}">{{ comment.comment }}</div>
+                                    </div>
+                                    <div class="td center">{{ comment.count }}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+
+
+
+                {% if catalog.products %}
+                <div class="tr group">
+                    <div class="td"></div>
+                    <div class="td"></div>
+                    <div class="td td-group-name">
+                        <div class="group-name">товары</div>
+                    </div>
+                    <div class="td"></div>
+                </div>
+                {% for product in catalog.products %}
+                    {% if product %}
+                        <div class="tr eat">
+                            <div class="td center">{{ product.number }}</div>
+                            {% if product.diet.many  %}
+                                <div class="td td-diet inline">
+                                    <div class="tags has-more">
+                                        {% for diet in product.diet.diet %}
+                                            <div class="tag">{{ diet.name }}</div>
+                                        {% endfor %}
+                                        <div class="only-mobile">
+                                            <div class="more">
+                                                <span class="show">+ ещё 5</span>
+                                                <span class="hide">скрыть</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="td td-diet">
+                                    <div class="tags">
+                                        {% for diet in product.diet.diet %}
+                                            <div class="tag">{{ diet.name }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+
+                            <div class="td">{{ product.name }}</div>
+                            <div class="td center">{{ product.count }}</div>
+                        </div>
+                    {% endif %}
+                   
+                {% endfor %}
+            {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="{% static 'doctor/js/all.js' %}"></script>
+    </body>
+</html>
+
+<script>
+var timeNode = document.getElementById('time-node');
+          
+function getCurrentTimeString(dots) {
+   var timeString = new Date().toTimeString().replace(/:[0-9]{2,2} .*/, '');
+   return dots ? timeString : timeString.replace(/:/, ' ');
+}
+
+setInterval(
+   function() { 
+      timeNode.innerHTML = getCurrentTimeString(Math.round(Date.now() / 1000) % 2);
+   },
+   1000
+);
+const list1 = document.querySelectorAll('.tag')
+    list1.forEach(item1 =>{
+        if (item1.innerHTML == 'ОВД') {
+            item1.classList.add('blue')
+        }
+        if (item1.innerHTML == 'ОВД б/с') {
+            item1.classList.add('mint')
+        }
+        if (item1.innerHTML == 'ОВД без сахара') {
+            item1.innerHTML = 'ОВД б/с'
+            item1.classList.add('mint')
+        }
+        if (item1.innerHTML == 'ОВД веган (пост) без глютена') {
+            item1.innerHTML = 'ОВД веган'
+            item1.classList.add('green')
+        }
+        if (item1.innerHTML == 'Нулевая диета') {
+            item1.innerHTML = 'OOO'
+            item1.classList.add('green')
+        }
+        if (item1.innerHTML == 'ЩД') {
+            item1.classList.add('yellow')
+        }
+        if (item1.innerHTML == 'ЩД без сахара') {
+            item1.innerHTML = 'ЩД б/с'
+            item1.classList.add('yellow')
+        }
+        if (item1.innerHTML == 'БД') {
+            item1.classList.add('pink')
+        }
+        if (item1.innerHTML == 'БД день 1') {
+            item1.classList.add('pink')
+        }
+        if (item1.innerHTML == 'БД день 2') {
+            item1.classList.add('pink')
+        }
+        if (item1.innerHTML == 'ВБД') {
+            item1.classList.add('orange')
+        }
+        if (item1.innerHTML == 'НБД') {
+            item1.classList.add('red')
+        }
+        if (item1.innerHTML == 'НКД') {
+            item1.classList.add('red')
+        }
+        if (item1.innerHTML == 'ВКД') {
+            item1.classList.add('purple')
+        }
+        if (item1.innerHTML == 'Безйодовая') {
+            item1.classList.add('purple')
+        }
+})
+
+// Берём элемент для вывода таймера
+let timer_show = document.getElementById("timer");
+let timer_end = document.getElementById("timer_end");
+
+ 
+// Функция для вычисления разности времени
+function diffSubtract(date1, date2) {
+    return date2 - date1;
+}
+let str_day = ''
+let str_hours = ''
+let minutes = ''
+// Массив данных о времени
+
+let day_finish = moment().subtract('{{ delta_day }}', 'days')
+let end_date_obj = {
+    "breakfast": {
+        "hours": "07", // Час
+        },
+    "lunch": {
+        "hours": "11", // Час
+        },
+    "afternoon": {
+        "hours": "14", // Час
+        },
+    "dinner": {
+        "hours": "17", // Час
+        },
+    "tomorrow": {
+        "hours": "07", // Час
+        },
+}
+
+let end_date = end_date_obj['{{ meal_en }}'];
+ 
+// Строка для вывода времени
+let end_date_str = `${day_finish.format("YYYY")}-${day_finish.format("MM")}-${day_finish.format("DD")}T${end_date.hours}:${"00"}:${"00"}`;
+console.log(end_date_str)
+// Запуск интервала таймера
+timer = setInterval(function () {
+    // Получение времени сейчас
+    let now = new Date();
+    // Получение заданного времени
+    let date = new Date(end_date_str);
+    console.log(date)
+    // Вычисление разницы времени 
+    let ms_left = diffSubtract(now, date);
+    // Если разница времени меньше или равна нулю 
+    if (ms_left <= 0) { // То
+        // Выключаем интервал
+        clearInterval(timer);
+        // Выводим сообщение об окончание
+        console.log('END!!!')
+
+        
+    } else { // Иначе
+        // Получаем время зависимую от разницы
+        let res = new Date(ms_left);
+
+        if (res.getUTCDate() - 1 > 0) {
+            str_day = `${res.getUTCDate() - 1} д `
+        }
+        if (res.getUTCHours() > 0) {
+            str_hours = `${res.getUTCHours()} ч `
+        }
+        if (res.getUTCMinutes() > 0) {
+            str_minutes = `${res.getUTCMinutes()} м`
+        }
+        // Делаем строку для вывода
+        let str_timer = str_day + str_hours + str_minutes;
+        // Выводим время
+        timer_show.innerHTML = str_timer;
+    }
+}, 1000)
+
+</script>

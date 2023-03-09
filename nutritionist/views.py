@@ -45,7 +45,7 @@ import random, calendar, datetime, logging, json
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from nutritionist.functions.functions import create_products_list_category, complete_catalog, \
-    checking_is_ready_meal, create_category_dict, create_stickers_pdf, add_try
+    checking_is_ready_meal, create_category_dict, create_stickers_pdf, add_try, cleaning_null
 
 
 def group_nutritionists_check(user):
@@ -1010,6 +1010,143 @@ def printed_form_two_lp(request):
     }
     return render(request, 'printed_form2_lp.html', context=data)
 
+def printed_form_two_lp_new(request):
+    is_public = False  # выводим технические названия блюд, не публичные
+    formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
+    time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
+    # какой прием пищи
+    meal, day = what_meal() # после return 'breakfast', 'tomorrow'
+    type_order = what_type_order()
+    date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
+    delta_day = "-1" if day == 'tomorrow' else "0"
+    catalog = {}
+
+    if type_order == 'flex-order':
+        users = UsersToday.objects.all()
+    else:
+        users = UsersReadyOrder.objects.all()
+    # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
+    for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink', 'products']:
+        list_whith_unique_products = []
+        for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'ЩД без сахара',
+                     'ОВД веган (пост) без глютена', 'Нулевая диета',
+                     'БД', 'ВБД', 'НБД', 'НКД', 'ВКД', 'БД день 1',
+                     'БД день 2', 'Безйодовая']:
+            users_with_diet = users.filter(type_of_diet=diet)
+            all_products = [] # стовляем список всех продуктов
+            comment_list = []
+            for user in users_with_diet:
+                if type_order == 'flex-order':
+                    menu_all = MenuByDay.objects.filter(user_id=user.user_id)
+                else:
+                    menu_all = MenuByDayReadyOrder.objects.filter(user_id=user.id)
+                if category == 'products' or category ==  'drink':
+                    pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
+                elif category == 'soup':
+                    pr = [check_value_two(menu_all, str((date_create)), meal, 'soup', is_public)] + [check_value_two(
+                        menu_all, str((date_create)), meal, 'bouillon', is_public)]
+                    try:
+                        pr.remove(None)
+                    except:
+                        pass
+                else:
+                    pr = [check_value_two(menu_all, str((date_create)), meal, category, is_public)]
+                # if pr != None:
+                #     all_products.append(pr)
+                if pr[0] != None:
+                    for item in pr:
+                        item['comment'] = add_features(user.comment,
+                             user.is_probe,
+                             user.is_without_salt,
+                             user.is_without_lactose,
+                             user.is_pureed_nutrition)
+                        all_products.append(item)
+            # составляем список с уникальными продуктами
+            unique_products = []
+            for product in all_products:
+                flag = True
+                for un_product in unique_products:
+                    if product != None or un_product != None:
+                        if product['id'] == un_product['id']:
+                            flag = False
+                if flag == True:
+                    if product:
+                        if 'cafe' not in product['id']:
+                            unique_products.append(product)
+            # добавляем элеметны списока с уникальными продуктами, кол-вом(сколько продуктов всего)
+            # типом диеты
+            for un_product in unique_products:
+                count = 0
+                for product in all_products:
+                    if product['id'] == un_product['id']:
+                        count += 1
+                        comment_list.append(product['comment'])
+                un_product['count'] = str(count)
+                # un_product['diet'] = diet
+                un_product.setdefault('diet', []).append(diet)
+                if '' in comment_list:
+                    comment_list.sort()
+                comment_set = set(comment_list)
+                comment_list_dict = [{'comment': f'{"Без комментария." if item == "" else item}', 'count': comment_list.count(item)} for item in comment_set]
+
+                un_product['comments'] = comment_list_dict
+
+            # list_whith_unique_products.append(unique_products)
+            [list_whith_unique_products.append(item) for item in unique_products]
+        catalog[category] = list_whith_unique_products
+
+    for cat in catalog.values():
+        for i, pr in enumerate(cat):
+            for ii in range(i + 1, len(cat)):
+                if pr != None and cat[ii] != None:
+                    if pr['id'] == cat[ii]['id']:
+                        pr['count'] = str(int(pr['count']) + int(cat[ii]['count']))
+                        # pr['diet'] = pr['diet'] + ', ' + cat[ii]['diet']
+                        for item in cat[ii]['diet']:
+                            pr.setdefault('diet', []).append(item)
+                        pr['comments'] = pr['comments'] + cat[ii]['comments']
+                        cat[ii] = None
+
+    for item in catalog.values():
+        for product in item:
+            if product != None:
+                catalog_key_set = list(set([item['comment'] for item in product['comments']]))
+                if 'Без комментария.' in catalog_key_set:
+                    catalog_key_set.remove('Без комментария.')
+                    catalog_key_set.insert(0, 'Без комментария.')
+                result = []
+                if 'Без комментария.' in catalog_key_set:
+                    catalog_key_set
+                for key in catalog_key_set:
+                    result.append({'comment': key,
+                                   'count': sum([item['count'] for item in product['comments'] if key == item['comment']])})
+                product['comments'] = result
+
+    number = 0
+    for item in catalog.values():
+        for product in item:
+            if product != None:
+                number += 1
+                product['number'] = number
+                product['diet'] = {
+                    'many': len(product['diet']) > 1,
+                    'diet': [{'name': pr} for pr in product['diet']]
+                }
+
+    data = {
+        'type': 'Цех лечебного питания',
+        'title': 'Заявка для цеха лечебного питания',
+        'formatted_date': formatted_date_now,
+        'time_now': time_now,
+        'catalog': catalog,
+        'day': day,
+        'date_create': date_create,
+        'meal': translate_meal(meal),
+        'meal_en': meal,
+        'delta_day': delta_day
+    }
+    return render(request, 'printed_form2_lp_new.html', context=data)
+
 
 def printed_form_two_cafe(request):
     """ Заявка по блюдам линии раздачи. """
@@ -1028,14 +1165,48 @@ def printed_form_two_cafe(request):
         category_dict = complete_catalog(category_dict)
         catalog[meal] = category_dict
 
+    catalog = cleaning_null(catalog)
+
     data = {
+        'type': 'Цех линии раздачи',
+        'title': 'Заявка по блюдам раздачи',
         'formatted_date': formatted_date_now,
         'time_now': time_now,
-        'catalog': catalog,
+        'catalogs': catalog,
         'day': day,
         'date_create': date_create,
     }
     return render(request, 'printed_form2_cafe.html', context=data)
+
+def printed_form_two_cafe_new(request):
+    """ Заявка по блюдам линии раздачи. """
+    is_public = False  # выводим технические названия блюд, не публичные
+    formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
+    time_now = datetime.today().time().strftime("%H:%M")
+    meal, day = what_meal()  # после return 'breakfast', 'tomorrow'
+    date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
+    catalog = {}
+
+    for meal in ['lunch', 'dinner']:
+        # Проверяем сформирован ли прием пищи
+        is_ready_meal, patients = checking_is_ready_meal(meal)
+        category_dict = create_category_dict(meal, is_ready_meal, patients)
+        # Добавляем порядковые номера блюд и переводим тип диеты в формат для вывода в заявке
+        category_dict = complete_catalog(category_dict)
+        catalog[meal] = category_dict
+
+    catalog = cleaning_null(catalog)
+
+    data = {
+        'type': 'Цех линии раздачи',
+        'title': 'Заявка по блюдам раздачи',
+        'formatted_date': formatted_date_now,
+        'time_now': time_now,
+        'catalogs': catalog,
+        'day': day,
+        'date_create': date_create,
+    }
+    return render(request, 'printed_form2_cafe_new.html', context=data)
 
 
 
