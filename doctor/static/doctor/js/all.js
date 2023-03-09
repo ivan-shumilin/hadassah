@@ -14998,8 +14998,10 @@ function(e) {
         let t = e(this).attr("data-item");
         e('[data-eat-bottom-sheet="' + t + '"]').removeClass("active")
       })), r.addClass("active"), a.addClass("active")
+
 addHtmlDinner();
 addHtmlLunch();
+
     })).click((function(t) {
       t.preventDefault(), e(this).trigger("choose")
     })), e("[data-eat-bottom-sheet] [data-choose]").once().click((function(t) {
@@ -15066,6 +15068,8 @@ addHtmlLunch();
       new Xwiper(this).onSwipeDown((function() {
         t.closest("[data-bottom-sheet]").removeClass("open")
       }))
+    })), e(".report-block .tags .more").once().click((function() {
+      e(this).closest(".tags").toggleClass("open")
     }))
   }
   e(window).resize((function() {
@@ -15082,6 +15086,7 @@ addHtmlLunch();
     r()
   }))
 }(jQuery);
+
 
 
 
