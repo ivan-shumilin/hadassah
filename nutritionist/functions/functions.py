@@ -124,12 +124,8 @@ def create_stickers_pdf(catalog):
             ln = 1
             head = f'{formatting_full_name(item["name"])} {", " + item["room_number"] if item["room_number"] != "Не выбрано" else ""} {"" if item["bed"] == "Не выбрано" or item["room_number"] == "Не выбрано" else ", " + item["bed"]}'
             head = head.strip()
-            if len(f'{head}, {item["department"]}') < 30:
-                pdf.cell(50, 14, txt=f'{head}, {item["department"]}', ln=ln, align="L")
-            else:
-                pdf.cell(50, 14, txt=head, ln=ln, align="L")
-                ln += 1
-                pdf.cell(50, 14, txt=item["department"], ln=ln, align="L")
+            pdf.cell(50, 14, txt=f'{head}', ln=ln, align="L")
+
             ln += 1
             if item["diet"] == "ОВД веган (пост) без глютена":
                 pdf.cell(50, 14, txt=f'ОВД веган (пост) без глютена,', ln=ln, align="L")
