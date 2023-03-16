@@ -79,7 +79,7 @@
                                 
                                 <div class="eat-choose-grid" data-eat-choose-grid>
                                     {% for product in menu_for_the_meal.lp.salad %}
-                                        <div class="item active" data-item="item-{{ product.id }}">
+                                        <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
                                                     <div class="name">{{ product.name }}</div>
@@ -118,7 +118,7 @@
     
                                     {% endfor %}
                                     {% for product in menu_for_the_meal.cafe.salad %}
-                                        <div class="item" data-item="item-{{ product.id }}">
+                                        <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
                                                     <div class="name">{{ product.name }}</div>
@@ -169,7 +169,7 @@
                                     </div>
                                     <div class="eat-choose-grid" data-eat-choose-grid>
                                         {% for product in menu_for_the_meal.lp.soup %}
-                                            <div class="item active" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -207,7 +207,7 @@
                                             </div>
                                         {% endfor %}
                                         {% for product in menu_for_the_meal.cafe.soup %}
-                                            <div class="item" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -256,7 +256,7 @@
                                     </div>
                                     <div class="eat-choose-grid" data-eat-choose-grid>
                                         {% for product in menu_for_the_meal.lp.main %}
-                                            <div id='{{ product.id }}' class="item active main {{ meal }} {{ product.with_garnish }}" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" id='{{ product.id }}' class="item active main {{ meal }} {{ product.with_garnish }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -294,7 +294,7 @@
                                             </div>
                                         {% endfor %}
                                         {% for product in menu_for_the_meal.cafe.main %}
-                                            <div id='{{ product.id }}' class="item main {{ meal }} {{ product.with_garnish }}" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" id='{{ product.id }}' class="item main {{ meal }} {{ product.with_garnish }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -334,7 +334,7 @@
                                 {% endif %}
 
                                 {% if menu_for_the_meal.lp.garnish or menu_for_the_meal.cafe.garnish %}
-                                    <div id="category-garnish-{{ meal }}" class="category">
+                                    <div onclick="submitPatientSelection()" id="category-garnish-{{ meal }}" class="category">
                                         <div class="name">Гарнир</div>
                                         {% if not menu_for_the_meal.cafe.garnish %}
                                             <div class="info">Это блюдо нельзя заменить</div>
@@ -380,7 +380,7 @@
                                             </div>
                                         {% endfor %}
                                         {% for product in menu_for_the_meal.cafe.garnish %}
-                                            <div class="item garnish {{ meal }}" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" class="item garnish {{ meal }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -430,7 +430,7 @@
                                     </div>
                                     <div class="eat-choose-grid" data-eat-choose-grid>
                                         {% for product in menu_for_the_meal.lp.porridge %}
-                                            <div class="item active" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -468,7 +468,7 @@
                                             </div>
                                         {% endfor %}
                                         {% for product in menu_for_the_meal.cafe.porridge %}
-                                            <div class="item" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -519,7 +519,7 @@
                                 </div>
                                 <div class="eat-choose-grid" data-eat-choose-grid>
                                     {% for product in menu_for_the_meal.lp.dessert %}
-                                        <div class="item active" data-item="item-{{ product.id }}">
+                                        <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
                                                     <div class="name">{{ product.name }}</div>
@@ -557,7 +557,7 @@
                                         </div>
                                     {% endfor %}
                                     {% for product in menu_for_the_meal.cafe.dessert %}
-                                        <div class="item" data-item="item-{{ product.id }}">
+                                        <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
                                                     <div class="name">{{ product.name }}</div>
@@ -606,7 +606,7 @@
                                 </div>
                                 <div class="eat-choose-grid" data-eat-choose-grid>
                                     {% for product in menu_for_the_meal.lp.fruit %}
-                                        <div class="item active" data-item="item-{{ product.id }}">
+                                        <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
                                                     <div class="name">{{ product.name }}</div>
@@ -644,7 +644,7 @@
                                         </div>
                                     {% endfor %}
                                     {% for product in menu_for_the_meal.cafe.fruit %}
-                                        <div class="item" data-item="item-{{ product.id }}">
+                                        <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
                                                     <div class="name">{{ product.name }}</div>
@@ -694,7 +694,7 @@
                                     </div>
                                     <div class="eat-choose-grid" data-eat-choose-grid>
                                         {% for product in menu_for_the_meal.lp.drink %}
-                                            <div class="item active" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -732,7 +732,7 @@
                                             </div>
                                         {% endfor %}
                                         {% for product in menu_for_the_meal.cafe.drink %}
-                                            <div class="item" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.name }}</div>
@@ -807,7 +807,7 @@
                                 <div id="dinner-rigth" class="box"></div>
                             </div>
                         <div class="footer">
-                            <a id='confirmationOrder' onclick="submitPatientSelection()" class="button">Подтвердить заказ</a>
+                            <!-- <a id='confirmationOrder' onclick="submitPatientSelection()" class="button">Подтвердить заказ</a> -->
                         </div>
                     </div>
                 </div>
@@ -844,7 +844,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                         <div class="choose">
-                            <a href="#" data-choose>
+                            <a onclick="submitPatientSelection()" href="#" data-choose>
                                 <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                 <span class="not-chosen">Выбрать</span>
                             </a>
@@ -878,7 +878,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                         <div class="choose">
-                            <a href="#" data-choose>
+                            <a onclick="submitPatientSelection()" href="#" data-choose>
                                 <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                 <span class="not-chosen">Выбрать</span>
                             </a>
@@ -914,7 +914,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                             <div class="choose">
-                                <a href="#" data-choose>
+                                <a onclick="submitPatientSelection()" href="#" data-choose>
                                     <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                     <span class="not-chosen">Выбрать</span>
                                 </a>
@@ -948,7 +948,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                             <div class="choose">
-                                <a href="#" data-choose>
+                                <a onclick="submitPatientSelection()" href="#" data-choose>
                                     <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                     <span class="not-chosen">Выбрать</span>
                                 </a>
@@ -1054,7 +1054,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                             <div class="choose">
-                                <a href="#" data-choose>
+                                <a onclick="submitPatientSelection()" href="#" data-choose>
                                     <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                     <span class="not-chosen">Выбрать</span>
                                 </a>
@@ -1088,7 +1088,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                             <div class="choose">
-                                <a href="#" data-choose>
+                                <a onclick="submitPatientSelection()" href="#" data-choose>
                                     <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                     <span class="not-chosen">Выбрать</span>
                                 </a>
@@ -1124,7 +1124,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                             <div class="choose">
-                                <a href="#" data-choose>
+                                <a onclick="submitPatientSelection()" href="#" data-choose>
                                     <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                     <span class="not-chosen">Выбрать</span>
                                 </a>
@@ -1160,7 +1160,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                             <div class="choose">
-                                <a href="#" data-choose>
+                                <a onclick="submitPatientSelection()" href="#" data-choose>
                                     <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                     <span class="not-chosen">Выбрать</span>
                                 </a>
@@ -1196,7 +1196,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                             <div class="choose">
-                                <a href="#" data-choose>
+                                <a onclick="submitPatientSelection()" href="#" data-choose>
                                     <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                     <span class="not-chosen">Выбрать</span>
                                 </a>
@@ -1232,7 +1232,7 @@
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
                         </div>
                             <div class="choose">
-                                <a href="#" data-choose>
+                                <a onclick="submitPatientSelection()" href="#" data-choose>
                                     <span class="chosen">Выбрано <span class="i i-ok"></span></span>
                                     <span class="not-chosen">Выбрать</span>
                                 </a>
@@ -1397,7 +1397,7 @@ function submitPatientSelection() {
 
 
     submitApiPatientSelection(patientSelection)
-    document.getElementById("orderConfirmed").click();
+    // document.getElementById("orderConfirmed").click();
 };
 
 
