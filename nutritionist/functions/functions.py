@@ -123,24 +123,25 @@ def create_stickers_pdf(catalog):
             pdf.set_font("Arial1", style='', size=45)
             ln = 1
             if floor == 'users_2nd_floor':
-                print_floor = 'Этаж 2'
+                print_floor = '2 этаж'
             elif floor == 'users_3nd_floor':
-                print_floor = 'Этаж 3'
+                print_floor = '3 этаж'
             elif floor == 'users_4nd_floor':
-                print_floor = 'Этаж 4'
+                print_floor = '4 этаж'
             else:
                 print_floor = ''
             department = item['department'] if item["department"] != "Не выбрано" else ""
             department = 'Терапия' if department == 'Онкология' else department
-
-            if print_floor:
-                pdf.cell(50, 14, txt=f'{print_floor}', ln=ln, align="L")
+            if department and print_floor:
+                head_top = print_floor + ", " + department
+            else:
+                head_top = print_floor + department
+            if head_top:
+                pdf.cell(50, 14, txt=f'{head_top}', ln=ln, align="L")
                 ln += 1
             pdf.add_font("Arial1", "", "FontsFree-Net-arial-bold.ttf", uni=True)
             pdf.set_font("Arial1", style='', size=33)
             head = f'{formatting_full_name(item["name"])} {", " + item["room_number"] if item["room_number"] != "Не выбрано" else ""} {"" if item["bed"] == "Не выбрано" or item["room_number"] == "Не выбрано" else ", " + item["bed"]}'
-            if department:
-                head += ', ' + department
             head = head.strip()
             pdf.cell(50, 14, txt=f'{head}', ln=ln, align="L")
 
