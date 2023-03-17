@@ -82,9 +82,9 @@
                                         <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
-                                                    <div class="name">{{ product.name }}</div>
+                                                    <div class="name">{{ product.public_name }}</div>
                                                 {% else %}
-                                                    <div class="name" data-choose>{{ product.name }}</div>
+                                                    <div class="name" data-choose>{{ product.public_name }}</div>
                                                 {% endif %}
                                                 <div class="id" style="display: none;">lp-salad-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -121,9 +121,9 @@
                                         <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
-                                                    <div class="name">{{ product.name }}</div>
+                                                    <div class="name">{{ product.public_name }}</div>
                                                 {% else %}
-                                                    <div class="name" data-choose>{{ product.name }}</div>
+                                                    <div class="name" data-choose>{{ product.public_name }}</div>
                                                 {% endif %}
                                                 <div class="id" style="display: none;">cafe-salad-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -172,9 +172,9 @@
                                             <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
-                                                        <div class="name">{{ product.name }}</div>
+                                                        <div class="name">{{ product.public_name }}</div>
                                                     {% else %}
-                                                        <div class="name" data-choose>{{ product.name }}</div>
+                                                        <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
                                                     <div class="id" style="display: none;">lp-soup-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -210,9 +210,9 @@
                                             <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
-                                                        <div class="name">{{ product.name }}</div>
+                                                        <div class="name">{{ product.public_name }}</div>
                                                     {% else %}
-                                                        <div class="name" data-choose>{{ product.name }}</div>
+                                                        <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
                                                     <div class="id" style="display: none;">cafe-soup-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -259,9 +259,9 @@
                                             <div onclick="submitPatientSelection()" id='{{ product.id }}' class="item active main {{ meal }} {{ product.with_garnish }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
-                                                        <div class="name">{{ product.name }}</div>
+                                                        <div class="name">{{ product.public_name }}</div>
                                                     {% else %}
-                                                        <div class="name" data-choose>{{ product.name }}</div>
+                                                        <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
                                                     <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -297,9 +297,9 @@
                                             <div onclick="submitPatientSelection()" id='{{ product.id }}' class="item main {{ meal }} {{ product.with_garnish }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
-                                                        <div class="name">{{ product.name }}</div>
+                                                        <div class="name">{{ product.public_name }}</div>
                                                     {% else %}
-                                                        <div class="name" data-choose>{{ product.name }}</div>
+                                                        <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
                                                     <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -345,9 +345,9 @@
                                             <div class="item active garnish {{ meal }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
-                                                        <div class="name">{{ product.name }}</div>
+                                                        <div class="name">{{ product.public_name }}</div>
                                                     {% else %}
-                                                        <div class="name" data-choose>{{ product.name }}</div>
+                                                        <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
                                                     <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -383,9 +383,9 @@
                                             <div onclick="submitPatientSelection()" class="item garnish {{ meal }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
-                                                        <div class="name">{{ product.name }}</div>
+                                                        <div class="name">{{ product.public_name }}</div>
                                                     {% else %}
-                                                        <div class="name" data-choose>{{ product.name }}</div>
+                                                        <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
                                                     <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -433,9 +433,9 @@
                                             <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
-                                                        <div class="name">{{ product.name }}</div>
+                                                        <div class="name">{{ product.public_name }}</div>
                                                     {% else %}
-                                                        <div class="name" data-choose>{{ product.name }}</div>
+                                                        <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
                                                     <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -471,9 +471,9 @@
                                             <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
-                                                        <div class="name">{{ product.name }}</div>
+                                                        <div class="name">{{ product.public_name }}</div>
                                                     {% else %}
-                                                        <div class="name" data-choose>{{ product.name }}</div>
+                                                        <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
                                                     <div class="id" style="display: none;">cafe-porridge-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -522,9 +522,9 @@
                                         <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
-                                                    <div class="name">{{ product.name }}</div>
+                                                    <div class="name">{{ product.public_name }}</div>
                                                 {% else %}
-                                                    <div class="name" data-choose>{{ product.name }}</div>
+                                                    <div class="name" data-choose>{{ product.public_name }}</div>
                                                 {% endif %}
                                                 <div class="id" style="display: none;">lp-dessert-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -560,9 +560,9 @@
                                         <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
-                                                    <div class="name">{{ product.name }}</div>
+                                                    <div class="name">{{ product.public_name }}</div>
                                                 {% else %}
-                                                    <div class="name" data-choose>{{ product.name }}</div>
+                                                    <div class="name" data-choose>{{ product.public_name }}</div>
                                                 {% endif %}
                                                 <div class="id" style="display: none;">cafe-dessert-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -609,9 +609,9 @@
                                         <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
-                                                    <div class="name">{{ product.name }}</div>
+                                                    <div class="name">{{ product.public_name }}</div>
                                                 {% else %}
-                                                    <div class="name" data-choose>{{ product.name }}</div>
+                                                    <div class="name" data-choose>{{ product.public_name }}</div>
                                                 {% endif %}
                                                 <div class="id" style="display: none;">lp-fruit-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -647,9 +647,9 @@
                                         <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                             <div class="info">
                                                 {% if today %}
-                                                    <div class="name">{{ product.name }}</div>
+                                                    <div class="name">{{ product.public_name }}</div>
                                                 {% else %}
-                                                    <div class="name" data-choose>{{ product.name }}</div>
+                                                    <div class="name" data-choose>{{ product.public_name }}</div>
                                                 {% endif %}
                                                 <div class="id" style="display: none;">cafe-fruit-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -697,9 +697,9 @@
                                             <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
-                                                        <div class="name">{{ product.name }}</div>
+                                                        <div class="name">{{ product.public_name }}</div>
                                                     {% else %}
-                                                        <div class="name" data-choose>{{ product.name }}</div>
+                                                        <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
                                                     <div class="id" style="display: none;">lp-drink-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -735,9 +735,9 @@
                                             <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
-                                                        <div class="name">{{ product.name }}</div>
+                                                        <div class="name">{{ product.public_name }}</div>
                                                     {% else %}
-                                                        <div class="name" data-choose>{{ product.name }}</div>
+                                                        <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
                                                     <div class="id" style="display: none;">cafe-drink-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -837,7 +837,7 @@
                             <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
                         </div>
                     {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">lp-salad-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
@@ -871,7 +871,7 @@
                                 <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
                             </div>
                         {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">cafe-salad-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
@@ -907,7 +907,7 @@
                                     <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
                             </div>
                         {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">lp-soup-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
@@ -941,7 +941,7 @@
                                     <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
                             </div>
                         {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">cafe-soup-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
@@ -977,7 +977,7 @@
                                 <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
                             </div>
                         {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">lp-main-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
@@ -1011,7 +1011,7 @@
                                 <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
                             </div>
                         {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
@@ -1047,7 +1047,7 @@
                                 <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
                             </div>
                         {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">lp-garnish-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
@@ -1081,7 +1081,7 @@
                                 <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
                             </div>
                         {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
@@ -1117,7 +1117,7 @@
                                 <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
                             </div>
                         {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">lp-porridge-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
@@ -1153,7 +1153,7 @@
                                 <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt="">
                             </div>
                         {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">lp-dessert-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
@@ -1189,7 +1189,7 @@
                                 <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
                             </div>
                         {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">lp-fruit-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
@@ -1225,7 +1225,7 @@
                                 <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
                             </div>
                         {% endif %}
-                        <div class="name">{{ product.name }}</div>
+                        <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">lp-drink-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
