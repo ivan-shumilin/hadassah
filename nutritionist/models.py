@@ -571,3 +571,28 @@ class ProductStorage(models.Model):
 
     def __str__(self):
         return f'{self.date_create} {self.meal} {self.category} {self.products_id}'
+
+
+class Ingredient(models.Model):
+    product_id = models.CharField(max_length=200, null=True)
+    name = models.CharField(max_length=500)
+    imageLinks = models.CharField(max_length=500, null=True, blank=True)
+    code = models.CharField(max_length=500, null=True, blank=True)
+    description = models.CharField(max_length=10000, null=True, blank=True)
+    fatAmount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    proteinsAmount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    carbohydratesAmount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    energyAmount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    fatFullAmount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    proteinsFullAmount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    carbohydratesFullAmount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    energyFullAmount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    weight = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    groupId = models.CharField(max_length=10000, null=True, blank=True)
+    productCategoryId = models.CharField(max_length=10000, null=True, blank=True)
+    type = models.CharField(max_length=10000, null=True, blank=True)
+    orderItemType = models.CharField(max_length=10000, null=True, blank=True)
+    measureUnit = models.CharField(max_length=10000, null=True, blank=True)
+
+    def __str__(self):
+        return f'name: {self.name}, product_id: {self.product_id}'
