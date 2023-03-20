@@ -92,7 +92,11 @@
                                     {% endif %}
 
 
-                                    <div class="td">{{ product.name }}</div>
+                                    {% if product.product_id %}
+                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                    {% else %}
+                                        <div class="td">{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
@@ -149,7 +153,11 @@
                                     {% endif %}
 
 
-                                    <div class="td">{{ product.name }}</div>
+                                    {% if product.product_id %}
+                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                    {% else %}
+                                        <div class="td">{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
@@ -206,7 +214,11 @@
                                     {% endif %}
 
 
-                                    <div class="td">{{ product.name }}</div>
+                                    {% if product.product_id %}
+                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                    {% else %}
+                                        <div class="td">{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
@@ -263,8 +275,11 @@
                                         </div>
                                     {% endif %}
 
-
-                                    <div class="td">{{ product.name }}</div>
+                                    {% if product.product_id %}
+                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                    {% else %}
+                                        <div class="td">{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
@@ -322,7 +337,11 @@
                                     {% endif %}
 
 
-                                    <div class="td">{{ product.name }}</div>
+                                    {% if product.product_id %}
+                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                    {% else %}
+                                        <div class="td">{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
@@ -380,7 +399,11 @@
                                     {% endif %}
 
 
-                                    <div class="td">{{ product.name }}</div>
+                                    {% if product.product_id %}
+                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                    {% else %}
+                                        <div class="td">{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
@@ -438,7 +461,11 @@
                                     {% endif %}
 
 
-                                    <div class="td">{{ product.name }}</div>
+                                    {% if product.product_id %}
+                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                    {% else %}
+                                        <div class="td">{{ product.name }}</div>
+                                    {% endif %}
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
@@ -496,8 +523,12 @@
                                 {% endif %}
 
 
+                            {% if product.product_id %}
+                                <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                            {% else %}
                                 <div class="td">{{ product.name }}</div>
-                                <div class="td center">{{ product.count }}</div>
+                            {% endif %}
+                            <div class="td center">{{ product.count }}</div>
                             </div>
                         {% endif %}
                         {% for comment in product.comments %}
@@ -555,8 +586,12 @@
                             {% endif %}
 
 
+                        {% if product.product_id %}
+                            <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                        {% else %}
                             <div class="td">{{ product.name }}</div>
-                            <div class="td center">{{ product.count }}</div>
+                        {% endif %}
+                        <div class="td center">{{ product.count }}</div>
                         </div>
                     {% endif %}
                    

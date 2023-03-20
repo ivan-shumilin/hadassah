@@ -453,6 +453,7 @@ class MenuByDayReadyOrder(models.Model):
 class ProductLp(models.Model):
     name = models.CharField(max_length=200, null=True)
     public_name = models.CharField(max_length=200, null=True, blank=True)
+    product_id = models.CharField(max_length=100, null=True, blank=True)
     carbohydrate = models.CharField(max_length=200, null=True, blank=True)
     fat = models.CharField(max_length=200, null=True, blank=True)
     fiber = models.CharField(max_length=200, null=True, blank=True)
@@ -465,7 +466,7 @@ class ProductLp(models.Model):
     number_tk = models.CharField(max_length=5000, null=True, blank=True)
     # у новых блюд статус равен 1
     status = models.CharField(max_length=500, null=True, default='1',)
-    with_garnish =   models.BooleanField(
+    with_garnish = models.BooleanField(
         blank=True,
         default=False,
         help_text='Блюдо уже с гарниром?')

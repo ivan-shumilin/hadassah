@@ -28,6 +28,8 @@ urlpatterns = [
     path('doctor/', include('doctor.urls')),
     path('patient/', include('patient.urls')),
     path('', views.redirect, name='redirect'),
+    path('', include('pwa.urls')),
+    path('nutritionist/', include('pwa.urls')),
     path('api/v1/auth/', include('djoser.urls')),
     path('api/v1/baselist/', BaseAPIView.as_view()),
     path('api/v1/barcode/verify', VerifyAPIView.as_view()),
@@ -44,6 +46,8 @@ urlpatterns = [
     path('manager/printed_form_two_lp_new', views.printed_form_two_lp_new, name='printed_form_two_lp_new'),
     path('manager/printed_form_two_cafe', views.printed_form_two_cafe, name='printed_form_cafe'),
     path('manager/printed_form_two_cafe_new', views.printed_form_two_cafe_new, name='printed_form_cafe_new'),
+    path('manager/tk/<id>', views.tk, name='tk'),
+
     path('manager/menu', views.menu_lp_for_staff, name='menu_lp_for_staff'),
     path('register/', views.register, name='register'),
     path('password_reset/', views.password_reset, name='reset_password'),

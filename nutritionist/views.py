@@ -18,6 +18,7 @@ from django.forms import CheckboxInput, Textarea
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
 
+from doctor.functions.download import get_token, get_tk
 from .functions.report import create_external_report, create_external_report_detailing, get_report
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
     UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage
@@ -821,7 +822,6 @@ def printed_form_one_new(request):
 
     return render(request, 'printed_form1_new.html', context=data)
 
-
 def printed_form_one(request):
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
@@ -890,7 +890,6 @@ def printed_form_one(request):
     }
 
     return render(request, 'printed_form1.html', context=data)
-
 
 def printed_form_two_lp(request):
     is_public = False  # выводим технические названия блюд, не публичные
@@ -1207,6 +1206,49 @@ def printed_form_two_cafe_new(request):
         'date_create': date_create,
     }
     return render(request, 'printed_form2_cafe_new.html', context=data)
+
+def tk(request, id):
+    token = get_token()
+    tk, error = get_tk(token, id)
+    from nutritionist.models import Ingredient
+    for item_tk_1 in tk['assemblyCharts']:
+        try:
+            item_tk_1['name'] = Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().name
+        except:
+            item_tk_1['name'] = None
+
+        try:
+            item_tk_1['weight'] =\
+                Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().weight * 1000
+        except:
+            item_tk_1['weight'] = 0
+
+        for item_tk_2 in item_tk_1['items']:
+            try:
+                item_tk_2['name'] = Ingredient.objects.filter(product_id=item_tk_2['productId']).first().name
+            except:
+                item_tk_2['name'] = None
+
+    result = {}
+    result = tk['assemblyCharts'][0]
+
+
+    for ing in result['items']:
+        for ing2 in tk['assemblyCharts'][1:]:
+            try:
+                if ing['productId'] == ing2['assembledProductId']:
+                    ing['items'] = ing2['items'].copy()
+            except:
+                pass
+        if 'items' not in ing:
+            ing['items'] = None
+
+
+    data = {
+        'result': result,
+        'error': error
+    }
+    return render(request, 'tk.html', context=data)
 
 
 

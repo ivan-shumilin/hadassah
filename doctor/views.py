@@ -1,10 +1,11 @@
+from django.db import transaction
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput, CheckboxInput
 from .forms import PatientRegistrationForm, DietChoiceForm
-from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
-    UsersToday, TimetableLp
+from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, BotChatId, СhangesUsersToday, \
+    UsersToday, TimetableLp, Ingredient
 from nutritionist.forms import TimetableForm
 import random, calendar, datetime, logging, json
 from datetime import datetime, date, timedelta
@@ -34,6 +35,41 @@ from rest_framework.response import Response
 from django.core import management
 import telepot
 from doctor.tasks import send_messang, my_job_create_ready_order_dinner
+from .functions.download import get_token, download
+from .logic.create_ingredient import create_ingredients
+
+
+@transaction.atomic
+def load_nomenclature():
+    with open("nomenclature.json", "r") as my_file:
+        nomenclature = json.load(my_file)
+    to_create = []
+    Ingredient.objects.all().delete()
+    for product in nomenclature['products']:
+        to_create.append(Ingredient(
+            product_id=product["id"],
+            name=product["name"],
+            imageLinks = product["imageLinks"],
+            code = product["code"],
+            description = product["description"],
+            fatAmount = product["fatAmount"],
+            proteinsAmount = product["proteinsAmount"],
+            carbohydratesAmount = product["carbohydratesAmount"],
+            energyAmount = product["energyAmount"],
+            fatFullAmount = product["fatFullAmount"],
+            proteinsFullAmount = product["proteinsFullAmount"],
+            carbohydratesFullAmount = product["carbohydratesFullAmount"],
+            energyFullAmount = product["energyFullAmount"],
+            weight = product["weight"],
+            groupId = product["groupId"],
+            productCategoryId = product["productCategoryId"],
+            type = product["type"],
+            orderItemType = product["orderItemType"],
+            measureUnit = product["measureUnit"],
+        ))
+    Ingredient.objects.bulk_create(to_create)
+
+
 
 
 def group_doctors_check(user):
@@ -70,6 +106,12 @@ def doctor(request):
                                                  'extra_bouillon': TextInput(attrs={'required': "True"}),
                                              },
                                              extra=0,)
+
+    # load_nomenclature()
+    # load_ttk()
+    # create_ingredients()
+    # get_token()
+
 
     not_active_users_set = get_not_active_users_set()
 

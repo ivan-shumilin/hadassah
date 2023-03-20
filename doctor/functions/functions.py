@@ -241,6 +241,7 @@ def create_value(product, id, is_public):
         'image': product.image,
         'description': product.description,
         'category': product.category,
+        'product_id': product.product_id,
     }
     return value
 

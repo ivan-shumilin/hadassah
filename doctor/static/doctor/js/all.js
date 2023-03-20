@@ -14999,8 +14999,8 @@ function(e) {
         e('[data-eat-bottom-sheet="' + t + '"]').removeClass("active")
       })), r.addClass("active"), a.addClass("active")
 
-addHtmlDinner();
-addHtmlLunch();
+      addHtmlDinner();
+      addHtmlLunch();
 
     })).click((function(t) {
       t.preventDefault(), e(this).trigger("choose")
@@ -15070,6 +15070,19 @@ addHtmlLunch();
       }))
     })), e(".report-block .tags .more").once().click((function() {
       e(this).closest(".tags").toggleClass("open")
+    })), e(".card-header-block .input-controls").find(".minus, .plus").once().click((function(t) {
+      t.preventDefault();
+      let n = e(this),
+        r = n.closest(".input-controls").find('input[type="text"]'),
+        i = parseInt(r.val() || 0);
+      n.hasClass("plus") ? i++ : i--, i < 1 && (i = 1), r.val(i)
+    })), e(".card-block .table .tr.parent > .td").once().click((function() {
+      e(this).closest(".tr").toggleClass("open")
+    })), e(".card-block .card-detail .toggle").once("toggle").click((function(t) {
+      t.preventDefault();
+      let n = e(this).closest(".card-detail"),
+        r = n.find(".content");
+      n.toggleClass("open"), r.stop().slideToggle("fast")
     }))
   }
   e(window).resize((function() {
