@@ -42,10 +42,11 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(ProductLp)
 class ProductLpAdmin(admin.ModelAdmin):
-    list_display = ('name', 'public_name', 'with_garnish', 'category', 'description', 'status')
-    fields = ('name', 'public_name', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber', 'energy', 'weight', 'description', 'comment', 'status')
+    list_display = ('name', 'product_id', 'public_name', 'with_garnish', 'category', 'description', 'status')
+    fields = ('name', 'public_name', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
+              'energy', 'weight', 'description', 'comment', 'status')
     list_filter = ('category', 'status',)
-    list_per_page = 600
+    list_per_page = 1000
 
     inlines = [TimetableLpAdmin]
 
