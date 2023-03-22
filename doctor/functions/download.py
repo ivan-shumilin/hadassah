@@ -79,3 +79,25 @@ def get_name(token, product_id):
         except:
             name = None
     return name
+
+def get_allergens(token, product_id):
+    """ Получаем аллергены продукта. """
+
+    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list?includeDeleted=false'
+
+    headers = {
+        'Cookie': f'key={token}'
+    }
+    params = {'ids': product_id}
+
+
+    response = requests.get(url=url, headers=headers, params=params)
+    if response.status_code != 200:
+        return None
+    else:
+        tk = json.loads(response.text)
+        try:
+            allergens = tk[0]['allergenGroups']
+        except:
+            allergens = None
+    return allergens

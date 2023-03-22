@@ -18,7 +18,7 @@ from django.forms import CheckboxInput, Textarea
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
 
-from doctor.functions.download import get_token, get_tk, get_name
+from doctor.functions.download import get_token, get_tk, get_name, get_allergens
 from .functions.report import create_external_report, create_external_report_detailing, get_report
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
     UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage
@@ -1207,7 +1207,7 @@ def printed_form_two_cafe_new(request):
     }
     return render(request, 'printed_form2_cafe_new.html', context=data)
 
-def tk(request, id):
+def tk(request, id, count):
     token = get_token()
     tk, error = get_tk(token, id)
     from nutritionist.models import Ingredient
@@ -1262,10 +1262,14 @@ def tk(request, id):
         if 'items' not in ing:
             ing['items'] = None
 
+    result['allergens'] = get_allergens(token, id)
+
 
     data = {
         'result': result,
-        'error': error
+        'error': error,
+        'count': count,
+        'weight': int(count) * int(result['weight'])
     }
     return render(request, 'tk.html', context=data)
 

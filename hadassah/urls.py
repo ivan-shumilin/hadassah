@@ -46,7 +46,7 @@ urlpatterns = [
     path('manager/printed_form_two_lp_new', views.printed_form_two_lp_new, name='printed_form_two_lp_new'),
     path('manager/printed_form_two_cafe', views.printed_form_two_cafe, name='printed_form_cafe'),
     path('manager/printed_form_two_cafe_new', views.printed_form_two_cafe_new, name='printed_form_cafe_new'),
-    path('manager/tk/<id>', views.tk, name='tk'),
+    path('manager/tk/<id>/<count>', views.tk, name='tk'),
 
     path('manager/menu', views.menu_lp_for_staff, name='menu_lp_for_staff'),
     path('register/', views.register, name='register'),

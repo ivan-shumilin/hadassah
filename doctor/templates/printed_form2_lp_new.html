@@ -93,7 +93,7 @@
 
 
                                     {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
                                     {% else %}
                                         <div class="td">{{ product.name }}</div>
                                     {% endif %}
@@ -154,7 +154,7 @@
 
 
                                     {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
                                     {% else %}
                                         <div class="td">{{ product.name }}</div>
                                     {% endif %}
@@ -215,7 +215,7 @@
 
 
                                     {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
                                     {% else %}
                                         <div class="td">{{ product.name }}</div>
                                     {% endif %}
@@ -276,7 +276,7 @@
                                     {% endif %}
 
                                     {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
                                     {% else %}
                                         <div class="td">{{ product.name }}</div>
                                     {% endif %}
@@ -338,7 +338,7 @@
 
 
                                     {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
                                     {% else %}
                                         <div class="td">{{ product.name }}</div>
                                     {% endif %}
@@ -400,7 +400,7 @@
 
 
                                     {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
                                     {% else %}
                                         <div class="td">{{ product.name }}</div>
                                     {% endif %}
@@ -462,7 +462,7 @@
 
 
                                     {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
                                     {% else %}
                                         <div class="td">{{ product.name }}</div>
                                     {% endif %}
@@ -524,7 +524,7 @@
 
 
                             {% if product.product_id %}
-                                <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                                <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
                             {% else %}
                                 <div class="td">{{ product.name }}</div>
                             {% endif %}
@@ -587,7 +587,7 @@
 
 
                         {% if product.product_id %}
-                            <div class="td"><a href="{% url 'tk' product.product_id %}">{{ product.name }}</a></div>
+                            <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
                         {% else %}
                             <div class="td">{{ product.name }}</div>
                         {% endif %}

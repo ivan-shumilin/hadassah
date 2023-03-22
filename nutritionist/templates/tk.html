@@ -24,13 +24,13 @@
                         <div class="label">Порций</div>
                         <div class="input-controls">
                             <span onclick="" class="minus"></span>
-                            <input oninput="" id="count" type="text" name="portion" value="1">
+                            <input oninput="" id="count" type="text" name="portion" value="{{ count }}">
                             <span onclick="" class="plus"></span>
                         </div>
                     </div>
                     <div class="weight field">
                         <div class="label">Грамм</div>
-                        <input id="weight" type="text" name="weight" value="{{ result.weight|floatformat:'0' }}">
+                        <input id="weight" type="text" name="weight" value="{{ weight|floatformat:'0' }}">
                         <input class="hidden-edit" id="weight-const" value="{{ result.weight }}">
                     </div>
                 </div>
@@ -151,11 +151,7 @@
                                 <div class="allergens">
                                     <div class="title">Аллергены</div>
                                     <div class="tags">
-                                        <span>лактоза</span>
-                                        <span>цитрусовые</span>
-                                        <span>сельдерей</span>
-                                        <span>сахар</span>
-                                        <span>перец</span>
+
                                     </div>
                                 </div>
                             </div>
@@ -172,13 +168,10 @@
 </html>
 <script>
 
-let nameInput = document.getElementById('count');
-
-nameInput.addEventListener("input", function() {
-    console.log('Yes!')
-})
-
-function setWeight(weight) {
-    console.log('no')
+let count = document.getElementById('count').value
+let weight = document.getElementById('weight-const').value
+let listWeight = document.querySelectorAll('.weighting')
+for (var iiiiii = 0; iiiiii < listWeight.length; iiiiii++) {
+    listWeight[iiiiii].innerHTML = (listWeight[iiiiii].innerHTML * count).toFixed(3);
 }
 </script>
