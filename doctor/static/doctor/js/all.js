@@ -15076,6 +15076,19 @@ function(e) {
         r = n.closest(".input-controls").find('input[type="text"]'),
         i = parseInt(r.val() || 0);
       n.hasClass("plus") ? i++ : i--, i < 1 && (i = 1), r.val(i)
+
+// added code
+      let count = document.getElementById('count').value
+      let weight = document.getElementById('weight-const').value
+      document.getElementById('weight').value = weight * count
+      let listWeight = document.querySelectorAll('.weighting')
+      let listWeightConst = document.querySelectorAll('.weighting-const')
+      for (var iiiiii = 0; iiiiii < listWeight.length; iiiiii++) {
+        listWeight[iiiiii].innerHTML = (listWeightConst[iiiiii].innerHTML * count).toFixed(3);
+      }
+// added code
+
+
     })), e(".card-block .table .tr.parent > .td").once().click((function() {
       e(this).closest(".tr").toggleClass("open")
     })), e(".card-block .card-detail .toggle").once("toggle").click((function(t) {
@@ -15084,6 +15097,7 @@ function(e) {
         r = n.find(".content");
       n.toggleClass("open"), r.stop().slideToggle("fast")
     }))
+    
   }
   e(window).resize((function() {
     e(".report-block .main").trigger("responsiveUpdate")
@@ -15158,6 +15172,12 @@ function addHtmlLunch() {
   result += '</div>'
   item.insertAdjacentHTML("beforeend", result);
 }
+
+// inputCount = document.getElementById('count')
+// inputWight = document.getElementById('weight')
+// function setWeight(weight) {
+//     inputWight.value = weight * inputCount.value
+// }
 
 
 //  делаем нужную ссылку визуально активной

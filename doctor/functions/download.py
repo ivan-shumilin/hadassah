@@ -58,3 +58,24 @@ def get_tk(token, product_id):
     else:
         tk = json.loads(response.text)
     return tk, ''
+
+def get_name(token, product_id):
+    """ Получаем элемент номенклатуры. """
+    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list?includeDeleted=false'
+
+    headers = {
+        'Cookie': f'key={token}'
+    }
+    params = {'ids': product_id}
+
+
+    response = requests.get(url=url, headers=headers, params=params)
+    if response.status_code != 200:
+        return '', 'Server error'
+    else:
+        tk = json.loads(response.text)
+        try:
+            name = tk[0]['name']
+        except:
+            name = None
+    return name

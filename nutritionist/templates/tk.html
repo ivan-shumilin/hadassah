@@ -23,14 +23,15 @@
                     <div class="portion field">
                         <div class="label">Порций</div>
                         <div class="input-controls">
-                            <span class="minus"></span>
-                            <input type="text" name="portion" value="1">
-                            <span class="plus"></span>
+                            <span onclick="" class="minus"></span>
+                            <input oninput="" id="count" type="text" name="portion" value="1">
+                            <span onclick="" class="plus"></span>
                         </div>
                     </div>
                     <div class="weight field">
                         <div class="label">Грамм</div>
-                        <input type="text" name="weight" value="{{ result.weight }}">
+                        <input id="weight" type="text" name="weight" value="{{ result.weight|floatformat:'0' }}">
+                        <input class="hidden-edit" id="weight-const" value="{{ result.weight }}">
                     </div>
                 </div>
             </div>
@@ -81,20 +82,28 @@
                                     <div class="tr parent">
                                         <div class="td name">{{ ing1.name }}</div>
                                         <div class="td">кг</div>
-                                        <div class="td">{{ ing1.amountIn }}</div>
-                                        <div class="td">{{ ing1.amountMiddle }}</div>
-                                        <div class="td">{{ ing1.amountOut }}</div>
-                                        <div class="td">{{ ing1.amountIn }}</div>
+                                        <div class="td weighting">{{ ing1.amountIn }}</div>
+                                        <div class="td weighting">{{ ing1.amountMiddle }}</div>
+                                        <div class="td weighting">{{ ing1.amountOut }}</div>
+                                        <div class="td weighting">{{ ing1.amountIn }}</div>
+                                        <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
+                                        <div class="td weighting-const hide-item">{{ ing1.amountMiddle }}</div>
+                                        <div class="td weighting-const hide-item">{{ ing1.amountOut }}</div>
+                                        <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
                                             <div class="children table">
                                                 <div class="tbody">
                                                     {% for ing2 in ing1.items %}
                                                         <div class="tr">
                                                             <div class="td name">{{ ing2.name }}</div>
                                                             <div class="td">кг</div>
-                                                            <div class="td">{{ ing1.amountIn }}</div>
-                                                            <div class="td">{{ ing1.amountMiddle }}</div>
-                                                            <div class="td">{{ ing1.amountOut }}</div>
-                                                            <div class="td">{{ ing1.amountIn }}</div>
+                                                            <div class="td weighting">{{ ing2.amountIn }}</div>
+                                                            <div class="td weighting">{{ ing2.amountMiddle }}</div>
+                                                            <div class="td weighting">{{ ing2.amountOut }}</div>
+                                                            <div class="td weighting">{{ ing2.amountIn }}</div>
+                                                            <div class="td weighting-const hide-item">{{ ing2.amountIn }}</div>
+                                                            <div class="td weighting-const hide-item">{{ ing2.amountMiddle }}</div>
+                                                            <div class="td weighting-const hide-item">{{ ing2.amountOut }}</div>
+                                                            <div class="td weighting-const hide-item">{{ ing2.amountIn }}</div>
                                                         </div>
                                                     {% endfor %}
                                                 </div>
@@ -104,10 +113,14 @@
                                     <div class="tr">
                                         <div class="td name">{{ ing1.name }}</div>
                                         <div class="td">кг</div>
-                                        <div class="td">{{ ing1.amountIn }}</div>
-                                        <div class="td">{{ ing1.amountMiddle }}</div>
-                                        <div class="td">{{ ing1.amountOut }}</div>
-                                        <div class="td">{{ ing1.amountIn }}</div>
+                                        <div class="td weighting">{{ ing1.amountIn }}</div>
+                                        <div class="td weighting">{{ ing1.amountMiddle }}</div>
+                                        <div class="td weighting">{{ ing1.amountOut }}</div>
+                                        <div class="td weighting">{{ ing1.amountIn }}</div>
+                                        <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
+                                        <div class="td weighting-const hide-item">{{ ing1.amountMiddle }}</div>
+                                        <div class="td weighting-const hide-item">{{ ing1.amountOut }}</div>
+                                        <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
                                     </div>
                                 {% endif %}
                             {% endfor %}
@@ -157,3 +170,15 @@
     <script src="{% static 'doctor/js/all.js' %}"></script>
     </body>
 </html>
+<script>
+
+let nameInput = document.getElementById('count');
+
+nameInput.addEventListener("input", function() {
+    console.log('Yes!')
+})
+
+function setWeight(weight) {
+    console.log('no')
+}
+</script>

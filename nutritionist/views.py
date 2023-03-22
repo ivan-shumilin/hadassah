@@ -18,7 +18,7 @@ from django.forms import CheckboxInput, Textarea
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
 
-from doctor.functions.download import get_token, get_tk
+from doctor.functions.download import get_token, get_tk, get_name
 from .functions.report import create_external_report, create_external_report_detailing, get_report
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
     UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage
@@ -1212,6 +1212,25 @@ def tk(request, id):
     tk, error = get_tk(token, id)
     from nutritionist.models import Ingredient
     for item_tk_1 in tk['assemblyCharts']:
+        try:
+            item_tk_1['name'] = Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().name
+        except:
+            item_tk_1['name'] = get_name(token, item_tk_1['assembledProductId'])
+
+        try:
+            item_tk_1['weight'] =\
+                Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().weight * 1000
+        except:
+            item_tk_1['weight'] = 0
+
+        for item_tk_2 in item_tk_1['items']:
+            try:
+                item_tk_2['name'] = Ingredient.objects.filter(product_id=item_tk_2['productId']).first().name
+            except:
+                item_tk_2['name'] = get_name(token, item_tk_2['productId'])
+
+# Проставляем имена для preparedCharts
+    for item_tk_1 in tk['preparedCharts']:
         try:
             item_tk_1['name'] = Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().name
         except:
