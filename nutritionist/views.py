@@ -1268,7 +1268,7 @@ def tk(request, id, count):
     data = {
         'result': result,
         'error': error,
-        'count': count,
+        'count': count + 1,
         'weight': int(count) * int(result['weight'])
     }
     return render(request, 'tk.html', context=data)
