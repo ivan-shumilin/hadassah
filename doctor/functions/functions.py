@@ -231,6 +231,10 @@ def create_value(product, id, is_public):
             name = product.name
     else:
         name = product.name
+    try:
+        product_id = product.product_id
+    except:
+        product_id = None
     value = {
         'id': id,
         'name': name,
@@ -241,7 +245,7 @@ def create_value(product, id, is_public):
         'image': product.image,
         'description': product.description,
         'category': product.category,
-        'product_id': product.product_id,
+        'product_id': product_id
     }
     return value
 
