@@ -1213,11 +1213,11 @@ def tk(request, id, count):
     from nutritionist.models import Ingredient
 
     for item_tk_1 in tk['assemblyCharts']:
-        count = item_tk_1['assembledAmount']
+        count_por = item_tk_1['assembledAmount']
         for sub_item in item_tk_1['items']:
-            sub_item['amountIn'] = sub_item['amountIn'] / count
-            sub_item['amountMiddle'] = sub_item['amountMiddle'] / count
-            sub_item['amountOut'] = sub_item['amountOut'] / count
+            sub_item['amountIn'] = sub_item['amountIn'] / count_por
+            sub_item['amountMiddle'] = sub_item['amountMiddle'] / count_por
+            sub_item['amountOut'] = sub_item['amountOut'] / count_por
 
     for item_tk_1 in tk['assemblyCharts']:
         try:
