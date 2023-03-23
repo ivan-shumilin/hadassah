@@ -1211,6 +1211,14 @@ def tk(request, id, count):
     token = get_token()
     tk, error = get_tk(token, id)
     from nutritionist.models import Ingredient
+
+    for item_tk_1 in tk['assemblyCharts']:
+        count = item_tk_1['assembledAmount']
+        for sub_item in item_tk_1['items']:
+            sub_item['amountIn'] = sub_item['amountIn'] / count
+            sub_item['amountMiddle'] = sub_item['amountMiddle'] / count
+            sub_item['amountOut'] = sub_item['amountOut'] / count
+
     for item_tk_1 in tk['assemblyCharts']:
         try:
             item_tk_1['name'] = Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().name
