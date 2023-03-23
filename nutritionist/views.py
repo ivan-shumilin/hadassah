@@ -18,7 +18,7 @@ from django.forms import CheckboxInput, Textarea
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
 
-from doctor.functions.download import get_token, get_tk, get_name, get_allergens
+from doctor.functions.download import get_token, get_tk, get_name, get_allergens, get_weight_tk
 from .functions.report import create_external_report, create_external_report_detailing, get_report
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
     UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage
@@ -1263,6 +1263,14 @@ def tk(request, id, count):
             ing['items'] = None
 
     result['allergens'] = get_allergens(token, id)
+
+    for item in result['items']:
+        if item['items']:
+            item['weight_tk'] = get_weight_tk(token, item['productId'])
+            for sub_item in item['items']:
+                sub_item['amountIn'] = item['amountIn'] * sub_item['amountIn'] / item['weight_tk']
+                sub_item['amountMiddle'] = item['amountMiddle'] * sub_item['amountMiddle'] / item['weight_tk']
+                sub_item['amountOut'] = item['amountOut'] * sub_item['amountOut'] / item['weight_tk']
 
 
     data = {
