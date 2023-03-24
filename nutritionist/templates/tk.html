@@ -24,7 +24,7 @@
                         <div class="label">Порций</div>
                         <div class="input-controls">
                             <span onclick="" class="minus"></span>
-                            <input oninput="" id="count" type="text" name="portion" value="{{ count }}">
+                            <input onchange="inputEnter()" id="count" type="text" name="portion" value="{{ count }}">
                             <span onclick="" class="plus"></span>
                         </div>
                     </div>
@@ -174,4 +174,15 @@ let listWeight = document.querySelectorAll('.weighting')
 for (var iiiiii = 0; iiiiii < listWeight.length; iiiiii++) {
     listWeight[iiiiii].innerHTML = (listWeight[iiiiii].innerHTML * count).toFixed(3);
 }
+
+function inputEnter() {
+    let count = document.getElementById('count').value
+    let weight = document.getElementById('weight-const').value
+    document.getElementById('weight').value = weight * count
+    let listWeight = document.querySelectorAll('.weighting')
+    let listWeightConst = document.querySelectorAll('.weighting-const')
+    for (var iiiiii = 0; iiiiii < listWeight.length; iiiiii++) {
+    listWeight[iiiiii].innerHTML = (listWeightConst[iiiiii].innerHTML * count).toFixed(3);
+      }
+    }
 </script>

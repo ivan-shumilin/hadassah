@@ -1208,9 +1208,13 @@ def printed_form_two_cafe_new(request):
     return render(request, 'printed_form2_cafe_new.html', context=data)
 
 def tk(request, id, count):
+    import operator
+    from nutritionist.models import Ingredient
+
     token = get_token()
     tk, error = get_tk(token, id)
-    from nutritionist.models import Ingredient
+
+
 
     for item_tk_1 in tk['assemblyCharts']:
         count_por = item_tk_1['assembledAmount']
@@ -1238,25 +1242,25 @@ def tk(request, id, count):
                 item_tk_2['name'] = get_name(token, item_tk_2['productId'])
 
 # Проставляем имена для preparedCharts
-    for item_tk_1 in tk['preparedCharts']:
-        try:
-            item_tk_1['name'] = Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().name
-        except:
-            item_tk_1['name'] = None
+#     for item_tk_1 in tk['preparedCharts']:
+#         try:
+#             item_tk_1['name'] = Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().name
+#         except:
+#             item_tk_1['name'] = None
+#
+#         try:
+#             item_tk_1['weight'] =\
+#                 Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().weight * 1000
+#         except:
+#             item_tk_1['weight'] = 0
+#
+#         for item_tk_2 in item_tk_1['items']:
+#             try:
+#                 item_tk_2['name'] = Ingredient.objects.filter(product_id=item_tk_2['productId']).first().name
+#             except:
+#                 item_tk_2['name'] = None
 
-        try:
-            item_tk_1['weight'] =\
-                Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().weight * 1000
-        except:
-            item_tk_1['weight'] = 0
 
-        for item_tk_2 in item_tk_1['items']:
-            try:
-                item_tk_2['name'] = Ingredient.objects.filter(product_id=item_tk_2['productId']).first().name
-            except:
-                item_tk_2['name'] = None
-
-    result = {}
     result = tk['assemblyCharts'][0]
 
 
@@ -1279,6 +1283,8 @@ def tk(request, id, count):
                 sub_item['amountIn'] = item['amountIn'] * sub_item['amountIn'] / item['weight_tk']
                 sub_item['amountMiddle'] = item['amountMiddle'] * sub_item['amountMiddle'] / item['weight_tk']
                 sub_item['amountOut'] = item['amountOut'] * sub_item['amountOut'] / item['weight_tk']
+
+    result['items'].sort(key=operator.itemgetter('sortWeight'))
 
 
     data = {
