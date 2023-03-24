@@ -1763,8 +1763,8 @@ p:last-child {
 }
 
 a {
-  color: var(--color-main) !important;
-  text-decoration: none !important;
+  color: var(--color-main);
+  text-decoration: none;
 }
 
 * {
@@ -6392,4 +6392,9 @@ font-weight: 200;
 .div-order {
   margin-top: 20px !important;
 
+}
+
+.switch a.active {
+  background: var(--color-main);
+  color: #fff !important;
 }

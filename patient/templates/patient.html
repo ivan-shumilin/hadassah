@@ -6,37 +6,100 @@
 <a style="display: none;"  id="orderConfirmed" data-modal-link="order-confirmed">a</a>
 <a style="display: none;"  id="patientWarning" data-modal-link="patient-warning">Предупреждение</a>
 <div style="display: none;" id="status">{{ modal }}</div>
-        <div id="center">
-            <div id="header">
-                    <div class="header-block">
-                        <div class="menu-link-and-name">
-                            <a class="menu-link" data-sidebar-toggle>
-                                <div class="i i-menu"></div>
+<div id="center">
+    <div id="header">
+        <div class="before-header-block">
+            <div class="menu">
+                <ul>
+                    {% if page == 'history' %}
+                        <li>
+                    {% else %}
+                        <li class="active">
+                    {% endif %}
+                            <a href="{% url 'patient:patient' id=user.id %}">
+                                <span class="i i-eat icon-default"></span>
+                                <span class="i i-eat-colored icon-colored"></span>
                             </a>
-                            <div class="title">Меню</div>
-                        </div>
+                        </li>
+                    {% if page == 'history' %}
+                        <li class="active">
+                    {% else %}
+                        <li>
+                    {% endif %}
+                            <a href="{% url 'patient:patient_history' id=user.id %}">
+                                <span class="i i-box icon-default"></span>
+                                <span class="i i-box-colored icon-colored"></span>
+                            </a>
+                        </li>
+                </ul>
+            </div>
 
-                        <div class="menu">
-                            <div class="switch">
-                                <a id='{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
-                                <a id='{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
-                                <a id='{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
-                            </div>
+            <a href="#" class="logo-main">
+                {% load static %}
+                <img src="{% static 'doctor/css/img/logo.svg' %}">
+            </a>
+            <a href="#" class="logo-petrushka">
+                {% load static %}
+                <img src="{% static 'doctor/css/img/petrushka.png' %}">
+            </a>
+            <div class="profile">
+                <a href="#" class="label" data-fade-toggle-link="profile-info">
+                    <span class="icon"></span>
+                </a>
+                <div class="info" data-fade-toggle="profile-info">
+                    <div class="segment">
+                        <div class="name">
+                            {% load formatting_full_name %}
+                            {{ user.full_name|formatting_full_name }}
                         </div>
-
-                        <div id='diet-menu' class="green-menu">
-                            <a data-modal-link="diet">Диета</a>
-                            <a id='diet_name' class="active" data-modal-link="diet">{{ user.type_of_diet }}</a>
+                        <div class="value">
+                            <span>Отделение</span>
+                            {{ user.department }}
+                        </div>
+                        <div class="value">
+                            <span>Диета</span>
+                            {{ user.type_of_diet }}
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                    <div class="day-switch-block">
-                        <div class="switch">
-                            <a id='mobile-{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
-                            <a id='mobile-{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
-                            <a id='mobile-{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
-                        </div>
-                    </div>
+        <div class="header-block">
+            <div class="menu-link-and-name">
+                <a href="#" class="menu-link" data-sidebar-toggle>
+                    <div class="i i-menu"></div>
+                </a>
+                <div class="title">Меню</div>
+            </div>
+
+            <div class="date">{{ formatted_date|lower  }}</div>
+
+            <div class="green-menu">
+                <a class="diet" data-modal-link="diet">Диета</a>
+                <a class="active">{{ user.type_of_diet }}</a>
+            </div>
+
+            <div class="menu">
+                <div class="switch">
+                    <a id='{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
+                    <a id='{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
+                    <a id='{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+        <div class="day-switch-block">
+            <div class="switch">
+                <a id='mobile-{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
+                <a id='mobile-{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
+                <a id='mobile-{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+            </div>
+        </div>
 </form>
 
 {% if is_have == 'date' %}
@@ -50,16 +113,16 @@
     </div>
 {% else %}
 
-                    <div class="eat-menu-block">
-                    <div class="menu">
-                        <a class="active" data-tab="breakfast">Завтрак</a>
-                        <a data-tab="lunch">Обед</a>
-                        <a data-tab="afternoon">Полдник</a>
-                        <a data-tab="dinner">Ужин</a>
-                    </div>
-                    <div class="date">{{ formatted_date|lower  }}</div>
-                    </div>
+        <div class="eat-menu-block">
+            <div class="menu">
+                <a class="active" data-tab="breakfast">Завтрак</a>
+                <a data-tab="lunch">Обед</a>
+                <a data-tab="afternoon">Полдник</a>
+                <a data-tab="dinner">Ужин</a>
             </div>
+            <div class="date">{{ formatted_date|lower  }}</div>
+        </div>
+    </div>
                 
             <div id="content" data-scrollbar>
                 {% for meal, menu_for_the_meal in menu.items %}
