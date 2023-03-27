@@ -1062,6 +1062,7 @@ def printed_form_two_lp_new(request):
                              user.is_pureed_nutrition)
                         all_products.append(item)
             # составляем список с уникальными продуктами
+            #
             unique_products = []
             for product in all_products:
                 flag = True
