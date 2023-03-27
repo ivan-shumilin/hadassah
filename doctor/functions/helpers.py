@@ -10,14 +10,8 @@ from django.utils import dateformat
 
 def check_value(category, products):
     value: str = ''
-    # if category != 'товар' and category != 'напиток':
-    if category not in ['товар', 'напиток', 'hidden']:
-        try:
-            value = products.get(category=category).id
-        except Exception:
-            value = None
-    else:
-        value = ','.join([str(item.id) for item in products.filter(category=category)])
+
+    value = ','.join([str(item.id) for item in products.filter(category=category)])
     return value
 
 def formatting_full_name_mode_full(full_name_row):

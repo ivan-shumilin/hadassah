@@ -250,160 +250,32 @@ def create_value(product, id, is_public):
     return value
 
 def check_value_two(menu_all, date_str, meal, category, is_public):
-    if category == 'salad':
-        try:
-            id = menu_all.filter(date=date_str).get(meal=meal).salad
-            if id == '':
-                return None
+    try:
+        value: list = []
+        item = menu_all.filter(date=date_str).get(meal=meal)
+        id_set = getattr(item, category, None).split(',')
+
+        if len(id_set) == 0:
+            return [None]
+        for id in id_set:
             if 'cafe' in id:
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
-            value = create_value(product, id, is_public)
-        except Exception:
-            value = None
-        return value
-    if category == 'soup':
-        try:
-            id = menu_all.filter(date=date_str).get(meal=meal).soup
-            if id == '':
-                return None
-            if 'cafe' in id:
-                product = Product.objects.get(id=id.split('-')[2])
-            else:
-                product = ProductLp.objects.get(id=id)
-            value = create_value(product, id, is_public)
-        except Exception:
-            value = None
-        return value
-    if category == 'main':
-        try:
-            id = menu_all.filter(date=date_str).get(meal=meal).main
-            if id == '':
-                return None
-            if 'cafe' in id:
-                product = Product.objects.get(id=id.split('-')[2])
-            else:
-                product = ProductLp.objects.get(id=id)
-            value = create_value(product, id, is_public)
-        except Exception:
-            value = None
-        return value
-    if category == 'garnish':
-        try:
-            id = menu_all.filter(date=date_str).get(meal=meal).garnish
-            if id == '':
-                return None
-            if 'cafe' in id:
-                product = Product.objects.get(id=id.split('-')[2])
-            else:
-                product = ProductLp.objects.get(id=id)
-            value = create_value(product, id, is_public)
-        except Exception:
-            value = None
-        return value
-    if category == 'porridge':
-        try:
-            id = menu_all.filter(date=date_str).get(meal=meal).porridge
-            if id == '':
-                return None
-            if 'cafe' in id:
-                product = Product.objects.get(id=id.split('-')[2])
-            else:
-                product = ProductLp.objects.get(id=id)
-            value = create_value(product, id, is_public)
-        except Exception:
-            value = None
-        return value
-    if category == 'dessert':
-        try:
-            id = menu_all.filter(date=date_str).get(meal=meal).dessert
-            if id == '':
-                return None
-            if 'cafe' in id:
-                product = Product.objects.get(id=id.split('-')[2])
-            else:
-                product = ProductLp.objects.get(id=id)
-            value = create_value(product, id, is_public)
-        except Exception:
-            value = None
-        return value
-    if category == 'fruit':
-        try:
-            id = menu_all.filter(date=date_str).get(meal=meal).fruit
-            if id == '':
-                return None
-            if 'cafe' in id:
-                product = Product.objects.get(id=id.split('-')[2])
-            else:
-                product = ProductLp.objects.get(id=id)
-            value = create_value(product, id, is_public)
-        except Exception:
-            value = None
-        return value
-    if category == 'drink':
-        try:
-            value: list = []
-            id_set = (menu_all.filter(date=date_str).get(meal=meal).drink).split(',')
-            if len(id_set) == 0:
-                return [None]
-            for id in id_set:
-                if 'cafe' in id:
-                    product = Product.objects.get(id=id.split('-')[2])
-                else:
-                    product = ProductLp.objects.get(id=id)
-                value.append({
-                    'id': id,
-                    'name': product.public_name if is_public else product.name,
-                    'carbohydrate': round(float(0 if product.carbohydrate == None else product.carbohydrate), 1),
-                    'fat': round(float(0 if product.fat == None else product.fat), 1),
-                    'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
-                    'energy': round(float(0 if product.energy == None else product.energy), 1),
-                    'image': product.image,
-                    'description': product.description,
-                    'category': product.category,
-                })
-        except Exception:
-            value = [None]
-        return value
-    if category == 'products':
-        try:
-            value: list = []
-            id_set = (menu_all.filter(date=date_str).get(meal=meal).products).split(',')
-            if len(id_set) == 0:
-                return [None]
-            for id in id_set:
-                if 'cafe' in id:
-                    product = Product.objects.get(id=id.split('-')[2])
-                else:
-                    product = ProductLp.objects.get(id=id)
-                value.append({
-                    'id': id,
-                    'name': product.public_name if is_public else product.name,
-                    'carbohydrate': round(float(0 if product.carbohydrate == None else product.carbohydrate), 1),
-                    'fat': round(float(0 if product.fat == None else product.fat), 1),
-                    'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
-                    'energy': round(float(0 if product.energy == None else product.energy), 1),
-                    'image': product.image,
-                    'description': product.description,
-                    'category': product.category,
-                })
-        except Exception:
-            value = [None]
-        return value
-    if category == 'bouillon':
-        try:
-            id = menu_all.filter(date=date_str).get(meal=meal).bouillon
-            if id == '':
-                return None
-            if 'cafe' in id:
-                product = Product.objects.get(id=id.split('-')[2])
-            else:
-                product = ProductLp.objects.get(id=id)
-            value = create_value(product, id, is_public)
-        except Exception:
-            value = None
-        return value
+            value.append({
+                'id': id,
+                'name': product.public_name if is_public else product.name,
+                'carbohydrate': round(float(0 if product.carbohydrate == None else product.carbohydrate), 1),
+                'fat': round(float(0 if product.fat == None else product.fat), 1),
+                'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
+                'energy': round(float(0 if product.energy == None else product.energy), 1),
+                'image': product.image,
+                'description': product.description,
+                'category': product.category,
+            })
+    except Exception:
+        value = [None]
+    return value
 
 def creates_dict_with_menu_patients(id):
     """Создаем меню на 3 дня для вывода в ЛК врача."""
@@ -1066,16 +938,14 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, 
         menu_all = MenuByDayReadyOrder.objects.filter(user_id=id_fix_user)
     menu_list = []
     menu = {
-        'salad': [check_value_two(menu_all, date_show, meal, "salad", is_public)],
-        'soup': [check_value_two(menu_all, date_show, meal, "soup", is_public)]+ [check_value_two(menu_all,
-                                                                                                  date_show, meal,
-                                                                                                  "bouillon",
-                                                                                                  is_public)],
-        'main': [check_value_two(menu_all, date_show, meal, "main", is_public)],
-        'garnish': [check_value_two(menu_all, date_show, meal, "garnish", is_public)],
-        'porridge': [check_value_two(menu_all, date_show, meal, "porridge", is_public)],
-        'dessert': [check_value_two(menu_all, date_show, meal, "dessert", is_public)],
-        'fruit': [check_value_two(menu_all, date_show, meal, "fruit", is_public)],
+        'salad': check_value_two(menu_all, date_show, meal, "salad", is_public),
+        'soup': check_value_two(menu_all, date_show, meal, "soup", is_public) + \
+                check_value_two(menu_all, date_show, meal, "bouillon", is_public),
+        'main': check_value_two(menu_all, date_show, meal, "main", is_public),
+        'garnish': check_value_two(menu_all, date_show, meal, "garnish", is_public),
+        'porridge': check_value_two(menu_all, date_show, meal, "porridge", is_public),
+        'dessert': check_value_two(menu_all, date_show, meal, "dessert", is_public),
+        'fruit': check_value_two(menu_all, date_show, meal, "fruit", is_public),
         'drink': check_value_two(menu_all, date_show, meal, "drink", is_public),
         'products': check_value_two(menu_all, date_show, meal, "products", is_public),
     }

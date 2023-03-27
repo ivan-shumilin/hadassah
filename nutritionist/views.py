@@ -891,6 +891,7 @@ def printed_form_one(request):
 
     return render(request, 'printed_form1.html', context=data)
 
+
 def printed_form_two_lp(request):
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
@@ -920,20 +921,20 @@ def printed_form_two_lp(request):
                     menu_all = MenuByDay.objects.filter(user_id=user.user_id)
                 else:
                     menu_all = MenuByDayReadyOrder.objects.filter(user_id=user.id)
-                if category == 'products' or category ==  'drink':
-                    pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
-                elif category == 'soup':
-                    pr = [check_value_two(menu_all, str((date_create)), meal, 'soup', is_public)] + [check_value_two(
-                        menu_all, str((date_create)), meal, 'bouillon', is_public)]
+                # if category == 'products' or category ==  'drink':
+                #     pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
+                if category == 'soup':
+                    pr = check_value_two(menu_all, str((date_create)), meal, 'soup', is_public) + \
+                         check_value_two(menu_all, str((date_create)), meal, 'bouillon', is_public)
                     try:
                         pr.remove(None)
                     except:
                         pass
                 else:
-                    pr = [check_value_two(menu_all, str((date_create)), meal, category, is_public)]
+                    pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
                 # if pr != None:
                 #     all_products.append(pr)
-                if pr[0] != None:
+                if pr[0] not in [None, [None]]:
                     for item in pr:
                         item['comment'] = add_features(user.comment,
                              user.is_probe,
@@ -1039,20 +1040,20 @@ def printed_form_two_lp_new(request):
                     menu_all = MenuByDay.objects.filter(user_id=user.user_id)
                 else:
                     menu_all = MenuByDayReadyOrder.objects.filter(user_id=user.id)
-                if category == 'products' or category ==  'drink':
-                    pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
-                elif category == 'soup':
-                    pr = [check_value_two(menu_all, str((date_create)), meal, 'soup', is_public)] + [check_value_two(
-                        menu_all, str((date_create)), meal, 'bouillon', is_public)]
+                # if category == 'products' or category ==  'drink':
+                #     pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
+                if category == 'soup':
+                    pr = check_value_two(menu_all, str((date_create)), meal, 'soup', is_public) + \
+                        check_value_two(menu_all, str((date_create)), meal, 'bouillon', is_public)
                     try:
                         pr.remove(None)
                     except:
                         pass
                 else:
-                    pr = [check_value_two(menu_all, str((date_create)), meal, category, is_public)]
+                    pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
                 # if pr != None:
                 #     all_products.append(pr)
-                if pr[0] != None:
+                if pr[0] not in [None, [None]]:
                     for item in pr:
                         item['comment'] = add_features(user.comment,
                              user.is_probe,
