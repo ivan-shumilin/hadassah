@@ -531,18 +531,20 @@
                             <div class="td center">{{ product.count }}</div>
                             </div>
                         {% endif %}
-                        {% for comment in product.comments %}
-                            {% if comment %}
-                                <div class="tr tr-comment">
-                                    <div class="td"></div>
-                                    <div class="td"></div>
-                                    <div class="td td-comment">
-                                        <div class="comment" data-tooltip="{{ comment.comment }}">{{ comment.comment }}</div>
+                        {% if product.id != '458' %}
+                            {% for comment in product.comments %}
+                                {% if comment %}
+                                    <div class="tr tr-comment">
+                                        <div class="td"></div>
+                                        <div class="td"></div>
+                                        <div class="td td-comment">
+                                            <div class="comment" data-tooltip="{{ comment.comment }}">{{ comment.comment }}</div>
+                                        </div>
+                                        <div class="td center">{{ comment.count }}</div>
                                     </div>
-                                    <div class="td center">{{ comment.count }}</div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
 
