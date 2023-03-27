@@ -1210,6 +1210,7 @@ def printed_form_two_cafe_new(request):
 def tk(request, id, count):
     import operator
     from nutritionist.models import Ingredient
+    count: int = int(count)
 
     token = get_token()
     tk, error = get_tk(token, id)
@@ -1290,8 +1291,8 @@ def tk(request, id, count):
     data = {
         'result': result,
         'error': error,
-        'count': int(count) + 1,
-        'weight': int(count) * int(result['weight'])
+        'count': count + 1,
+        'weight': (count + 1) * int(result['weight'])
     }
     return render(request, 'tk.html', context=data)
 
