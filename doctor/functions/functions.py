@@ -262,6 +262,10 @@ def check_value_two(menu_all, date_str, meal, category, is_public):
                 product = Product.objects.get(id=id.split('-')[2])
             else:
                 product = ProductLp.objects.get(id=id)
+            try:
+                product_id = product.product_id
+            except:
+                product_id = None
             value.append({
                 'id': id,
                 'name': product.public_name if is_public else product.name,
@@ -272,6 +276,7 @@ def check_value_two(menu_all, date_str, meal, category, is_public):
                 'image': product.image,
                 'description': product.description,
                 'category': product.category,
+                'product_id': product_id,
             })
     except Exception:
         value = [None]

@@ -588,11 +588,8 @@
                             {% endif %}
 
 
-                        {% if product.product_id %}
-                            <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
-                        {% else %}
-                            <div class="td">{{ product.name }}</div>
-                        {% endif %}
+                            
+                        <div class="td">{{ product.name }}</div>
                         <div class="td center">{{ product.count }}</div>
                         </div>
                     {% endif %}
