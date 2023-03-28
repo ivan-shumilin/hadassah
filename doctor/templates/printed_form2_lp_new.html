@@ -653,7 +653,15 @@
             {% if product %}
                 <tr class='lp-table'>
                     <td class="bold-for-lp">{{ product.number }}</td>
-                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">
+                        {% for diet in product.diet.diet %}
+                            {% if forloop.last %}
+                                {{ diet.name }}
+                            {% else %}
+                                {{ diet.name }},
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td class="bold-for-lp">{{ product.name }}</td>
                     <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
@@ -697,7 +705,15 @@
             {% if product %}
                 <tr class='lp-table'>
                     <td class='bold-for-lp'>{{ product.number }}</td>
-                    <td class='bold-for-lp'>{{ product.diet }}</td>
+                    <td class="bold-for-lp">
+                        {% for diet in product.diet.diet %}
+                            {% if forloop.last %}
+                                {{ diet.name }}
+                            {% else %}
+                                {{ diet.name }},
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td class='bold-for-lp'>{{ product.name }}</td>
                     <td class='bold-for-lp'>{{ product.count }}</td>
                 </tr>
@@ -741,7 +757,15 @@
             {% if product %}
                 <tr class='lp-table'>
                     <td class="bold-for-lp">{{ product.number }}</td>
-                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">
+                        {% for diet in product.diet.diet %}
+                            {% if forloop.last %}
+                                {{ diet.name }}
+                            {% else %}
+                                {{ diet.name }},
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td class="bold-for-lp">{{ product.name }}</td>
                     <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
@@ -785,7 +809,15 @@
             {% if product %}
                 <tr class='lp-table'>
                     <td class="bold-for-lp">{{ product.number }}</td>
-                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">
+                        {% for diet in product.diet.diet %}
+                            {% if forloop.last %}
+                                {{ diet.name }}
+                            {% else %}
+                                {{ diet.name }},
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td class="bold-for-lp">{{ product.name }}</td>
                     <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
@@ -829,7 +861,15 @@
             {% if product %}
                 <tr class='lp-table'>
                     <td class="bold-for-lp">{{ product.number }}</td>
-                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">
+                        {% for diet in product.diet.diet %}
+                            {% if forloop.last %}
+                                {{ diet.name }}
+                            {% else %}
+                                {{ diet.name }},
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td class="bold-for-lp">{{ product.name }}</td>
                     <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
@@ -874,7 +914,15 @@
             {% if product %}
                 <tr class='lp-table'>
                     <td class="bold-for-lp">{{ product.number }}</td>
-                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">
+                        {% for diet in product.diet.diet %}
+                            {% if forloop.last %}
+                                {{ diet.name }}
+                            {% else %}
+                                {{ diet.name }},
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td class="bold-for-lp">{{ product.name }}</td>
                     <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
@@ -918,7 +966,15 @@
             {% if product %}
                 <tr class='lp-table'>
                     <td class="bold-for-lp">{{ product.number }}</td>
-                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">
+                        {% for diet in product.diet.diet %}
+                            {% if forloop.last %}
+                                {{ diet.name }}
+                            {% else %}
+                                {{ diet.name }},
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td class="bold-for-lp">{{ product.name }}</td>
                     <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
@@ -963,7 +1019,15 @@
             {% if product %}
                 <tr class='lp-table'>
                     <td class="bold-for-lp">{{ product.number }}</td>
-                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">
+                        {% for diet in product.diet.diet %}
+                            {% if forloop.last %}
+                                {{ diet.name }}
+                            {% else %}
+                                {{ diet.name }},
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td class="bold-for-lp">{{ product.name }}</td>
                     <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
@@ -980,7 +1044,15 @@
             {% if product %}
                 <tr class='lp-table'>
                     <td class="bold-for-lp">{{ product.number }}</td>
-                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">
+                        {% for diet in product.diet.diet %}
+                            {% if forloop.last %}
+                                {{ diet.name }}
+                            {% else %}
+                                {{ diet.name }},
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td class="bold-for-lp">{{ product.name }}</td>
                     <td class="bold-for-lp">{{ product.count }}</td>
                 </tr>
