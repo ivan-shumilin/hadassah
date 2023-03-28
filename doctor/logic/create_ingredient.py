@@ -47,7 +47,7 @@ def create_ingredients(by_api=True):
     if by_api:
         nomenclature = get_nomenclature(token)
     else:
-        with open("nomenclature.json", "r") as my_file:
+        with open("doctor/nomenclature.json", "r") as my_file:
             nomenclature = json.load(my_file)
     to_create = []
     Ingredient.objects.all().delete()
