@@ -40,10 +40,15 @@ def get_nomenclature(token: str) -> list:
 
 
 @transaction.atomic
-def create_ingredients():
+def create_ingredients(by_api=True):
     """ Создает Ingredient. """
     token = get_token()
-    nomenclature = get_nomenclature(token)
+
+    if by_api:
+        nomenclature = get_nomenclature(token)
+    else:
+        with open("nomenclature.json", "r") as my_file:
+            nomenclature = json.load(my_file)
     to_create = []
     Ingredient.objects.all().delete()
     for product in nomenclature['products']:
