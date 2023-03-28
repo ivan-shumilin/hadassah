@@ -13,6 +13,28 @@
     <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
 
 </head>
+<style>
+    @media screen {
+        .print {
+            display: none;
+        } 
+    }
+
+    @media print{
+        .print {
+            display: block;
+        }
+        .screen {
+            display: none;
+        }
+    }
+
+    a {
+        color: var(--color-main);
+        text-decoration: none;
+    }
+</style>
+<div class="screen">
     <body>
 {% for meal, catalog in catalogs.items %}
     {% if forloop.first %}
@@ -598,6 +620,51 @@
 
         <script src="{% static 'doctor/js/all.js' %}"></script>
     </body>
+</div>
+<div class='print'>
+    {% load static %}
+<link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
+<h1>Производственный отчет<span class="cafe ex-bold">Линия раздачи</span></h1>
+<p class="bold">{{ formatted_date }}, {{ time_now }}</p>
+<p class="bold underline">{{ catalog.meal }} {% if day %}<span>(Заказ на завтра, {{ date_create }})</span> {% endif %}</p>
+
+{% for name_meal, mael in catalogs.items %}
+    {% load translate %}
+
+    <p class="bold underline">{{ name_meal|translate|capfirst }}</p>
+    {% if mael|length > 0 %}
+        <table id='table2' width="100%">
+            <tr>
+                <td>№</td>
+                <td>Диета</td>
+                <td>Название блюда</td>
+                <td>Кол-во порций, шт.</td>
+
+            </tr>
+            {% for name_category, catalog_in_mael in mael.items %}
+                {% if catalog_in_mael %}
+                    <tr class='light-blue'>
+                        <td colspan="4">{{ name_category|translate|capfirst }}</td> 
+                    </tr>
+                
+                    {% for product in catalog_in_mael %}
+                        {% if product %}
+                            <tr class='lp-table'>
+                                <td>{{ product.number }}</td>
+                                <td>{{ product.type_of_diet }}</td>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.count }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>НЕТ ЗАКАЗАННЫХ БЛЮД</p>
+    {% endif %}
+{% endfor %}
+</div>
 </html>
 
 <script>
