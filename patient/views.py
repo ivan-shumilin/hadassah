@@ -39,8 +39,8 @@ def group_patient_check(user):
     return user.groups.filter(name='patients').exists()
 
 
-# @login_required
-# @user_passes_test(group_patient_check, login_url='login')
+@user_passes_test(group_patient_check, login_url='patient:patient-login')
+@login_required(login_url='login')
 def patient(request, id):
     is_public = True  # используем публичные названия блюд
     is_have = 'ok'
