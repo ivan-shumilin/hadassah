@@ -6398,3 +6398,7 @@ font-weight: 200;
   background: var(--color-main);
   color: #fff !important;
 }
+
+.mr-top-20 {
+  margin-top: 20px;
+}
