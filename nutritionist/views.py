@@ -1219,12 +1219,6 @@ def tk(request, id, count):
 
 
 
-    for item_tk_1 in tk['assemblyCharts']:
-        count_por = item_tk_1['assembledAmount']
-        for sub_item in item_tk_1['items']:
-            sub_item['amountIn'] = sub_item['amountIn'] / count_por
-            sub_item['amountMiddle'] = sub_item['amountMiddle'] / count_por
-            sub_item['amountOut'] = sub_item['amountOut'] / count_por
 
     for item_tk_1 in tk['assemblyCharts']:
         try:
@@ -1243,6 +1237,15 @@ def tk(request, id, count):
                 item_tk_2['name'] = Ingredient.objects.filter(product_id=item_tk_2['productId']).first().name
             except:
                 item_tk_2['name'] = get_name(token, item_tk_2['productId'])
+
+# # Высчитываем вес с учетом того, что некоторые ТК указаны на определенное кол-во порций
+    for item_tk_1 in tk['assemblyCharts']:
+        count_por = item_tk_1['assembledAmount']
+        for sub_item in item_tk_1['items']:
+            sub_item['amountIn'] = sub_item['amountIn'] / count_por
+            sub_item['amountMiddle'] = sub_item['amountMiddle'] / count_por
+            sub_item['amountOut'] = sub_item['amountOut'] / count_por
+
 
 # Проставляем имена для preparedCharts
 #     for item_tk_1 in tk['preparedCharts']:
@@ -1283,9 +1286,9 @@ def tk(request, id, count):
         if item['items']:
             item['weight_tk'] = get_weight_tk(token, item['productId'])
             for sub_item in item['items']:
-                sub_item['amountIn'] = item['amountIn'] * sub_item['amountIn'] / item['weight_tk']
-                sub_item['amountMiddle'] = item['amountMiddle'] * sub_item['amountMiddle'] / item['weight_tk']
-                sub_item['amountOut'] = item['amountOut'] * sub_item['amountOut'] / item['weight_tk']
+                sub_item['amountIn'] = item['amountIn'] * sub_item['amountIn']
+                sub_item['amountMiddle'] = item['amountMiddle'] * sub_item['amountMiddle']
+                sub_item['amountOut'] = item['amountOut'] * sub_item['amountOut']
 
     result['items'].sort(key=operator.itemgetter('sortWeight'))
 
