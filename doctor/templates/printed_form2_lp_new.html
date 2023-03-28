@@ -13,7 +13,29 @@
     <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
 
 </head>
+<style>
+    @media screen {
+        .print {
+            display: none;
+        } 
+    }
+
+    @media print{
+        .print {
+            display: block;
+        }
+        .screen {
+            display: none;
+        }
+    }
+
+    a {
+        color: var(--color-main);
+        text-decoration: none;
+    }
+</style>
 <script src="{% static 'doctor/js/moment.js' %}"></script>
+<div class="screen">
     <body>
 
         <div class="report-header-block">
@@ -605,6 +627,368 @@
 
         <script src="{% static 'doctor/js/all.js' %}"></script>
     </body>
+</div>
+
+<div class='print'>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
+    <h1>Производственный отчет<span class="lp ex-bold">Цех лечебного питания</span></h1>
+    <p class="bold">{{ formatted_date }}, {{ time_now }}</p>
+    <p class="bold underline">{{ meal }} {% if day %}<span>(Заказ на завтра, {{ date_create }})</span> {% endif %}</p>
+    <table id='table2'>
+    <tr>
+        <td>№</td>
+        <td>Диета</td>
+        <td>Название блюда</td>
+        <td>Кол-во порций, шт.</td>
+
+    </tr>
+
+    {% if catalog.porridge %}
+        <tr class='light-blue'>
+            <td colspan="4">Каши</td> 
+        </tr>
+    
+        {% for product in catalog.porridge %}
+            {% if product %}
+                <tr class='lp-table'>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
+                </tr>
+            {% endif %}
+            {% for comment in product.comments %}
+                {% if comment %}
+                    {% if forloop.last %}
+                        <tr class='lp-table light-blue3 solid'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>└ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% else %}
+                        <tr class='lp-table light-blue3'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>├ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    
+    {% if catalog.salad %}
+        <tr class='light-blue'>
+            <td colspan="4">Салаты</td>
+        </tr>
+        
+        {% for product in catalog.salad %}
+            {% if product %}
+                <tr class='lp-table'>
+                    <td class='bold-for-lp'>{{ product.number }}</td>
+                    <td class='bold-for-lp'>{{ product.diet }}</td>
+                    <td class='bold-for-lp'>{{ product.name }}</td>
+                    <td class='bold-for-lp'>{{ product.count }}</td>
+                </tr>
+            {% endif %}
+            {% for comment in product.comments %}
+                {% if comment %}
+                    {% if forloop.last %}
+                        <tr class='lp-table light-blue3 solid'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>└ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% else %}
+                        <tr class='lp-table light-blue3'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>├ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% endif %}
+            {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.soup %}
+        <tr class='light-blue'>
+            <td colspan="4">Первые блюда</td>
+        </tr>
+        
+        {% for product in catalog.soup %}
+            {% if product %}
+                <tr class='lp-table'>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
+                </tr>
+            {% endif %}
+            {% for comment in product.comments %}
+                {% if comment %}
+                    {% if forloop.last %}
+                        <tr class='lp-table light-blue3 solid'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>└ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% else %}
+                        <tr class='lp-table light-blue3'>
+                            <td></td>
+                            <td></td>
+                            {% if comment.comment == "Без комментария." %} 
+                                <td>├ <span>{{ comment.comment }}</span></td>
+                            {% else %}
+                                <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                            {% endif %}
+                            <td>{{ comment.count }}</td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.main %}
+        <tr class='light-blue'>
+            <td colspan="4">Вторые блюда</td>
+        </tr>
+        
+        {% for product in catalog.main %}
+            {% if product %}
+                <tr class='lp-table'>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
+                </tr>
+            {% endif %}
+            {% for comment in product.comments %}
+            {% if comment %}
+            {% if forloop.last %}
+                <tr class='lp-table light-blue3 solid'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>└ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% else %}
+                <tr class='lp-table light-blue3'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>├ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.garnish %}
+        <tr class='light-blue'>
+            <td colspan="4">Гарниры</td> 
+        </tr>
+        
+        {% for product in catalog.garnish %}
+            {% if product %}
+                <tr class='lp-table'>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
+                </tr>
+            {% endif %}
+            {% for comment in product.comments %}
+            {% if comment %}
+            {% if forloop.last %}
+                <tr class='lp-table light-blue3 solid'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>└ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% else %}
+                <tr class='lp-table light-blue3'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>├ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+
+    {% if catalog.dessert %}
+        <tr class='light-blue'>
+            <td colspan="4">Десерты</td>
+        </tr>
+        
+        {% for product in catalog.dessert %}
+            {% if product %}
+                <tr class='lp-table'>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
+                </tr>
+            {% endif %}
+            {% for comment in product.comments %}
+            {% if comment %}
+            {% if forloop.last %}
+                <tr class='lp-table light-blue3 solid'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>└ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% else %}
+                <tr class='lp-table light-blue3'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>├ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.fruit %}
+        <tr class='light-blue'>
+            <td colspan="4">Фрукты</td>  
+        </tr>
+        
+        {% for product in catalog.fruit %}
+            {% if product %}
+                <tr class='lp-table'>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
+                </tr>
+            {% endif %}
+            {% for comment in product.comments %}
+            {% if comment %}
+            {% if forloop.last %}
+                <tr class='lp-table light-blue3 solid'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>└ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>└ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% else %}
+                <tr class='lp-table light-blue3'>
+                    <td></td>
+                    <td></td>
+                    {% if comment.comment == "Без комментария." %} 
+                        <td>├ <span>{{ comment.comment }}</span></td>
+                    {% else %}
+                        <td>├ <span style="background: #edf60d;">{{ comment.comment }}</span></td>
+                    {% endif %}
+                    <td>{{ comment.count }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.drink %}
+        <tr class='light-blue'>
+            <td colspan="4">Напитки</td>
+
+        </tr>
+        
+        {% for product in catalog.drink %}
+            {% if product %}
+                <tr class='lp-table'>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if catalog.products %}
+        <tr class='light-blue'>
+            <td colspan="4">Товары</td>
+        </tr>
+    
+        {% for product in catalog.products %}
+            {% if product %}
+                <tr class='lp-table'>
+                    <td class="bold-for-lp">{{ product.number }}</td>
+                    <td class="bold-for-lp">{{ product.diet }}</td>
+                    <td class="bold-for-lp">{{ product.name }}</td>
+                    <td class="bold-for-lp">{{ product.count }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    </table>
+</div>
 </html>
 
 <script>

@@ -14,26 +14,25 @@
 
     </head>
     <style>
-    @media screen {
-        .print {
-            display: none;
-        } 
-    }
-
-    @media print{
-        .print {
-            display: block;
+        @media screen {
+            .print {
+                display: none;
+            } 
         }
-        .screen {
-            display: none;
+
+        @media print{
+            .print {
+                display: block;
+            }
+            .screen {
+                display: none;
+            }
         }
-    }
 
-    a {
-        color: var(--color-main);
-        text-decoration: none;
-    }
-
+        a {
+            color: var(--color-main);
+            text-decoration: none;
+        }
     </style>
 <div class="screen">
     <body>
