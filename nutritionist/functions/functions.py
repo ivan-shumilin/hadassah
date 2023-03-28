@@ -30,7 +30,7 @@ def complete_catalog(category_dict):
         for product in products:
             number += 1
             product['number'] = number
-            product['type_of_diet'] = ', '.join(product['type_of_diet'])
+            product['type_of_diet_for_print'] = ', '.join(product['type_of_diet'])
     return category_dict
 
 def checking_is_ready_meal(meal):
