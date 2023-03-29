@@ -1171,20 +1171,9 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
                     if (obj[day][meal][key] != null) {
                         product = obj[day][meal][key]
                         isNotProducts = false
-                        if ((key == 'drink') && (product[0] != null)) {
+                        if ((product[0] != null)) {
                             for (var i in product) {
                                 result += '<div class="item">'
-                                result += '<div class="img">'
-                                result +='<img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt="">'
-                                result +='</div>'
-                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt=""></div>'
-                                result += '<div id="name_today" class="name">' + product[i].name + '</div>'
-                                result += '<div class="value">' + 'Б - '+ formattingFFC(product[i].fiber) +  ', Ж -  '+ formattingFFC(product[i].fat) +  ', У -  '+ formattingFFC(product[i].carbohydrate) + ', Ккал - ' + formattingFFC(product[i].energy) +  '</div>'
-                                result += '<div class="text">' + product[i].description + '</div>' 
-                                result += '</div></div>'}
-                        } else {
-                            result += '<div class="item">'
-                            if (product.image == null) {
                                 result += '<div class="img">'
                                 if (key == 'main') {
                                     result +='<img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt="">'
@@ -1231,14 +1220,11 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
                                     result +='</div>'
                                     result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt=""></div>'
                                 }
-                            } else {
-                                result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.ru/imagecache/product/'+ product.image +'" alt=""></div>'
-                                result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.ru/imagecache/product/'+ product.image +'" alt=""></div>'
-                            }
-                            result += '<div id="name_today" class="name">' + product.name + '</div>'
-                            result += '<div class="value">' + 'Б - '+ formattingFFC(product.fiber) +  ', Ж -  '+ formattingFFC(product.fat) +  ', У -  '+ formattingFFC(product.carbohydrate) + ', Ккал - ' + formattingFFC(product.energy) +  '</div>'
-                            result += '<div class="text">' + product.description + '</div>' 
-                            result += '</div></div>'
+                                
+                                result += '<div id="name_today" class="name">' + product[i].name + '</div>'
+                                result += '<div class="value">' + 'Б - '+ formattingFFC(product[i].fiber) +  ', Ж -  '+ formattingFFC(product[i].fat) +  ', У -  '+ formattingFFC(product[i].carbohydrate) + ', Ккал - ' + formattingFFC(product[i].energy) +  '</div>'
+                                result += '<div class="text">' + product[i].description + '</div>' 
+                                result += '</div></div>'}
                         }
                     }
                 }
