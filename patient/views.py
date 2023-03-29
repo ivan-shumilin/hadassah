@@ -36,7 +36,7 @@ logging.basicConfig(
 
 
 def group_patient_check(user):
-    return user.groups.filter(name='patients').exists()
+    return user.groups.filter(name='doctors').exists()
 
 
 @user_passes_test(group_patient_check, login_url='patient:patient-login')
