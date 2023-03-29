@@ -80,6 +80,35 @@ def get_name(token, product_id):
             name = None
     return name
 
+def get_measure_unit(token, product_id):
+    """ Получаем элемент номенклатуры. """
+    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list?includeDeleted=false'
+
+    headers = {
+        'Cookie': f'key={token}'
+    }
+    params = {'ids': product_id}
+
+    CODE_MAIN_UNIT = {
+        None: 'кг',
+        '6040d92d-e286-f4f9-a613-ed0e6fd241e1': 'кг',
+        'a9e62976-72ec-fb2a-016a-444bbd520b9e': 'кг',
+        'a9e62976-72ec-fb2a-016a-444bbd520ba5': 'л',
+        'a9e62976-72ec-fb2a-016a-444bbd520bca': 'шт'
+    }
+
+
+    response = requests.get(url=url, headers=headers, params=params)
+    if response.status_code != 200:
+        return '', 'Server error'
+    else:
+        tk = json.loads(response.text)
+        try:
+            measure_unit = tk[0]['mainUnit']
+        except:
+            measure_unit = None
+    return CODE_MAIN_UNIT.get(measure_unit, 'кг')
+
 def get_allergens(token, product_id):
     """ Получаем аллергены продукта. """
 

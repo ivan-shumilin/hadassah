@@ -81,7 +81,7 @@
                                 {% if ing1.items %}
                                     <div class="tr parent">
                                         <div class="td name">{{ ing1.name }}</div>
-                                        <div class="td">кг</div>
+                                        <div class="td">{{ ing1.measure_unit }}</div>
                                         <div class="td weighting">{{ ing1.amountIn }}</div>
                                         <div class="td weighting">{{ ing1.amountIn }}</div>
                                         <div class="td weighting">{{ ing1.amountMiddle }}</div>
@@ -95,7 +95,7 @@
                                                     {% for ing2 in ing1.items %}
                                                         <div class="tr">
                                                             <div class="td name">{{ ing2.name }}</div>
-                                                            <div class="td">кг</div>
+                                                            <div class="td">{{ ing2.measure_unit }}</div>
                                                             <div class="td weighting">{{ ing2.amountIn }}</div>
                                                             <div class="td weighting">{{ ing2.amountIn }}</div>
                                                             <div class="td weighting">{{ ing2.amountMiddle }}</div>
@@ -112,7 +112,7 @@
                                 {% else %}
                                     <div class="tr">
                                         <div class="td name">{{ ing1.name }}</div>
-                                        <div class="td">кг</div>
+                                        <div class="td">{{ ing1.measure_unit }}</div>
                                         <div class="td weighting">{{ ing1.amountIn }}</div>
                                         <div class="td weighting">{{ ing1.amountIn }}</div>
                                         <div class="td weighting">{{ ing1.amountMiddle }}</div>

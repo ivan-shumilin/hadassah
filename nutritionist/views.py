@@ -18,7 +18,7 @@ from django.forms import CheckboxInput, Textarea
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
 
-from doctor.functions.download import get_token, get_tk, get_name, get_allergens, get_weight_tk
+from doctor.functions.download import get_token, get_tk, get_name, get_allergens, get_weight_tk, get_measure_unit
 from .functions.report import create_external_report, create_external_report_detailing, get_report
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
     UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage
@@ -1232,11 +1232,19 @@ def tk(request, id, count):
         except:
             item_tk_1['weight'] = 0
 
+        item_tk_1['measure_unit'] = get_measure_unit(token, item_tk_1['assembledProductId'])
+
         for item_tk_2 in item_tk_1['items']:
             try:
                 item_tk_2['name'] = Ingredient.objects.filter(product_id=item_tk_2['productId']).first().name
             except:
                 item_tk_2['name'] = get_name(token, item_tk_2['productId'])
+
+            # try:
+            #     item_tk_2['measure_unit'] = \
+            #         Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().measureUnit
+            # except:
+            item_tk_2['measure_unit'] = get_measure_unit(token, item_tk_2['productId'])
 
 # # Высчитываем вес с учетом того, что некоторые ТК указаны на определенное кол-во порций
     for item_tk_1 in tk['assemblyCharts']:
