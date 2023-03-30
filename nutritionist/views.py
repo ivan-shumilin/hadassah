@@ -661,6 +661,8 @@ def user_login(request):
                 return HttpResponseRedirect(reverse('doctor'))
             if user.groups.filter(name='patients').exists():
                 return HttpResponseRedirect(reverse('patient'))
+            if user.groups.filter(name='kitchen').exists():
+                return HttpResponseRedirect(reverse('printed_form_one_new'))
         else:
             errors = 'Пользователь с таким именем или паролем не существует'
     else:
