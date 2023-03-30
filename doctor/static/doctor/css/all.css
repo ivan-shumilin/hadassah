@@ -6391,7 +6391,7 @@ font-weight: 200;
 
 .div-order {
   margin-top: 20px !important;
-
+  margin-right: 10px; 
 }
 
 .switch a.active {
@@ -6401,4 +6401,21 @@ font-weight: 200;
 
 .mr-top-20 {
   margin-top: 20px;
+}
+
+.container-flex {
+  display: flex;
+  margin-left: 24px;
+  margin-right: 24px;
+  padding-left: 16px;
+
+
+}
+
+
+@media screen and (max-width:744px) {
+  .container-flex {
+    flex-direction: column;
+    padding-left: 0px;
+  }
 }

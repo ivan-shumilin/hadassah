@@ -33,6 +33,10 @@
             color: var(--color-main);
             text-decoration: none;
         }
+        a:hover {
+            color: var(--color-main);
+            text-decoration: none;
+        }
     </style>
 <div class="screen">
     <body>
@@ -52,23 +56,21 @@
                     <div class="time">{{ time_now }}</div>
                 </div>
             </div>
+
+        <div class="container-flex">
+            <div class="div-order">
+                <div class="order">
+                    <a href="{% url 'printed_form_two_lp_new' %}">Заявка для цеха ЛП</a>
+                </div>
+            </div>
+            <div class="div-order">
+                <div class="order">
+                    <a href="{% url 'printed_form_cafe_new' %}">Заявка по блюдам раздачи</a>
+                </div>
+            </div>
+</div>
         </div>
 
-        <div class="container">
-            <div class="row">
-                    <div class="div-order col">
-                        <div class="order">
-                            <a href="{% url 'printed_form_two_lp_new' %}">Заявка для цеха ЛП</a>
-                        </div>
-                    </div>
-                    <div class="div-order col">
-                        <div class="order">
-                            <a href="{% url 'printed_form_cafe_new' %}">Заявка по блюдам раздачи</a>
-                        </div>
-                    </div>
-        
-            </div>
-        </div>
 
 
 
