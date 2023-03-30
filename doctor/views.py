@@ -443,7 +443,7 @@ class VerifyPasswordAPIView(APIView):
 
 
 class GetPatientMenuAPIView(APIView):
-    """Возвращает выбранные блюда пациента. ЛК врача, картачка пациента."""
+    """Возвращает выбранные блюда пациента. ЛК врача, карточка пациента."""
     def post(self, request):
         data = request.data
         response = creates_dict_with_menu_patients(data['id_user'])

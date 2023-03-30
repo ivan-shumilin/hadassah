@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'nutritionist',
     'doctor',
     'patient',
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
     # 'django_celery_beat',
     'widget_tweaks',
     'django_extensions',
+    'pwa',
 ]
 
 MIDDLEWARE = [
@@ -185,3 +187,52 @@ EMAIL_HOST_USER = 'info@petrushkagroup.ru'
 EMAIL_HOST_PASSWORD = 'sswmlhpfnbooozkb'
 
 AUTH_USER_MODEL = 'nutritionist.CustomUser'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'doctor/static'),
+]
+
+# PWA_APP_DEBUG_MODE = True
+
+PWA_APP_NAME = 'ЛК врача'
+PWA_APP_DESCRIPTION = "Личный кабинет врача"
+PWA_APP_THEME_COLOR = '#000000'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/login'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/login'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': 'static/images/icons/icon-192x192.png',
+        'sizes': '192x192'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': 'static/images/icons/icon-192x192.png',
+        'sizes': '192x192'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': 'static/images/icons/icon.png',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'en-US'
+
+# LOGGING = {
+#     'version': 1,
+#     'handlers': {
+#         'console': {'class': 'logging.StreamHandler'}
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG'
+#         }
+#     }
+# }

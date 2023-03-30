@@ -137,7 +137,7 @@ def load_product():
 
 
 def redirect(request):
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('login'))
 
 def get_modelformset():
     return modelformset_factory(Product,
