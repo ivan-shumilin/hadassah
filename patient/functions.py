@@ -94,10 +94,10 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
     menu = {}
 
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-        if check_is_comment(user):
-            products_cafe: tuple = [], [], [], []
-        else:
-            products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
+        # if check_is_comment(user):
+        #     products_cafe: tuple = [], [], [], []
+        # else:
+        products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
         products_lp = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
                                             Q(timetablelp__type_of_diet=translated_diet) &
                                             Q(timetablelp__meals=meal))
