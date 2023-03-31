@@ -1,0 +1,15 @@
+{
+  "name": "ЛК пациента",
+  "short_name": "ЛК пациента",
+  "description": "Личный кабинет пациента.",
+  "start_url": "/login",
+  "display": "fullscreen",
+  "scope": "/login",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "status_bar": "default",
+  "icons": [{"src": "./images/icons/icon-192x192.png", "sizes": "192x192"}],
+  "dir": "ltr",
+  "lang": "en-US"
+}

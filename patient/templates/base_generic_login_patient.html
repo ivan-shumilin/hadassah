@@ -2,34 +2,34 @@
 <html lang="en">
 {% load static %}
 <head>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <link rel="manifest" href="{% static 'patient/manifest.json' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
+    <!-- Add additional CSS in static file -->
 
-    <link rel="manifest" href="{% static 'manifest.json' %}">
     <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
     <title>{% block title %}hadassah{% endblock %}</title>
 
 
 </head>
-<script>
-   if ('serviceWorker' in navigator) {
-       navigator.serviceWorker.register('{% url "sw.js" %}', { scope: '/' }).then(function(reg) {
-           // registration worked
-           console.log('Registration succeeded. Scope is ' + reg.scope);
-       }).catch(function(error) {
-           // registration failed
-           console.log('Registration failed with ' + error);
-       });
-   }
-</script>
-
+    <script>
+       if ('serviceWorker' in navigator) {
+           navigator.serviceWorker.register('{% url "sw.js" %}', { scope: '/' }).then(function(reg) {
+               // registration worked
+               console.log('Registration succeeded. Scope is ' + reg.scope);
+           }).catch(function(error) {
+               // registration failed
+               console.log('Registration failed with ' + error);
+           });
+       }
+   </script>
 <body>
     <div class="auth-layout">
         <div class="left">

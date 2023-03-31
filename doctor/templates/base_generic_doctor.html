@@ -1,25 +1,35 @@
 <!DOCTYPE html>
 <html lang="ru">
+{% load static %}
 
-{% load pwa %}
 <head>
-    {% progressive_web_app_meta %}
-
-
     <meta charset="utf-8">
     <title>{% block title %}Личный кабинет врача{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="manifest" href="{% static 'manifest.json' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Add additional CSS in static file -->
-    {% load static %}
+
     <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
     <style>
         .table input[type="radio"] {
             display: none;
         }
     </style>
+    <script>
+       if ('serviceWorker' in navigator) {
+           navigator.serviceWorker.register('{% url "sw.js" %}', { scope: '/' }).then(function(reg) {
+               // registration worked
+               console.log('Registration succeeded. Scope is ' + reg.scope);
+           }).catch(function(error) {
+               // registration failed
+               console.log('Registration failed with ' + error);
+           });
+       }
+   </script>
 
 
 </head>

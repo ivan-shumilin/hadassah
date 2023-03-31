@@ -4,6 +4,10 @@ app_name = 'patient'
 
 urlpatterns = [
     path('', views.user_login, name='patient-login'),
+    path('sw.js',
+         views.ServiceWorkerView.as_view(),
+         name=views.ServiceWorkerView.name,
+         ),
     path('<id>', views.patient, name='patient'),
     path('history/<id>', views.patient_history, name='patient_history'),
     path('history/test/test', views.patient_history_test, name='patient_history_test'),

@@ -39,6 +39,18 @@ from .functions.download import get_token, download
 from .logic.create_ingredient import create_ingredients
 
 
+from django.shortcuts import render
+from django.views.generic import TemplateView
+
+
+
+
+class ServiceWorkerView(TemplateView):
+    template_name = 'sw.js'
+    content_type = 'application/javascript'
+    name = 'sw.js'
+
+
 @transaction.atomic
 def load_nomenclature():
     with open("nomenclature.json", "r") as my_file:

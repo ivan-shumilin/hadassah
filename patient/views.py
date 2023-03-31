@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput
+from django.views.generic import TemplateView
+
 from doctor.forms import PatientRegistrationForm, DietChoiceForm
 from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, CommentProduct, BotChatId
 from nutritionist.forms import TimetableForm
@@ -33,6 +35,12 @@ logging.basicConfig(
     format="%(message)s",
     datefmt='%Y-%m-%d %H:%M:%S',
 )
+
+class ServiceWorkerView(TemplateView):
+    template_name = 'sw.js'
+    content_type = 'application/javascript'
+    name = 'sw.js'
+
 
 
 def group_patient_check(user):
@@ -272,7 +280,7 @@ def user_login(request):
                 return HttpResponseRedirect(reverse('patient:patient', kwargs={'id': id}))
         except:
             errors = 'Пользователя с такими данными не существует'
-    return render(request, 'nutritionist/registration/login_patient.html', {'errors': errors})
+    return render(request, 'login_patient.html', {'errors': errors})
 
 def formating_name_for_login_patient(name, lastname, patronymic):
     return f'{lastname.strip().capitalize()} {name.strip().capitalize()} {patronymic.strip().capitalize()}'
