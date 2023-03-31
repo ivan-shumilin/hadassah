@@ -158,7 +158,7 @@ patronymicInput.addEventListener("input", function() {
 })
 
 const loginDataValidation = async function(birthdate, name, lastname, patronymic) {
-    let url = 'patient/api/v1/login/datavalidation'
+    let url = '/patient/api/v1/login/datavalidation'
     let body = {'birthdate': birthdate,
                 'name': name,
                 'lastname': lastname,
