@@ -36,10 +36,6 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',
 )
 
-class ServiceWorkerView(TemplateView):
-    template_name = 'sw.js'
-    content_type = 'application/javascript'
-    name = 'sw.js'
 
 
 

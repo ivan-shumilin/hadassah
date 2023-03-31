@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import CheckboxInput, Textarea
 from django.core.mail import send_mail
 from django.db.models.functions import Lower
+from django.views.generic import TemplateView
 
 from doctor.functions.download import get_token, get_tk, get_name, get_allergens, get_weight_tk, get_measure_unit
 from .functions.report import create_external_report, create_external_report_detailing, get_report
@@ -47,6 +48,12 @@ from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from nutritionist.functions.functions import create_products_list_category, complete_catalog, \
     checking_is_ready_meal, create_category_dict, create_stickers_pdf, add_try, cleaning_null
+
+
+class ServiceWorkerView(TemplateView):
+    template_name = 'sw.js'
+    content_type = 'application/javascript'
+    name = 'sw.js'
 
 
 def group_nutritionists_check(user):
