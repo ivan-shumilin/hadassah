@@ -110,106 +110,110 @@
             </div>
 
             <div class="eat-history-block">
-            {% for category, products in products_all.items %}
+            {% for category, products_list in products_all.items %}
                 <div class="category">
                     <div class="name">{{ category|capfirst }}</div>
                 </div>
 
                 <div class="eat-history-grid" data-eat-history-grid>
-                    {% for product in products %}
-                        {% if product %}
-                        <div id="{{ product.id }}" class="item" data-item>
-                                <div class="info">
-                                    <div class="name">{{ product.name }}</div>
-                                    <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
-                                </div>
-                                <div class="img">
-                                    {% if product.image %}
+                    {% for products in products_list %}
+                        {% for product in products %}
+                            {% if product %}
+                                {% if product.id != '458' %}
+                                <div id="{{ product.id }}" class="item" data-item>
+                                        <div class="info">
+                                            <div class="name">{{ product.name }}</div>
+                                            <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
+                                        </div>
                                         <div class="img">
-                                            <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
-                                        </div>
-                                    {% else %}
-                                        {% if product.category == 'основной' %}
-                                            <div class="img">
-                                                <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
-                                            </div>
-                                        {% endif %}
-                                        {% if product.category == 'салат' %}
-                                            <div class="img">
-                                                <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
-                                            </div>
-                                        {% endif %}
-                                        {% if product.category == 'суп' %}
-                                            <div class="img">
-                                                <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
-                                            </div>
-                                        {% endif %}
-                                        {% if product.category == 'каша' %}
-                                            <div class="img">
-                                                <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
-                                            </div>
-                                        {% endif %}
-                                        {% if product.category == 'фрукты' %}
-                                            <div class="img">
-                                                <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
-                                            </div>
-                                        {% endif %}
-                                        {% if product.category == 'десерт' %}
-                                            <div class="img">
-                                                <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt="">
-                                            </div>
-                                        {% endif %}
-                                        {% if product.category == 'напиток' %}
-                                            <div class="img">
-                                                <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
-                                            </div>
+                                            {% if product.image %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                {% if product.category == 'основной' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'салат' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'суп' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'каша' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'фрукты' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'десерт' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'напиток' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
+                                                    </div>
+                                                    {% endif %}
+                                                {% if product.category == 'гарнир' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
                                             {% endif %}
-                                        {% if product.category == 'гарнир' %}
-                                            <div class="img">
-                                                <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
+                                        </div>
+                                        <div class="review">
+                                            <form id="form-id-{{ product.id }}" method="POST" class="review-form">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="rating" value="0">
+                                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                                <input type="hidden" name="product_name" value="{{ product.name }}">
+                                                <input type="hidden" name="date" value="{{ date_get }}">
+
+                                                <div class="form-group item-rating">
+                                                    <div class="star" data-value="1"></div>
+                                                    <div class="star" data-value="2"></div>
+                                                    <div class="star" data-value="3"></div>
+                                                    <div class="star" data-value="4"></div>
+                                                    <div class="star" data-value="5"></div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
+                                                </div>
+                                                <div class="form-group item-actions">
+                                                    <button onclick="submitCommentForm('form-id-{{ product.id }}')" type="button">Отправить оценку</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    <div class="only-gt-768">
+                                            <div class="toggle">
+                                                <a href="#" data-toggle>Оценить</a>
                                             </div>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                                <div class="review">
-                                    <form id="form-id-{{ product.id }}" method="POST" class="review-form">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="rating" value="0">
-                                        <input type="hidden" name="product_id" value="{{ product.id }}">
-                                        <input type="hidden" name="product_name" value="{{ product.name }}">
-                                        <input type="hidden" name="date" value="{{ date_get }}">
-
-                                        <div class="form-group item-rating">
-                                            <div class="star" data-value="1"></div>
-                                            <div class="star" data-value="2"></div>
-                                            <div class="star" data-value="3"></div>
-                                            <div class="star" data-value="4"></div>
-                                            <div class="star" data-value="5"></div>
                                         </div>
-
-                                        <div class="form-group">
-                                            <textarea name="text" placeholder="Введите любой комментарий к блюду"></textarea>
+                                        <div class="only-lt-768">
+                                            <div class="toggle">
+                                                <a href="#" data-bottom-sheet-link="{{ product.name }}">Оценить</a>
+                                            </div>
                                         </div>
-                                        <div class="form-group item-actions">
-                                            <button onclick="submitCommentForm('form-id-{{ product.id }}')" type="button">Отправить оценку</button>
+                                        <div class="reviewed">
+                                            <span>Уже оценили</span>
                                         </div>
-                                    </form>
-                                </div>
-                              <div class="only-gt-768">
-                                    <div class="toggle">
-                                        <a href="#" data-toggle>Оценить</a>
                                     </div>
-                                </div>
-                                <div class="only-lt-768">
-                                    <div class="toggle">
-                                        <a href="#" data-bottom-sheet-link="{{ product.name }}">Оценить</a>
-                                    </div>
-                                </div>
-                                <div class="reviewed">
-                                    <span>Уже оценили</span>
-                                </div>
-                            </div>
-                        {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
                     {% endfor %}
                 </div>
             {% endfor %}
@@ -236,7 +240,7 @@
                         <div class="img">
                             {% if product.image %}
                                 <div class="img">
-                                    <img src="https://hadassah.petrushkagroup.com/imagecache/catalog-product/{{ product.image }}" alt="">
+                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
                                 </div>
                             {% else %}
                                 {% if product.category == 'основной' %}

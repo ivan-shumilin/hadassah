@@ -189,10 +189,10 @@ def patient_history(request, id):
     # menu = creates_dict_with_menu_patients_on_day(id, '2022-09-23')
 
     products_all = {
-        'завтрак': [item for item in menu['breakfast'].values()],
-        'обед': [item for item in menu['afternoon'].values()],
-        'полдник': [item for item in menu['lunch'].values()],
-        'ужин': [item for item in menu['dinner'].values()],
+        'завтрак': [item for item in menu['breakfast'].values() if item not in [[None], None]],
+        'обед': [item for item in menu['lunch'].values() if item not in [[None], None]],
+        'полдник': [item for item in menu['afternoon'].values() if item not in [[None], None]],
+        'ужин': [item for item in menu['dinner'].values() if item not in [[None], None]],
     }
 
     data = {'user': user,
