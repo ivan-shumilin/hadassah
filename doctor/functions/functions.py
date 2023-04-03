@@ -333,7 +333,7 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
             'soup': check_value_two(menu_all, date_show, meal, "soup", is_public=True),
             'dessert': check_value_two(menu_all, date_show, meal, "dessert", is_public=True),
             'fruit': check_value_two(menu_all, date_show, meal, "fruit", is_public=True),
-            'drink': None if len(drink) == 0 else drink[0],
+            'drink': check_value_two(menu_all, date_show, meal, "drink", is_public=True),
             'salad': check_value_two(menu_all, date_show, meal, "salad", is_public=True),
         }
     return menu
