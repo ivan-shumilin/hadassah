@@ -40,7 +40,10 @@ logging.basicConfig(
 
 
 def group_patient_check(user):
-    return user.status == 'patient'
+    try:
+        return user.status == 'patient'
+    except:
+        return False
 
 
 @user_passes_test(group_patient_check, login_url='patient:patient-login')
@@ -204,6 +207,12 @@ def patient_history(request, id):
             'products_marked': products_marked
             }
     return render(request, 'patient_history.html', context=data)
+
+
+def patient_logout(request):
+    from django.contrib.auth import logout
+    logout(request)
+    return HttpResponseRedirect(reverse('patient:patient-login'))
 
 
 def patient_history_test(request):

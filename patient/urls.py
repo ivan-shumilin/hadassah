@@ -8,6 +8,7 @@ urlpatterns = [
     path('history/test/test', views.patient_history_test, name='patient_history_test'),
     path('<id>', views.patient, name='patient'),
     path('api/v1/submitselection', views.SubmitPatientSelectionAPIView.as_view()),
-    path('api/v1/login/datavalidation', views.loginDataValidationAPIView.as_view())
+    path('api/v1/login/datavalidation', views.loginDataValidationAPIView.as_view()),
+    path('logout/', views.patient_logout, name='patient_logout'),
     ]
 

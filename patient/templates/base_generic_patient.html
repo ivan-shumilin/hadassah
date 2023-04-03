@@ -71,6 +71,9 @@
                                             <span>Диета</span>
                                             {{ user.type_of_diet }}
                                         </div>
+                                        <div class="links">
+                                            <a data-modal-link="logout">Выйти</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -142,6 +145,16 @@
             <div class="confirm-block">
                 <div class="buttons">
                     <a  class="button" data-modal-close>OK</a>
+                </div>
+            </div>
+        </div>
+
+        <div data-modal="logout" data-modal-width="400">
+            <div class="title align-center">Вы уверены, что хотите выйти?</div>
+            <div class="confirm-block">
+                <div class="buttons">
+                    <a class="button" href="{% url 'patient:patient_logout' %}">Выйти</a>
+                    <a class="button white" data-modal-close>Отменить</a>
                 </div>
             </div>
         </div>
