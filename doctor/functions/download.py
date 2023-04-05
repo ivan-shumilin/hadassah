@@ -149,3 +149,22 @@ def get_weight_tk(token, product_id):
     else:
         tk = json.loads(response.text)
     return tk['assemblyCharts'][0]['assembledAmount']
+
+
+def get_ingredients(token, product_id, name=None):
+    """ Получение списка ингрединетов. """
+
+    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/assemblyCharts/getAssembled'
+
+    headers = {
+        'Cookie': f'key={token}'
+    }
+    params = {'date': str(datetime.date.today()),
+              'productId': product_id, }
+
+    response = requests.get(url=url, headers=headers, params=params)
+    if response.status_code != 200:
+        return 1
+    else:
+        tk = json.loads(response.text)
+    return tk['assemblyCharts'][0]['items']
