@@ -3,24 +3,24 @@
 <div class="container">
     <div class="row" style="margin-bottom: 50px">
         <div class="col-8" style="margin-top: 12px;">
-    <div class="row" style="margin-bottom: 50px">
-        <div class="col" style="margin-top: 1px">
-        <button type="button" onclick="location.href='{% url 'salad' page='25' %}'" class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Салаты</button>
-    </div>
-        <div class="col" style="">
-        <button type="submit" onclick="location.href='{% url 'soup' page='25' %}'" class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Cупы</button>
-    </div>
-        <div class="col" style="">
-        <button type="submit" onclick="location.href='{% url 'main_dishes' page='25' %}'" class="btn btn-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Горячие блюда</button>
-    </div>
-        <div class="col"  style="">
-        <button type="submit" onclick="location.href='{% url 'side_dishes' page='25' %}'"  class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Гарниры</button>
-    </div>
-    <div class="col">
-        <button type="submit" onclick="location.href='{% url 'breakfast' page=25 %}'"
-                class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Завтраки</button>
-    </div>
-    </div>
+            <div class="row" style="margin-bottom: 50px">
+                <div class="col" style="margin-top: 1px">
+                    <button type="button" onclick="location.href='{% url 'salad' page=25 %}'" class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Салаты</button>
+                </div>
+                <div class="col">
+                    <button type="submit" onclick="location.href='{% url 'soup' page=25 %}'" class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Cупы</button>
+                </div>
+                <div class="col">
+                    <button type="submit" onclick="location.href='{% url 'breakfast' page=25 %}'" class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Горячие блюда</button>
+                </div>
+                <div class="col">
+                    <button type="submit" onclick="location.href='{% url 'side_dishes' page=25 %}'" class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Гарниры</button>
+                </div>
+                <div class="col">
+                    <button type="submit" onclick="location.href='{% url 'breakfast' page=25 %}'"
+                            class="btn btn-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Завтраки</button>
+                </div>
+            </div>
     <div class="row" style="margin-bottom: 50px">
     <nav aria-label="Page navigation example">
         <ul class="pagination">
@@ -29,15 +29,15 @@
         {% else %}
             <li class="page-item">
         {% endif %}
-                <a class="page-link" href="{% url 'main_dishes' page=page_prev %}" aria-label="Previous">
+                <a class="page-link" href="{% url 'breakfast' page=page_prev %}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
         {% for key, value in page_dict.items %}
             {% if page == value %}
-                <li class="page-item active"><a class="page-link" href="{% url 'main_dishes' page=value %}">{{ key }}</a></li>
+                <li class="page-item active"><a class="page-link" href="{% url 'breakfast' page=value %}">{{ key }}</a></li>
             {% else %}
-                <li class="page-item"><a class="page-link" href="{% url 'main_dishes' page=value %}">{{ key }}</a></li>
+                <li class="page-item"><a class="page-link" href="{% url 'breakfast' page=value %}">{{ key }}</a></li>
             {% endif %}
         {% endfor %}
 {% if page_next == '0' %}
@@ -45,7 +45,7 @@
 {% else %}
     <li class="page-item">
 {% endif %}
-      <a class="page-link" href="{% url 'main_dishes' page=page_next %}" aria-label="Next">
+      <a class="page-link" href="{% url 'breakfast' page=page_next %}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>
@@ -56,7 +56,7 @@
         <div class="col-4" style="margin-top: 1px">
         <ul style="line-height: 2.3;">
             <li><progress id="progressBar" max="100" value="{{progress}}"></progress><i style="color:#0d6efd;">{{progress}}%</i></li>
-            <li>категория: <i style="color:#0d6efd;">горячие блюда</i></li>
+            <li>категория: <i style="color:#0d6efd;">завтраки</i></li>
             <li>общее число блюд: <i style="color:#0d6efd;"> {{count_prosucts}}</i></li>
             <li>число блюд с признаком: <i style="color:#0d6efd;"> {{count_prosucts_labeled}}</i></li>
             <li>число блюд без признака: <i style="color:#0d6efd;"> {{count_prosucts_not_labeled}}</i></li>
@@ -178,15 +178,15 @@
         {% else %}
             <li class="page-item">
         {% endif %}
-                <a class="page-link" href="{% url 'main_dishes' page=page_prev %}" aria-label="Previous">
+                <a class="page-link" href="{% url 'breakfast' page=page_prev %}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
         {% for key, value in page_dict.items %}
             {% if page == value %}
-                <li class="page-item active"><a class="page-link" href="{% url 'main_dishes' page=value %}">{{ key }}</a></li>
+                <li class="page-item active"><a class="page-link" href="{% url 'breakfast' page=value %}">{{ key }}</a></li>
             {% else %}
-                <li class="page-item"><a class="page-link" href="{% url 'main_dishes' page=value %}">{{ key }}</a></li>
+                <li class="page-item"><a class="page-link" href="{% url 'breakfast' page=value %}">{{ key }}</a></li>
             {% endif %}
         {% endfor %}
 {% if page_next == '0' %}
@@ -194,7 +194,7 @@
 {% else %}
     <li class="page-item">
 {% endif %}
-      <a class="page-link" href="{% url 'main_dishes' page=page_next %}" aria-label="Next">
+      <a class="page-link" href="{% url 'breakfast' page=page_next %}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
     <div class="row" style="margin-bottom: 50px">
-        <div class="col-6" style="margin-top: 12px;">
+        <div class="col-8" style="margin-top: 12px;">
     <div class="row" style="margin-bottom: 50px">
         <div class="col" style="margin-top: 1px">
         <button type="button" onclick="location.href='{% url 'salad' page='25' %}'" class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Салаты</button>
@@ -15,6 +15,10 @@
     </div>
         <div class="col"  style="">
         <button type="submit" onclick="location.href='{% url 'side_dishes' page='25' %}'"  class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Гарниры</button>
+    </div>
+    <div class="col">
+        <button type="submit" onclick="location.href='{% url 'breakfast' page=25 %}'"
+                class="btn btn-outline-primary" style="width: 132px;padding-left: 0px;padding-right: 0px;">Завтраки</button>
     </div>
     </div>
     <div class="row" style="margin-bottom: 50px">

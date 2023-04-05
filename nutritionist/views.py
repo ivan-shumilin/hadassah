@@ -535,9 +535,64 @@ def catalog_main_dishes(request, page):
             'count_prosucts_labeled': count_prosucts_labeled,
             'count_prosucts_not_labeled': count_prosucts_not_labeled,
             'progress': progress,
-            # 'formset_e': formset._errors
         }
     return render(request, 'main_dishes.html', context=data)
+
+
+@login_required
+@user_passes_test(group_nutritionists_check, login_url='login')
+def catalog_breakfast(request, page):
+    ProductFormSet = get_modelformset()
+    MEAL = 'Завтраки'
+    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEAL)
+
+    page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
+    q = Product.objects.filter(category=MEAL).order_by(Lower('name'))[page_start:page_finish]
+    queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
+    queryset = queryset.order_by(Lower('name'))
+
+    if request.method == 'POST' and 'save' in request.POST:
+        formset = \
+            ProductFormSet(request.POST, request.FILES, queryset=queryset, prefix='breakfast')
+        if not formset.is_valid():
+            return render(request,
+                          'breakfast.html',
+                          {'formset': formset,
+                           'count_prosucts': count_prosucts,
+                           'count_prosucts_labeled': count_prosucts_labeled,
+                           'count_prosucts_not_labeled': count_prosucts_not_labeled,
+                           'progress': progress,
+
+                           })
+        else:
+            formset.save()
+            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Вторые блюда')
+            data = {
+                'page': page,
+                'page_prev': page_prev,
+                'page_next': page_next,
+                'page_dict': page_dict,
+                'formset': formset,
+                'count_prosucts': count_prosucts,
+                'count_prosucts_labeled': count_prosucts_labeled,
+                'count_prosucts_not_labeled': count_prosucts_not_labeled,
+                'progress': progress,
+            }
+            return render(request, 'breakfast.html', context=data)
+    else:
+        formset = ProductFormSet(queryset=queryset, prefix='breakfast')
+        data = {
+            'page': page,
+            'page_prev': page_prev,
+            'page_next': page_next,
+            'page_dict': page_dict,
+            'formset': formset,
+            'count_prosucts': count_prosucts,
+            'count_prosucts_labeled': count_prosucts_labeled,
+            'count_prosucts_not_labeled': count_prosucts_not_labeled,
+            'progress': progress,
+        }
+    return render(request, 'breakfast.html', context=data)
 
 
 @login_required(login_url='login')
@@ -655,6 +710,7 @@ class DeactivateAPIView(APIView):
 
 
 def user_login(request):
+    test = 'test'
     errors = None
     if request.method == 'POST':
         user_form = UserloginForm(request.POST)

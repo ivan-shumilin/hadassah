@@ -288,7 +288,7 @@ class Product(models.Model):
     category = models.CharField(max_length=2000, null=True)
     cooking_method = models.CharField(max_length=7000, null=True)
     comment = models.CharField(max_length=5000, null=True)
-    with_garnish =   models.BooleanField(
+    with_garnish = models.BooleanField(
         blank=True,
         default=False,
         help_text='Блюдо уже с гарниром?')
