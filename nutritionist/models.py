@@ -598,3 +598,9 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f'name: {self.name}, product_id: {self.product_id}'
+
+class Token(models.Model):
+    iiko_server = models.CharField(max_length=64, null=True, blank=True)
+
+    def __str__(self):
+        return f'iikoServer: {self.iiko_server}'

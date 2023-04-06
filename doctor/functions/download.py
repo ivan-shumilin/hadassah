@@ -4,22 +4,44 @@ import json
 
 import requests
 
-from nutritionist.models import ProductLp, Ingredient
+from nutritionist.models import ProductLp, Ingredient, Token
 
 
-def get_token():
-    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/auth'
+def get_token(attempt):
+    if attempt == 1:
+        token = Token.objects.all()
+        if token:
+            return Token.objects.first().iiko_server
+        else:
+            attempt +=1
+    if attempt > 1:
+        url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/auth'
 
-    params = {
-        'login': 'Admin',
-        'pass': '601f1889667efaebb33b8c12572835da3f027f78',
+        params = {
+            'login': 'Admin',
+            'pass': '601f1889667efaebb33b8c12572835da3f027f78',
+        }
+
+        respons = requests.get(url=url, params=params)
+        if respons.status_code == 200:
+            token = Token.objects.first()
+            logout_token(token)
+            Token(iiko_server=respons.text).save()
+            return respons.text
+        return 'Error'
+
+
+def logout_token(token):
+    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/logout'
+
+    headers = {
+        'Cookie': f'key={token}'
     }
 
-    respons = requests.get(url=url, params=params)
+    respons = requests.get(url=url, headers=headers)
     if respons.status_code == 200:
         return respons.text
     return 'Error'
-
 
 def download():
     """ Присвоить всем ProductLp id для обращения за тех. картой по api. """
@@ -42,51 +64,49 @@ def download():
     return print(f'Всего: {all_products.count()} -- получено: {count}')
 
 
-def get_tk(token, product_id):
+def get_tk(product_id):
     """ Получение ТК по iiko api """
     url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/assemblyCharts/getTree'
-
-    headers = {
-        'Cookie': f'key={token}'
-    }
     params = {'date': str(datetime.date.today()),
               'productId': product_id,}
 
-    response = requests.get(url=url, headers=headers, params=params)
-    if response.status_code != 200:
-        return '', 'Server error'
-    else:
-        tk = json.loads(response.text)
-    return tk, ''
+    for attempt in [1, 2]:
+        token = get_token(attempt)
+        headers = {
+            'Cookie': f'key={token}'
+        }
+        response = requests.get(url=url, headers=headers, params=params)
+        if response.status_code != 200:
+            continue
+        else:
+            tk = json.loads(response.text)
+        return tk, ''
 
-def get_name(token, product_id):
+def get_name(product_id):
     """ Получаем элемент номенклатуры. """
     url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list?includeDeleted=false'
 
-    headers = {
-        'Cookie': f'key={token}'
-    }
     params = {'ids': product_id}
+    for attempt in [1, 2]:
+        token = get_token(attempt)
+        headers = {
+            'Cookie': f'key={token}'
+        }
+        response = requests.get(url=url, headers=headers, params=params)
 
-
-    response = requests.get(url=url, headers=headers, params=params)
-    if response.status_code != 200:
-        return '', 'Server error'
-    else:
-        tk = json.loads(response.text)
+        if response.status_code != 200:
+            continue
+        else:
+            tk = json.loads(response.text)
         try:
             name = tk[0]['name']
         except:
             name = None
-    return name
+        return name
 
-def get_measure_unit(token, product_id):
+def get_measure_unit(product_id):
     """ Получаем элемент номенклатуры. """
     url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list?includeDeleted=false'
-
-    headers = {
-        'Cookie': f'key={token}'
-    }
     params = {'ids': product_id}
 
     CODE_MAIN_UNIT = {
@@ -97,39 +117,44 @@ def get_measure_unit(token, product_id):
         'a9e62976-72ec-fb2a-016a-444bbd520bca': 'шт'
     }
 
+    for attempt in [1, 2]:
+        token = get_token(attempt)
+        headers = {
+            'Cookie': f'key={token}'
+        }
+        response = requests.get(url=url, headers=headers, params=params)
+        if response.status_code != 200:
+            continue
+        else:
+            tk = json.loads(response.text)
+            try:
+                measure_unit = tk[0]['mainUnit']
+            except:
+                measure_unit = None
+        return CODE_MAIN_UNIT.get(measure_unit, 'кг')
 
-    response = requests.get(url=url, headers=headers, params=params)
-    if response.status_code != 200:
-        return '', 'Server error'
-    else:
-        tk = json.loads(response.text)
-        try:
-            measure_unit = tk[0]['mainUnit']
-        except:
-            measure_unit = None
-    return CODE_MAIN_UNIT.get(measure_unit, 'кг')
-
-def get_allergens(token, product_id):
+def get_allergens(product_id):
     """ Получаем аллергены продукта. """
 
     url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list?includeDeleted=false'
 
-    headers = {
-        'Cookie': f'key={token}'
-    }
     params = {'ids': product_id}
+    for attempt in [1, 2]:
+        token = get_token(attempt)
+        headers = {
+            'Cookie': f'key={token}'
+        }
+        response = requests.get(url=url, headers=headers, params=params)
 
-
-    response = requests.get(url=url, headers=headers, params=params)
-    if response.status_code != 200:
-        return None
-    else:
-        tk = json.loads(response.text)
-        try:
-            allergens = tk[0]['allergenGroups']
-        except:
-            allergens = None
-    return allergens
+        if response.status_code != 200:
+            return None
+        else:
+            tk = json.loads(response.text)
+            try:
+                allergens = tk[0]['allergenGroups']
+            except:
+                allergens = None
+        return allergens
 
 
 def get_weight_tk(token, product_id):
@@ -144,6 +169,7 @@ def get_weight_tk(token, product_id):
               'productId': product_id,}
 
     response = requests.get(url=url, headers=headers, params=params)
+
     if response.status_code != 200:
         return 1
     else:
@@ -156,15 +182,17 @@ def get_ingredients(token, product_id, name=None):
 
     url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/assemblyCharts/getAssembled'
 
-    headers = {
-        'Cookie': f'key={token}'
-    }
     params = {'date': str(datetime.date.today()),
               'productId': product_id, }
+    for attempt in [1, 2]:
+        token = get_token(attempt)
+        headers = {
+            'Cookie': f'key={token}'
+        }
+        response = requests.get(url=url, headers=headers, params=params)
 
-    response = requests.get(url=url, headers=headers, params=params)
-    if response.status_code != 200:
-        return 1
-    else:
-        tk = json.loads(response.text)
-    return tk['assemblyCharts'][0]['items']
+        if response.status_code != 200:
+            return 1
+        else:
+            tk = json.loads(response.text)
+        return tk['assemblyCharts'][0]['items']

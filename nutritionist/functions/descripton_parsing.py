@@ -1,28 +1,27 @@
 """ Модуль по API получает ТТК и из ингридиентов собирает состав блюда. """
-from doctor.functions.download import get_token, get_tk, get_name, get_ingredients
+from doctor.functions.download import get_tk, get_name, get_ingredients
 from nutritionist.models import Ingredient
 
 
 def get_ttk(id):
     """ Получаем ТТК до 5ого уровня """
     import operator
-    token = get_token()
-    tk, error = get_tk(token, id)
+    tk, error = get_tk(id)
 
     for item_tk_1 in tk['assemblyCharts']:
         try:
             item_tk_1['name'] = Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().name
         except:
-            item_tk_1['name'] = get_name(token, item_tk_1['assembledProductId'])
+            item_tk_1['name'] = get_name(item_tk_1['assembledProductId'])
 # уровень 2
         for item_tk_2 in item_tk_1['items']:
             try:
                 item_tk_2['name'] = Ingredient.objects.filter(product_id=item_tk_2['productId']).first().name
             except:
-                item_tk_2['name'] = get_name(token, item_tk_2['productId'])
+                item_tk_2['name'] = get_name(item_tk_2['productId'])
             # получить список ингридиентов для каждого item_tk_2
             try:
-                item_tk_2['item'] = get_ingredients(token, item_tk_2['productId'], item_tk_2['name'])
+                item_tk_2['item'] = get_ingredients(item_tk_2['productId'], item_tk_2['name'])
             except:
                 item_tk_2['item'] = None
 # уровень 3
@@ -30,7 +29,7 @@ def get_ttk(id):
 #                 try:
 #                     item_tk_3['name'] = Ingredient.objects.filter(product_id=item_tk_3['productId']).first().name
 #                 except:
-#                     item_tk_3['name'] = get_name(token, item_tk_3['productId'])
+#                     item_tk_3['name'] = get_name(item_tk_3['productId'])
 
 
     result = tk['assemblyCharts'][0]
@@ -43,22 +42,22 @@ def get_ttk(id):
                     # уровень 3
                     for ing3 in ing['items']:
                         try:
-                            ing3['items'] = get_ingredients(token, ing3['productId'], ing3['name'])
+                            ing3['items'] = get_ingredients(ing3['productId'], ing3['name'])
 
                             for ing4 in ing3['items']:
                                 try:
                                     ing4['name'] = Ingredient.objects.filter(
                                         product_id=ing4['productId']).first().name
                                 except:
-                                    ing4['name'] = get_name(token, ing4['productId'])
+                                    ing4['name'] = get_name(ing4['productId'])
                                 try:
-                                    ing4['items'] = get_ingredients(token, ing4['productId'], ing4['name'])
+                                    ing4['items'] = get_ingredients(ing4['productId'], ing4['name'])
                                     for ing5 in ing4['items']:
                                         try:
                                             ing5['name'] = Ingredient.objects.filter(
                                                 product_id=ing5['productId']).first().name
                                         except:
-                                            ing5['name'] = get_name(token, ing5['productId'])
+                                            ing5['name'] = get_name(ing5['productId'])
                                 except:
                                     ing4['items'] = None
                         except:
@@ -127,8 +126,8 @@ def description_parsing(id):
     # получаем ТТК до 5ого уровня.
     try:
         ttk = get_ttk(id)
+        compileall = create_composition_from_ttk(ttk)
     except:
-        return "Отсутствует"
-    compileall = create_composition_from_ttk(ttk)
+        compileall = "Отсутствует"
     return compileall
 
