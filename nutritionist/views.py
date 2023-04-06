@@ -20,6 +20,7 @@ from django.db.models.functions import Lower
 from django.views.generic import TemplateView
 
 from doctor.functions.download import get_token, get_tk, get_name, get_allergens, get_weight_tk, get_measure_unit
+from .functions.descripton_parsing import description_parsing
 from .functions.report import create_external_report, create_external_report_detailing, get_report
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
     UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage
@@ -1279,17 +1280,14 @@ def tk(request, id, count):
     from nutritionist.models import Ingredient
     count: int = int(count)
 
-    token = get_token()
-    tk, error = get_tk(token, id)
 
-
-
+    tk, error = get_tk(id)
 
     for item_tk_1 in tk['assemblyCharts']:
         try:
             item_tk_1['name'] = Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().name
         except:
-            item_tk_1['name'] = get_name(token, item_tk_1['assembledProductId'])
+            item_tk_1['name'] = get_name(item_tk_1['assembledProductId'])
 
         try:
             item_tk_1['weight'] =\
@@ -1297,19 +1295,19 @@ def tk(request, id, count):
         except:
             item_tk_1['weight'] = 0
 
-        item_tk_1['measure_unit'] = get_measure_unit(token, item_tk_1['assembledProductId'])
+        item_tk_1['measure_unit'] = get_measure_unit(item_tk_1['assembledProductId'])
 
         for item_tk_2 in item_tk_1['items']:
             try:
                 item_tk_2['name'] = Ingredient.objects.filter(product_id=item_tk_2['productId']).first().name
             except:
-                item_tk_2['name'] = get_name(token, item_tk_2['productId'])
+                item_tk_2['name'] = get_name(item_tk_2['productId'])
 
             # try:
             #     item_tk_2['measure_unit'] = \
             #         Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().measureUnit
             # except:
-            item_tk_2['measure_unit'] = get_measure_unit(token, item_tk_2['productId'])
+            item_tk_2['measure_unit'] = get_measure_unit(item_tk_2['productId'])
 
 # # Высчитываем вес с учетом того, что некоторые ТК указаны на определенное кол-во порций
     for item_tk_1 in tk['assemblyCharts']:
@@ -1353,11 +1351,11 @@ def tk(request, id, count):
         if 'items' not in ing:
             ing['items'] = None
 
-    result['allergens'] = get_allergens(token, id)
+    result['allergens'] = get_allergens(id)
 
     for item in result['items']:
         if item['items']:
-            item['weight_tk'] = get_weight_tk(token, item['productId'])
+            item['weight_tk'] = get_weight_tk(item['productId'])
             for sub_item in item['items']:
                 sub_item['amountIn'] = item['amountIn'] * sub_item['amountIn']
                 sub_item['amountMiddle'] = item['amountMiddle'] * sub_item['amountMiddle']
