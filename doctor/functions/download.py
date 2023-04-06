@@ -26,6 +26,7 @@ def get_token(attempt):
         if respons.status_code == 200:
             token = Token.objects.first()
             logout_token(token)
+            Token.objects.all().delete()
             Token(iiko_server=respons.text).save()
             return respons.text
         return 'Error'
