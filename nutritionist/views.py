@@ -355,7 +355,7 @@ def page_calc(page, count_prosucts):
 
 def get_stat(category):
     count_prosucts = len(Product.objects.filter(category=category))
-    count_prosucts_labeled = len(Product.objects.filter(category='Салаты').filter(
+    count_prosucts_labeled = len(Product.objects.filter(category=category).filter(
         Q(ovd='True') | Q(ovd_sugarless='True') | Q(ovd_vegan='True') | Q(shd='True') | Q(shd_sugarless=True) |
         Q(bd='True') | Q(vbd='True') | Q(nbd='True') | Q(nkd='True') | Q(vkd='True') |
         Q(iodine_free='True') | Q(not_suitable='True')))
