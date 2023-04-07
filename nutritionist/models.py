@@ -273,7 +273,7 @@ class Product(models.Model):
     lactose_free = models.BooleanField(null=True)
     sugarless = models.BooleanField(null=True)
     gluten_free = models.BooleanField(null=True)
-    description = models.CharField(max_length=1000, null=True)
+    description = models.CharField(max_length=1000, null=True, blank=True)
     ovd = models.BooleanField(null=True)
     ovd_sugarless = models.BooleanField(null=True)
     ovd_vegan = models.BooleanField(null=True)
@@ -286,9 +286,9 @@ class Product(models.Model):
     vkd = models.BooleanField(null=True)
     iodine_free = models.BooleanField(null=True)
     not_suitable = models.BooleanField(null=True)
-    category = models.CharField(max_length=2000, null=True)
-    cooking_method = models.CharField(max_length=7000, null=True)
-    comment = models.CharField(max_length=5000, null=True)
+    category = models.CharField(max_length=2000, null=True, blank=True)
+    cooking_method = models.CharField(max_length=7000, null=True, blank=True)
+    comment = models.CharField(max_length=5000, null=True, blank=True)
     with_garnish = models.BooleanField(
         blank=True,
         default=False,
