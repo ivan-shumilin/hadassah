@@ -355,10 +355,10 @@ def page_calc(page, count_prosucts):
 
 def get_stat(category):
     count_prosucts = len(Product.objects.filter(category=category))
-    count_prosucts_labeled = len(Product.objects.filter(category=category).filter(
-        Q(ovd='True') | Q(ovd_sugarless='True') | Q(shd='True') | Q(shd_sugarless=True) |
+    count_prosucts_labeled = len(Product.objects.filter(category='Салаты').filter(
+        Q(ovd='True') | Q(ovd_sugarless='True') | Q(ovd_vegan='True') | Q(shd='True') | Q(shd_sugarless=True) |
         Q(bd='True') | Q(vbd='True') | Q(nbd='True') | Q(nkd='True') | Q(vkd='True') |
-        Q(not_suitable='True')))
+        Q(iodine_free='True') | Q(not_suitable='True')))
     count_prosucts_not_labeled = count_prosucts - count_prosucts_labeled
     progress = int(count_prosucts_labeled * 100 / count_prosucts)
     return count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress
@@ -372,7 +372,7 @@ def catalog_salad(request, page):
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Салаты')
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Салаты').order_by(Lower('name'))[page_start:page_finish]
+    q = Product.objects.filter(category='Салаты').order_by(Lower('name'))[page_start:page_finish + 1]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -433,7 +433,7 @@ def catalog_soup(request, page):
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Первые блюда')
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Первые блюда').order_by(Lower('name'))[page_start:page_finish]
+    q = Product.objects.filter(category='Первые блюда').order_by(Lower('name'))[page_start:page_finish + 1]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -492,7 +492,7 @@ def catalog_main_dishes(request, page):
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Вторые блюда')
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Вторые блюда').order_by(Lower('name'))[page_start:page_finish]
+    q = Product.objects.filter(category='Вторые блюда').order_by(Lower('name'))[page_start:page_finish + 1]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -549,7 +549,7 @@ def catalog_breakfast(request, page):
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEAL)
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category=MEAL).order_by(Lower('name'))[page_start:page_finish]
+    q = Product.objects.filter(category=MEAL).order_by(Lower('name'))[page_start:page_finish + 1]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -606,7 +606,7 @@ def catalog_side_dishes(request, page):
     count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Гарниры')
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Гарниры').order_by(Lower('name'))[page_start:page_finish]
+    q = Product.objects.filter(category='Гарниры').order_by(Lower('name'))[page_start:page_finish + 1]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
