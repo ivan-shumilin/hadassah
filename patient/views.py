@@ -288,8 +288,8 @@ def user_login(request):
     return render(request, 'login_patient.html', {'errors': errors})
 
 def formating_name_for_login_patient(name, lastname, patronymic):
-    return f'{lastname.strip().capitalize()} {name.strip().capitalize()} {patronymic.strip().capitalize()}'
-
+    name = f'{lastname.strip().capitalize()} {name.strip().capitalize()} {patronymic.strip().capitalize()}'
+    return name.strip()
 
 class loginDataValidationAPIView(APIView):
     def post(self, request):

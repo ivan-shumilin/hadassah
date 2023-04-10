@@ -220,12 +220,12 @@ async function validationForm() {
        error = error + 1
    }
 
-    if (!patronymic.value) {
-        document.getElementById('error-patronymic').innerHTML = 'Обязательное поле'
-        document.getElementById('error-patronymic').classList.add('error')
-        document.getElementById('patronymic').classList.add('error')
-        error = error + 1
-    }
+    // if (!patronymic.value) {
+    //     document.getElementById('error-patronymic').innerHTML = 'Обязательное поле'
+    //     document.getElementById('error-patronymic').classList.add('error')
+    //     document.getElementById('patronymic').classList.add('error')
+    //     error = error + 1
+    // }
     if (error == 0) {
         let answer = await loginDataValidation(birthdate.value, name.value, lastname.value, patronymic.value);
         answer = JSON.parse(answer);
