@@ -351,6 +351,8 @@ def creating_meal_menu_cafe(date_get, diet, meal):
         category='Салаты').order_by(Lower('name')))
     queryset_soup = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
         category='Первые блюда').order_by(Lower('name')))
+    queryset_breakfast = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Завтраки').order_by(Lower('name')))
 
     queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup = \
         sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup)

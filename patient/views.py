@@ -298,7 +298,3 @@ class loginDataValidationAPIView(APIView):
         response = is_have_user(formatted_full_name, data['birthdate'])
         response = json.dumps(response)
         return Response(response)
-
-
-
-# test

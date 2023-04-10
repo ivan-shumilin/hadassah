@@ -201,10 +201,12 @@ def index(request):
         date_default = str(date.today())
     else:
         date_default = str(request.POST['datetime'])
-    count_prosucts = len(Product.objects.all())
+    count_prosucts = len(Product.objects.filter(~Q(category='Блюда от шефа')))
     count_prosucts_labeled = len(Product.objects.filter(
-        Q(ovd='True') | Q(ovd_sugarless='True') | Q(shd='True') | Q(bd='True') | Q(vbd='True') | Q(nbd='True') | Q(
-            nkd='True') | Q(vkd='True') | Q(not_suitable='True')))
+        ~Q(category='Блюда от шефа') |
+        Q(ovd='True') | Q(ovd_sugarless='True') | Q(ovd_vegan='True') | Q(shd='True') | Q(shd_sugarless=True) |
+        Q(bd='True') | Q(vbd='True') | Q(nbd='True') | Q(nkd='True') | Q(vkd='True') |
+        Q(iodine_free='True') | Q(not_suitable='True')))
     count_prosucts_not_labeled = count_prosucts - count_prosucts_labeled
     if count_prosucts != 0:
         progress = int(count_prosucts_labeled * 100 / count_prosucts)
@@ -354,8 +356,8 @@ def page_calc(page, count_prosucts):
 
 
 def get_stat(category):
-    count_prosucts = len(Product.objects.filter(category=category))
-    count_prosucts_labeled = len(Product.objects.filter(category=category).filter(
+    count_prosucts = len(Product.objects.filter(category__in=category))
+    count_prosucts_labeled = len(Product.objects.filter(category__in=category).filter(
         Q(ovd='True') | Q(ovd_sugarless='True') | Q(ovd_vegan='True') | Q(shd='True') | Q(shd_sugarless=True) |
         Q(bd='True') | Q(vbd='True') | Q(nbd='True') | Q(nkd='True') | Q(vkd='True') |
         Q(iodine_free='True') | Q(not_suitable='True')))
@@ -368,11 +370,12 @@ def get_stat(category):
 @user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_salad(request, page):
     error = ''
+    MEALS: tuple = ('Салаты',)
     ProductFormSet = get_modelformset()
-    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Салаты')
+    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Салаты').order_by(Lower('name'))[page_start:page_finish + 1]
+    q = Product.objects.filter(category__in=MEALS).order_by(Lower('name'))[page_start:page_finish + 1]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -427,13 +430,13 @@ def catalog_salad(request, page):
 @login_required(login_url='login')
 @user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_soup(request, page):
-    error = ''
+    MEALS: tuple = ('Первые блюда',)
     ProductFormSet = get_modelformset()
 
-    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Первые блюда')
+    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Первые блюда').order_by(Lower('name'))[page_start:page_finish + 1]
+    q = Product.objects.filter(category__in=MEALS).order_by(Lower('name'))[page_start:page_finish + 1]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -452,7 +455,7 @@ def catalog_soup(request, page):
                            })
         else:
             formset.save()
-            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Первые блюда')
+            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
             data = {
                 'page': page,
                 'page_prev': page_prev,
@@ -488,11 +491,12 @@ def catalog_soup(request, page):
 @login_required
 @user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_main_dishes(request, page):
+    MEALS: tuple = ('Вторые блюда',)
     ProductFormSet = get_modelformset()
-    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Вторые блюда')
+    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Вторые блюда').order_by(Lower('name'))[page_start:page_finish + 1]
+    q = Product.objects.filter(category__in=MEALS).order_by(Lower('name'))[page_start:page_finish + 1]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -522,7 +526,6 @@ def catalog_main_dishes(request, page):
                 'count_prosucts_labeled': count_prosucts_labeled,
                 'count_prosucts_not_labeled': count_prosucts_not_labeled,
                 'progress': progress,
-                # 'formset_e': formset._errors
             }
             return render(request, 'main_dishes.html', context=data)
     else:
@@ -545,11 +548,11 @@ def catalog_main_dishes(request, page):
 @user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_breakfast(request, page):
     ProductFormSet = get_modelformset()
-    MEAL = 'Завтраки'
-    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEAL)
+    MEALS: tuple = ('Завтраки', 'Каши')
+    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category=MEAL).order_by(Lower('name'))[page_start:page_finish + 1]
+    q = Product.objects.filter(category__in=MEALS).order_by(Lower('name'))[page_start:page_finish + 1]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -568,7 +571,7 @@ def catalog_breakfast(request, page):
                            })
         else:
             formset.save()
-            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Вторые блюда')
+            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
             data = {
                 'page': page,
                 'page_prev': page_prev,
@@ -600,13 +603,12 @@ def catalog_breakfast(request, page):
 @login_required(login_url='login')
 @user_passes_test(group_nutritionists_check, login_url='login')
 def catalog_side_dishes(request, page):
-    # 157
-    error = ''
+    MEALS: tuple = ('Гарниры',)
     ProductFormSet = get_modelformset()
-    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Гарниры')
+    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
 
     page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
-    q = Product.objects.filter(category='Гарниры').order_by(Lower('name'))[page_start:page_finish + 1]
+    q = Product.objects.filter(category__in=MEALS).order_by(Lower('name'))[page_start:page_finish + 1]
     queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
     queryset = queryset.order_by(Lower('name'))
 
@@ -625,7 +627,7 @@ def catalog_side_dishes(request, page):
                            })
         else:
             formset.save()
-            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Гарниры')
+            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
             data = {
                 'page': page,
                 'page_prev': page_prev,
@@ -659,19 +661,6 @@ def catalog_side_dishes(request, page):
         }
     return render(request, 'side_dishes.html', context=data)
 
-
-# class BaseAPIView(APIView):
-#     def post(self, request):
-#         data = request.data
-#         data_str = str(data)
-#         data_dict = dict(data)
-#         js = open("cooking_method.json").read()
-#         dict_tk = json.loads(js)
-#         if data_dict['menu']['location']['name'] == 'hadassah':
-#             load_menu(data_dict, dict_tk)
-#             load_timetable(data_dict)
-#             Base.objects.create(base=data_str)
-#         return Response(data)
 
 class BaseAPIView(APIView):
     def post(self, request):
