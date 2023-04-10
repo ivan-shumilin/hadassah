@@ -393,7 +393,7 @@ def catalog_salad(request, page):
                            })
         else:
             formset.save()
-            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Салаты')
+            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
             data = {
                 'page': page,
                 'page_prev': page_prev,
@@ -515,7 +515,7 @@ def catalog_main_dishes(request, page):
                            })
         else:
             formset.save()
-            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat('Вторые блюда')
+            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
             data = {
                 'page': page,
                 'page_prev': page_prev,
