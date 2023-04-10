@@ -48,7 +48,7 @@ import random, calendar, datetime, logging, json
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from nutritionist.functions.functions import create_products_list_category, complete_catalog, \
-    checking_is_ready_meal, create_category_dict, create_stickers_pdf, add_try, cleaning_null
+    checking_is_ready_meal, create_category_dict, create_stickers_pdf, add_try, cleaning_null, combine_broths
 
 
 class ServiceWorkerView(TemplateView):
@@ -1078,6 +1078,7 @@ def printed_form_two_lp(request):
     return render(request, 'printed_form2_lp.html', context=data)
 
 def printed_form_two_lp_new(request):
+    """ Отчет для цеха лечебного питания.  """
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
@@ -1145,6 +1146,7 @@ def printed_form_two_lp_new(request):
             # типом диеты
             for un_product in unique_products:
                 count = 0
+                comment_list = []
                 for product in all_products:
                     if product['id'] == un_product['id']:
                         count += 1
@@ -1174,6 +1176,10 @@ def printed_form_two_lp_new(request):
                             pr.setdefault('diet', []).append(item)
                         pr['comments'] = pr['comments'] + cat[ii]['comments']
                         cat[ii] = None
+    # обьединяем доп. бульон и бульон и удаляем None
+    soups = [soup for soup in catalog['soup'] if soup]
+    soups = combine_broths(soups)
+    catalog['soup'] = soups
 
     for item in catalog.values():
         for product in item:

@@ -210,3 +210,21 @@ def cleaning_null(catalog):
             if len(category) > 0:
                 catalog_[key1][key2] = category
     return catalog_
+
+
+def combine_broths(soups):
+    """ Объединяет "Бульон" и "Дополнительный бульон". """
+    broth_product_id = 'b95797d9-7b21-46dd-9f61-87157e2eec66'
+    finish = len(soups)
+    for start in range(finish):
+        if soups[start] and soups[start]['product_id'] == broth_product_id:
+            soups[start]['name'] = 'Бульон куриный 250гр.'
+            for i in range(start + 1, finish):
+                if soups[i]['product_id'] == broth_product_id:
+                    deleted_product = soups[i]
+                    soups[i] = None
+                    soups[start]['count'] = \
+                        int(soups[start]['count']) + int(deleted_product['count'])
+                    soups[start]['comments'] += deleted_product['comments']
+                    soups[start]['diet'] += deleted_product['diet']
+    return soups
