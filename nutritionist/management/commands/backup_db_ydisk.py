@@ -10,6 +10,16 @@ TOKEN = 'y0_AQAEA7qkHGTtAADLWwAAAADLdv2Vzl_VDfyET4ekZCPJK_nQZ3UUrqY'
 headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'OAuth {TOKEN}'}
 
 
+# def create_backup():
+#     name = str(date.today()) + '.json'
+#     with open(name, 'w', encoding='utf-8') as outfile:
+#         management.call_command('dumpdata',
+#                                 'nutritionist.product',
+#                                 'nutritionist.timetable',
+#                                 'nutritionist.productlp',
+#                                 'nutritionist.timetablelp',
+#                                 stdout=outfile)
+
 def create_backup():
     name = str(date.today()) + '.json'
     with open(name, 'w', encoding='utf-8') as outfile:
@@ -18,6 +28,16 @@ def create_backup():
                                 'nutritionist.timetable',
                                 'nutritionist.productlp',
                                 'nutritionist.timetablelp',
+                                'nutritionist.customuser',
+                                'nutritionist.userstoday',
+                                'nutritionist.changesuserstoday',
+                                'nutritionist.menubyday',
+                                'nutritionist.usersreadyorder',
+                                'nutritionist.menubydayreadyorder',
+                                'nutritionist.commentproduct',
+                                'nutritionist.report',
+                                'nutritionist.productstorage',
+                                'nutritionist.ingredient',
                                 stdout=outfile)
 
 
