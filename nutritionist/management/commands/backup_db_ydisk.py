@@ -37,6 +37,7 @@ def create_backup():
                                 'nutritionist.report',
                                 'nutritionist.productstorage',
                                 'nutritionist.ingredient',
+                                'django.contrib.auth.group',
                                 stdout=outfile)
 
 
