@@ -30,7 +30,6 @@ def create_backup():
                                 'nutritionist.timetablelp',
                                 'nutritionist.customuser',
                                 'nutritionist.userstoday',
-                                'nutritionist.changesuserstoday',
                                 'nutritionist.menubyday',
                                 'nutritionist.usersreadyorder',
                                 'nutritionist.menubydayreadyorder',
