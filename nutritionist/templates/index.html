@@ -23,13 +23,15 @@
 </div>
 
 
-    {{ formset_salad.management_form }}
-    {{ formset_soup.management_form }}
-    {{ formset_main_dishes.management_form }}
-    {{ formset_side_dishes.management_form }}
+    {{ formset.salad.management_form }}
+    {{ formset.soup.management_form }}
+    {{ formset.main_dishes.management_form }}
+    {{ formset.side_dishes.management_form }}
+    {{ formset.breakfast.management_form }}
+    {{ formset.porridge.management_form }}
     <h5>Салаты</h5>
     <div style="margin-bottom: 30px;">
-    {% for form in formset_salad %}
+    {% for form in formset.salad %}
 
     {{ form.iditem }}
     {{ form.id }}
@@ -137,7 +139,7 @@
     </div>
     <h5>Супы</h5>
 <div style="margin-bottom: 30px;">
-{% for form in formset_soup %}
+{% for form in formset.soup %}
 
     {{ form.iditem }}
     {{ form.id }}
@@ -246,7 +248,7 @@
 </div>
         <h5>Горячие блюда</h5>
 <div style="margin-bottom: 30px;">
-{% for form in formset_main_dishes %}
+{% for form in formset.main_dishes %}
 
     {{ form.iditem }}
     {{ form.id }}
@@ -353,7 +355,222 @@
 </div>
     <h5>Гарниры</h5>
 <div style="margin-bottom: 30px;">
-{% for form in formset_side_dishes %}
+{% for form in formset.side_dishes %}
+
+    {{ form.iditem }}
+    {{ form.id }}
+    {{ form.description }}
+    {{ form.name }}
+    {{ form.names }}
+    {{ form.fat }}
+    {{ form.fiber }}
+    {{ form.carbohydrate }}
+    {{ form.energy }}
+    {{ form.category }}
+    {{ form.cooking_method }}
+
+
+
+    {% if form.not_suitable.value == True %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px; background: #fadada;" >
+    {% else %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px;" >
+    {% endif %}
+
+
+        <div class="col-3">{{ form.name.value }}</div>
+        <div class="col discr">
+            <button type="button" class="btn btn-outline-primary" style="margin-bottom: 10px;" data-bs-toggle="modal"
+                    data-bs-target="#modal-start{{ form.iditem.value }}">Состав
+            </button>
+        </div>
+
+        <div class="col form-check form-switch" style="margin-left: 0px;">
+            {{ form.ovd }}
+            <label class="form-check-label diet">ОВД</label>
+        </div>
+        <div class="col form-check form-switch">
+            {{ form.ovd_sugarless }}
+            <label class="form-check-label diet">ОВД</label>
+            <p style="font-size: 0.7rem;" class="center-diet">без сахара</p>
+        </div>
+        <div class="col form-check form-switch">
+            {{ form.ovd_vegan }}
+            <label class="form-check-label diet">ОВД</label>
+            <p style="font-size: 0.7rem;" class="center-diet">веган</p>
+        </div>
+        <div class="col form-check form-switch">{{ form.shd }}
+            <label class="form-check-label diet">ЩД</label></div>
+        <div class="col form-check form-switch">
+            {{ form.shd_sugarless }}
+            <label class="form-check-label diet">ЩД</label>
+            <p style="font-size: 0.7rem;" class="center-diet">без сахара</p>
+        </div>
+        <div class="col form-check form-switch">{{ form.bd }}
+            <label class="form-check-label diet">БД</label></div>
+        <div class="col form-check form-switch">{{ form.vbd }}
+            <label class="form-check-label diet">ВБД</label></div>
+        <div class="col form-check form-switch">{{ form.nbd }}
+            <label class="form-check-label diet">НБД</label></div>
+        <div class="col form-check form-switch">{{ form.nkd }}
+            <label class="form-check-label diet">НКД</label></div>
+        <div class="col form-check form-switch">{{ form.vkd }}
+            <label class="form-check-label diet">ВКД</label></div>
+        <div class="col form-check form-switch">{{ form.iodine_free }}
+            <label class="form-check-label diet">Безйодовая</label></div>
+
+
+
+        <div id="modal-start{{ form.iditem.value }}" class="modal" tabindex="-1">
+            <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ form.name.value }}</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Состав:</strong> {{ form.description.value|cut:"Состав:"|cut:"Состав"|cut:" :" }}</p>
+                        <hr>
+                        <p><strong>БЖУ:</strong> Белки - {{ form.fiber.value|floatformat  }} г, жиры - {{ form.fat.value|floatformat  }} г, углеводы - {{ form.carbohydrate.value|floatformat  }} г, ккал - {{ form.energy.value|floatformat  }}.</p>
+                        <hr>
+                        <p><strong>Способ приготовления:</strong> {{ form.cooking_method.value|cut:"ТРЕБОВАНИЯ К ОФОРМЛЕНИЮ, ПОДАЧЕ И РЕАЛИЗАЦИИ"}}</p>
+                    </div>
+                    <hr>
+                    <div class="modal-body">{{ form.comment }}</div>
+                    <div class="modal-footer">
+                        <div class="col form-check form-switch" style="margin-left: 30px;">
+                            {{ form.not_suitable }}
+                            <label class="form-check-label">не походит</label>
+                        </div>
+                        {% if user.is_staff %}
+                            <input name="save" class="btn btn-primary" type="submit" value="Сохранить">
+                        {% endif %}
+                        <button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal"
+                                aria-label="Close">Закрыть
+                        </button>
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
+{% endfor %}
+</div>
+<h5>Завтраки</h5>
+<div style="margin-bottom: 30px;">
+{% for form in formset.breakfast %}
+
+    {{ form.iditem }}
+    {{ form.id }}
+    {{ form.description }}
+    {{ form.name }}
+    {{ form.names }}
+    {{ form.fat }}
+    {{ form.fiber }}
+    {{ form.carbohydrate }}
+    {{ form.energy }}
+    {{ form.category }}
+    {{ form.cooking_method }}
+
+
+
+    {% if form.not_suitable.value == True %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px; background: #fadada;" >
+    {% else %}
+    <div class="row" style="border-bottom: 1px solid #eeeeee; padding-top: 8px;" >
+    {% endif %}
+
+
+        <div class="col-3">{{ form.name.value }}</div>
+        <div class="col discr">
+            <button type="button" class="btn btn-outline-primary" style="margin-bottom: 10px;" data-bs-toggle="modal"
+                    data-bs-target="#modal-start{{ form.iditem.value }}">Состав
+            </button>
+        </div>
+
+        <div class="col form-check form-switch" style="margin-left: 0px;">
+            {{ form.ovd }}
+            <label class="form-check-label diet">ОВД</label>
+        </div>
+        <div class="col form-check form-switch">
+            {{ form.ovd_sugarless }}
+            <label class="form-check-label diet">ОВД</label>
+            <p style="font-size: 0.7rem;" class="center-diet">без сахара</p>
+        </div>
+        <div class="col form-check form-switch">
+            {{ form.ovd_vegan }}
+            <label class="form-check-label diet">ОВД</label>
+            <p style="font-size: 0.7rem;" class="center-diet">веган</p>
+        </div>
+        <div class="col form-check form-switch">{{ form.shd }}
+            <label class="form-check-label diet">ЩД</label></div>
+        <div class="col form-check form-switch">
+            {{ form.shd_sugarless }}
+            <label class="form-check-label diet">ЩД</label>
+            <p style="font-size: 0.7rem;" class="center-diet">без сахара</p>
+        </div>
+        <div class="col form-check form-switch">{{ form.bd }}
+            <label class="form-check-label diet">БД</label></div>
+        <div class="col form-check form-switch">{{ form.vbd }}
+            <label class="form-check-label diet">ВБД</label></div>
+        <div class="col form-check form-switch">{{ form.nbd }}
+            <label class="form-check-label diet">НБД</label></div>
+        <div class="col form-check form-switch">{{ form.nkd }}
+            <label class="form-check-label diet">НКД</label></div>
+        <div class="col form-check form-switch">{{ form.vkd }}
+            <label class="form-check-label diet">ВКД</label></div>
+        <div class="col form-check form-switch">{{ form.iodine_free }}
+            <label class="form-check-label diet">Безйодовая</label></div>
+
+
+
+        <div id="modal-start{{ form.iditem.value }}" class="modal" tabindex="-1">
+            <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ form.name.value }}</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Состав:</strong> {{ form.description.value|cut:"Состав:"|cut:"Состав"|cut:" :" }}</p>
+                        <hr>
+                        <p><strong>БЖУ:</strong> Белки - {{ form.fiber.value|floatformat  }} г, жиры - {{ form.fat.value|floatformat  }} г, углеводы - {{ form.carbohydrate.value|floatformat  }} г, ккал - {{ form.energy.value|floatformat  }}.</p>
+                        <hr>
+                        <p><strong>Способ приготовления:</strong> {{ form.cooking_method.value|cut:"ТРЕБОВАНИЯ К ОФОРМЛЕНИЮ, ПОДАЧЕ И РЕАЛИЗАЦИИ"}}</p>
+                    </div>
+                    <hr>
+                    <div class="modal-body">{{ form.comment }}</div>
+                    <div class="modal-footer">
+                        <div class="col form-check form-switch" style="margin-left: 30px;">
+                            {{ form.not_suitable }}
+                            <label class="form-check-label">не походит</label>
+                        </div>
+                        {% if user.is_staff %}
+                            <input name="save" class="btn btn-primary" type="submit" value="Сохранить">
+                        {% endif %}
+                        <button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal"
+                                aria-label="Close">Закрыть
+                        </button>
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
+{% endfor %}
+</div>
+
+<h5>Каши</h5>
+<div style="margin-bottom: 30px;">
+{% for form in formset.porridge %}
 
     {{ form.iditem }}
     {{ form.id }}

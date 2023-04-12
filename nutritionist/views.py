@@ -197,113 +197,62 @@ def get_modelformset():
 def index(request):
     error = ''
     ProductFormSet = get_modelformset()
-    if request.method == 'GET':
-        date_default = str(date.today())
-    else:
-        date_default = str(request.POST['datetime'])
-    count_prosucts = len(Product.objects.filter(~Q(category='Блюда от шефа')))
-    count_prosucts_labeled = len(Product.objects.filter(
-        ~Q(category='Блюда от шефа') |
-        Q(ovd='True') | Q(ovd_sugarless='True') | Q(ovd_vegan='True') | Q(shd='True') | Q(shd_sugarless=True) |
-        Q(bd='True') | Q(vbd='True') | Q(nbd='True') | Q(nkd='True') | Q(vkd='True') |
-        Q(iodine_free='True') | Q(not_suitable='True')))
-    count_prosucts_not_labeled = count_prosucts - count_prosucts_labeled
-    if count_prosucts != 0:
-        progress = int(count_prosucts_labeled * 100 / count_prosucts)
-    else:
-        progress = 0
-    queryset_salad = Product.objects.filter(timetable__datetime=date_default).filter(category='Салаты')
-    queryset_soup = Product.objects.filter(timetable__datetime=date_default).filter(category='Первые блюда')
-    queryset_main_dishes = Product.objects.filter(timetable__datetime=date_default).filter(category='Вторые блюда')
-    queryset_side_dishes = Product.objects.filter(timetable__datetime=date_default).filter(category='Гарниры')
+
+    date_default = str(date.today()) if request.method == 'GET' else str(request.POST['datetime'])
+
+    # получение статистики
+    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat_index()
+
+    queryset: dict = get_queryset(date_default)
+
     if request.method == 'POST' and 'save' in request.POST:
         form_date = TimetableForm(request.POST)
-        formset_salad = \
-            ProductFormSet(request.POST, request.FILES, queryset=queryset_salad, prefix='salad')
-        formset_soup = \
-            ProductFormSet(request.POST, request.FILES, queryset=queryset_soup, prefix='soup')
-        formset_main_dishes = \
-            ProductFormSet(request.POST, request.FILES, queryset=queryset_main_dishes, prefix='main_dishes')
-        formset_side_dishes = \
-            ProductFormSet(request.POST, request.FILES, queryset=queryset_side_dishes, prefix='side_dishes')
 
-        if not formset_salad.is_valid() \
-                or not formset_soup.is_valid() \
-                or not formset_main_dishes.is_valid() \
-                or not formset_side_dishes.is_valid():
-            return render(request,
-                          'index.html',
-                          {'formset_salad': formset_salad,
-                           'formset_soup': formset_soup,
-                           'formset_main_dishes': formset_main_dishes,
-                           'formset_side_dishes': formset_side_dishes,
-                           'count_prosucts': count_prosucts,
-                           'count_prosucts_labeled': count_prosucts_labeled,
-                           'count_prosucts_not_labeled': count_prosucts_not_labeled,
-                           'form_date': form_date,
-                           'progress': progress,
-                           })
+        formset = get_formset(queryset, ProductFormSet, request)
+
+        if not all([f.is_valid() for f in formset.values()]):
+            data = {'formset': formset,
+                    'count_prosucts': count_prosucts,
+                    'count_prosucts_labeled': count_prosucts_labeled,
+                    'count_prosucts_not_labeled': count_prosucts_not_labeled,
+                    'form_date': form_date,
+                    'progress': progress,
+                           }
+            return render(request, 'index.html', context=data)
         else:
-            formset_salad.save()
-            formset_soup.save()
-            formset_main_dishes.save()
-            formset_side_dishes.save()
+            for f in formset.values():
+                f.save()
+
             date_default = str(request.POST['datetime'])
-            queryset_salad = Product.objects.filter(timetable__datetime=date_default).filter(category='Салаты')
-            queryset_soup = Product.objects.filter(timetable__datetime=date_default).filter(category='Первые блюда')
-            queryset_main_dishes = Product.objects.filter(timetable__datetime=date_default).filter(
-                category='Вторые блюда')
-            queryset_side_dishes = Product.objects.filter(timetable__datetime=date_default).filter(category='Гарниры')
+
+            queryset: dict = get_queryset(date_default)
 
     if request.method == 'POST' and 'find_date' in request.POST:
         form_date = TimetableForm(request.POST)
         if form_date.is_valid():
             date_default = str(form_date.cleaned_data["datetime"])
-            queryset_salad = Product.objects.filter(timetable__datetime=str(form_date.cleaned_data["datetime"])).filter(
-                category='Салаты')
-            queryset_soup = Product.objects.filter(timetable__datetime=str(form_date.cleaned_data["datetime"])).filter(
-                category='Первые блюда')
-            queryset_main_dishes = Product.objects.filter(
-                timetable__datetime=str(form_date.cleaned_data["datetime"])).filter(
-                category='Вторые блюда')
-            queryset_side_dishes = Product.objects.filter(
-                timetable__datetime=str(form_date.cleaned_data["datetime"])).filter(category='Гарниры')
+            queryset: dict = get_queryset(date_default)
+            formset = get_formset(queryset, ProductFormSet, None)
 
-            formset_salad = ProductFormSet(queryset=queryset_salad, prefix='salad')
-            formset_soup = ProductFormSet(queryset=queryset_soup, prefix='soup')
-            formset_main_dishes = ProductFormSet(queryset=queryset_main_dishes, prefix='main_dishes')
-            formset_side_dishes = ProductFormSet(queryset=queryset_side_dishes, prefix='side_dishes')
             data = {
                 'form_date': form_date,
                 'error': error,
-                'formset_salad': formset_salad,
-                'formset_main_dishes': formset_main_dishes,
-                'formset_side_dishes': formset_side_dishes,
-                'formset_soup': formset_soup,
+                'formset': formset,
                 'count_prosucts': count_prosucts,
                 'count_prosucts_labeled': count_prosucts_labeled,
                 'count_prosucts_not_labeled': count_prosucts_not_labeled,
                 'progress': progress,
-
-                # 'formset_e': formset._errors,
             }
             return render(request, 'index.html', context=data)
         else:
             error = 'Некорректные данные'
     else:
-        formset_salad = ProductFormSet(queryset=queryset_salad, prefix='salad')
-        formset_soup = ProductFormSet(queryset=queryset_soup, prefix='soup')
-        formset_main_dishes = ProductFormSet(queryset=queryset_main_dishes, prefix='main_dishes')
-        formset_side_dishes = ProductFormSet(queryset=queryset_side_dishes, prefix='side_dishes')
-
+        formset = get_formset(queryset, ProductFormSet, None)
         form_date = TimetableForm(initial={'datetime': date_default})
         data = {
             'form_date': form_date,
             'error': error,
-            'formset_salad': formset_salad,
-            'formset_main_dishes': formset_main_dishes,
-            'formset_side_dishes': formset_side_dishes,
-            'formset_soup': formset_soup,
+            'formset': formset,
             'count_prosucts': count_prosucts,
             'count_prosucts_labeled': count_prosucts_labeled,
             'count_prosucts_not_labeled': count_prosucts_not_labeled,
