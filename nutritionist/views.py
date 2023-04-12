@@ -191,6 +191,53 @@ def get_modelformset():
                                           },
                                           extra=0, )
 
+def get_queryset(date_default):
+    queryset: dict = {
+        'salad': Product.objects.filter(timetable__datetime=date_default).filter(category='Салаты'),
+        'soup': Product.objects.filter(timetable__datetime=date_default).filter(category='Первые блюда'),
+        'main_dishes': Product.objects.filter(timetable__datetime=date_default).filter(category='Вторые блюда'),
+        'side_dishes': Product.objects.filter(timetable__datetime=date_default).filter(category='Гарниры'),
+        'breakfast': Product.objects.filter(timetable__datetime=date_default).filter(category='Завтраки'),
+        'porridge': Product.objects.filter(timetable__datetime=date_default).filter(category='Каши'),
+            }
+    return queryset
+
+
+def get_formset(queryset, ProductFormSet, request) -> dict:
+    if request:
+        formset: dict = {
+            'salad': ProductFormSet(request.POST, request.FILES, queryset=queryset['salad'], prefix='salad'),
+            'soup': ProductFormSet(request.POST, request.FILES, queryset=queryset['soup'], prefix='soup'),
+            'main_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['main_dishes'], prefix='main_dishes'),
+            'side_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['side_dishes'], prefix='side_dishes'),
+            'breakfast': ProductFormSet(request.POST, request.FILES, queryset=queryset['breakfast'], prefix='breakfast'),
+            'porridge': ProductFormSet(request.POST, request.FILES, queryset=queryset['porridge'], prefix='porridge'),
+                }
+    else:
+        formset: dict = {
+            'salad': ProductFormSet(queryset=queryset['salad'], prefix='salad'),
+            'soup': ProductFormSet(queryset=queryset['soup'], prefix='soup'),
+            'main_dishes': ProductFormSet(queryset=queryset['main_dishes'], prefix='main_dishes'),
+            'side_dishes': ProductFormSet(queryset=queryset['side_dishes'], prefix='side_dishes'),
+            'breakfast': ProductFormSet(queryset=queryset['breakfast'], prefix='breakfast'),
+            'porridge': ProductFormSet(queryset=queryset['porridge'], prefix='porridge'),
+                }
+    return formset
+
+def get_stat_index():
+    count_prosucts = len(Product.objects.filter(~Q(category='Блюда от шефа')))
+    count_prosucts_labeled = len(Product.objects.filter(
+        ~Q(category='Блюда от шефа') |
+        Q(ovd='True') | Q(ovd_sugarless='True') | Q(ovd_vegan='True') | Q(shd='True') | Q(shd_sugarless=True) |
+        Q(bd='True') | Q(vbd='True') | Q(nbd='True') | Q(nkd='True') | Q(vkd='True') |
+        Q(iodine_free='True') | Q(not_suitable='True')))
+    count_prosucts_not_labeled = count_prosucts - count_prosucts_labeled
+    if count_prosucts != 0:
+        progress = int(count_prosucts_labeled * 100 / count_prosucts)
+    else:
+        progress = 0
+    return count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress
+
 
 @user_passes_test(group_nutritionists_check, login_url='login')
 @login_required(login_url='login')
@@ -244,8 +291,6 @@ def index(request):
                 'progress': progress,
             }
             return render(request, 'index.html', context=data)
-        else:
-            error = 'Некорректные данные'
     else:
         formset = get_formset(queryset, ProductFormSet, None)
         form_date = TimetableForm(initial={'datetime': date_default})
@@ -257,8 +302,6 @@ def index(request):
             'count_prosucts_labeled': count_prosucts_labeled,
             'count_prosucts_not_labeled': count_prosucts_not_labeled,
             'progress': progress,
-
-            # 'formset_e': formset._errors
         }
     return render(request, 'index.html', context=data)
 
