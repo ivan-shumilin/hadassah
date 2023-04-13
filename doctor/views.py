@@ -367,11 +367,18 @@ def menu(request):
     if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'БД', 'Безйодовая']:
         products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
     else:
-        products_cafe: tuple = ([], [], [], [])
+        products_cafe: tuple = ([], [], [], [], [], [])
     queryset_main_dishes, queryset_garnish, queryset_salad, \
-    queryset_soup = products_cafe
+    queryset_soup, queryset_breakfast, queryset_porridge = products_cafe
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
+
+    if meal == 'breakfast':
+        products_main += queryset_breakfast
+    else:
+        products_main += queryset_main_dishes
+
+
 
     if request.method == 'POST' and 'change-email' in request.POST:
         # сhange_password(request.POST['changed-email'], request)
@@ -384,8 +391,8 @@ def menu(request):
         data = {
             'diet_form': diet_form,
             'date_menu': date_menu,
-            'products_main': products_main + queryset_main_dishes,
-            'products_porridge': products_porridge,
+            'products_main': products_main,
+            'products_porridge': products_porridge + queryset_porridge,
             'products_dessert': products_dessert,
             'products_fruit': products_fruit,
             'products_garnish': products_garnish + queryset_garnish,
@@ -405,11 +412,12 @@ def menu(request):
         user = CustomUser.objects.get(id=request.user.id)
         user.set_password(request.POST['changed-password'])
         user.save()
+
         data = {
             'diet_form': diet_form,
             'date_menu': date_menu,
-            'products_main': products_main + queryset_main_dishes,
-            'products_porridge': products_porridge,
+            'products_main': products_main,
+            'products_porridge': products_porridge + queryset_porridge,
             'products_dessert': products_dessert,
             'products_fruit': products_fruit,
             'products_garnish': products_garnish + queryset_garnish,
@@ -427,8 +435,8 @@ def menu(request):
 
     data = {'diet_form': diet_form,
             'date_menu': date_menu,
-            'products_main': products_main + queryset_main_dishes,
-            'products_porridge': products_porridge,
+            'products_main': products_main,
+            'products_porridge': products_porridge + queryset_porridge,
             'products_dessert': products_dessert,
             'products_fruit': products_fruit,
             'products_garnish': products_garnish + queryset_garnish,

@@ -16,31 +16,43 @@
 </head>
 <body class='table-menu'>
     <form id="form"  action="{% url 'menu_lp_for_staff' %}" method="get" novalidate>
-        <select id="select-diet" onchange="formSubmit()" class="form-select mg-top-bottom form-select-sm" name="diet">
-            <option value="ОВД" selected>ОВД</option>
-            <option value="ОВД без сахара">ОВД без сахара</option>
-            <option value="ОВД веган (пост) без глютена">ОВД веган (пост) без глютена</option>
-            <option value="Нулевая диета">Нулевая диета</option>
-            <option value="ЩД">ЩД</option>
-            <option value="ЩД без сахара">ЩД без сахара</option>
-            <option value="БД" >БД</option>
-            <option value="ВБД">ВБД</option>
-            <option value="НКД">НКД</option>
-            <option value="НБД">НБД</option>
-            <option value="ВКД">ВКД</option>
-            <option value="Безйодовая">Безйодовая</option>
-        </select>
+        <div class="container-flex">
+            <div class="div-order">
+                <div class="order">
+                    <select id="select-diet" onchange="formSubmit()" class="form-select mg-top-bottom form-select-sm" name="diet">
+                        <option value="ОВД" selected>ОВД</option>
+                        <option value="ОВД без сахара">ОВД без сахара</option>
+                        <option value="ОВД веган (пост) без глютена">ОВД веган (пост) без глютена</option>
+                        <option value="Нулевая диета">Нулевая диета</option>
+                        <option value="ЩД">ЩД</option>
+                        <option value="ЩД без сахара">ЩД без сахара</option>
+                        <option value="БД" >БД</option>
+                        <option value="ВБД">ВБД</option>
+                        <option value="НКД">НКД</option>
+                        <option value="НБД">НБД</option>
+                        <option value="ВКД">ВКД</option>
+                        <option value="Безйодовая">Безйодовая</option>
+                    </select>
 
-        <select id="select-day" onchange="formSubmit()" class="form-select mg-top-bottom form-select-sm" name="day">
-            <option value="вся неделя">вся неделя</option>
-            <option value="понедельник">понедельник</option>
-            <option value="вторник">вторник</option>
-            <option value="среда">среда</option>
-            <option value="четверг">четверг</option>
-            <option value="пятница">пятница</option>
-            <option value="суббота" >суббота</option>
-            <option value="воскресенье">воскресенье</option>
-        </select>
+                    <select id="select-day" onchange="formSubmit()" class="form-select mg-top-bottom form-select-sm" name="day">
+                        <option value="вся неделя">вся неделя</option>
+                        <option value="понедельник">понедельник</option>
+                        <option value="вторник">вторник</option>
+                        <option value="среда">среда</option>
+                        <option value="четверг">четверг</option>
+                        <option value="пятница">пятница</option>
+                        <option value="суббота" >суббота</option>
+                        <option value="воскресенье">воскресенье</option>
+                    </select>
+                </div>
+            </div>
+            <div class="div-order" style="margin-top: 16px; margin-left: 30px;">
+                <div class="order">
+                    <a href="{% url 'printed_form_one_new' %}">Сводный отчет</a>
+                </div>
+            </div>
+            
+        </div>
     </form>
 <table id='table2'>
     <tr>

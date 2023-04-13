@@ -147,8 +147,6 @@ def patient(request, id):
             'lunch_is_with_garnish': lunch_is_with_garnish,
             'dinner_is_with_garnish': dinner_is_with_garnish
             }
-    # is_have = 'comment'
-    # data = {'is_have': is_have}
     return render(request, 'patient.html', context=data)
 
 

@@ -35,12 +35,20 @@ def complete_catalog(category_dict):
 
 def checking_is_ready_meal(meal):
     time_ready_meals = {
+        'breakfast': 7,
         'lunch': 11,
         'dinner': 17
     }
+    # время до которого кормим пациентов
+    time_finish = {
+        'breakfast': '11:00',
+        'lunch': '14:00',
+        'dinner': '21:00'
+    }
     if datetime.today().hour < time_ready_meals[meal]:
         patients = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='14:00'))
+            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today())
+                    & Q(receipt_time__lte=time_finish[meal]))
         is_ready_meal = False
     else:
         is_ready_meal = True
@@ -49,13 +57,16 @@ def checking_is_ready_meal(meal):
 
 
 def create_category_dict(meal, is_ready_meal, patients):
-    category_dict = {'salad': [], 'soup': [], 'main': [], 'garnish': []}
+    category_dict = {'salad': [], 'soup': [], 'main': [], 'garnish': [], 'porridge': []}
     if is_ready_meal:
         category_dict = {
             'salad': create_products_list_category('salad', meal),
             'soup': create_products_list_category('soup', meal),
             'main': create_products_list_category('main', meal),
-            'garnish': create_products_list_category('garnish', meal)}
+            'garnish': create_products_list_category('garnish', meal),
+            'porridge': create_products_list_category('porridge', meal)
+        }
+
 
     # Прием пищи не сформирован
     else:

@@ -39,6 +39,7 @@ def create_user_today(meal):
             user_id=user.id,
             date_create=date.today(),
             full_name=user.full_name,
+            floor=user.floor,
             bed=user.bed,
             receipt_date=user.receipt_date,
             receipt_time=user.receipt_time,
@@ -68,6 +69,7 @@ def create_ready_order(meal):
             user_id=user.id,
             date_create=date.today(),
             full_name=user.full_name,
+            floor=user.floor,
             bed=user.bed,
             receipt_date=user.receipt_date,
             receipt_time=user.receipt_time,
@@ -408,9 +410,11 @@ def add_products_lp():
 def create_product_storage(meal):
     """
     Функция для вывода данных в "Заявку по блюдам раздачи"
-    В 11 записывает блюда раздачи на обед в ProductStorage для корректного отображения
+
+    В 11:00 записывает блюда раздачи на обед в ProductStorage для корректного отображения
     блюд раздачи в течение всего дня.
-    В 17 блюда на ужин.
+    В 17:00 блюда на ужин.
+    В 7:00 блюда на завтрак.
     """
     users = get_users_on_the_meal(meal)
     ProductStorage.objects.filter(date_create=(date.today() - timedelta(days=1))).delete()
@@ -418,7 +422,7 @@ def create_product_storage(meal):
     for user in users:
         menu = MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
         for item in menu.values():
-            for category in ['main', 'garnish', 'soup', 'salad']:
+            for category in ['main', 'garnish', 'soup', 'salad', 'porridge']:
                 if item[category] is not None:
                     if 'cafe' in item[category]:
                         to_create.append(ProductStorage(date_create=date.today(),

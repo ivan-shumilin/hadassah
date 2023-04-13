@@ -14,6 +14,7 @@ def translate(words):
         'salad': 'салат',
         'soup': 'суп',
         'main': 'основное блюдо',
-        'garnish': 'гарнир'
+        'garnish': 'гарнир',
+        'porridge': 'каши',
     }
     return dictionary.get(words, "")

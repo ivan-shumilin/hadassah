@@ -106,8 +106,12 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
                     'main': products_cafe[0],
                     'garnish': products_cafe[1],
                     'salad': products_cafe[2],
-                    'soup': products_cafe[3]
+                    'soup': products_cafe[3],
+                    'porridge': products_cafe[5]
                 }}
+
+        if meal == 'breakfast':
+            menu[meal]['cafe']['main'] = products_cafe[4]
 
         menu[meal].update({'lp': {
             'porridge': create_dict_products_lp(list(products_lp.filter(category='каша'))),

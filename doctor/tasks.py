@@ -102,6 +102,10 @@ def my_job_send_messang_changes(messang):
     return f'попытка - {send_messang_changes(messang)}'
 
 @shared_task()
+def my_job_create_product_storage_breakfast():
+    create_product_storage('breakfast')
+
+@shared_task()
 def my_job_create_product_storage_lunch():
     create_product_storage('lunch')
 

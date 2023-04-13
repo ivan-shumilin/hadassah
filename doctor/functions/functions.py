@@ -29,14 +29,20 @@ def get_is_change_diet(patient):
         patient.save()
 
 
-def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup):
+def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup, queryset_breakfast,
+                    queryset_porridge):
     """Сортировка блюд по приемам пищи."""
 
     if meal == 'breakfast':
-        return [], [], [], []
+        queryset_breakfast = queryset_breakfast[0:2]
+        queryset_porridge = queryset_porridge[0:2]
+        return [], [], [], [], queryset_breakfast, queryset_porridge
     if meal == 'afternoon':
-        return [], [], [], []
+        return [], [], [], [], [], []
     if meal == 'lunch':
+        queryset_breakfast = []
+        queryset_porridge = []
+
         if len(queryset_main_dishes) == 0:
             queryset_main_dishes = []
         if len(queryset_garnish) == 0:
@@ -65,7 +71,10 @@ def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad,
             queryset_soup = queryset_soup[0:2]
 
     if meal == 'dinner':
-        queryset_salad = queryset_soup = []
+        queryset_breakfast = []
+        queryset_porridge = []
+        queryset_salad = []
+        queryset_soup = []
 
         if len(queryset_main_dishes) <= 1:
             queryset_main_dishes = []
@@ -90,7 +99,7 @@ def sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad,
         if len(queryset_garnish) >= 3:
             queryset_garnish = queryset_garnish[2:4]
 
-    return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup
+    return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup, queryset_breakfast, queryset_porridge
 
 def parsing():
     import fake_useragent
@@ -342,7 +351,7 @@ def creating_meal_menu_cafe(date_get, diet, meal):
     exception = ['ОВД веган (пост) без глютена', 'БД день 2', 'БД день 1', 'Нулевая диета', 'ЩД без сахара',
                  'Безйодовая']
     if diet in exception:
-        return [], [], [], []
+        return [], [], [], [], [], []
     queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
         category='Вторые блюда').order_by(Lower('name')))
     queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
@@ -353,11 +362,19 @@ def creating_meal_menu_cafe(date_get, diet, meal):
         category='Первые блюда').order_by(Lower('name')))
     queryset_breakfast = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
         category='Завтраки').order_by(Lower('name')))
+    queryset_porridge = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+        category='Каши').order_by(Lower('name')))
 
-    queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup = \
-        sorting_dishes(meal, queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup)
+    queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup, queryset_breakfast, queryset_porridge = \
+        sorting_dishes(meal,
+                       queryset_main_dishes,
+                       queryset_garnish,
+                       queryset_salad,
+                       queryset_soup,
+                       queryset_breakfast,
+                       queryset_porridge)
 
-    return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup
+    return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup, queryset_breakfast, queryset_porridge
 
 def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
     products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
@@ -921,7 +938,7 @@ def counting_diets(users, floors):
         if len(users_diet) > 0:
             diets_count.append({
                 "name": diet,
-                "total": str(len(users_diet)),
+                "total": str(users_diet.count()),
                 "2nd_floor": len([users_floor for users_floor in users_diet \
                                   if users_floor.room_number in floors['second']]),
                 "3nd_floor": len([users_floor for users_floor in users_diet \
@@ -973,8 +990,8 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, 
                             menu_list.append(item.get('name'))
     return menu_list
 
-def create_list_users_on_floor(users, floors, meal, date_create, type_order, is_public):
-    users = [user for user in users if user.room_number in floors]
+def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_public):
+    users = users.filter(floor=floor)
     users_on_floor = []
     for user in users:
         users_on_floor.append(

@@ -14999,8 +14999,10 @@ function(e) {
         e('[data-eat-bottom-sheet="' + t + '"]').removeClass("active")
       })), r.addClass("active"), a.addClass("active")
 
-      addHtmlDinner();
+      addHtmlBreakfast();
       addHtmlLunch();
+      addHtmlAfternoon();
+      addHtmlDinner();
 
     })).click((function(t) {
       t.preventDefault(), e(this).trigger("choose")
