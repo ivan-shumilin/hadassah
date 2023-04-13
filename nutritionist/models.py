@@ -111,6 +111,7 @@ class UsersToday(models.Model):
     full_name = models.CharField(max_length=200, null=True)
     receipt_date = models.DateField(null=True)
     receipt_time = models.TimeField(null=True)
+    floor = models.CharField(max_length=200, null=True, default="Не выбрано")
 
     department = models.CharField(
         max_length=100,
@@ -343,6 +344,7 @@ class UsersReadyOrder(models.Model):
     full_name = models.CharField(max_length=200, null=True)
     receipt_date = models.DateField(null=True)
     receipt_time = models.TimeField(null=True)
+    floor = models.CharField(max_length=200, null=True, default="Не выбрано")
 
     department = models.CharField(
         max_length=100,
