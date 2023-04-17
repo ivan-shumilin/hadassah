@@ -395,7 +395,11 @@ const getOccupiedRooms = async function(userScript) {
 
 async function addRoomNumber(value, idRoomNumber , idDivRoomNumber, idDivBed) {
     selectRoomNumber = document.getElementById(idRoomNumber);
-    let secondFloor = ['2а-1',  '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13', '2а-14', '2а-15', '2а-16', '2а-17'];
+    let secondFloor = ['2а-1',  '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-8', '2а-9', '2а-10', '2а-11',
+    '2а-12',
+    '2а-13',
+    '2а-14',
+    '2а-15', '2а-16', '2а-17'];
     let thirdFloor = ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
                       '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4', '3b-5',
                       '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'];
@@ -454,14 +458,14 @@ async function addBed(value, idSelectBed, idDivBed, id_room_number) {
     document.getElementById('error_bed').classList.remove('error')
     document.getElementById(idDivBed).classList.remove('error')
     selectBed = document.getElementById(idSelectBed);
-    let singleRooms = ['2а-1', '2а-5', '2а-6', '2а-7', '2а-12', '2а-13',
+    let singleRooms = ['2а-1', '2а-5', '2а-6', '2а-7', '2а-8', '2а-9', '2а-10', '2а-12', '2а-13',
                        '2а-14', '2а-15', '3а-1', '3а-5', '3а-6', '3а-7',
                        '3а-8', '3а-9', '3а-10', '3а-11', '3а-12', '3а-13',
                        '3а-14', '3а-15','4а-1', '4а-6', '4а-7', '4а-8',
                        '4а-9', '4а-10', '4а-11', '4а-12', '4а-13', '4а-14',
                        '3b-1', '3b-2', '3b-3', '3b-4', '3b-5', '3b-6', '3b-7', '3b-8',
                        '3b-9', '3b-10'];
-    let doubleRooms = ['2а-2', '2а-3', '2а-4', '2а-16', '2а-17', '3а-2',
+    let doubleRooms = ['2а-2', '2а-3', '2а-4', '2а-11', '2а-16', '2а-17', '3а-2',
                         '3а-3', '3а-4', '3а-16', '3а-17', '4а-2', '4а-3',
                         '4а-4', '4а-5', '4а-15', '4а-16'];
     let tripleRooms = ['4а-5'];
