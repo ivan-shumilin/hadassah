@@ -514,10 +514,7 @@ def get_category(category):
     }
     return categorys[category]
 
-@extend_schema_view(
-    post=extend_schema(summary='Получение блюд из всех диет по категории на день ',
-                       tags=['Меню: Все блюда по категрии']),
-)
+
 class GetAllDishesByCategoryAPIView(APIView):
     def get(self, request):
         category = request.GET['category']
