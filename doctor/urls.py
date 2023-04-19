@@ -11,5 +11,7 @@ urlpatterns = [
     path('api/v1/get/occupiedrooms', views.GetOccupiedRoomsAPIView.as_view()),
     path('api/v1/patient/menu', views.GetPatientMenuAPIView.as_view()),
     path('api/v1/patient/menu/day', views.GetPatientMenuDayAPIView.as_view()),
-    ]
+    path('api/v1/get-all-dishes-by-category', views.GetAllDishesByCategoryAPIView.as_view()),
+
+]
 

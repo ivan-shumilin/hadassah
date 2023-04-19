@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+    <meta charset="utf-8">
+    <title>Менеджер блюд</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'doctor/css/foods.css' %}">
+
+</head>
+<body>
+{% load static %}
+
+<div class="container-flex">
+    <div class="div-order">
+        <div class="order">
+            <div class='info'>
+                <p class="mr-top-bottom-0">{{ full_name }}, {{ diet }}</p>
+                {% if comment %}
+                    <p class="mr-top-bottom-0">Комментарий: <span class="comment">{{ comment }}</span></p>
+                {% endif %}
+                <p class="mr-top-10">
+                    Выбор даты: 
+                    <input onchange="changeDate(this.value)" type="date" id="date" value="{{ date }}">
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="div-order">
+        <div class="order">
+            <h1>Менеджер блюд</h1>
+        </div>
+    </div>
+</div>
+
+<table id='table2' width="100%">
+    <tr>
+        <td>Меню пациента</td>
+        <td>Блюда для замены</td>
+    </tr>
+    <tr>
+        <td id='td_left'></td>
+        <td id='td_right' valign="top"></td>
+    </tr>
+</table>
+
+<div id="modal-delet" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title"></h5>
+                <button id="close-modal" type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+               <p id="modal-body"></p>
+            </div>
+
+            <div id="modal-footer" class="modal-footer">
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<button class="hidden" id="modal-start" type="button" data-bs-toggle="modal"data-bs-target="#modal-delet">hidden</button>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+</body>
+</html>
+
+<script>
+let userId = "{{ user_id }}"
+let date = "{{ date }}"
+
+const getMenuForPatient = async function(userId, date) {
+    let url = '/doctor/api/v1/patient/menu/day'
+    let body = {
+        "id_user": userId,
+        "date_show": date
+    };
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+displayInfoPatient(userId, date)
+async function displayInfoPatient(id, date) {
+
+    let res = await getMenuForPatient(id, date)
+    var obj = JSON.parse(res);
+    var obj = JSON.parse(obj);
+
+    addHtmlLeft(obj);
+}
+
+
+function addHtmlLeft(obj) {
+    // Добавляет меню на один день в выборе пациента
+    tdLeft = document.getElementById('td_left')
+    while (tdLeft.firstChild) {
+        tdLeft.removeChild(tdLeft.firstChild);
+    }
+    let meals = {
+        breakfast: "Завтрак", 
+        lunch: "Обед", 
+        afternoon: "Полдник", 
+        dinner: "Ужин"
+    }
+
+
+    let categorys = {
+        salad: "Салаты",
+        soup: "Первые блюда",
+        porridge: "Кашы", 
+        main: "Основные блюда", 
+        garnish: "Гарниры", 
+        dessert: "Десерты", 
+        fruit: "Фрукты", 
+        drink: "Напитки", 
+    }
+
+    let result = "";
+    result += '<table width="100%">'
+
+
+    for (var meal in meals ) {
+        result += '<tr>'
+        result += `<td class='meal'>${meals[meal]}</td>`
+        if (obj[meal] != null) {
+            for (var cat in categorys ) {
+                for (var item in obj[meal][cat] ) {
+                    if (obj[meal][cat][item] != null) {
+                        result += `<tr><td class="pd-top-bot-ziro">${(obj[meal][cat][item]['name'])}`
+                        result += `<img onclick="changeDish('${cat}')" class="icon" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
+                        result += `<img onclick="deleteDish('${obj[meal][cat][item]['id']}', '${obj[meal][cat][item]['name']}')" class="icon" width="18" height="19" title="Удалить блюдо" src="{% static "doctor/css/img/delete.svg" %}" alt="Удалить блюдо">`
+                        result += `</td></tr>`
+                    }
+
+                }
+            
+            }
+            result += `<tr><td><a onclick="addDish('${meal}')">Добавить блюдо`
+            result += `<img class="icon" width="17" height="17" src="{% static "doctor/css/img/add.svg" %}" alt="">`
+            result += `</a></td></tr>`
+        }
+        result += '</tr>'
+        
+    }
+    result += '</table>'
+
+    tdLeft.insertAdjacentHTML("afterbegin", result);
+}
+
+const getAllDishesByCategory = async function(cat, date) {
+    let url = `/doctor/api/v1/get-all-dishes-by-category?category=${cat}&date=${date}`
+    let response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+    });
+    let result = await response.text();
+    return result;
+} 
+
+function addHtmlRight(obj, category, mode) {
+    tdRight = document.getElementById('td_right')
+    while (tdRight.firstChild) {
+        tdRight.removeChild(tdRight.firstChild);
+    }
+
+    let categorys = {
+        salad: "салаты",
+        soup: "первые блюда",
+        porridge: "кашы", 
+        main: "основные блюда", 
+        garnish: "гарниры", 
+        dessert: "десерты", 
+        fruit: "фрукты", 
+        drink: "напитки", 
+    }
+
+    let result = "";
+    result += '<table width="100%">'
+    result += `<tr><td class='meal'>Категория: ${categorys[category]}</tr></td>`
+    if (mode === 'change') {
+        for (var item in obj) {
+            result += `<tr><td class="pd-top-bot-ziro">`
+            result += `<a onclick="chooseDish('p_id', '${obj[item]['name']}')">${obj[item]['name']}`
+            result += `<img class="icon" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
+
+            result += `</a></td></tr>`
+        }
+    } else {
+        for (var item in obj) {
+            result += `<tr><td class="pd-top-bot-ziro">`
+            result += `<a onclick="addDishModal('p_id', '${obj[item]['name']}')">${obj[item]['name']}`
+            result += `<img class="icon" width="17" height="17" title="Добавить блюдо" src="{% static "doctor/css/img/add.svg" %}" alt="Добавить блюдо">`
+
+            result += `</a></td></tr>`
+        }
+    }
+
+    result += '</table>'
+
+    tdRight.insertAdjacentHTML("afterbegin", result);
+}
+
+
+async function changeDish(category) {
+    let res = await getAllDishesByCategory(category, date);
+    var obj = JSON.parse(res);
+    addHtmlRight(obj, category, 'change');
+}
+
+async function changeDishAdd(category) {
+    document.getElementById('close-modal').click()
+    let res = await getAllDishesByCategory(category, date);
+    var obj = JSON.parse(res);
+    addHtmlRight(obj, category, 'add');
+}
+
+function changeDate(date) {
+    displayInfoPatient(userId, date)
+}
+
+function createModalDelete(producId, name) {
+    document.getElementById('modal-title').innerHTML = "Удаление блюда"
+    document.getElementById('modal-body').innerHTML = `Удалить блюдо <span class="bold">"${name}"</span>?`
+    modalFooter = document.getElementById('modal-footer')
+    while (modalFooter.firstChild) {
+        modalFooter.removeChild(modalFooter.firstChild);
+    }
+    let r = '';
+    r += `<input name="save" class="btn btn-danger" type="submit" value="Удалить">`
+    r += `<button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">`
+    r += `Закрыть</button>`
+
+    modalFooter.insertAdjacentHTML("afterbegin", r);
+    
+    document.getElementById('modal-start').click()
+}
+ 
+function createModalChooseDish(producId, name) {
+    document.getElementById('modal-title').innerHTML = "Замена блюдо";
+    document.getElementById('modal-body').innerHTML = `Заменить на блюдо <span class="bold">"${name}"</span>?`;
+    modalFooter = document.getElementById('modal-footer')
+    while (modalFooter.firstChild) {
+        modalFooter.removeChild(modalFooter.firstChild);
+    }
+    let r = '';
+    r += `<input name="save" class="btn btn-info" type="submit" value="Заменить">`
+    r += `<button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">`
+    r += `Закрыть</button>`
+
+    modalFooter.insertAdjacentHTML("afterbegin", r);
+
+    document.getElementById('modal-start').click();
+}
+
+ 
+function createModaladdDishModal(producId, name) {
+    document.getElementById('modal-title').innerHTML = "Добавить блюдо";
+    document.getElementById('modal-body').innerHTML = `Добавить блюдо <span class="bold">"${name}"</span>?`;
+    modalFooter = document.getElementById('modal-footer')
+    while (modalFooter.firstChild) {
+        modalFooter.removeChild(modalFooter.firstChild);
+    }
+    let r = '';
+    r += `<input name="save" class="btn btn-info" type="submit" value="Добавить">`
+    r += `<button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">`
+    r += `Закрыть</button>`
+
+    modalFooter.insertAdjacentHTML("afterbegin", r);
+
+    document.getElementById('modal-start').click();
+}
+
+function createModalAddDish(category) {
+    document.getElementById('modal-title').innerHTML = "Добавить блюдо";
+
+    modalBody = document.getElementById('modal-body');
+    while (modalBody.firstChild) {
+        modalBody.removeChild(modalBody.firstChild);
+    }
+    let r = '';
+    r += `<label for="inputState">Выберете категорию:</label>`
+    r += `<select onchange="changeDishAdd(this.value)" id="inputState" class="form-control">`
+    r += `<option value='salad' selected>Не выбрано</option>`
+    r += `<option value='salad'>Салаты</option>`
+    r += `<option value='soup'>Первые блюда</option>`
+    r += `<option value='porridge'>Кашы</option>`
+    r += `<option value='main'>Основные блюда</option>`
+    r += `<option value='garnish'>Гарниры</option>`
+    r += `<option value='dessert'>Десерты</option>`
+    r += `<option value='fruit'>Фрукты</option>`
+    r += `<option value='drink'>Напитки</option>`
+    r += `</select>`
+    modalBody.insertAdjacentHTML("afterbegin", r);
+
+    document.getElementById('modal-start').click();
+}
+
+function deleteDish(producId, name) {
+    modal = document.getElementById('modal-delet')
+    createModalDelete(producId, name)
+}
+
+function chooseDish(producId, name) {
+    modal = document.getElementById('modal-delet')
+    createModalChooseDish(producId, name)
+}
+
+function addDish(category) {
+    createModalAddDish(category)
+}
+
+function addDishModal(producId, name) {
+    createModaladdDishModal(producId, name)
+
+}
+
+
+
+</script>

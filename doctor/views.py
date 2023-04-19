@@ -42,7 +42,7 @@ from .logic.create_ingredient import create_ingredients
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
-
+from .serializer import DishesSerializer
 
 
 class ServiceWorkerView(TemplateView):
@@ -485,6 +485,51 @@ class GetPatientMenuDayAPIView(APIView):
         response = creates_dict_with_menu_patients_on_day(data['id_user'], data['date_show'])
         response = json.dumps(response)
         return Response(response)
+
+
+def get_day_of_the_week(date):
+    number_day_of_the_week = {
+    '1': 'понедельник',
+    '2': 'вторник',
+    '3': 'среда',
+    '4': 'четверг',
+    '5': 'пятница',
+    '6': 'суббота',
+    '7': 'воскресенье',
+    }
+    date = datetime.strptime(date, '%Y-%m-%d')
+    return number_day_of_the_week[str(date.isoweekday())]
+
+def get_category(category):
+    categorys = {
+        'salad': "салат",
+        'soup': "суп",
+        'porridge': "каша",
+        'main': "основной",
+        'garnish': "гарнир",
+        'dessert': "десерт",
+        'fruit': "фрукты",
+        'drink': "напиток",
+        'product': "товар"
+    }
+    return categorys[category]
+
+@extend_schema_view(
+    post=extend_schema(summary='Получение блюд из всех диет по категории на день ',
+                       tags=['Меню: Все блюда по категрии']),
+)
+class GetAllDishesByCategoryAPIView(APIView):
+    def get(self, request):
+        category = request.GET['category']
+        date = request.GET['date']
+        day_of_the_week = get_day_of_the_week(date)
+        category = get_category(category)
+        dishes = TimetableLp.objects.filter(day_of_the_week=day_of_the_week,
+                                            item__category=category
+                                            ).distinct('item__name')
+        serializer = DishesSerializer(dishes, many=True)
+        return Response(serializer.data)
+
 
 
 # def menu_for_staff(request):

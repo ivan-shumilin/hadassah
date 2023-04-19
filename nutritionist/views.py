@@ -1,6 +1,6 @@
 import json, os, requests, random, math, calendar, datetime, re, operator, openpyxl
 from dateutil.parser import parse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.forms import modelformset_factory
@@ -800,6 +800,20 @@ def password_reset(request):
 def manager(request):
     data = {}
     return render(request, 'admin.html', context=data)
+
+def manager_foods(request, id):
+    """Админ-панель для внесения изменений в приемы пищи пациента"""
+    patient = get_object_or_404(CustomUser, id=id)
+
+
+    data = {
+        'full_name': patient.full_name,
+        'diet': patient.type_of_diet,
+        'comment': patient.comment,
+        'date': str(date.today()),
+        'user_id': id,
+    }
+    return render(request, 'foods.html', context=data)
 
 def printed_form_one_new(request):
     is_public = False  # выводим технические названия блюд, не публичные
