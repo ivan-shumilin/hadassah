@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from nutritionist.views import *
 from nutritionist import views
+from hadassah.spectacular.urls import urlpatterns as doc_urls
 # from doctor.views import menu_for_staff
 
 
@@ -62,4 +63,5 @@ urlpatterns = [
 ]
 
 
+urlpatterns += doc_urls
 

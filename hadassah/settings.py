@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     # 'django_celery_beat',
     'widget_tweaks',
     'django_extensions',
-    'pwa',
+    'drf_spectacular',
+    # 'pwa',
 ]
 
 MIDDLEWARE = [
@@ -173,6 +174,14 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.IsAuthenticated',
     # ]
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Skolkovo PetrushkaGroup API',
+    'DESCRIPTION': 'API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
 }
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)

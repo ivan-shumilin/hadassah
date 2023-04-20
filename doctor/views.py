@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput, CheckboxInput
+from drf_spectacular.utils import extend_schema_view, extend_schema
+
 from .forms import PatientRegistrationForm, DietChoiceForm
 from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, BotChatId, СhangesUsersToday, \
     UsersToday, TimetableLp, Ingredient
