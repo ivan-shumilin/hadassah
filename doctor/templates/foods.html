@@ -78,7 +78,7 @@
 </html>
 <script>
 const userId = "{{ user_id }}"
-const date = "{{ date }}"
+var date = "{{ date }}"
 
 // ###################
 // Запросы по API   ##
@@ -290,6 +290,7 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
 
 // Выбор даты
 function changeDate(date) {
+    window.date = date
     displayInfoPatient(userId, date)
 }
 
