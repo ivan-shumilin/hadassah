@@ -530,6 +530,91 @@ class GetAllDishesByCategoryAPIView(APIView):
         return Response(serializer.data)
 
 
+class DeleteDishAPIView(APIView):
+    def delete(self, request):
+        id_user: str = request.data['id_user']
+        date: str = request.data['date']
+        product_id: str = request.data['product_id']
+        category: str = request.data['category']
+        meal: str = request.data['meal']
+        try:
+            item_menu = MenuByDay.objects.get(user_id=id_user,
+                                                 date=date,
+                                                 meal=meal)
+        except:
+            return Response({'status': 'Error'})
+        products = getattr(item_menu, category)
+        products = products.split(',')
+        products.remove(product_id)
+        products = ','.join(products)
+        setattr(item_menu, category, products)
+        item_menu.save()
+
+        return Response({'status':'OK'})
+
+
+class addDishAPIView(APIView):
+    def post(self, request):
+        id_user: str = request.data['id_user']
+        date: str = request.data['date']
+        product_id: str = request.data['product_id']
+        category: str = request.data['category']
+        meal: str = request.data['meal']
+        try:
+            item_menu = MenuByDay.objects.get(user_id=id_user,
+                                                 date=date,
+                                                 meal=meal)
+        except:
+            return Response({'status': 'Error'})
+        products = getattr(item_menu, category)
+        if products == "":
+            products = product_id
+        else:
+            products = products.split(',')
+            products.append(product_id)
+            products = ','.join(products)
+        setattr(item_menu, category, products)
+        item_menu.save()
+
+        return Response({'status':'OK'})
+
+
+class changeDishAPIView(APIView):
+    def put(self, request):
+        id_user: str = request.data['id_user']
+        date: str = request.data['date']
+        product_id_add: str = request.data['product_id_add']
+        product_id_del: str = request.data['product_id_del']
+        category: str = request.data['category']
+        meal: str = request.data['meal']
+
+        try:
+            with transaction.atomic():
+                item_menu = MenuByDay.objects.select_for_update().get(user_id=id_user,
+                                                                      date=date,
+                                                                      meal=meal)
+                products = getattr(item_menu, category)
+                products = products.split(',')
+                products.remove(product_id_del)
+                products = ','.join(products)
+                setattr(item_menu, category, products)
+
+                products = getattr(item_menu, category)
+                if products == "":
+                    products = product_id_add
+                else:
+                    products = products.split(',')
+                    products.append(product_id_add)
+                    products = ','.join(products)
+                setattr(item_menu, category, products)
+                item_menu.save()
+
+        except:
+            return Response({'status': 'Error'})
+
+        return Response({'status': 'OK'})
+
+
 
 # def menu_for_staff(request):
 #     type = 'menu_for_staff'

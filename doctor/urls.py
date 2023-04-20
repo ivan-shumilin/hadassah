@@ -1,4 +1,4 @@
-from django.urls import path, re_path, include
+from django.urls import path
 from . import views
 
 
@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/v1/patient/menu', views.GetPatientMenuAPIView.as_view()),
     path('api/v1/patient/menu/day', views.GetPatientMenuDayAPIView.as_view()),
     path('api/v1/get-all-dishes-by-category', views.GetAllDishesByCategoryAPIView.as_view()),
-
+    path('api/v1/delete-dish', views.DeleteDishAPIView.as_view()),
+    path('api/v1/add-dish', views.addDishAPIView.as_view()),
+    path('api/v1/change-dish', views.changeDishAPIView.as_view()),
 ]
-

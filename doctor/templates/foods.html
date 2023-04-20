@@ -76,10 +76,13 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 </body>
 </html>
-
 <script>
-let userId = "{{ user_id }}"
-let date = "{{ date }}"
+const userId = "{{ user_id }}"
+const date = "{{ date }}"
+
+// ###################
+// Запросы по API   ##
+// ###################
 
 const getMenuForPatient = async function(userId, date) {
     let url = '/doctor/api/v1/patient/menu/day'
@@ -98,7 +101,85 @@ const getMenuForPatient = async function(userId, date) {
     return result;
 }
 
+const addDishForPatient = async function(category, product_id, meal) {
+    let url = '/doctor/api/v1/add-dish'
+    let body = {
+        "id_user": userId,
+        "date": date,
+        "product_id": product_id,
+        "category": category,
+        "meal": meal,
+    };
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+const deleteDishForPatient = async function(category, product_id, meal) {
+    let url = '/doctor/api/v1/delete-dish'
+    let body = {
+        "id_user": userId,
+        "date": date,
+        "product_id": product_id,
+        "category": category,
+        "meal": meal,
+    };
+    let response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+const changeDishForPatient = async function(product_id_add, product_id_del, category, meal) {
+    let url = '/doctor/api/v1/change-dish'
+    let body = {
+        "id_user": userId,
+        "date": date,
+        "product_id_add": product_id_add,
+        "product_id_del": product_id_del,
+        "category": category,
+        "meal": meal,
+    };
+    let response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+const getAllDishesByCategory = async function(cat, date) {
+    let url = `/doctor/api/v1/get-all-dishes-by-category?category=${cat}&date=${date}`
+    let response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+    });
+    let result = await response.text();
+    return result;
+} 
+
+// ###################
+// Старт страницы   ##
+// ###################
+// Показать рацион пациента после открытия страницы
 displayInfoPatient(userId, date)
+
 async function displayInfoPatient(id, date) {
 
     let res = await getMenuForPatient(id, date)
@@ -107,7 +188,6 @@ async function displayInfoPatient(id, date) {
 
     addHtmlLeft(obj);
 }
-
 
 function addHtmlLeft(obj) {
     // Добавляет меню на один день в выборе пациента
@@ -146,8 +226,8 @@ function addHtmlLeft(obj) {
                 for (var item in obj[meal][cat] ) {
                     if (obj[meal][cat][item] != null) {
                         result += `<tr><td class="pd-top-bot-ziro">${(obj[meal][cat][item]['name'])}`
-                        result += `<img onclick="changeDish('${cat}')" class="icon" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
-                        result += `<img onclick="deleteDish('${obj[meal][cat][item]['id']}', '${obj[meal][cat][item]['name']}')" class="icon" width="18" height="19" title="Удалить блюдо" src="{% static "doctor/css/img/delete.svg" %}" alt="Удалить блюдо">`
+                        result += `<img onclick="changeDish('${cat}', '${meal}', '${obj[meal][cat][item]['id']}', '${obj[meal][cat][item]['name']}')" class="icon" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
+                        result += `<img onclick="deleteDish('${obj[meal][cat][item]['id']}', '${obj[meal][cat][item]['name']}', '${cat}', '${meal}')" class="icon" width="18" height="19" title="Удалить блюдо" src="{% static "doctor/css/img/delete.svg" %}" alt="Удалить блюдо">`
                         result += `</td></tr>`
                     }
 
@@ -166,19 +246,7 @@ function addHtmlLeft(obj) {
     tdLeft.insertAdjacentHTML("afterbegin", result);
 }
 
-const getAllDishesByCategory = async function(cat, date) {
-    let url = `/doctor/api/v1/get-all-dishes-by-category?category=${cat}&date=${date}`
-    let response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json;',
-      },
-    });
-    let result = await response.text();
-    return result;
-} 
-
-function addHtmlRight(obj, category, mode) {
+function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
     tdRight = document.getElementById('td_right')
     while (tdRight.firstChild) {
         tdRight.removeChild(tdRight.firstChild);
@@ -201,7 +269,7 @@ function addHtmlRight(obj, category, mode) {
     if (mode === 'change') {
         for (var item in obj) {
             result += `<tr><td class="pd-top-bot-ziro">`
-            result += `<a onclick="chooseDish('p_id', '${obj[item]['name']}')">${obj[item]['name']}`
+            result += `<a onclick="chooseDish('${obj[item]['id']}', '${obj[item]['name']}', '${product_id_del}', '${name_del}', '${category}', '${meal}')">${obj[item]['name']}`
             result += `<img class="icon" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
 
             result += `</a></td></tr>`
@@ -209,9 +277,8 @@ function addHtmlRight(obj, category, mode) {
     } else {
         for (var item in obj) {
             result += `<tr><td class="pd-top-bot-ziro">`
-            result += `<a onclick="addDishModal('p_id', '${obj[item]['name']}')">${obj[item]['name']}`
+            result += `<a onclick="addDishModal('${obj[item]['id']}', '${obj[item]['name']}', '${category}', '${meal}')">${obj[item]['name']}`
             result += `<img class="icon" width="17" height="17" title="Добавить блюдо" src="{% static "doctor/css/img/add.svg" %}" alt="Добавить блюдо">`
-
             result += `</a></td></tr>`
         }
     }
@@ -221,50 +288,24 @@ function addHtmlRight(obj, category, mode) {
     tdRight.insertAdjacentHTML("afterbegin", result);
 }
 
-
-async function changeDish(category) {
-    let res = await getAllDishesByCategory(category, date);
-    var obj = JSON.parse(res);
-    addHtmlRight(obj, category, 'change');
-}
-
-async function changeDishAdd(category) {
-    document.getElementById('close-modal').click()
-    let res = await getAllDishesByCategory(category, date);
-    var obj = JSON.parse(res);
-    addHtmlRight(obj, category, 'add');
-}
-
+// Выбор даты
 function changeDate(date) {
     displayInfoPatient(userId, date)
 }
 
-function createModalDelete(producId, name) {
-    document.getElementById('modal-title').innerHTML = "Удаление блюда"
-    document.getElementById('modal-body').innerHTML = `Удалить блюдо <span class="bold">"${name}"</span>?`
-    modalFooter = document.getElementById('modal-footer')
-    while (modalFooter.firstChild) {
-        modalFooter.removeChild(modalFooter.firstChild);
-    }
-    let r = '';
-    r += `<input name="save" class="btn btn-danger" type="submit" value="Удалить">`
-    r += `<button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">`
-    r += `Закрыть</button>`
+// ###################
+// Заменить блюдо  ##
+// ###################
 
-    modalFooter.insertAdjacentHTML("afterbegin", r);
-    
-    document.getElementById('modal-start').click()
-}
- 
-function createModalChooseDish(producId, name) {
+function createModalChooseDish(product_id_add, name_add, product_id_del, name_del, category, meal) {
     document.getElementById('modal-title').innerHTML = "Замена блюдо";
-    document.getElementById('modal-body').innerHTML = `Заменить на блюдо <span class="bold">"${name}"</span>?`;
+    document.getElementById('modal-body').innerHTML = `Заменить <span class="bold">"${name_del}"</span> на <span class="bold">"${name_add}"</span>?`;
     modalFooter = document.getElementById('modal-footer')
     while (modalFooter.firstChild) {
         modalFooter.removeChild(modalFooter.firstChild);
     }
     let r = '';
-    r += `<input name="save" class="btn btn-info" type="submit" value="Заменить">`
+    r += `<input onclick="changeDishAPI('${product_id_add}', '${product_id_del}', '${category}', '${meal}')" name="save" class="btn btn-info" type="submit" value="Заменить">`
     r += `<button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">`
     r += `Закрыть</button>`
 
@@ -273,8 +314,34 @@ function createModalChooseDish(producId, name) {
     document.getElementById('modal-start').click();
 }
 
+async function changeDish(category, meal, product_id, name) {
+    let res = await getAllDishesByCategory(category, date);
+    var obj = JSON.parse(res);
+    addHtmlRight(obj, category, 'change', meal, product_id, name);
+}
+
+// Выбор блюда из предложенных по категории
+function chooseDish(product_id_add, name_add, product_id_del, name_del, category, meal) {
+    modal = document.getElementById('modal-delet')
+    createModalChooseDish(product_id_add, name_add, product_id_del, name_del, category, meal)
+}
+
+async function changeDishAPI(product_id_add, product_id_del, category, meal) {
+    let res = await changeDishForPatient(product_id_add, product_id_del, category, meal);
+    var obj = JSON.parse(res);
+    document.getElementById('close-modal').click()
+    if (obj['status'] == 'Error') {
+        alert('Server error...')
+    } else {
+        displayInfoPatient(userId, date)
+    }
+}
+
+// ###################
+// Добавление блюда ##
+// ###################
  
-function createModaladdDishModal(producId, name) {
+function createModaladdDishModal(product_id, name, category, meal) {
     document.getElementById('modal-title').innerHTML = "Добавить блюдо";
     document.getElementById('modal-body').innerHTML = `Добавить блюдо <span class="bold">"${name}"</span>?`;
     modalFooter = document.getElementById('modal-footer')
@@ -282,7 +349,7 @@ function createModaladdDishModal(producId, name) {
         modalFooter.removeChild(modalFooter.firstChild);
     }
     let r = '';
-    r += `<input name="save" class="btn btn-info" type="submit" value="Добавить">`
+    r += `<input onclick="addDishAPI('${category}', '${product_id}', '${meal}')" name="save" class="btn btn-info" type="submit" value="Добавить">`
     r += `<button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">`
     r += `Закрыть</button>`
 
@@ -291,7 +358,7 @@ function createModaladdDishModal(producId, name) {
     document.getElementById('modal-start').click();
 }
 
-function createModalAddDish(category) {
+function createModalAddDish(mael) {
     document.getElementById('modal-title').innerHTML = "Добавить блюдо";
 
     modalBody = document.getElementById('modal-body');
@@ -300,7 +367,7 @@ function createModalAddDish(category) {
     }
     let r = '';
     r += `<label for="inputState">Выберете категорию:</label>`
-    r += `<select onchange="changeDishAdd(this.value)" id="inputState" class="form-control">`
+    r += `<select onchange="changeDishAdd(this.value, '${mael}')" id="inputState" class="form-control">`
     r += `<option value='salad' selected>Не выбрано</option>`
     r += `<option value='salad'>Салаты</option>`
     r += `<option value='soup'>Первые блюда</option>`
@@ -316,25 +383,66 @@ function createModalAddDish(category) {
     document.getElementById('modal-start').click();
 }
 
-function deleteDish(producId, name) {
-    modal = document.getElementById('modal-delet')
-    createModalDelete(producId, name)
+async function changeDishAdd(category, meal) {
+    document.getElementById('close-modal').click()
+    let res = await getAllDishesByCategory(category, date);
+    var obj = JSON.parse(res);
+    addHtmlRight(obj, category, 'add', meal, '', '');
 }
 
-function chooseDish(producId, name) {
-    modal = document.getElementById('modal-delet')
-    createModalChooseDish(producId, name)
+function addDish(mael) {
+    createModalAddDish(mael)
 }
 
-function addDish(category) {
-    createModalAddDish(category)
+function addDishModal(product_id, name, category, meal) {
+    createModaladdDishModal(product_id, name, category, meal)
 }
 
-function addDishModal(producId, name) {
-    createModaladdDishModal(producId, name)
-
+async function addDishAPI(category, product_id, meal) {
+    let res = await addDishForPatient(category, product_id, meal);
+    var obj = JSON.parse(res);
+    document.getElementById('close-modal').click()
+    if (obj['status'] == 'Error') {
+        alert('Server error...')
+    } else {
+        displayInfoPatient(userId, date)
+    }
 }
 
+// #################
+// Удаление блюда ##
+// #################
 
+function createModalDelete(product_id, name, category, meal) {
+    document.getElementById('modal-title').innerHTML = "Удаление блюда"
+    document.getElementById('modal-body').innerHTML = `Удалить блюдо <span class="bold">"${name}"</span>?`
+    modalFooter = document.getElementById('modal-footer')
+    while (modalFooter.firstChild) {
+        modalFooter.removeChild(modalFooter.firstChild);
+    }
+    let r = '';
+    r += `<input onclick="deleteDishAPI('${category}', '${product_id}', '${meal}')" name="save" class="btn btn-danger" type="submit" value="Удалить">`
+    r += `<button type="button" class="btn-close btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">`
+    r += `Закрыть</button>`
+
+    modalFooter.insertAdjacentHTML("afterbegin", r);
+    
+    document.getElementById('modal-start').click()
+}
+
+function deleteDish(product_id, name, category, meal) {
+    createModalDelete(product_id, name, category, meal)
+}
+
+async function deleteDishAPI(category, product_id, meal) {
+    let res = await deleteDishForPatient(category, product_id, meal);
+    var obj = JSON.parse(res);
+    document.getElementById('close-modal').click()
+    if (obj['status'] == 'Error') {
+        alert('Server error...')
+    } else {
+        displayInfoPatient(userId, date)
+    }
+}
 
 </script>
