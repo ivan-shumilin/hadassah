@@ -528,6 +528,10 @@ var diet_menu = document.getElementById('diet-menu')
             diet_menu.classList.add('purple-menu')
             diet_name.innerHTML = 'Безйодовая'
         }
+        if (diet_name.innerHTML == 'ПЭТ/КТ') {
+            diet_menu.classList.add('pink')
+            diet_name.innerHTML = 'ПЭТ/КТ'
+        }
 
 async function validationChangeEmailForm() {
     var form1 = document.getElementById('profile-form-id');

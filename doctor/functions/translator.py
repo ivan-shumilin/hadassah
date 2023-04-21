@@ -46,5 +46,6 @@ def translate_diet(diet):
         'БД день 1': 'bd',
         'БД день 2': 'bd',
         'Безйодовая': 'Безйодовая',
+        'ПЭТ/КТ': 'ПЭТ/КТ',
     }
     return TYPE_DIET[diet]

@@ -349,7 +349,7 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
 
 def creating_meal_menu_cafe(date_get, diet, meal):
     exception = ['ОВД веган (пост) без глютена', 'БД день 2', 'БД день 1', 'Нулевая диета', 'ЩД без сахара',
-                 'Безйодовая']
+                 'Безйодовая', 'ПЭТ/КТ']
     if diet in exception:
         return [], [], [], [], [], []
     queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
@@ -930,7 +930,7 @@ def create_without_comment(users_diet, floors, diet):
 def counting_diets(users, floors):
     diets_name = ['ОВД', 'ОВД без сахара', 'ЩД', 'ЩД без сахара', 'БД день 1',\
                   'БД день 2', 'ОВД веган (пост) без глютена', 'Нулевая диета',\
-                  'НБД', 'ВБД', 'НКД', 'ВКД', 'Безйодовая']
+                  'НБД', 'ВБД', 'НКД', 'ВКД', 'Безйодовая', 'ПЭТ/КТ']
     diets_count = []
     for diet in diets_name:
         users_diet = users.filter(type_of_diet=diet)
