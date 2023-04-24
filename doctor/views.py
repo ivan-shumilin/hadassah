@@ -44,7 +44,7 @@ from .logic.create_ingredient import create_ingredients
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
-from .serializer import DishesSerializer
+from .serializer import DishesSerializer, PatientsSerializer, InfoPatientSerializer
 
 
 class ServiceWorkerView(TemplateView):
@@ -516,6 +516,29 @@ def get_category(category):
     }
     return categorys[category]
 
+
+class GetPatientsAPIView(APIView):
+    def get(self, request):
+        date = request.GET['date']
+
+        patients = CustomUser.objects.values('full_name', 'type_of_diet', 'id')\
+            .filter(status='patient')\
+            .order_by('full_name')
+        serializer = PatientsSerializer(patients, many=True)
+        return Response(serializer.data)
+
+
+class GetInfoPatientAPIView(APIView):
+    def get(self, request):
+        user_id = request.GET['user_id']
+
+        try:
+            patient = CustomUser.objects.get(id=user_id)
+        except:
+            return Response({'status': 'Error'})
+
+        serializer = InfoPatientSerializer(patient)
+        return Response(serializer.data)
 
 class GetAllDishesByCategoryAPIView(APIView):
     def get(self, request):

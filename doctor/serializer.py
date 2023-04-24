@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from nutritionist.models import TimetableLp, ProductLp
+from nutritionist.models import TimetableLp, CustomUser
 
 
 class DishesSerializer(serializers.ModelSerializer):
@@ -16,3 +16,15 @@ class DishesSerializer(serializers.ModelSerializer):
 
     def get_id(self, instance):
         return instance.item.id
+
+class PatientsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = ('full_name', 'type_of_diet', 'id')
+
+class InfoPatientSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = ('full_name', 'type_of_diet', 'comment')

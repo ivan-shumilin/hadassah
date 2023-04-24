@@ -10,10 +10,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    
 
     <!-- Add additional CSS in static file -->
     {% load static %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'doctor/select/css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'doctor/css/foods.css' %}">
+    <script src="{% static 'doctor/select/js/select2.min.js' %}"></script>
+    
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script> -->
+    
 
 </head>
 <body>
@@ -23,14 +30,16 @@
     <div class="div-order">
         <div class="order">
             <div class='info'>
-                <p class="mr-top-bottom-0">{{ full_name }}, {{ diet }}</p>
-                {% if comment %}
-                    <p class="mr-top-bottom-0">Комментарий: <span class="comment">{{ comment }}</span></p>
-                {% endif %}
+                <p class="mr-top-bottom-0" id="name-diet"></p>
+                <p class="mr-top-bottom-0">Комментарий: <span class="comment" id="comment"></span></p>
+
                 <p class="mr-top-10">
                     Выбор даты: 
                     <input onchange="changeDate(this.value)" type="date" id="date" value="{{ date }}">
                 </p>
+                Выбор пациента: 
+                <select onchange="changePatients(this.value)" id="patients-list" class="js-states form-control"></select>
+            </div>
             </div>
         </div>
     </div>
@@ -40,6 +49,7 @@
         </div>
     </div>
 </div>
+
 
 <table id='table2' width="100%">
     <tr>
@@ -77,7 +87,13 @@
 </body>
 </html>
 <script>
-const userId = "{{ user_id }}"
+
+// выбор пациента
+$('select').select2();
+
+$(".js-states").select2();
+
+var userId = "{{ user_id }}"
 var date = "{{ date }}"
 
 // ###################
@@ -174,19 +190,52 @@ const getAllDishesByCategory = async function(cat, date) {
     return result;
 } 
 
+const getPatients = async function(date) {
+  const url = `/doctor/api/v1/get-patients?date=${date}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  const result = await response.json();
+  return result;
+}
+
+const getInfoPatient = async function(id) {
+  const url = `/doctor/api/v1/get-info-patient?user_id=${id}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  const result = await response.json();
+  return result;
+}
+
 // ###################
 // Старт страницы   ##
 // ###################
 // Показать рацион пациента после открытия страницы
-displayInfoPatient(userId, date)
+displayInfoPatient()
 
-async function displayInfoPatient(id, date) {
+async function displayInfoPatient() {
+    var id = window.userId
+    var date = window.date
 
+// получаем информацию о пациенте
+    let res0 = await getInfoPatient(id)
+    addInfoPatient(res0);
+
+// получаем меню для пациента
     let res = await getMenuForPatient(id, date)
     var obj = JSON.parse(res);
     var obj = JSON.parse(obj);
-
     addHtmlLeft(obj);
+// плучить всех активных пациентов на это дату
+    let res1 = await getPatients(date);
+    addPatientForSearch(res1);
 }
 
 function addHtmlLeft(obj) {
@@ -288,11 +337,49 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
     tdRight.insertAdjacentHTML("afterbegin", result);
 }
 
+function addInfoPatient(obj) {
+    document.getElementById('name-diet').innerHTML = `${obj['full_name']}, ${obj['type_of_diet']}`
+    if (obj['comment'] === '') {
+        document.getElementById('comment').innerHTML = `Отсутсвует`
+    } else {
+        document.getElementById('comment').innerHTML = `${obj['comment']}`
+    }
+}
+
+// выбор пациета
+// function choosePatient(id) {
+
+// }
+
+// добавляет пациентов в лист выдачи поиска
+function addPatientForSearch(obj) {
+  let dataList = document.getElementById('patients-list');
+  while (dataList.firstChild) {
+    dataList.removeChild(dataList.firstChild);
+  }
+
+  let result = `<option value=""></option>`;
+
+  for (var item in obj) {
+    result += `<option value="${obj[item].id}">${obj[item].full_name}</option>`;
+  }
+
+  dataList.insertAdjacentHTML("afterbegin", result);
+}
+
 // Выбор даты
 function changeDate(date) {
     window.date = date
-    displayInfoPatient(userId, date)
+    displayInfoPatient()
 }
+
+// Выбор пациента
+function changePatients(userId) {
+    window.userId = userId
+    displayInfoPatient()
+}
+
+
 
 // ###################
 // Заменить блюдо  ##
@@ -334,7 +421,7 @@ async function changeDishAPI(product_id_add, product_id_del, category, meal) {
     if (obj['status'] == 'Error') {
         alert('Server error...')
     } else {
-        displayInfoPatient(userId, date)
+        displayInfoPatient()
     }
 }
 
@@ -411,7 +498,7 @@ async function addDishAPI(category, product_id, meal) {
     if (obj['status'] == 'Error') {
         alert('Server error...')
     } else {
-        displayInfoPatient(userId, date)
+        displayInfoPatient()
     }
 }
 
@@ -447,7 +534,7 @@ async function deleteDishAPI(category, product_id, meal) {
     if (obj['status'] == 'Error') {
         alert('Server error...')
     } else {
-        displayInfoPatient(userId, date)
+        displayInfoPatient()
     }
 }
 

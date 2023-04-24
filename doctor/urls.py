@@ -15,4 +15,6 @@ urlpatterns = [
     path('api/v1/delete-dish', views.DeleteDishAPIView.as_view()),
     path('api/v1/add-dish', views.addDishAPIView.as_view()),
     path('api/v1/change-dish', views.changeDishAPIView.as_view()),
+    path('api/v1/get-patients', views.GetPatientsAPIView.as_view()),
+    path('api/v1/get-info-patient', views.GetInfoPatientAPIView.as_view()),
 ]

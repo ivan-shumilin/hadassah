@@ -453,3 +453,11 @@ label {
 #modal-body {
     font-size: 14px;
 }
+
+.patient-search {
+    width: 400px;
+}
+
+.js-states {
+    width: 200px;
+  }

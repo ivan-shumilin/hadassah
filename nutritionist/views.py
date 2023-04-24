@@ -801,17 +801,16 @@ def manager(request):
     data = {}
     return render(request, 'admin.html', context=data)
 
-def manager_foods(request, id):
+def admin_foods(request):
     """Админ-панель для внесения изменений в приемы пищи пациента"""
-    patient = get_object_or_404(CustomUser, id=id)
-
+    patient = CustomUser.objects.filter(status='patient').order_by('full_name').first()
 
     data = {
         'full_name': patient.full_name,
         'diet': patient.type_of_diet,
         'comment': patient.comment,
         'date': str(date.today()),
-        'user_id': id,
+        'user_id': patient.id,
     }
     return render(request, 'foods.html', context=data)
 
