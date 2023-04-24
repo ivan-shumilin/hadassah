@@ -24,7 +24,7 @@ from doctor.functions.functions import sorting_dishes, parsing, \
     creates_dict_with_menu_patients, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two, archiving_user, get_not_active_users_set, \
-    get_occupied_rooms
+    get_occupied_rooms, creates_dict_with_menu_patients_on_day_test
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes, create_user_tomorrow, create_ready_order, create_report, create_products_lp, add_products_lp,\
@@ -489,6 +489,15 @@ class GetPatientMenuDayAPIView(APIView):
         return Response(response)
 
 
+# Пока скопировал ручку GetPatientMenuDayAPIView, проверю работу и верну.
+class GetPatientMenuDayTestAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        response = creates_dict_with_menu_patients_on_day_test(data['id_user'], data['date_show'])
+        response = json.dumps(response)
+        return Response(response)
+
+
 def get_day_of_the_week(date):
     number_day_of_the_week = {
     '1': 'понедельник',
@@ -504,15 +513,17 @@ def get_day_of_the_week(date):
 
 def get_category(category):
     categorys = {
-        'salad': "салат",
-        'soup': "суп",
-        'porridge': "каша",
-        'main': "основной",
-        'garnish': "гарнир",
-        'dessert': "десерт",
-        'fruit': "фрукты",
-        'drink': "напиток",
-        'product': "товар"
+        'salad': ["салат"],
+        'soup': ["суп"],
+        'porridge': ["каша"],
+        'main': ["основной"],
+        'garnish': ["гарнир"],
+        'dessert': ["десерт"],
+        'fruit': ["фрукты"],
+        'drink': ["напиток"],
+        'products': ["товар", "hidden"],
+        'hidden': ["hidden"],
+        'bouillon': ["бульон"],
     }
     return categorys[category]
 
@@ -547,7 +558,7 @@ class GetAllDishesByCategoryAPIView(APIView):
         day_of_the_week = get_day_of_the_week(date)
         category = get_category(category)
         dishes = TimetableLp.objects.filter(day_of_the_week=day_of_the_week,
-                                            item__category=category
+                                            item__category__in=category
                                             ).distinct('item__name')
         serializer = DishesSerializer(dishes, many=True)
         return Response(serializer.data)
@@ -576,7 +587,7 @@ class DeleteDishAPIView(APIView):
         return Response({'status':'OK'})
 
 
-class addDishAPIView(APIView):
+class AddDishAPIView(APIView):
     def post(self, request):
         id_user: str = request.data['id_user']
         date: str = request.data['date']
@@ -602,7 +613,7 @@ class addDishAPIView(APIView):
         return Response({'status':'OK'})
 
 
-class changeDishAPIView(APIView):
+class ChangeDishAPIView(APIView):
     def put(self, request):
         id_user: str = request.data['id_user']
         date: str = request.data['date']

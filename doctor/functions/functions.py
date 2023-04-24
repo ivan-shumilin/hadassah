@@ -347,6 +347,32 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
         }
     return menu
 
+
+def creates_dict_with_menu_patients_on_day_test(id, date_show):
+    """Создаем меню на день для вывода в “Корректировка рациона пациента”."""
+    menu_all = MenuByDay.objects.filter(user_id=id)
+    menu = {}
+
+    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+        drink = [product\
+                 for product in check_value_two(menu_all, date_show, meal, "drink", is_public=False)\
+                 if product != None]
+        drink = [product for product in drink if str(product.get('id')) != '458']
+        menu[meal] = {
+            'main': check_value_two(menu_all, date_show, meal, "main", is_public=False),
+            'garnish': check_value_two(menu_all, date_show, meal, "garnish", is_public=False),
+            'porridge': check_value_two(menu_all, date_show, meal, "porridge", is_public=False),
+            'soup': check_value_two(menu_all, date_show, meal, "soup", is_public=False),
+            'dessert': check_value_two(menu_all, date_show, meal, "dessert", is_public=False),
+            'fruit': check_value_two(menu_all, date_show, meal, "fruit", is_public=False),
+            'drink': check_value_two(menu_all, date_show, meal, "drink", is_public=False),
+            'salad': check_value_two(menu_all, date_show, meal, "salad", is_public=False),
+            'products': check_value_two(menu_all, date_show, meal, "products", is_public=False),
+            'hidden': check_value_two(menu_all, date_show, meal, "hidden", is_public=False),
+            'bouillon': check_value_two(menu_all, date_show, meal, "bouillon", is_public=False),
+        }
+    return menu
+
 def creating_meal_menu_cafe(date_get, diet, meal):
     exception = ['ОВД веган (пост) без глютена', 'БД день 2', 'БД день 1', 'Нулевая диета', 'ЩД без сахара',
                  'Безйодовая', 'ПЭТ/КТ']

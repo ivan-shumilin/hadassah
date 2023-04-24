@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from doctor.functions.functions import add_features
 from nutritionist.models import TimetableLp, CustomUser
 
 
@@ -25,6 +26,17 @@ class PatientsSerializer(serializers.ModelSerializer):
 
 class InfoPatientSerializer(serializers.ModelSerializer):
 
+    comment = serializers.SerializerMethodField()
+
+
     class Meta:
         model = CustomUser
         fields = ('full_name', 'type_of_diet', 'comment')
+
+    def get_comment(self, instance):
+        comment = add_features(instance.comment,
+                               instance.is_probe,
+                               instance.is_without_salt,
+                               instance.is_without_lactose,
+                               instance.is_pureed_nutrition)
+        return comment
