@@ -236,6 +236,8 @@ async function displayInfoPatient() {
 // плучить всех активных пациентов на это дату
     let res1 = await getPatients(date);
     addPatientForSearch(res1);
+// отчистить правую сторону
+    delHtmlRight();
 }
 
 function addHtmlLeft(obj) {
@@ -335,6 +337,13 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
     result += '</table>'
 
     tdRight.insertAdjacentHTML("afterbegin", result);
+}
+
+function delHtmlRight() {
+    tdRight = document.getElementById('td_right')
+    while (tdRight.firstChild) {
+        tdRight.removeChild(tdRight.firstChild);
+        }
 }
 
 function addInfoPatient(obj) {
