@@ -843,7 +843,7 @@ def edit_user(user_form, type, request):
             my_job_send_messang_changes.delay(messang)
     return True
 
-
+# test
 def archiving_user(user, request):
     if user.status == 'patient_archive':
         return
