@@ -66,11 +66,23 @@ app.conf.beat_schedule = {
         'task': 'doctor.tasks.my_job_create_product_storage_dinner',
         'schedule': crontab(minute=0, hour='17'),
     },
-
-    # 'my_job_update_diet_bd': {
-    #     'task': 'doctor.tasks.my_job_update_diet_bd',
-    #     'schedule': crontab(minute=0, hour='19'),
-    # },
+# Создание записей для отчета
+    'my_job_create_report_breakfast': {
+        'task': 'doctor.tasks.my_job_create_report_breakfast',
+        'schedule': crontab(minute=58, hour='8'),
+    },
+    'my_job_create_report_lunch': {
+        'task': 'doctor.tasks.my_job_create_report_lunch',
+        'schedule': crontab(minute=58, hour='12'),
+    },
+    'my_job_create_report_afternoon': {
+        'task': 'doctor.tasks.my_job_create_report_afternoon',
+        'schedule': crontab(minute=58, hour='15'),
+    },
+    'my_job_create_report_dinner': {
+        'task': 'doctor.tasks.my_job_create_report_dinner',
+        'schedule': crontab(minute=58, hour='18'),
+    },
 }
 app.conf.timezone = 'Europe/Moscow'
 app.autodiscover_tasks()

@@ -64,32 +64,51 @@ def my_job_applies_changes_dinner():
     create_user_today('dinner')
 
 
+# создание готовой заявки на прием пищи
 @shared_task()
 def my_job_create_ready_order_breakfast():
     create_ready_order('breakfast')
-    create_report('breakfast')
 
 
 @shared_task()
 def my_job_create_ready_order_lunch():
     create_ready_order('lunch')
-    create_report('lunch')
 
 
 @shared_task()
 def my_job_create_ready_order_afternoon():
     create_ready_order('afternoon')
-    create_report('afternoon')
 
 @shared_task()
 def my_job_create_ready_order_dinner():
     create_ready_order('dinner')
+
+# создание записей для отчета
+@shared_task()
+def my_job_create_report_breakfast():
+    create_report('breakfast')
+
+
+@shared_task()
+def my_job_create_report_lunch():
+    create_report('lunch')
+
+
+@shared_task()
+def my_job_create_report_afternoon():
+    create_report('afternoon')
+
+@shared_task()
+def my_job_create_report_dinner():
     create_report('dinner')
 
+
+# создаем таблицу с пользователями на сегодня
 @shared_task()
 def my_job_create_user_today():
     create_user_today()  # создаем таблицу с пользователями на сегодня
 
+# создаем таблицу с пользователями на завтра
 @shared_task()
 def my_job_create_user_tomorrow():
     """Создаем таблицу с пользователями на завтра."""
