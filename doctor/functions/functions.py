@@ -843,6 +843,7 @@ def edit_user(user_form, type, request):
             my_job_send_messang_changes.delay(messang)
     return True
 
+
 def archiving_user(user, request):
     if user.status == 'patient_archive':
         return
@@ -871,6 +872,7 @@ def archiving_user(user, request):
         messang += f'({user_name})'
         my_job_send_messang_changes.delay(messang)
     return 'archived'
+
 
 def add_features(comment, is_probe, is_without_salt, is_without_lactose, is_pureed_nutrition):
     """Добавляем к комментраию признаки для вывода в Сводный отчет."""
