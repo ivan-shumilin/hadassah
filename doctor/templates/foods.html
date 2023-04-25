@@ -54,7 +54,7 @@
 <table id='table2' width="100%">
     <tr>
         <td>Меню пациента</td>
-        <td>Блюда для замены</td>
+        <td id='td_right_title'>Блюда для замены</td>
     </tr>
     <tr>
         <td id='td_left'></td>
@@ -253,6 +253,13 @@ function addHtmlLeft(obj) {
         dinner: "Ужин"
     }
 
+    let orderStatus = {
+        'done': "отдали", 
+        'fix-order': "заказ сформирован", 
+        'flex-order': "заказ еще формируется", 
+
+    }
+
 
     let categorys = {
         salad: "Салаты",
@@ -274,7 +281,7 @@ function addHtmlLeft(obj) {
 
     for (var meal in meals ) {
         result += '<tr>'
-        result += `<td class='meal'>${meals[meal]}</td>`
+        result += `<td class='meal'>${meals[meal]}: ${orderStatus[obj[meal].order_status]}</td>`
         if (obj[meal] != null) {
             for (var cat in categorys ) {
                 for (var item in obj[meal][cat] ) {
@@ -305,6 +312,8 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
     while (tdRight.firstChild) {
         tdRight.removeChild(tdRight.firstChild);
     }
+
+    document.getElementById('td_right_title').innerHTML = "Блюда для замены"
 
     let categorys = {
         salad: "салаты",
@@ -346,6 +355,7 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
 }
 
 function delHtmlRight() {
+    document.getElementById('td_right_title').innerHTML = ""
     tdRight = document.getElementById('td_right')
     while (tdRight.firstChild) {
         tdRight.removeChild(tdRight.firstChild);

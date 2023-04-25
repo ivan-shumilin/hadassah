@@ -40,3 +40,8 @@ class InfoPatientSerializer(serializers.ModelSerializer):
                                instance.is_without_lactose,
                                instance.is_pureed_nutrition)
         return comment
+
+
+class InputDataSerializer(serializers.Serializer):
+    id_user = serializers.IntegerField()
+    date_show = serializers.DateField()

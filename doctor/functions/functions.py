@@ -347,17 +347,99 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
         }
     return menu
 
+def get_order_status(meal, date_show):
+    """
+    done - отдали
+    fix-order - заказ сформирован
+    flex-order - заказ еще формируется
+    """
+    if date_show < date.today():
+        return 'done'
+    if date_show > date.today():
+        return 'flex-order'
+
+    if meal == 'breakfast':
+        if datetime.today().time().hour < 7:
+            return 'flex-order'
+        if datetime.today().time().hour >= 7 and datetime.today().time().hour < 9:
+            return 'fix-order'
+        if datetime.today().time().hour >= 9:
+            return 'done'
+
+    if meal == 'lunch':
+        if datetime.today().time().hour < 11:
+            return 'flex-order'
+        if datetime.today().time().hour >= 11 and datetime.today().time().hour < 13:
+            return 'fix-order'
+        if datetime.today().time().hour >= 13:
+            return 'done'
+
+    if meal == 'afternoon':
+        if datetime.today().time().hour < 14:
+            return 'flex-order'
+        if datetime.today().time().hour >= 14 and datetime.today().time().hour < 16:
+            return 'fix-order'
+        if datetime.today().time().hour >= 16:
+            return 'done'
+
+    if meal == 'dinner':
+        if datetime.today().time().hour < 17:
+            return 'flex-order'
+        if datetime.today().time().hour >= 17 and datetime.today().time().hour < 19:
+            return 'fix-order'
+        if datetime.today().time().hour >= 19:
+            return 'done'
+# from datetime import datetime, date, time
+# from enum import Enum
+#
+# class OrderStatus(Enum):
+#     DONE = 'done'
+#     FIX_ORDER = 'fix-order'
+#     FLEX_ORDER = 'flex-order'
+#
+# def get_time_status(meal):
+#     time_status = {
+#         'breakfast': [(time(7), OrderStatus.FIX_ORDER),
+#                       (time(9), OrderStatus.DONE)],
+#         'lunch': [(time(11), OrderStatus.FIX_ORDER),
+#                   (time(13), OrderStatus.DONE)],
+#         'afternoon': [(time(14), OrderStatus.FIX_ORDER),
+#                       (time(16), OrderStatus.DONE)],
+#         'dinner': [(time(17), OrderStatus.FIX_ORDER),
+#                    (time(19), OrderStatus.DONE)]
+#     }
+#
+#     current_time = datetime.now().time()
+#     for time_limit, status in time_status[meal]:
+#         if current_time < time_limit:
+#             return status.value
+#     return OrderStatus.FLEX_ORDER.value
+#
+# def get_date_status(date_show, meal):
+#     if date_show < date.today():
+#         return OrderStatus.DONE.value
+#     if date_show > date.today():
+#         return OrderStatus.FLEX_ORDER.value
+#     return get_time_status(meal)
+#
+# def get_order_status(meal, date_show):
+#     return get_date_status(date_show, meal)
+
+
 
 def creates_dict_with_menu_patients_on_day_test(id, date_show):
     """Создаем меню на день для вывода в “Корректировка рациона пациента”."""
-    menu_all = MenuByDay.objects.filter(user_id=id)
-    menu = {}
+    menu: dict = {}
 
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-        drink = [product\
-                 for product in check_value_two(menu_all, date_show, meal, "drink", is_public=False)\
-                 if product != None]
-        drink = [product for product in drink if str(product.get('id')) != '458']
+        order_status: str = get_order_status(meal, date_show)
+
+        if order_status == 'fix-order':
+            id_user = UsersReadyOrder.objects.filter(user_id=id).first()
+            menu_all = MenuByDayReadyOrder.objects.filter(user_id=id_user)
+        else:
+            menu_all = MenuByDay.objects.filter(user_id=id)
+
         menu[meal] = {
             'main': check_value_two(menu_all, date_show, meal, "main", is_public=False),
             'garnish': check_value_two(menu_all, date_show, meal, "garnish", is_public=False),
@@ -370,6 +452,7 @@ def creates_dict_with_menu_patients_on_day_test(id, date_show):
             'products': check_value_two(menu_all, date_show, meal, "products", is_public=False),
             'hidden': check_value_two(menu_all, date_show, meal, "hidden", is_public=False),
             'bouillon': check_value_two(menu_all, date_show, meal, "bouillon", is_public=False),
+            'order_status': order_status,
         }
     return menu
 
