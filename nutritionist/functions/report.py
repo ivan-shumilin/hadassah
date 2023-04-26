@@ -61,7 +61,7 @@ def create_external_report(filtered_report):
                     price = price_just_wather
                     count_just_wather += count_items
                 elif diet_key == 'Нулевая диета + бульон':
-                    price = price_just_wather + price_bouillon
+                    price = price_just_wather
                     count_just_wather += count_items
                 elif diet_key == 'БД день 2' and meal_key == 'afternoon':
                     price = price_count_bd_2
