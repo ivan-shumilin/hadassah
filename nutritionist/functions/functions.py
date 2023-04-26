@@ -33,6 +33,7 @@ def complete_catalog(category_dict):
             product['type_of_diet_for_print'] = ', '.join(product['type_of_diet'])
     return category_dict
 
+
 def checking_is_ready_meal(meal):
     time_ready_meals = {
         'breakfast': 7,
