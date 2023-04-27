@@ -7,7 +7,7 @@ from drf_spectacular.utils import extend_schema_view, extend_schema
 
 from .forms import PatientRegistrationForm, DietChoiceForm
 from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, BotChatId, СhangesUsersToday, \
-    UsersToday, TimetableLp, Ingredient, MenuByDayReadyOrder, UsersReadyOrder
+    UsersToday, TimetableLp, Ingredient, MenuByDayReadyOrder, UsersReadyOrder, ModifiedDish
 from nutritionist.forms import TimetableForm
 import random, calendar, datetime, logging, json
 from datetime import datetime, date, timedelta
@@ -24,7 +24,7 @@ from doctor.functions.functions import sorting_dishes, parsing, \
     creates_dict_with_menu_patients, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two, archiving_user, get_not_active_users_set, \
-    get_occupied_rooms, creates_dict_with_menu_patients_on_day_test, what_type_order
+    get_occupied_rooms, creates_dict_with_menu_patients_on_day_test, what_type_order, get_order_status
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes, create_user_tomorrow, create_ready_order, create_report, create_products_lp, add_products_lp,\
@@ -44,7 +44,8 @@ from .logic.create_ingredient import create_ingredients
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
-from .serializer import DishesSerializer, PatientsSerializer, InfoPatientSerializer, InputDataSerializer
+from .serializer import DishesSerializer, PatientsSerializer, InfoPatientSerializer, InputDataSerializer, \
+    AddDishSerializer, ChangeDishSerializer
 
 
 class ServiceWorkerView(TemplateView):
@@ -576,119 +577,150 @@ class GetAllDishesByCategoryAPIView(APIView):
 
 class DeleteDishAPIView(APIView):
     def delete(self, request):
-        id_user: str = request.data['id_user']
-        date: str = request.data['date']
-        product_id: str = request.data['product_id']
-        category: str = request.data['category']
-        meal: str = request.data['meal']
+        serializer = AddDishSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        id_user: str = serializer.validated_data['id_user']
+        date = serializer.validated_data['date']
+        product_id: str = serializer.validated_data['product_id']
+        category: str = serializer.validated_data['category']
+        meal: str = serializer.validated_data['meal']
+
         changes: list = []  # список с меню в который надо внести изменения
 
         # Проверка времани, если заказ уже сформирован (менее 2х часов до приема пищи)
         # вносить изменения в MenuByDayReadyOrder
-        type_order = what_type_order()
+        order_status: str = get_order_status(meal, date)
         menu = MenuByDay.objects.all()
         changes.append((menu, id_user))
-        if type_order == 'fix-order':
+        if order_status == 'fix-order':
             menu = MenuByDayReadyOrder.objects.all()
-            id_user = UsersReadyOrder.objects.filter(user_id=id_user).first()
-            changes.append((menu, id_user))
-
-        for menu, id in changes:
+            patient = UsersReadyOrder.objects.filter(user_id=id_user).first()
+            changes.append((menu, patient))
+        with transaction.atomic():
+            for menu, id in changes:
+                try:
+                    item_menu = menu.get(user_id=id, date=date, meal=meal)
+                except:
+                    return Response({'status': 'Error'})
+    
+                products = getattr(item_menu, category)
+                products = products.split(',')
+                products.remove(product_id)
+                products = ','.join(products)
+                setattr(item_menu, category, products)
+                item_menu.save()
+            
+            # удалить из ModifiedDish если есть
+            patient = CustomUser.objects.filter(id=id_user).first()
             try:
-                item_menu = menu.get(user_id=id, date=date, meal=meal)
+                ModifiedDish.objects\
+                    .filter(product_id=product_id, date=date, meal=meal, user_id=patient).first().delete()
             except:
-                return Response({'status': 'Error'})
+                pass
 
-            products = getattr(item_menu, category)
-            products = products.split(',')
-            products.remove(product_id)
-            products = ','.join(products)
-            setattr(item_menu, category, products)
-            item_menu.save()
-
-        return Response({'status':'OK'})
+            return Response({'status':'OK'})
 
 
 class AddDishAPIView(APIView):
     def post(self, request):
-        id_user: str = request.data['id_user']
-        date: str = request.data['date']
-        product_id: str = request.data['product_id']
-        category: str = request.data['category']
-        meal: str = request.data['meal']
+        serializer = AddDishSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        id_user: str = serializer.validated_data['id_user']
+        date = serializer.validated_data['date']
+        product_id: str = serializer.validated_data['product_id']
+        category: str = serializer.validated_data['category']
+        meal: str = serializer.validated_data['meal']
+
         changes: list = []  # список с меню в который надо внести изменения
 
         # Проверка времани, если заказ уже сформирован (менее 2х часов до приема пищи)
         # вносить изменения в MenuByDayReadyOrder
-        type_order = what_type_order()
+        # type_order = what_type_order()
+        order_status: str = get_order_status(meal, date)
         menu = MenuByDay.objects.all()
         changes.append((menu, id_user))
-        if type_order == 'fix-order':
+        if order_status == 'fix-order':
             menu = MenuByDayReadyOrder.objects.all()
-            id_user = UsersReadyOrder.objects.filter(user_id=id_user).first()
-            changes.append((menu, id_user))
+            patient = UsersReadyOrder.objects.filter(user_id=id_user).first()
+            changes.append((menu, patient))
+        with transaction.atomic():
+            for menu, id in changes:
+                try:
+                    item_menu = menu.get(user_id=id, date=date, meal=meal)
+                except:
+                    return Response({'status': 'Error'})
 
-        for menu, id in changes:
-            try:
-                item_menu = menu.get(user_id=id, date=date, meal=meal)
-            except:
-                return Response({'status': 'Error'})
-
-            products = getattr(item_menu, category)
-            if products == "":
-                products = product_id
-            else:
-                products = products.split(',')
-                products.append(product_id)
-                products = ','.join(products)
-            setattr(item_menu, category, products)
-            item_menu.save()
+                products = getattr(item_menu, category)
+                if products == "":
+                    products = product_id
+                else:
+                    products = products.split(',')
+                    products.append(product_id)
+                    products = ','.join(products)
+                setattr(item_menu, category, products)
+                item_menu.save()
+            # добавить изменения в ModifiedDish
+            user = CustomUser.objects.get(id=id_user)
+            ModifiedDish(product_id=product_id, date=date, meal=meal, user_id=user).save()
 
         return Response({'status':'OK'})
 
 
 class ChangeDishAPIView(APIView):
     def put(self, request):
-        id_user: str = request.data['id_user']
-        date: str = request.data['date']
-        product_id_add: str = request.data['product_id_add']
-        product_id_del: str = request.data['product_id_del']
-        category: str = request.data['category']
-        meal: str = request.data['meal']
+        serializer = ChangeDishSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        id_user: str = serializer.validated_data['id_user']
+        date = serializer.validated_data['date']
+        category: str = serializer.validated_data['category']
+        meal: str = serializer.validated_data['meal']
+        product_id_add: str = serializer.validated_data['product_id_add']
+        product_id_del: str = serializer.validated_data['product_id_del']
         changes: list = []  # список с меню в который надо внести изменения
 
         # Проверка времани, если заказ уже сформирован (менее 2х часов до приема пищи)
         # вносить изменения в MenuByDayReadyOrder
-        type_order = what_type_order()
+        order_status: str = get_order_status(meal, date)
         menu = MenuByDay.objects.all()
         changes.append((menu, id_user))
-        if type_order == 'fix-order':
+        if order_status == 'fix-order':
             menu = MenuByDayReadyOrder.objects.all()
-            id_user = UsersReadyOrder.objects.filter(user_id=id_user).first()
-            changes.append((menu, id_user))
-
-        for menu, id in changes:
-            try:
-                with transaction.atomic():
-                    item_menu = menu.select_for_update().get(user_id=id, date=date, meal=meal)
-                    products = getattr(item_menu, category)
-                    products = products.split(',')
-                    products.remove(product_id_del)
-                    products = ','.join(products)
-                    setattr(item_menu, category, products)
-
-                    products = getattr(item_menu, category)
-                    if products == "":
-                        products = product_id_add
-                    else:
+            patient = UsersReadyOrder.objects.filter(user_id=id_user).first()
+            changes.append((menu, patient))
+        with transaction.atomic():
+            for menu, id in changes:
+                try:
+                    with transaction.atomic():
+                        item_menu = menu.select_for_update().get(user_id=id, date=date, meal=meal)
+                        products = getattr(item_menu, category)
                         products = products.split(',')
-                        products.append(product_id_add)
+                        products.remove(product_id_del)
                         products = ','.join(products)
-                    setattr(item_menu, category, products)
-                    item_menu.save()
+                        setattr(item_menu, category, products)
 
+                        products = getattr(item_menu, category)
+                        if products == "":
+                            products = product_id_add
+                        else:
+                            products = products.split(',')
+                            products.append(product_id_add)
+                            products = ','.join(products)
+                        setattr(item_menu, category, products)
+                        item_menu.save()
+
+                except:
+                    return Response({'status': 'Error'})
+            # удалить из ModifiedDish если есть
+            patient = CustomUser.objects.filter(id=id_user).first()
+            try:
+                ModifiedDish.objects\
+                    .filter(product_id=product_id_del, date=date, meal=meal, user_id=patient).first().delete()
             except:
-                return Response({'status': 'Error'})
+                pass
+            # добавить изменения в ModifiedDish
+            user = CustomUser.objects.get(id=id_user)
+            ModifiedDish(product_id=product_id_add, date=date, meal=meal, user_id=user).save()
+
 
         return Response({'status': 'OK'})
 

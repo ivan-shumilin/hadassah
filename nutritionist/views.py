@@ -985,14 +985,14 @@ def printed_form_two_lp(request):
                 # if category == 'products' or category ==  'drink':
                 #     pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
                 if category == 'soup':
-                    pr = check_value_two(menu_all, str((date_create)), meal, 'soup', is_public) + \
-                         check_value_two(menu_all, str((date_create)), meal, 'bouillon', is_public)
+                    pr = check_value_two(menu_all, str((date_create)), meal, 'soup', user.id, is_public) + \
+                         check_value_two(menu_all, str((date_create)), meal, 'bouillon', user.id, is_public)
                     try:
                         pr.remove(None)
                     except:
                         pass
                 else:
-                    pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
+                    pr = check_value_two(menu_all, str((date_create)), meal, category, user.id, is_public)
                 # if pr != None:
                 #     all_products.append(pr)
                 if pr[0] not in [None, [None]]:
@@ -1105,14 +1105,14 @@ def printed_form_two_lp_new(request):
                 # if category == 'products' or category ==  'drink':
                 #     pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
                 if category == 'soup':
-                    pr = check_value_two(menu_all, str((date_create)), meal, 'soup', is_public) + \
-                        check_value_two(menu_all, str((date_create)), meal, 'bouillon', is_public)
+                    pr = check_value_two(menu_all, str((date_create)), meal, 'soup', user.id,  is_public) + \
+                        check_value_two(menu_all, str((date_create)), meal, 'bouillon', user.id,  is_public)
                     try:
                         pr.remove(None)
                     except:
                         pass
                 else:
-                    pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
+                    pr = check_value_two(menu_all, str((date_create)), meal, category, user.id, is_public)
                 # if pr != None:
                 #     all_products.append(pr)
                 if pr[0] not in [None, [None]]:

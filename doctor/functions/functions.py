@@ -1,5 +1,5 @@
-from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId,\
-    UsersToday, MenuByDayReadyOrder, UsersReadyOrder
+from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId, \
+    UsersToday, MenuByDayReadyOrder, UsersReadyOrder, ModifiedDish
 from django.db import transaction
 from django.contrib import messages
 from django.contrib.messages import get_messages
@@ -258,7 +258,7 @@ def create_value(product, id, is_public):
     }
     return value
 
-def check_value_two(menu_all, date_str, meal, category, is_public):
+def check_value_two(menu_all, date_str, meal, category, user_id, is_public):
     try:
         value: list = []
         item = menu_all.filter(date=date_str).get(meal=meal)
@@ -286,6 +286,10 @@ def check_value_two(menu_all, date_str, meal, category, is_public):
                 'description': product.description,
                 'category': product.category,
                 'product_id': product_id,
+                'is_modified': ModifiedDish.objects.filter(product_id=id,
+                                                           meal=meal,
+                                                           date=date_str,
+                                                           user_id=user_id).exists()
             })
     except Exception:
         value = [None]
@@ -304,15 +308,15 @@ def creates_dict_with_menu_patients(id):
         menu[day] = {}
         for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
             menu[day][meal] = {
-                'salad': check_value_two(menu_all, date_str, meal, "salad", is_public=True),
-                'soup': check_value_two(menu_all, date_str, meal, "soup", is_public=True),
-                'main': check_value_two(menu_all, date_str, meal, "main", is_public=True),
-                'garnish': check_value_two(menu_all, date_str, meal, "garnish", is_public=True),
-                'porridge': check_value_two(menu_all, date_str, meal, "porridge", is_public=True),
-                'dessert': check_value_two(menu_all, date_str, meal, "dessert", is_public=True),
-                'fruit': check_value_two(menu_all, date_str, meal, "fruit", is_public=True),
-                'drink': check_value_two(menu_all, date_str, meal, "drink", is_public=True),
-                'bouillon': check_value_two(menu_all, date_str, meal, "bouillon", is_public=True),
+                'salad': check_value_two(menu_all, date_str, meal, "salad", id, is_public=True),
+                'soup': check_value_two(menu_all, date_str, meal, "soup", id, is_public=True),
+                'main': check_value_two(menu_all, date_str, meal, "main", id, is_public=True),
+                'garnish': check_value_two(menu_all, date_str, meal, "garnish", id, is_public=True),
+                'porridge': check_value_two(menu_all, date_str, meal, "porridge", id, is_public=True),
+                'dessert': check_value_two(menu_all, date_str, meal, "dessert", id, is_public=True),
+                'fruit': check_value_two(menu_all, date_str, meal, "fruit", id, is_public=True),
+                'drink': check_value_two(menu_all, date_str, meal, "drink", id, is_public=True),
+                'bouillon': check_value_two(menu_all, date_str, meal, "bouillon", id, is_public=True),
             }
             flag_no_products = True
             for category in ['main', 'garnish', 'porridge', 'soup', 'dessert', 'fruit', 'drink', 'salad']:
@@ -332,18 +336,18 @@ def creates_dict_with_menu_patients_on_day(id, date_show):
 
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         drink = [product\
-                 for product in check_value_two(menu_all, date_show, meal, "drink", is_public=True)\
+                 for product in check_value_two(menu_all, date_show, meal, "drink", id, is_public=True)\
                  if product != None]
         drink = [product for product in drink if str(product.get('id')) != '458']
         menu[meal] = {
-            'main': check_value_two(menu_all, date_show, meal, "main", is_public=True),
-            'garnish': check_value_two(menu_all, date_show, meal, "garnish", is_public=True),
-            'porridge': check_value_two(menu_all, date_show, meal, "porridge", is_public=True),
-            'soup': check_value_two(menu_all, date_show, meal, "soup", is_public=True),
-            'dessert': check_value_two(menu_all, date_show, meal, "dessert", is_public=True),
-            'fruit': check_value_two(menu_all, date_show, meal, "fruit", is_public=True),
-            'drink': check_value_two(menu_all, date_show, meal, "drink", is_public=True),
-            'salad': check_value_two(menu_all, date_show, meal, "salad", is_public=True),
+            'main': check_value_two(menu_all, date_show, meal, "main", id, is_public=True),
+            'garnish': check_value_two(menu_all, date_show, meal, "garnish", id, is_public=True),
+            'porridge': check_value_two(menu_all, date_show, meal, "porridge", id, is_public=True),
+            'soup': check_value_two(menu_all, date_show, meal, "soup", id, is_public=True),
+            'dessert': check_value_two(menu_all, date_show, meal, "dessert", id, is_public=True),
+            'fruit': check_value_two(menu_all, date_show, meal, "fruit", id, is_public=True),
+            'drink': check_value_two(menu_all, date_show, meal, "drink", id, is_public=True),
+            'salad': check_value_two(menu_all, date_show, meal, "salad", id, is_public=True),
         }
     return menu
 
@@ -441,17 +445,17 @@ def creates_dict_with_menu_patients_on_day_test(id, date_show):
             menu_all = MenuByDay.objects.filter(user_id=id)
 
         menu[meal] = {
-            'main': check_value_two(menu_all, date_show, meal, "main", is_public=False),
-            'garnish': check_value_two(menu_all, date_show, meal, "garnish", is_public=False),
-            'porridge': check_value_two(menu_all, date_show, meal, "porridge", is_public=False),
-            'soup': check_value_two(menu_all, date_show, meal, "soup", is_public=False),
-            'dessert': check_value_two(menu_all, date_show, meal, "dessert", is_public=False),
-            'fruit': check_value_two(menu_all, date_show, meal, "fruit", is_public=False),
-            'drink': check_value_two(menu_all, date_show, meal, "drink", is_public=False),
-            'salad': check_value_two(menu_all, date_show, meal, "salad", is_public=False),
-            'products': check_value_two(menu_all, date_show, meal, "products", is_public=False),
-            'hidden': check_value_two(menu_all, date_show, meal, "hidden", is_public=False),
-            'bouillon': check_value_two(menu_all, date_show, meal, "bouillon", is_public=False),
+            'main': check_value_two(menu_all, date_show, meal, "main", id, is_public=False),
+            'garnish': check_value_two(menu_all, date_show, meal, "garnish", id, is_public=False),
+            'porridge': check_value_two(menu_all, date_show, meal, "porridge", id, is_public=False),
+            'soup': check_value_two(menu_all, date_show, meal, "soup", id, is_public=False),
+            'dessert': check_value_two(menu_all, date_show, meal, "dessert", id, is_public=False),
+            'fruit': check_value_two(menu_all, date_show, meal, "fruit", id, is_public=False),
+            'drink': check_value_two(menu_all, date_show, meal, "drink", id, is_public=False),
+            'salad': check_value_two(menu_all, date_show, meal, "salad", id, is_public=False),
+            'products': check_value_two(menu_all, date_show, meal, "products", id, is_public=False),
+            'hidden': check_value_two(menu_all, date_show, meal, "hidden", id, is_public=False),
+            'bouillon': check_value_two(menu_all, date_show, meal, "bouillon", id, is_public=False),
             'order_status': order_status,
         }
     return menu
@@ -1073,16 +1077,16 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, 
         menu_all = MenuByDayReadyOrder.objects.filter(user_id=id_fix_user)
     menu_list = []
     menu = {
-        'salad': check_value_two(menu_all, date_show, meal, "salad", is_public),
-        'soup': check_value_two(menu_all, date_show, meal, "soup", is_public) + \
-                check_value_two(menu_all, date_show, meal, "bouillon", is_public),
-        'main': check_value_two(menu_all, date_show, meal, "main", is_public),
-        'garnish': check_value_two(menu_all, date_show, meal, "garnish", is_public),
-        'porridge': check_value_two(menu_all, date_show, meal, "porridge", is_public),
-        'dessert': check_value_two(menu_all, date_show, meal, "dessert", is_public),
-        'fruit': check_value_two(menu_all, date_show, meal, "fruit", is_public),
-        'drink': check_value_two(menu_all, date_show, meal, "drink", is_public),
-        'products': check_value_two(menu_all, date_show, meal, "products", is_public),
+        'salad': check_value_two(menu_all, date_show, meal, "salad", id, is_public),
+        'soup': check_value_two(menu_all, date_show, meal, "soup", id, is_public) + \
+                check_value_two(menu_all, date_show, meal, "bouillon", id, is_public),
+        'main': check_value_two(menu_all, date_show, meal, "main", id, is_public),
+        'garnish': check_value_two(menu_all, date_show, meal, "garnish", id, is_public),
+        'porridge': check_value_two(menu_all, date_show, meal, "porridge", id, is_public),
+        'dessert': check_value_two(menu_all, date_show, meal, "dessert", id, is_public),
+        'fruit': check_value_two(menu_all, date_show, meal, "fruit", id, is_public),
+        'drink': check_value_two(menu_all, date_show, meal, "drink", id, is_public),
+        'products': check_value_two(menu_all, date_show, meal, "products", id, is_public),
     }
     if lp_or_cafe == 'cafe':
         for item_category in menu.values():
@@ -1098,7 +1102,11 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, 
                 for item in item_category:
                     if item:
                         if 'cafe' not in item['id']:
-                            menu_list.append(item.get('name'))
+                            # menu_list.append(f'{item.get("name")}')
+                            # # print(item.get("is_modified"))
+                            # # menu_list.append(f'{item.get("name")}')
+                            # #                  f'{"(блюдо заменили)" if item.get("is_modified") == True else ""}')
+                            menu_list.append({'name': item.get("name"), 'is_modified': item.get("is_modified")})
     return menu_list
 
 def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_public):

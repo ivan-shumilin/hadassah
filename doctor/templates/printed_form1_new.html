@@ -264,7 +264,11 @@
                                     <div class="td td-eat">
                                         <ul>
                                             {% for item in user.products_lp %}
-                                                <li>{{ item }}</li>
+                                                {% if item.is_modified %}
+                                                    <li>{{ item.name }}<img class="icon" width="13" height="13" src="{% static "doctor/css/img/change-pf1.svg" %}" alt=""></li>
+                                                {% else %}
+                                                    <li>{{ item.name }}</li>
+                                                {% endif %}
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -344,7 +348,11 @@
                                     <div class="td td-eat">
                                         <ul>
                                             {% for item in user.products_lp %}
-                                                <li>{{ item }}</li>
+                                                {% if item.is_modified %}
+                                                    <li>{{ item.name }}<img class="icon" width="13" height="13" src="{% static "doctor/css/img/change-pf1.svg" %}" alt=""></li>
+                                                {% else %}
+                                                    <li>{{ item.name }}</li>
+                                                {% endif %}
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -425,7 +433,11 @@
                                     <div class="td td-eat">
                                         <ul>
                                             {% for item in user.products_lp %}
-                                                <li>{{ item }}</li>
+                                                {% if item.is_modified %}
+                                                    <li>{{ item.name }}<img class="icon" width="13" height="13" src="{% static "doctor/css/img/change-pf1.svg" %}" alt=""></li>
+                                                {% else %}
+                                                    <li>{{ item.name }}</li>
+                                                {% endif %}
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -506,7 +518,11 @@
                                     <div class="td td-eat">
                                         <ul>
                                             {% for item in user.products_lp %}
-                                                <li>{{ item }}</li>
+                                                {% if item.is_modified %}
+                                                    <li>{{ item.name }}<img class="icon" width="13" height="13" src="{% static "doctor/css/img/change-pf1.svg" %}" alt=""></li>
+                                                {% else %}
+                                                    <li>{{ item.name }}</li>
+                                                {% endif %}
                                             {% endfor %}
                                         </ul>
                                     </div>

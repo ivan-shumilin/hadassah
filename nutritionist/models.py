@@ -606,3 +606,16 @@ class Token(models.Model):
 
     def __str__(self):
         return f'iikoServer: {self.iiko_server}'
+
+# записываем блюда, которые были изменены
+class ModifiedDish(models.Model):
+    product_id = models.CharField(max_length=30)
+    meal = models.CharField(
+            max_length=100,
+            choices=MEALS,
+        )
+    date = models.DateField()
+    user_id = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return f'{self.product_id} - {self.date}'

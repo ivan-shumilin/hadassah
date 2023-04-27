@@ -45,3 +45,20 @@ class InfoPatientSerializer(serializers.ModelSerializer):
 class InputDataSerializer(serializers.Serializer):
     id_user = serializers.IntegerField()
     date_show = serializers.DateField()
+
+
+class AddDishSerializer(serializers.Serializer):
+    id_user = serializers.CharField()
+    date = serializers.DateField()
+    product_id = serializers.CharField()
+    category = serializers.CharField()
+    meal = serializers.CharField()
+
+
+class ChangeDishSerializer(serializers.Serializer):
+    id_user = serializers.IntegerField()
+    date = serializers.DateField()
+    product_id_add = serializers.CharField()
+    product_id_del = serializers.CharField()
+    category = serializers.CharField()
+    meal = serializers.CharField()
