@@ -1109,12 +1109,20 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, 
                             menu_list.append({'name': item.get("name"), 'is_modified': item.get("is_modified")})
     return menu_list
 
+
+def have_is_modified(menu):
+    for dish in menu:
+        if dish['is_modified']:
+            return True
+    else:
+        return False
+
+
 def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_public):
     users = users.filter(floor=floor)
     users_on_floor = []
     for user in users:
-        users_on_floor.append(
-            {'name': user.full_name,
+        item: dict = {'name': user.full_name,
              'number': '',
              'comment': add_features(user.comment,
                              user.is_probe,
@@ -1128,7 +1136,11 @@ def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_p
              'products_lp': creates_dict_test(user.user_id, user.id, str(date_create), 'lp', meal, type_order, is_public),
              'products_cafe': creates_dict_test(user.user_id, user.id, str(date_create), 'cafe', meal, type_order, is_public),
              }
-        )
+
+        # проверяем наличие 'is_modified': True
+        item['diet'] = "*" + item['diet'] if have_is_modified(item['products_lp']) else item['diet']
+
+        users_on_floor.append(item)
     return users_on_floor
 
 def what_meal():
