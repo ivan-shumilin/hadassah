@@ -197,10 +197,10 @@ def create_stickers_pdf(catalog):
                 if len(product) >= max_count_in_line:
                     res_list = create_res_list(product, max_count_in_line, 'products')
                     for product in res_list:
-                        pdf.cell(50, 10, txt=f'{product}', ln=index + ln, align="L")
+                        pdf.cell(50, 10, txt=f'{product["name"]}', ln=index + ln, align="L")
                         ln += 1
                 else:
-                    pdf.cell(50, 10, txt=f'- {product}', ln=index + ln, align="L")
+                    pdf.cell(50, 10, txt=f'- {product["name"]}', ln=index + ln, align="L")
                 pdf.cell(50, 3, txt=f'', ln=index + 1 + ln, align="L")
     pdf.output("static/stickers.pdf")
     return

@@ -1094,7 +1094,7 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, 
                 for item in item_category:
                     if item:
                         if 'cafe' in item['id']:
-                            menu_list.append(item.get('name'))
+                            menu_list.append({'name': item.get("name"), 'is_modified': False})
 
     if lp_or_cafe == 'lp':
         for item_category in menu.values():
