@@ -1483,10 +1483,11 @@ def create_сatalog(is_public):
         users = UsersReadyOrder.objects.all()
 
     catalog = {'meal': translate_meal(meal),
+               'users_not_floor': create_list_users_on_floor(users, 'Не выбрано', meal, date_create, type_order,
+                                                             is_public),
                'users_2nd_floor': create_list_users_on_floor(users, "2", meal, date_create, type_order, is_public),
                'users_3nd_floor': create_list_users_on_floor(users, "3", meal, date_create, type_order, is_public),
                'users_4nd_floor': create_list_users_on_floor(users, "4", meal, date_create, type_order, is_public),
-               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order, is_public),
                }
 
     return catalog
