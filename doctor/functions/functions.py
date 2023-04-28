@@ -1129,7 +1129,7 @@ def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_p
             users = users.filter(~Q(room_number="Не выбрано") & Q(floor=floor))
             users_sort = users.annotate(
                 room_number_int=Cast(RawSQL("regexp_replace(room_number, '^.{3}', '', 'g')", ()), IntegerField())
-                ).order_by('room_number_int')
+                ).order_by('room_number_int', 'bed')
             users = users.filter(room_number="Не выбрано")
             users = list(chain(users, users_sort))
         else:
