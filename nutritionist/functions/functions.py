@@ -132,7 +132,7 @@ def create_stickers_pdf(catalog):
         return res_list
 
     pdf = FPDF()
-    for floor in ['users_2nd_floor', 'users_3nd_floor', 'users_4nd_floor', 'users_not_floor']:
+    for floor in ['users_not_floor', 'users_2nd_floor', 'users_3nd_floor', 'users_4nd_floor']:
         for item in catalog[floor]:
             pdf.set_left_margin(3)
             pdf.set_right_margin(0)
@@ -194,10 +194,11 @@ def create_stickers_pdf(catalog):
             ln += 1
 
             for index, product in enumerate(item['products_lp'] + item['products_cafe']):
-                if len(product) >= max_count_in_line:
-                    res_list = create_res_list(product, max_count_in_line, 'products')
+
+                if len(product['name']) >= max_count_in_line:
+                    res_list = create_res_list(product['name'], max_count_in_line, 'products')
                     for product in res_list:
-                        pdf.cell(50, 10, txt=f'{product["name"]}', ln=index + ln, align="L")
+                        pdf.cell(50, 10, txt=f'{product}', ln=index + ln, align="L")
                         ln += 1
                 else:
                     pdf.cell(50, 10, txt=f'- {product["name"]}', ln=index + ln, align="L")
