@@ -1,14 +1,19 @@
+from itertools import chain
+
+from django.db.models.expressions import RawSQL
+
 from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId, \
     UsersToday, MenuByDayReadyOrder, UsersReadyOrder, ModifiedDish
 from django.db import transaction
 from django.contrib import messages
 from django.contrib.messages import get_messages
 from dateutil.parser import parse
-from django.db.models import Q
+from django.db.models import Q, IntegerField, Value
+
 from typing import List
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
-from django.db.models.functions import Lower
+from django.db.models.functions import Lower, Cast, Replace
 import logging, random, telepot
 from doctor.functions.bot import check_change, formatting_full_name, do_messang_send
 from doctor.functions.helpers import check_value, formatting_full_name_mode_full
@@ -1119,7 +1124,20 @@ def have_is_modified(menu):
 
 
 def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_public):
-    users = users.filter(floor=floor)
+    try:
+        if floor != 'Не выбрано':
+            users = users.filter(~Q(room_number="Не выбрано") & Q(floor=floor))
+            users_sort = users.annotate(
+                room_number_int=Cast(RawSQL("regexp_replace(room_number, '^.{3}', '', 'g')", ()), IntegerField())
+                ).order_by('room_number_int')
+            users = users.filter(room_number="Не выбрано")
+            users = list(chain(users, users_sort))
+        else:
+            users = users.filter(floor=floor)
+    except:
+        users = users.filter(floor=floor)
+
+
     users_on_floor = []
     for user in users:
         item: dict = {'name': user.full_name,
