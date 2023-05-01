@@ -53,9 +53,9 @@ def add_menu_three_days_ahead():
         menu_all = MenuByDay.objects.filter(user_id=user.id)
         # порядок дней для формирования меню (БД)
         if user.type_of_diet == 'БД день 1':
-            days_for_bd = ['понедельник', 'вторник', 'понедельник']
+            days_for_bd = ['понедельник', 'понедельник', 'понедельник']
         elif user.type_of_diet == 'БД день 2':
-            days_for_bd = ['вторник', 'понедельник', 'вторник']
+            days_for_bd = ['вторник', 'вторник', 'вторник']
         else:
             days_for_bd = []
         for index, day in enumerate(days):
