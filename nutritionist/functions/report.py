@@ -31,7 +31,8 @@ def create_external_report(filtered_report):
         price_just_wather = 150
         price_count_bd_2 = 150
         price_bouillon = 90
-        for meal_key, meal_report in one_day_report.items():
+        for meal_key in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+            meal_report = one_day_report.get(meal_key, [])
             # создать функцию, которая добаляет уникальные диеты в report
             report[date_key][meal_key] = {}
             users = list(set([item_report.user_id for item_report in meal_report]))
@@ -40,23 +41,17 @@ def create_external_report(filtered_report):
                 if len([report_item for report_item in report_user_set if report_item.product_id=='426']) > 0 and \
                         report_user_set[0].meal == 'dinner' and report_user_set[0].type_of_diet == 'БД день 2' or \
                         len([report_item for report_item in report_user_set if report_item.product_id == '426']) == 0:
-
                     for report_user in report_user_set:
                         report[date_key][meal_key].setdefault(str(report_user.type_of_diet), []).append(report_user)
-
-
                 else:
                     for report_user in report_user_set:
                         report[date_key][meal_key].setdefault(f'{report_user.type_of_diet} + бульон', []).append(report_user)
-
-
             for diet_key, on_diet_report in report[date_key][meal_key].items():
                 count_items = len(set([user.user_id for user in (report[date_key][meal_key][diet_key])]))
                 count_bouillon = \
                     len(set([user.user_id for user in (report[date_key][meal_key][diet_key])
                                 if user.product_id == '426' and\
                                 not (meal_key == 'dinner' and diet_key == 'БД день 2')]))
-
                 if diet_key == 'Нулевая диета':
                     price = price_just_wather
                     count_just_wather += count_items
@@ -69,7 +64,6 @@ def create_external_report(filtered_report):
                 else:
                     price = price_all
                 count_all += count_items
-
                 report[date_key][meal_key][diet_key] =\
                     {'count': count_items,
                      'count_bouillon': count_bouillon,
