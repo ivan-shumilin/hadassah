@@ -686,7 +686,7 @@ def create_user(user_form, request):
             if do_messang_send(user.full_name) and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
                 regard = u'\u26a0\ufe0f'
                 messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
-    messang += f'Поступил пациент {formatting_full_name(user.full_name)}\n'
+    messang += f'Поступил пациент {formatting_full_name(user.full_name)}, {user.type_of_diet}\n'
     comment = add_features(user.comment,
                  user.is_probe,
                  user.is_without_salt,
