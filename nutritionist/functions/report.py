@@ -1,3 +1,5 @@
+from datetime import date
+
 def sort_by_date(filtered_report):
     report = {}
     for index, item in enumerate(filtered_report):
@@ -13,6 +15,10 @@ def sort_by_meal(report):
             report_[key].setdefault(str(item.meal), []).append(item)
     return report_
 
+
+def change_str_in_date(date_str):
+    date_list = date_str.split('-')
+    return date(int(date_list[0]), int(date_list[1]), int(date_list[2]))
 
 def create_external_report(filtered_report):
     """ Отчет для Hadassah. """
@@ -30,7 +36,11 @@ def create_external_report(filtered_report):
         price_all = 750
         price_just_wather = 150
         price_count_bd_2 = 150
-        price_bouillon = 90
+
+        if change_str_in_date(date_key) >= date(2023, 5, 1):
+            price_bouillon = 0
+        else:
+            price_bouillon = 90
         for meal_key in ['breakfast', 'lunch', 'afternoon', 'dinner']:
             meal_report = one_day_report.get(meal_key, [])
             # создать функцию, которая добаляет уникальные диеты в report
