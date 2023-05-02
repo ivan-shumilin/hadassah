@@ -134,6 +134,7 @@ def create_stickers_pdf(catalog):
     pdf = FPDF()
     for floor in ['users_not_floor', 'users_2nd_floor', 'users_3nd_floor', 'users_4nd_floor']:
         for item in catalog[floor]:
+            item['diet'] = item['diet'].replace('*', '')
             pdf.set_left_margin(3)
             pdf.set_right_margin(0)
             pdf.add_page()
