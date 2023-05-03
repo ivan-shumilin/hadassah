@@ -102,6 +102,7 @@ def create_ready_order(meal):
                                 drink=menu[0].drink,
                                 salad=menu[0].salad,
                                 products=menu[0].products,
+                                hidden=menu[0].hidden,
                                 bouillon=menu[0].bouillon))
     MenuByDayReadyOrder.objects.bulk_create(to_create)
 
@@ -113,31 +114,16 @@ def create_report(meal):
     Создает отчет по проданным блюдам.
     """
     to_create = []
-    # В зависимости от приема пищи добавляем разных пациентов в UsersToday
-    if meal == 'breakfast':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='10:00'))
-
-    if meal == 'lunch':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='14:00'))
-
-    if meal == 'afternoon':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='17:00'))
-
-    if meal == 'dinner':
-        users = CustomUser.objects.filter(status='patient') \
-            .filter(Q(receipt_date__lt=date.today()) | Q(receipt_date=date.today()) & Q(receipt_time__lte='21:00'))
+    patients = UsersReadyOrder.objects.all()
 
     report_dict = {}
-    for user in users:
-        menu = MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
+    for user in patients:
+        menu = MenuByDayReadyOrder.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
         if menu:
             products = [menu[0].main, menu[0].garnish, menu[0].porridge, menu[0].soup, menu[0].dessert, menu[0].fruit,
                         menu[0].drink, menu[0].salad, menu[0].products, menu[0].hidden, menu[0].bouillon]
             products = [product for product in products if product not in ['', None, 'None']]
-            report_dict[user.id] = {'type_of_diet': user.type_of_diet,
+            report_dict[user.user_id] = {'type_of_diet': user.type_of_diet,
                                       'meal': meal,
                                       'products': products}
         else:

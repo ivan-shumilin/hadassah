@@ -447,6 +447,7 @@ class MenuByDayReadyOrder(models.Model):
     drink = models.CharField(max_length=100, null=True)
     salad = models.CharField(max_length=100, null=True)
     products = models.CharField(max_length=100, null=True)
+    hidden = models.CharField(max_length=100, null=True, blank=True)
     bouillon = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
