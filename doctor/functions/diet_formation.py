@@ -106,15 +106,15 @@ def writes_the_patient_menu_to_the_database(user, days, next_meals, extra_bouill
     if next_meals == [] and user.type_of_diet in ['БД день 1', 'БД день 2']:
         # порядок дней для формирования меню (БД)
         if user.type_of_diet == 'БД день 1':
-            days_for_bd = ['понедельник', 'понедельник', 'вторник', 'понедельник']
+            days_for_bd = ['понедельник', 'понедельник', 'понедельник', 'понедельник']
         if user.type_of_diet == 'БД день 2':
-            days_for_bd = ['вторник', 'вторник', 'понедельник', 'вторник']
+            days_for_bd = ['вторник', 'вторник', 'вторник', 'вторник']
     if next_meals:
         # порядок дней для формирования меню (БД)
         if user.type_of_diet == 'БД день 1':
-            days_for_bd = ['понедельник', 'вторник', 'понедельник']
+            days_for_bd = ['понедельник', 'понедельник', 'понедельник']
         if user.type_of_diet == 'БД день 2':
-            days_for_bd = ['вторник', 'понедельник', 'вторник']
+            days_for_bd = ['вторник', 'вторник', 'вторник']
 
 
     for index, change_day in enumerate(days):
