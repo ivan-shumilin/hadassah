@@ -522,3 +522,8 @@ label {
 .pointer {
   cursor: pointer;
 }
+
+.button-admin-foods {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}

@@ -230,7 +230,7 @@
 </div>
 
 <!-- модальное окно для добавления блюда -->
-<div data-modal="add-change-dish" data-modal-width="480">
+<div data-modal="add-change-dish" data-modal-width="580">
     <div id="title-add-change-dish" class="title"></div>
         <div id="dish-list" class="form-group">
 
@@ -410,8 +410,11 @@ function addPatients(obj) {
     let result = ''
 
     for (var item in obj) {
-        
-        result += `<div id="${obj[item].id}" onclick="showCard('${obj[item].id}', '${obj[item].full_name}', '${obj[item].room_number}', '${obj[item].department}', '${obj[item].type_of_diet}', '${obj[item].receipt_date}', '${obj[item].receipt_time}', '${obj[item].comment}')" class="tr tr-patient" data-patient-card-show style="grid-template-columns: 37% 15% 33% 1fr;">`
+        if (item == 0) {
+            result += `<div id="${obj[item].id}" onclick="showCard('${obj[item].id}', '${obj[item].full_name}', '${obj[item].room_number}', '${obj[item].department}', '${obj[item].type_of_diet}', '${obj[item].receipt_date}', '${obj[item].receipt_time}', '${obj[item].comment}')" class="tr tr-patient round" data-patient-card-show style="grid-template-columns: 37% 15% 33% 1fr;">`
+        } else {
+            result += `<div id="${obj[item].id}" onclick="showCard('${obj[item].id}', '${obj[item].full_name}', '${obj[item].room_number}', '${obj[item].department}', '${obj[item].type_of_diet}', '${obj[item].receipt_date}', '${obj[item].receipt_time}', '${obj[item].comment}')" class="tr tr-patient" data-patient-card-show style="grid-template-columns: 37% 15% 33% 1fr;">`
+        }
         result += `<div class="td td-name">`
         result += `<div class="name ellipsis">${obj[item].full_name}</div>`
         result += `</div>`
@@ -682,9 +685,13 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
         }
     }
     result += `</ul>`
-
     dishList.insertAdjacentHTML("afterbegin", result);
-    setTimeout(() => { document.getElementById('add-change-dish-modal-start').click();}, 200);
+    
+    if (mode === 'change') {
+        setTimeout(() => { document.getElementById('add-change-dish-modal-start').click();}, 200);
+    } else {
+        setTimeout(() => { document.getElementById('add-change-dish-modal-start').click();}, 800);
+    }
 
 }
 
@@ -707,8 +714,8 @@ function createModalDelete(product_id, name, category, meal) {
         modalFooter.removeChild(modalFooter.firstChild);
     }
     let r = '';
-    r += `<a class="button" onclick="deleteDishAPI('${category}', '${product_id}', '${meal}')">Удалить</a>`
-    r += `<a id="close-modal" onclick="closeModal()" class="button white" data-modal-close>Отменить</a>`
+    r += `<a class="button button-admin-foods" onclick="deleteDishAPI('${category}', '${product_id}', '${meal}')">Удалить</a>`
+    r += `<a id="close-modal" onclick="closeModal()" class="button button-admin-foods white" data-modal-close>Отменить</a>`
 
     modalFooter.insertAdjacentHTML("afterbegin", r);
     
@@ -740,8 +747,8 @@ function createModaladdDishModal(product_id, name, category, meal) {
         modalFooter.removeChild(modalFooter.firstChild);
     }
     let r = '';
-    r += `<a class="button" onclick="addDishAPI('${category}', '${product_id}', '${meal}')">Добавить</a>`
-    r += `<a id="close-modal" onclick="closeModal()" class="button white" data-modal-close>Отменить</a>`
+    r += `<a class="button button-admin-foods" onclick="addDishAPI('${category}', '${product_id}', '${meal}')">Добавить</a>`
+    r += `<a id="close-modal" onclick="closeModal()" class="button button-admin-foods white" data-modal-close>Отменить</a>`
 
     modalFooter.insertAdjacentHTML("afterbegin", r);
     
@@ -791,8 +798,8 @@ function createModalChooseDish(product_id_add, name_add, product_id_del, name_de
         modalFooter.removeChild(modalFooter.firstChild);
     }
     let r = '';
-    r += `<a class="button" onclick="changeDishAPI('${product_id_add.replace(/"/g, '&quot;')}', '${product_id_del.replace(/"/g, '&quot;')}', '${category}', '${meal}')">Заменить</a>`
-    r += `<a id="close-modal" onclick="closeModal()" class="button white" data-modal-close>Отменить</a>`
+    r += `<a class="button button-admin-foods" onclick="changeDishAPI('${product_id_add.replace(/"/g, '&quot;')}', '${product_id_del.replace(/"/g, '&quot;')}', '${category}', '${meal}')">Заменить</a>`
+    r += `<a id="close-modal" onclick="closeModal()" class="button button-admin-foods white" data-modal-close>Отменить</a>`
 
     modalFooter.insertAdjacentHTML("afterbegin", r);
     
