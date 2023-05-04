@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ru">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Личный кабинет врача{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="manifest" href="{% static 'doctor/manifest.json' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Add additional CSS in static file -->
+
+    <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'doctor/css/foods.css' %}">
+    </head>
+    <body class="has-right">
+
+        <div id="wrapper">
+            <div id="left">
+                <div class="sidebar-toggle-block" data-sidebar-toggle>
+                    <div class="logo"></div>
+                    <div class="arrow">
+                        <div class="i i-arrow"></div>
+                    </div>
+                    <div class="petrushka"></div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="overlay" data-sidebar-toggle></div>
+                    <div class="inner">
+                        <div class="sidebar-header-block">
+                            <a href="#" class="close" data-sidebar-toggle>
+                                <span class="i i-close"></span>
+                            </a>
+                            <a href="#" class="logo">
+                                <img src="./img/logo.svg" alt="">
+                            </a>
+                            <div class="profile">
+                                <a href="#" class="label" data-fade-toggle-link="profile-info">
+                                    <span class="icon"></span>
+                                    Профиль
+                                </a>
+                                <div class="info" data-fade-toggle="profile-info">
+                                    <div class="segment">
+                                        <div class="name">В. Вайнштейн</div>
+                                        <div class="email">mail@example.com</div>
+                                        <div class="links">
+                                            <a href="#" data-modal-link="logout">Выйти</a>
+                                            <a href="#" data-modal-link="profile-form">Изменить</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-menu-block">
+                            <ul>
+                                <li class="active">
+                                    <a href="/">
+                                        <span class="i i-list icon-default"></span>
+                                        <span class="i i-list-colored icon-colored"></span>
+                                        <span>Пациенты</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                        <div class="sidebar-petrushka-block">
+                            <a href="#">
+                                <img src="./img/petrushka.png" alt="">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="center">
+                <div id="header">
+                    <div class="mobile-header-block">
+                        <div class="logo">
+                            <a href="#">
+                                <img src="./img/logo.svg" alt="">
+                            </a>
+                        </div>
+                        <div class="petrushka">
+                            <a href="#">
+                                <img src="./img/petrushka.png" alt="">
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="header-block columns-2">
+                        <div class="menu-link-and-name">
+                            <a href="#" class="menu-link" data-sidebar-toggle>
+                                <div class="i i-menu"></div>
+                            </a>
+                            <div class="title">Корректировка рациона пациента</div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="content" data-scrollbar>
+                    <div class="table patients-list"
+                         data-columns="30% 20% 30% 1fr"
+                         data-columns-mobile="37% 15% 33% 1fr"
+                    >
+                        <div class="tr thead">
+                            <div class="th th-name">
+                                <a id="full_name" onclick="sortPatients('full_name')" class="sort">
+                                    <span>фио пациента</span>
+                                </a>
+                            </div>
+                            <div class="th th-number">
+                                <a id="room_number" onclick="sortPatients('room_number')" class="sort">
+                                    <span class="only-desktop">палата</span>
+                                    <span class="only-mobile">№</span>
+                                </a>
+                            </div>
+                            <div class="th th-department">
+                                <a id="department" onclick="sortPatients('department')" class="sort">
+                                    <span>отделение</span>
+                                </a>
+                            </div>
+                            <div class="th th-diet">
+                                <a id="type_of_diet" onclick="sortPatients('type_of_diet')" class="sort">
+                                    <span>диета</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="patients-list">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="right" data-scrollbar>
+                <div class="patient-card-block">
+                    <div class="overlay" data-patient-card-toggle></div>
+                    <div class="content">
+                        <div class="inner">
+                            <div class="content-header">
+                                <div class="toggle" data-patient-card-toggle>
+                                    <div class="i i-arrow"></div>
+                                </div>
+                                <div class="block-title">Карточка пациента</div>
+                                <div class="tabs">
+                                    <a href="#" class="active" data-tab="eat">Выбранные блюда</a>
+                                    <a href="#" data-tab="profile">Профиль</a>
+                                    
+                                </div>
+                                <div class="profile" data-tab-content="profile">
+                                    <div id="card-name" class="name">Смирнова Антонина Сергеевна</div>
+                                    <div class="fields">
+                                        <div class="field">
+                                            <div class="label">Дата госпитализации</div>
+                                            <div id="card-datetime" class="value">12.07.2022, 14:00</div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="label">Отделение</div>
+                                            <div id="card-dep" class="value">Гастроэнтерология</div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="label">Диета</div>
+                                            <div id="card-diet" class="value">ОВД</div>
+                                        </div>
+                                        <div class="field">
+                                            <div class="label">Номер палаты</div>
+                                            <div id="card-room" class="value">307</div>
+                                        </div>
+                                    </div>
+                                    <div id="comment" class="help">
+                                        Аллергия на арахис, непереносимость лактозы,
+                                        рекомендована мягкая и жидкая пища
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-body">
+                                <div class="eat active" data-tab-content="eat">
+                                    <div class="eat-header">
+                                        <div class="switch">
+                                            <a id="{{ day_date.today.short}}" onclick="addMenuCard()" class="active">Сегодня</a>
+                                            <a id="{{ day_date.tomorrow.short}}" onclick="addMenuCard()">Завтра</a>
+                                            <a id="{{ day_date.day_after_tomorrow.short}}" onclick="addMenuCard()">Послезавтра</a>
+                                        </div>
+                                    </div>
+                                    <div class="eat-body">
+                                        <div id="menu-boxes" class="boxes">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!-- модально окно для удаления -->
+        <div id="modal-delet" data-modal="logout" data-modal-width="400">
+            <div id="modal-body" class="title align-center">Вы уверены, что хотите выйти?</div>
+            <div class="confirm-block">
+                <div id="modal-footer" class="buttons">
+                </div>
+            </div>
+        </div>
+
+<!-- модальное окно для выбора категории -->
+<div data-modal="category-selection" data-modal-width="480">
+    <div class="title">Выберете категорию</div>
+        <div class="form-group">
+            <select name="cat" id="select-cat">
+                <option value='salad' selected>Не выбрано</option>
+                <option value='salad'>Салаты</option>
+                <option value='soup'>Первые блюда</option>
+                <option value='porridge'>Кашы</option>
+                <option value='main'>Основные блюда</option>
+                <option value='garnish'>Гарниры</option>
+                <option value='dessert'>Десерты</option>
+                <option value='fruit'>Фрукты</option>
+                <option value='drink'>Напитки</option>
+                <option value='products'>Товары</option>
+            </select>
+        </div>
+</div>
+
+<!-- модальное окно для добавления блюда -->
+<div data-modal="add-change-dish" data-modal-width="480">
+    <div id="title-add-change-dish" class="title"></div>
+        <div id="dish-list" class="form-group">
+
+        </div>
+</div>
+
+
+<a id="modal-start" data-modal-link="logout" class="hidden">Выйти</a>
+<a id="modal-add-start" data-modal-link="category-selection" class="hidden">Выбрать категорию</a>
+<a id="add-change-dish-modal-start" data-modal-link="add-change-dish" class="hidden">Добавить/ заменить блюдо</a>
+<a style="display: none;" id="modal-close" data-modal-close>a</a>
+        <script src="{% static 'doctor/js/all.js' %}"></script>
+    </body>
+</html>
+<script>
+var userId = "{{ user_id }}"
+var date = "{{ date }}"
+var sortField = "{{ sort_field }}"
+var day = "today"
+var today = '{{ day_date.today.short}}'
+var tomorrow = '{{ day_date.tomorrow.short}}'
+var afterTomorrow = '{{ day_date.day_after_tomorrow.short}}'
+var dateDict = {
+        '{{ day_date.today.short}}': '{{ day_date.today.full}}', 
+        '{{ day_date.tomorrow.short}}': '{{ day_date.tomorrow.full}}', 
+        '{{ day_date.day_after_tomorrow.short}}': '{{ day_date.day_after_tomorrow.full}}', 
+
+    }
+
+// ###################
+// Запросы по API   ##
+// ###################
+
+const getPatients = async function(date, sortField) {
+  const url = `/doctor/api/v1/get-patients?date=${date}&filter=${sortField}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  const result = await response.json();
+  return result;
+}
+
+const getMenuForPatient = async function(userId, date) {
+    let url = '/doctor/api/v1/menu-patient-one-day'
+    let body = {
+        "id_user": userId,
+        "date_show": date
+    };
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+const deleteDishForPatient = async function(category, product_id, meal) {
+    let url = '/doctor/api/v1/delete-dish'
+    let body = {
+        "id_user": userId,
+        "date": date,
+        "product_id": product_id,
+        "category": category,
+        "meal": meal,
+    };
+    let response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+const getAllDishesByCategory = async function(cat, date) {
+    let url = `/doctor/api/v1/get-all-dishes-by-category?category=${cat}&date=${date}`
+    let response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+    });
+    let result = await response.text();
+    return result;
+} 
+
+const addDishForPatient = async function(category, product_id, meal) {
+    let url = '/doctor/api/v1/add-dish'
+    let body = {
+        "id_user": userId,
+        "date": date,
+        "product_id": product_id,
+        "category": category,
+        "meal": meal,
+    };
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+const changeDishForPatient = async function(product_id_add, product_id_del, category, meal) {
+    let url = '/doctor/api/v1/change-dish'
+    let body = {
+        "id_user": userId,
+        "date": date,
+        "product_id_add": product_id_add,
+        "product_id_del": product_id_del,
+        "category": category,
+        "meal": meal,
+    };
+    let response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+// ###################
+// Старт страницы   ##
+// ###################
+
+displayPatients(sortField)
+
+async function displayPatients(sortField) {
+
+    // получить всех активных пациентов на это дату
+    let res1 = await getPatients(date, sortField);
+        addPatients(res1);
+    
+}
+
+async function sortPatients(sortField) {
+    // отметить поле по которому идет сортировка
+    let dataList = document.querySelectorAll('.sort')
+    for (let data of dataList) {
+        data.classList.remove('active');
+    }
+    document.getElementById(sortField).classList.add('active')
+    // отмечаем порядок сортировки
+    const dataElement = document.getElementById(sortField);
+    if (dataElement.classList.contains('desc')) {
+        dataElement.classList.remove('desc')
+    } else {
+        dataElement.classList.add('desc')
+        sortField = '-' + sortField
+    }
+    displayPatients(sortField)
+
+}
+
+
+// добавляет пациентов в лист выдачи поиска
+function addPatients(obj) {
+    let dataList = document.getElementById('patients-list');
+    while (dataList.firstChild) {
+        dataList.removeChild(dataList.firstChild);
+    }
+
+    let result = ''
+
+    for (var item in obj) {
+        
+        result += `<div id="${obj[item].id}" onclick="showCard('${obj[item].id}', '${obj[item].full_name}', '${obj[item].room_number}', '${obj[item].department}', '${obj[item].type_of_diet}', '${obj[item].receipt_date}', '${obj[item].receipt_time}', '${obj[item].comment}')" class="tr tr-patient" data-patient-card-show style="grid-template-columns: 37% 15% 33% 1fr;">`
+        result += `<div class="td td-name">`
+        result += `<div class="name ellipsis">${obj[item].full_name}</div>`
+        result += `</div>`
+        result += `<div class="td td-number">${obj[item].room_number}</div>`
+        result += `<div class="td td-department">`
+        result += `<div class="ellipsis">${obj[item].department}</div>`
+        result += `</div>`
+        result += `<div class="td td-diet">`
+        result += `<span class="tag ${obj[item].color}">${obj[item].type_of_diet}</span>`
+        result += `</div></div>`
+    }
+
+  dataList.insertAdjacentHTML("afterbegin", result);
+  document.getElementById(window.userId).classList.add('active')
+  document.getElementById(window.userId).click();
+}
+
+// #################
+// Общие функции  ##
+// #################
+function addClassActive(tag, id) {
+    document.getElementById(id).classList.add(tag);
+}
+
+function delClassActive(tag) {
+    // удаляем класс 'active'
+    let tags = document.querySelectorAll(tag);
+    tags.forEach(tag => {
+        tag.classList.remove('active');
+    });
+}
+
+function formattingFFC(value) {
+    if (value == null) {
+        return '0'
+    }
+    else {
+        return value
+    }
+}
+
+function formatDescription(value) {
+    if (value == null) {
+        return ""
+    }
+    else {
+        return value
+    }
+}
+
+function closeModal() {
+    document.getElementById('modal-close').click();
+}
+// #######################################
+// Показать картачку пациента страницы  ##
+// #######################################
+async function addMenuCard(id, date) {
+    window.date = date
+    let res = await getMenuForPatient(id, date)
+    var obj = JSON.parse(res);
+    var obj = JSON.parse(obj);
+    let meals = {
+        breakfast: "Завтрак", 
+        lunch: "Обед", 
+        afternoon: "Полдник", 
+        dinner: "Ужин"
+    }
+    addHtml(obj, meals, date)
+}
+
+function addHtml(obj, meals, date) {
+    // Добавляет меню на один день в выборе пациента
+    var menuBox = document.getElementById('menu-boxes')
+    while (menuBox.firstChild) {
+        menuBox.removeChild(menuBox.firstChild);
+    }
+
+    let orderStatus = {
+        'done': "отдали", 
+        'fix-order': "заказ сформирован", 
+        'flex-order': "заказ еще формируется", 
+
+    }
+
+
+    let categorys = {
+        salad: "Салаты",
+        soup: "Первые блюда",
+        porridge: "Кашы", 
+        main: "Основные блюда", 
+        garnish: "Гарниры", 
+        dessert: "Десерты", 
+        fruit: "Фрукты", 
+        drink: "Напитки",
+        products: "Товары",
+        product: "Товары",
+        hidden: "Товары",
+        bouillon: "Бульон", 
+    }
+    result = '';
+    result += `<div class="date">${window.dateDict[date]}</div>`
+    // result += `<div class="date">${"тут дата"}</div>`
+    for (var meal in meals ) {
+        if (obj[meal] != null) {
+            result += `<div class="box"><div id="test" class="title">${meals[meal]}`
+            result += `<img onclick="addDish('${meal}')" class="icon-add" title="Добавить блюдо" width="20" height="20" src="{% static "doctor/css/img/add.svg" %}" alt="">`
+            result += `</div><div id="products-list" class="products-list">`
+                if (obj[meal] != null) {
+                    for (var cat in categorys ) {
+                        for (var item in obj[meal][cat] ) {
+                            if (obj[meal][cat][item] != null) {
+                                    product = obj[meal][cat][item]
+                                            result += '<div class="item">'
+                                                if (product.image == null) {
+                                                    result += '<div class="img">'
+                                                    if (cat == 'main') {
+                                                        result +=`<img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt="">`
+                                                        result +='</div>'
+                                                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt=""></div>'
+                                                    }
+                                                    if (cat == 'salad') {
+                                                        result +='<img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt="">'
+                                                        result +='</div>'
+                                                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt=""></div>'
+                                                    }
+                                                    if (cat == 'soup') {
+                                                        result +='<img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt="">'
+                                                        result +='</div>'
+                                                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt=""></div>'
+                                                    }
+                                                    if (cat == 'bouillon') {
+                                                        result +='<img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt="">'
+                                                        result +='</div>'
+                                                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt=""></div>'
+                                                    }
+                                                    if (cat == 'dessert') {
+                                                        result +='<img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt="">'
+                                                        result +='</div>'
+                                                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt=""></div>'
+                                                    }
+                                                    if (cat == 'porridge') {
+                                                        result +='<img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt="">'
+                                                        result +='</div>'
+                                                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt=""></div>'
+                                                    }
+                                                    if (cat == 'fruit') {
+                                                        result +='<img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt="">'
+                                                        result +='</div>'
+                                                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt=""></div>'
+                                                    }
+                                                    if (cat == 'drink') {
+                                                        result +='<img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt="">'
+                                                        result +='</div>'
+                                                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt=""></div>'
+                                                    }
+                                                    if (cat == 'garnish') {
+                                                        result +='<img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt="">'
+                                                        result +='</div>'
+                                                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt=""></div>'
+                                                    }
+                                                    if (cat == 'products') {
+                                                        result +='<img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt="">'
+                                                        result +='</div>'
+                                                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt=""></div>'
+                                                    }
+                                                    if (cat == 'hidden') {
+                                                        result +='<img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt="">'
+                                                        result +='</div>'
+                                                        result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt=""></div>'
+                                                    }
+                                                } else {
+                                                    result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.ru/imagecache/product/'+ product.image +'" alt=""></div>'
+                                                    result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.ru/imagecache/product/'+ product.image +'" alt=""></div>'
+                                                }
+                                            
+                                            result += '<div id="name_today" class="name">' + product.name + '</div>'
+                                            result += `<img onclick="changeDish('${cat}', '${meal}', '${obj[meal][cat][item]['id']}', '${obj[meal][cat][item]['name'].replace(/"/g, '&quot;')}')" class="icon-new" width="19" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
+                                            result += `<img onclick="deleteDish('${product.id}', '${product.name.replace(/"/g, '&quot;')}', '${cat}', '${meal}')" class="icon-new" width="20" height="19" title="Удалить блюдо" src="{% static "doctor/css/img/delete.svg" %}" alt="Удалить блюдо">`
+                                            result += '<div class="value">' + 'Б - '+ formattingFFC(product.fiber) +  ', Ж -  '+ formattingFFC(product.fat) +  ', У -  '+ formattingFFC(product.carbohydrate) + ', Ккал - ' + formattingFFC(product.energy) +  '</div>'
+                                            result += '<div class="text">' + formatDescription(product.description) + '</div>' 
+                                            result += '</div></div>'}
+                        }
+                    }
+
+                }
+            
+            result += '</div></div>'
+        }
+    }
+    menuBox.insertAdjacentHTML("beforeend", result);
+}
+
+function addDateMenu(id) {
+  const menuButtons = [`${window.today}`, `${window.tomorrow}`, `${window.afterTomorrow}`];
+
+  menuButtons.forEach(button => {
+    const newOnClickValue = `addMenuCard('${id}', '${button}')`;
+    document.getElementById(button).setAttribute('onclick', newOnClickValue);
+  });
+}
+
+function showCard(id, full_name,
+                  room_number,
+                  department,
+                  type_of_diet,
+                  card_date,
+                  card_time,
+                  comment) {
+    // получаем меню для пациента
+    window.userId = id
+    addMenuCard(id, window.date);
+    addDateMenu(id)
+
+    delClassActive('.tr-patient');
+    addClassActive('active', id);
+    document.getElementById("card-name").innerHTML = full_name
+    document.getElementById("card-dep").innerHTML = department
+    document.getElementById("card-diet").innerHTML = type_of_diet
+    document.getElementById("card-room").innerHTML = room_number
+    document.getElementById("card-datetime").innerHTML = `${card_date.replace(/-/g, ".")}, ${card_time.split(":").slice(0, 2).join(":")}`
+    document.getElementById("comment").innerHTML = comment
+}
+
+// #########################
+// Выбор бдюда для замены ##
+// #########################
+
+function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
+    dishList = document.getElementById('dish-list')
+    while (dishList.firstChild) {
+        dishList.removeChild(dishList.firstChild);
+    }
+
+    let categorys = {
+        salad: "салаты",
+        soup: "первые блюда",
+        porridge: "кашы",
+        main: "основные блюда",
+        garnish: "гарниры",
+        dessert: "десерты",
+        fruit: "фрукты",
+        drink: "напитки",
+        product: "Товары",
+        products: "Товары",
+        hidden: "Товары",
+        bouillon: "Бульон",
+    }
+
+    document.getElementById('title-add-change-dish').innerHTML = `${categorys[category].replace(categorys[category][0], categorys[category][0].toUpperCase())}`
+
+    let result = "";
+    result += `<ul>`
+    if (mode === 'change') {
+        for (var item in obj) {
+            result += `<li>`
+            result += `<a class="f-size-16 pointer" onclick="chooseDish('${obj[item]['id']}', '${obj[item]['name'].replace(/"/g, '&quot;')}', '${product_id_del.replace(/"/g, '&quot;')}', '${name_del.replace(/"/g, '&quot;')}', '${category}', '${meal}')">`
+            result += `<img class="icon-add" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
+            result += `${obj[item]['name'].replace(/"/g, '&quot;')}`
+            result += `</a></li>`
+        }
+    } else {
+        for (var item in obj) {
+            result += `<li>`
+            result += `<a class="f-size-16 pointer" onclick="addDishModal('${obj[item]['id']}', '${obj[item]['name'].replace(/"/g, '&quot;')}', '${category}', '${meal}')">`
+            result += `<img class="icon-add" width="17" height="17" title="Добавить блюдо" src="{% static "doctor/css/img/add.svg" %}" alt="Добавить блюдо">`
+            result += `${obj[item]['name'].replace(/"/g, '&quot;')}`
+            result += `</a></li>`
+        }
+    }
+    result += `</ul>`
+
+    dishList.insertAdjacentHTML("afterbegin", result);
+    setTimeout(() => { document.getElementById('add-change-dish-modal-start').click();}, 200);
+
+}
+
+function delHtmlRight() {
+    document.getElementById('td_right_title').innerHTML = ""
+    tdRight = document.getElementById('td_right')
+    while (tdRight.firstChild) {
+        tdRight.removeChild(tdRight.firstChild);
+        }
+}
+
+// #################
+// Удаление блюда ##
+// #################
+
+function createModalDelete(product_id, name, category, meal) {
+    document.getElementById('modal-body').innerHTML = `Удалить блюдо <span class="bold">"${name}"</span>?`
+    modalFooter = document.getElementById('modal-footer')
+    while (modalFooter.firstChild) {
+        modalFooter.removeChild(modalFooter.firstChild);
+    }
+    let r = '';
+    r += `<a class="button" onclick="deleteDishAPI('${category}', '${product_id}', '${meal}')">Удалить</a>`
+    r += `<a id="close-modal" onclick="closeModal()" class="button white" data-modal-close>Отменить</a>`
+
+    modalFooter.insertAdjacentHTML("afterbegin", r);
+    
+    document.getElementById('modal-start').click()
+}
+
+function deleteDish(product_id, name, category, meal) {
+    createModalDelete(product_id, name, category, meal)
+}
+
+async function deleteDishAPI(category, product_id, meal) {
+    let res = await deleteDishForPatient(category, product_id, meal);
+    var obj = JSON.parse(res);
+    closeModal()
+    if (obj['status'] == 'Error') {
+        alert('Server error...')
+    } else {
+        addMenuCard(window.userId, window.date)
+    }
+}
+
+// ###################
+// Добавление блюда ##
+// ###################
+function createModaladdDishModal(product_id, name, category, meal) {
+    document.getElementById('modal-body').innerHTML = `Добавить блюдо <span class="bold">"${name}"</span>?`
+    modalFooter = document.getElementById('modal-footer')
+    while (modalFooter.firstChild) {
+        modalFooter.removeChild(modalFooter.firstChild);
+    }
+    let r = '';
+    r += `<a class="button" onclick="addDishAPI('${category}', '${product_id}', '${meal}')">Добавить</a>`
+    r += `<a id="close-modal" onclick="closeModal()" class="button white" data-modal-close>Отменить</a>`
+
+    modalFooter.insertAdjacentHTML("afterbegin", r);
+    
+    document.getElementById('modal-start').click()
+}
+
+function createModalAddDish(mael) {
+    const newValue = `changeDishAdd(this.value, '${mael}')`;
+    document.getElementById('select-cat').setAttribute('onchange', newValue);
+    document.getElementById('modal-add-start').click()
+}
+
+async function changeDishAdd(category, meal) {
+    document.getElementById('modal-close').click()
+    let res = await getAllDishesByCategory(category, window.date);
+    var obj = JSON.parse(res);
+    addHtmlRight(obj, category, 'add', meal, '', '');
+}
+
+function addDish(mael) {
+    createModalAddDish(mael)
+}
+
+function addDishModal(product_id, name, category, meal) {
+    createModaladdDishModal(product_id, name, category, meal)
+}
+
+async function addDishAPI(category, product_id, meal) {
+    let res = await addDishForPatient(category, product_id, meal);
+    var obj = JSON.parse(res);
+    document.getElementById('close-modal').click()
+    if (obj['status'] == 'Error') {
+        alert('Server error...')
+    } else {
+        addMenuCard(window.userId, window.date)
+    }
+}
+
+// ###################
+// Заменить блюдо  ##
+// ###################
+
+function createModalChooseDish(product_id_add, name_add, product_id_del, name_del, category, meal) {
+    document.getElementById('modal-body').innerHTML = `Заменить <span class="bold">"${name_del}"</span> на <span class="bold">"${name_add}"</span>?`;
+    modalFooter = document.getElementById('modal-footer')
+    while (modalFooter.firstChild) {
+        modalFooter.removeChild(modalFooter.firstChild);
+    }
+    let r = '';
+    r += `<a class="button" onclick="changeDishAPI('${product_id_add.replace(/"/g, '&quot;')}', '${product_id_del.replace(/"/g, '&quot;')}', '${category}', '${meal}')">Заменить</a>`
+    r += `<a id="close-modal" onclick="closeModal()" class="button white" data-modal-close>Отменить</a>`
+
+    modalFooter.insertAdjacentHTML("afterbegin", r);
+    
+    document.getElementById('modal-start').click()
+}
+
+async function changeDish(category, meal, product_id, name) {
+    let res = await getAllDishesByCategory(category, window.date);
+    var obj = JSON.parse(res);
+    addHtmlRight(obj, category, 'change', meal, product_id, name);
+}
+
+// Выбор блюда из предложенных по категории
+function chooseDish(product_id_add, name_add, product_id_del, name_del, category, meal) {
+    createModalChooseDish(product_id_add, name_add, product_id_del, name_del, category, meal)
+}
+
+async function changeDishAPI(product_id_add, product_id_del, category, meal) {
+    let res = await changeDishForPatient(product_id_add, product_id_del, category, meal);
+    var obj = JSON.parse(res);
+    document.getElementById('close-modal').click()
+    if (obj['status'] == 'Error') {
+        alert('Server error...')
+    } else {
+        addMenuCard(window.userId, window.date)
+    }
+}
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>

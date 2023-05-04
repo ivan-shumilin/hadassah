@@ -9,6 +9,7 @@ from django.template import RequestContext
 from django.urls import reverse
 from django.db import transaction
 from django.db.models import Q
+from django.db.models.expressions import RawSQL
 from django.utils.dateparse import parse_date
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
@@ -813,6 +814,36 @@ def admin_foods(request):
         'user_id': patient.id,
     }
     return render(request, 'foods.html', context=data)
+
+
+def admin_foods_new(request):
+    """Админ-панель для внесения изменений в приемы пищи пациента"""
+    patient = CustomUser.objects.filter(status='patient').order_by('full_name').first()
+    today = str(date.today())
+    tomorrow = str(date.today() + timedelta(days=1))
+    day_after_tomorrow = str(date.today() + timedelta(days=2))
+    day_date = {
+        'today': {
+            'short': today,
+            'full': dateformat.format(date.fromisoformat(today), 'd E, l').lower()},
+        'tomorrow':
+            {'short': tomorrow,
+             'full': dateformat.format(date.fromisoformat(tomorrow), 'd E, l').lower()},
+        'day_after_tomorrow':
+            {'short': day_after_tomorrow,
+             'full': dateformat.format(date.fromisoformat(day_after_tomorrow), 'd E, l').lower()},
+    }
+
+    data = {
+        'full_name': patient.full_name,
+        'diet': patient.type_of_diet,
+        'comment': patient.comment,
+        'date': str(date.today()),
+        'user_id': patient.id,
+        'sort_field': 'full_name',
+        'day_date': day_date
+    }
+    return render(request, 'foods-new.html', context=data)
 
 def printed_form_one_new(request):
     is_public = False  # выводим технические названия блюд, не публичные

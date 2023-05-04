@@ -410,6 +410,22 @@ label {
     cursor: pointer;
 }
 
+.icon-new {
+    position: relative;
+    top: -2px;
+    margin-left: 0px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.icon-add {
+    position: relative;
+    top: 3px;
+    margin-left: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
 .pd-top-bot-ziro {
     padding-top: 0px;
     padding-bottom: 0px;
@@ -461,3 +477,48 @@ label {
 .js-states {
     width: 200px;
   }
+
+.table .tr .th a {
+  align-items: center;
+  color: #a7bbc7;
+  display: flex;
+  justify-content: flex-start
+}
+
+.table .tr .th a.sort:hover {
+  color: var(--color-main)
+}
+
+.table .tr .th a.sort:after {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='12' height='6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m6 0 6 6H0l6-6Z' fill='%23A7BBC7'/%3E%3C/svg%3E");
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  content: "";
+  height: 6px;
+  margin-left: 10px;
+  min-width: 12px;
+  width: 12px
+}
+
+.table .tr .th a.sort.desc:after {
+  transform: rotate(180deg)
+}
+
+.table .tr .th a.sort.active:after {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='12' height='6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m6 0 6 6H0l6-6Z' fill='%230E7ABC'/%3E%3C/svg%3E")
+}
+
+.table .tr .th a.sort span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+
+.f-size-16 {
+  font-size: 16px !important;
+}
+
+.pointer {
+  cursor: pointer;
+}

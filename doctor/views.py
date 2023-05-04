@@ -542,10 +542,9 @@ def get_category(category):
 class GetPatientsAPIView(APIView):
     def get(self, request):
         date = request.GET['date']
+        sort_field = request.GET['filter']
 
-        patients = CustomUser.objects.values('full_name', 'type_of_diet', 'id')\
-            .filter(status='patient')\
-            .order_by('full_name')
+        patients = CustomUser.objects.filter(status='patient').order_by(sort_field)
         serializer = PatientsSerializer(patients, many=True)
         return Response(serializer.data)
 

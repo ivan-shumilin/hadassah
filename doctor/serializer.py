@@ -19,10 +19,49 @@ class DishesSerializer(serializers.ModelSerializer):
         return instance.item.id
 
 class PatientsSerializer(serializers.ModelSerializer):
+    DIETS_COLORS_NAME = {
+        'ОВД': {'name': 'ОВД', 'color': 'blue'},
+        'ОВД б/с': {'name': 'ОВД б/с', 'color': 'mint'},
+        'ОВД без сахара': {'name': 'ОВД б/с', 'color': 'blue'},
+        'ОВД веган(пост) без глютена': {'name': 'ОВД веган', 'color': 'green'},
+        'Нулевая диета': {'name': 'Нулевая диета', 'color': 'green'},
+        'ЩД': {'name': 'ЩД', 'color': 'yellow'},
+        'ЩД без сахара': {'name': 'ЩД без сахара', 'color': 'yellow'},
+        'БД': {'name': 'БД', 'color': 'pink'},
+        'БД день 1': {'name': 'БД день 1', 'color': 'pink'},
+        'БД день 2': {'name': 'БД день 2', 'color': 'pink'},
+        'ВБД': {'name': 'ВБД', 'color': 'orange'},
+        'НБД': {'name': 'НБД', 'color': 'red'},
+        'НКД': {'name': 'НКД', 'color': 'red'},
+        'ВКД': {'name': 'ВКД', 'color': 'purple'},
+        'Безйодовая': {'name': 'Безйодовая', 'color': 'purple'},
+        'ПЭТ/КТ': {'name': 'ПЭТ/КТ', 'color': 'pink'},
+        }
+    type_of_diet = serializers.SerializerMethodField()
+    color = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
-        fields = ('full_name', 'type_of_diet', 'id')
+        fields = ('id',
+                  'full_name',
+                  'birthdate',
+                  'receipt_date',
+                  'receipt_time',
+                  'floor',
+                  'department',
+                  'room_number',
+                  'bed',
+                  'type_of_diet',
+                  'comment',
+                  'extra_bouillon',
+                  'color')
+
+    def get_type_of_diet(self, instance):
+        return self.DIETS_COLORS_NAME[instance.type_of_diet]['name']
+
+    def get_color(self, instance):
+        return self.DIETS_COLORS_NAME[instance.type_of_diet]['color']
+
 
 class InfoPatientSerializer(serializers.ModelSerializer):
 

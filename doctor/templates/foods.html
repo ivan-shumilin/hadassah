@@ -191,7 +191,7 @@ const getAllDishesByCategory = async function(cat, date) {
 } 
 
 const getPatients = async function(date) {
-  const url = `/doctor/api/v1/get-patients?date=${date}`;
+  const url = `/doctor/api/v1/get-patients?date=${date}&filter=full_name`;
   const response = await fetch(url, {
     method: 'GET',
     headers: {
