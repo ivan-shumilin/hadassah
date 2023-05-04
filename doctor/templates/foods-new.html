@@ -410,13 +410,14 @@ function addPatients(obj) {
     let result = ''
 
     for (var item in obj) {
+        
         if (item == 0) {
             result += `<div id="${obj[item].id}" onclick="showCard('${obj[item].id}', '${obj[item].full_name}', '${obj[item].room_number}', '${obj[item].department}', '${obj[item].type_of_diet}', '${obj[item].receipt_date}', '${obj[item].receipt_time}', '${obj[item].comment}')" class="tr tr-patient round" data-patient-card-show style="grid-template-columns: 37% 15% 33% 1fr;">`
         } else {
             result += `<div id="${obj[item].id}" onclick="showCard('${obj[item].id}', '${obj[item].full_name}', '${obj[item].room_number}', '${obj[item].department}', '${obj[item].type_of_diet}', '${obj[item].receipt_date}', '${obj[item].receipt_time}', '${obj[item].comment}')" class="tr tr-patient" data-patient-card-show style="grid-template-columns: 37% 15% 33% 1fr;">`
         }
         result += `<div class="td td-name">`
-        result += `<div class="name ellipsis">${obj[item].full_name}</div>`
+        result += `<div class="name ellipsis">${parseInt(item) + 1}. ${obj[item].full_name}</div>`
         result += `</div>`
         result += `<div class="td td-number">${obj[item].room_number}</div>`
         result += `<div class="td td-department">`
