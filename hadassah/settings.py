@@ -156,6 +156,12 @@ DATE_FORMAT = 'd E Y'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
+# Основной url для управления медиафайлами
+MEDIA_URL = '/media/'
+
+# Путь хранения картинок
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
