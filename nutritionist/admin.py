@@ -61,18 +61,18 @@ class ProductLpAdmin(admin.ModelAdmin):
         link = reverse('edit_photo', args=[obj.pk])
         return mark_safe(f'<a href="{link}" style="max-height: 200px; font-weight: 600;">Редактировать фото блюда</a>')
 
-    def save_model(self, request, obj, form, change):
-        # Получаем объект файла из формы
-        image = form.cleaned_data['image']
-
-        # Генерируем новое имя файла, например, на основе текущего времени
-        new_filename = f"{obj.pk}.{image.name.split('.')[-1]}"
-
-        # Сохраняем файл с новым именем
-        obj.image.save(new_filename, image)
-
-        # Вызываем родительский метод для сохранения объекта модели
-        super().save_model(request, obj, form, change)
+    # def save_model(self, request, obj, form, change):
+    #     # Получаем объект файла из формы
+    #     image = form.cleaned_data['image']
+    #
+    #     # Генерируем новое имя файла, например, на основе текущего времени
+    #     new_filename = f"{obj.pk}.{image.name.split('.')[-1]}"
+    #
+    #     # Сохраняем файл с новым именем
+    #     obj.image.save(new_filename, image)
+    #
+    #     # Вызываем родительский метод для сохранения объекта модели
+    #     super().save_model(request, obj, form, change)
 
     inlines = [TimetableLpAdmin]
 
