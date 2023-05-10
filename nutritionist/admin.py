@@ -48,18 +48,18 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(ProductLp)
 class ProductLpAdmin(admin.ModelAdmin):
     list_display = ('name', 'product_id', 'public_name', 'with_garnish', 'category', 'description', 'status')
-    fields = ('name', 'public_name', 'image', 'preview', 'edit_photo', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
+    fields = ('name', 'public_name', 'preview', 'edit_photo', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
               'energy', 'weight', 'description', 'comment', 'status')
     list_filter = ('category', 'status',)
     list_per_page = 1000
-    readonly_fields = ["preview", "edit_photo"]
+    # readonly_fields = ["preview", "edit_photo"]
 
-    def preview(self, obj):
-        return mark_safe(f'<img src="{obj.image.url}?v={str(random.randint(1, 1000))}" style="max-height: 150px;">')
-
-    def edit_photo(self, obj):
-        link = reverse('edit_photo', args=[obj.pk])
-        return mark_safe(f'<a href="{link}" style="max-height: 200px; font-weight: 600;">Редактировать фото блюда</a>')
+    # def preview(self, obj):
+    #     return mark_safe(f'<img src="{obj.image.url}?v={str(random.randint(1, 1000))}" style="max-height: 150px;">')
+    #
+    # def edit_photo(self, obj):
+    #     link = reverse('edit_photo', args=[obj.pk])
+    #     return mark_safe(f'<a href="{link}" style="max-height: 200px; font-weight: 600;">Редактировать фото блюда</a>')
 
     # def save_model(self, request, obj, form, change):
     #     # Получаем объект файла из формы
