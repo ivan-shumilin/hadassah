@@ -463,6 +463,7 @@ class ProductLp(models.Model):
     fiber = models.CharField(verbose_name="Белки", max_length=200, null=True, blank=True)
     energy = models.CharField(verbose_name="Энергетическая ценность", max_length=200, null=True, blank=True)
     # image = models.ImageField(verbose_name="Фото", blank=True, null=True, upload_to='product_lp_images')
+    image = models.CharField(max_length=200, null=True, blank=True)
     description = models.CharField(verbose_name="Состав", max_length=1000, null=True, blank=True)
     category = models.CharField(verbose_name="Категория", max_length=2000, null=True, blank=True)
     comment = models.CharField(verbose_name="Комментарий", max_length=5000, null=True, blank=True)
