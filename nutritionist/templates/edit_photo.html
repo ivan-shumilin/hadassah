@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Редактор фото</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
+    <link href="{% static 'doctor/css/croppr.css' %}" rel="stylesheet"/>
+
+</head>
+<style>
+    .modal {
+        padding: 18px;
+        position: absolute;
+        border: 1px solid lightgrey;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+    }
+    
+    .modal img {
+        max-width: 100%;
+    }
+</style>
+<body class="ed-photo">
+
+    <form id="form" method="post" novalidate>
+        {% csrf_token %}
+        <div>
+            {% load static %}
+            {% load random %}
+
+            <img src="{{ image.url|random }}" id="croppr">
+        </div>
+        <input class="hidden" type="text" name="product_id" value="{{ product_id }}">
+        <button class="btn btn-primary mr-top-20" onclick="submitData()" >Обрезать</button>
+    </form>
+</body>
+
+<script src="{% static 'doctor/js/croppr.js' %}"></script>
+<script>
+var croppr = new Croppr('#croppr', {
+    aspectRatio: 140 / 323,
+    gridVisible: true,
+    gridSize: 30,
+    
+});
+
+// ###################
+// Запросы по API   ##
+// ###################
+
+const croppImage = async function() {
+    var value = croppr.getValue();
+    let url = '/doctor/api/v1/cropp_image'
+    let body = {
+        "x": value.x,
+        "y": value.y,
+        "width": value.width,
+        "height": value.height,
+        "url": "{{ image.url }}"
+    };
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+// ###################
+// Старт страницы   ##
+// ###################
+
+async function submitData() {
+    // получить всех активных пациентов на это дату
+    let res = await croppImage();
+    if (res.status ===  "OK") {
+        document.getElementById('form').submit();
+    }
+}
+
+
+</script>
+<!-- <script>
+
+var croppr = new Croppr('#croppr', {
+  // options
+});
+
+var value = croppr.getValue();
+</script> -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+
+
+</html>
