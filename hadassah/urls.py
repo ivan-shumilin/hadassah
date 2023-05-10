@@ -1,6 +1,9 @@
+from django.conf.urls.static import static
 from django.contrib import admin
 
 from django.urls import path, include, re_path
+
+from hadassah import settings
 from nutritionist.views import *
 from nutritionist import views
 from hadassah.spectacular.urls import urlpatterns as doc_urls
@@ -37,6 +40,7 @@ urlpatterns = [
     path('manager/tk/<id>/<count>', views.tk, name='tk'),
     path('manager/admin-foods/', views.admin_foods, name='admin_foods'),
     path('manager/admin-foods-new/', views.admin_foods_new, name='admin_foods_new'),
+    path('manager/edit-photo/<product_id>', views.edit_photo, name='edit_photo'),
 
     path('manager/menu', views.menu_lp_for_staff, name='menu_lp_for_staff'),
     path('register/', views.register, name='register'),
@@ -45,6 +49,9 @@ urlpatterns = [
     path('api/v1/get/downloadreport', views.DownloadReportAPIView.as_view()),
     path('manager/api/v1/get/downloadsstickers', views.CreateSitckers.as_view(), name='create_stickers'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
 
 
 urlpatterns += doc_urls

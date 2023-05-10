@@ -802,6 +802,25 @@ def manager(request):
     data = {}
     return render(request, 'admin.html', context=data)
 
+
+def edit_photo(request, product_id):
+    """Редактировать фотографию блюда"""
+
+
+    if request.method == "POST":
+        product_id = request.POST['product_id']
+        link = f'/admin/nutritionist/productlp/{product_id}/change/'
+
+        return HttpResponseRedirect(link)
+
+    product = ProductLp.objects.get(id=product_id)
+
+    data = {
+        'product_id': product_id,
+        'image': product.image,
+    }
+
+    return render(request, 'edit_photo.html', context=data)
 def admin_foods(request):
     """Админ-панель для внесения изменений в приемы пищи пациента"""
     patient = CustomUser.objects.filter(status='patient').order_by('full_name').first()

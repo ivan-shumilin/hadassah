@@ -101,3 +101,10 @@ class ChangeDishSerializer(serializers.Serializer):
     product_id_del = serializers.CharField()
     category = serializers.CharField()
     meal = serializers.CharField()
+
+class CroppImageSerializer(serializers.Serializer):
+    x = serializers.IntegerField()
+    y = serializers.IntegerField()
+    width = serializers.IntegerField()
+    height = serializers.IntegerField()
+    url = serializers.CharField()

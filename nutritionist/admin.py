@@ -1,7 +1,11 @@
 # users/admin.py
+import random
+
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp, MenuByDay, Barcodes, CommentProduct, \
     BotChatId, UsersToday, СhangesUsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage, Ingredient, \
@@ -44,10 +48,31 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(ProductLp)
 class ProductLpAdmin(admin.ModelAdmin):
     list_display = ('name', 'product_id', 'public_name', 'with_garnish', 'category', 'description', 'status')
-    fields = ('name', 'public_name', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
+    fields = ('name', 'public_name', 'image', 'preview', 'edit_photo', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
               'energy', 'weight', 'description', 'comment', 'status')
     list_filter = ('category', 'status',)
     list_per_page = 1000
+    readonly_fields = ["preview", "edit_photo"]
+
+    def preview(self, obj):
+        return mark_safe(f'<img src="{obj.image.url}?v={str(random.randint(1, 1000))}" style="max-height: 150px;">')
+
+    def edit_photo(self, obj):
+        link = reverse('edit_photo', args=[obj.pk])
+        return mark_safe(f'<a href="{link}" style="max-height: 200px; font-weight: 600;">Редактировать фото блюда</a>')
+
+    def save_model(self, request, obj, form, change):
+        # Получаем объект файла из формы
+        image = form.cleaned_data['image']
+
+        # Генерируем новое имя файла, например, на основе текущего времени
+        new_filename = f"{obj.pk}.{image.name.split('.')[-1]}"
+
+        # Сохраняем файл с новым именем
+        obj.image.save(new_filename, image)
+
+        # Вызываем родительский метод для сохранения объекта модели
+        super().save_model(request, obj, form, change)
 
     inlines = [TimetableLpAdmin]
 

@@ -1,3 +1,4 @@
+from PIL import Image
 from django.db import transaction
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -45,7 +46,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from .serializer import DishesSerializer, PatientsSerializer, InfoPatientSerializer, InputDataSerializer, \
-    AddDishSerializer, ChangeDishSerializer
+    AddDishSerializer, ChangeDishSerializer, CroppImageSerializer
 
 
 class ServiceWorkerView(TemplateView):
@@ -723,6 +724,23 @@ class ChangeDishAPIView(APIView):
 
         return Response({'status': 'OK'})
 
+
+class CroppImageAPIView(APIView):
+    def post(self, request):
+        serializer = CroppImageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        x: int = serializer.validated_data['x']
+        y: int = serializer.validated_data['y']
+        width: int = serializer.validated_data['width']
+        height: int = serializer.validated_data['height']
+        url: str = '.' + serializer.validated_data['url']
+
+        im = Image.open(url)
+        im_crop = im.crop((x, y, x + width, y + height))
+        im_crop.save(url, quality=95)
+        Response({'status': 'OK'})
+
+        return Response({'status': 'OK'})
 
 
 # def menu_for_staff(request):

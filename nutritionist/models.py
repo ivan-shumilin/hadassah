@@ -455,22 +455,22 @@ class MenuByDayReadyOrder(models.Model):
 
 
 class ProductLp(models.Model):
-    name = models.CharField(max_length=200, null=True)
-    public_name = models.CharField(max_length=200, null=True, blank=True)
-    product_id = models.CharField(max_length=100, null=True, blank=True)
-    carbohydrate = models.CharField(max_length=200, null=True, blank=True)
-    fat = models.CharField(max_length=200, null=True, blank=True)
-    fiber = models.CharField(max_length=200, null=True, blank=True)
-    energy = models.CharField(max_length=200, null=True, blank=True)
-    image = models.CharField(max_length=2000, null=True, blank=True)
-    description = models.CharField(max_length=1000, null=True, blank=True)
-    category = models.CharField(max_length=2000, null=True, blank=True)
-    comment = models.CharField(max_length=5000, null=True, blank=True)
-    weight = models.CharField(max_length=5000, null=True, blank=True)
-    number_tk = models.CharField(max_length=5000, null=True, blank=True)
+    name = models.CharField(verbose_name="Название", max_length=200, null=True)
+    public_name = models.CharField(verbose_name="Публичное название", max_length=200, null=True, blank=True)
+    product_id = models.CharField(verbose_name="ID блюда", max_length=100, null=True, blank=True)
+    carbohydrate = models.CharField(verbose_name="Углеводы", max_length=200, null=True, blank=True)
+    fat = models.CharField(verbose_name="Жиры", max_length=200, null=True, blank=True)
+    fiber = models.CharField(verbose_name="Белки", max_length=200, null=True, blank=True)
+    energy = models.CharField(verbose_name="Энергетическая ценность", max_length=200, null=True, blank=True)
+    image = models.ImageField(verbose_name="Фото", blank=True, null=True, upload_to='product_lp_images')
+    description = models.CharField(verbose_name="Состав", max_length=1000, null=True, blank=True)
+    category = models.CharField(verbose_name="Категория", max_length=2000, null=True, blank=True)
+    comment = models.CharField(verbose_name="Комментарий", max_length=5000, null=True, blank=True)
+    weight = models.CharField(verbose_name="Вес", max_length=5000, null=True, blank=True)
+    number_tk = models.CharField(verbose_name="Номер ТТК", max_length=5000, null=True, blank=True)
     # у новых блюд статус равен 1
-    status = models.CharField(max_length=500, null=True, default='1',)
-    with_garnish = models.BooleanField(
+    status = models.CharField(verbose_name="Статус", max_length=500, null=True, default='1',)
+    with_garnish = models.BooleanField(verbose_name="Блюдо с гарниром",
         blank=True,
         default=False,
         help_text='Блюдо уже с гарниром?')
