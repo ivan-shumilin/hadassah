@@ -90,7 +90,7 @@
             <div class="date">{{ formatted_date|lower  }}</div>
         </div>
     </div>
-
+    {% load random %}
         <div id="content" data-scrollbar>
             <div class="eat-grid-block">
                 {% if products_salad %}
@@ -103,7 +103,7 @@
                                         {% if product.image %}
                                             {% if product.status == '1' %}
                                                 <div class="img">
-                                                    <img src="{{ product.image.url }}" alt="">
+                                                    <img src="{{ product.image.url|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 <div class="img">
@@ -132,7 +132,7 @@
                                 {% if product.image %}
                                     {% if product.status == '1' %}
                                         <div class="img">
-                                            <img src="{{ product.image.url }}" alt="">
+                                            <img src="{{ product.image.url|random }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="img">
@@ -159,7 +159,7 @@
                                         {% if product.image %}
                                             {% if product.status == '1' %}
                                                 <div class="img">
-                                                    <img src="{{ product.image.url }}" alt="">
+                                                    <img src="{{ product.image.url|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 <div class="img">
@@ -186,7 +186,7 @@
                                 {% if product.image %}
                                     {% if product.status == '1' %}
                                         <div class="img">
-                                            <img src="{{ product.image.url }}" alt="">
+                                            <img src="{{ product.image.url|random }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="img">
@@ -213,7 +213,7 @@
                                         {% if product.image %}
                                             {% if product.status == '1' %}
                                                 <div class="img">
-                                                    <img src="{{ product.image.url }}" alt="">
+                                                    <img src="{{ product.image.url|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 <div class="img">
@@ -240,7 +240,7 @@
                                 {% if product.image %}
                                     {% if product.status == '1' %}
                                         <div class="img">
-                                            <img src="{{ product.image.url }}" alt="">
+                                            <img src="{{ product.image.url|random }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="img">
@@ -267,7 +267,7 @@
                                         {% if product.image %}
                                             {% if product.status == '1' %}
                                                 <div class="img">
-                                                    <img src="{{ product.image.url }}" alt="">
+                                                    <img src="{{ product.image.url|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 <div class="img">
@@ -294,7 +294,7 @@
                                 {% if product.image %}
                                     {% if product.status == '1' %}
                                         <div class="img">
-                                            <img src="{{ product.image.url }}" alt="">
+                                            <img src="{{ product.image.url|random }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="img">
@@ -321,7 +321,7 @@
                                         {% if product.image %}
                                             {% if product.status == '1' %}
                                                 <div class="img">
-                                                    <img src="{{ product.image.url }}" alt="">
+                                                    <img src="{{ product.image.url|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 <div class="img">
@@ -348,7 +348,7 @@
                                 {% if product.image %}
                                     {% if product.status == '1' %}
                                         <div class="img">
-                                            <img src="{{ product.image.url }}" alt="">
+                                            <img src="{{ product.image.url|random }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="img">
@@ -375,7 +375,7 @@
                                         {% if product.image %}
                                             {% if product.status == '1' %}
                                                 <div class="img">
-                                                    <img src="{{ product.image.url }}" alt="">
+                                                    <img src="{{ product.image.url|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 <div class="img">
@@ -402,7 +402,7 @@
                                 {% if product.image %}
                                     {% if product.status == '1' %}
                                         <div class="img">
-                                            <img src="{{ product.image.url }}" alt="">
+                                            <img src="{{ product.image.url|random }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="img">
@@ -429,7 +429,7 @@
                                         {% if product.image %}
                                             {% if product.status == '1' %}
                                                 <div class="img">
-                                                    <img src="{{ product.image.url }}" alt="">
+                                                    <img src="{{ product.image.url|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 <div class="img">
@@ -456,7 +456,7 @@
                                 {% if product.image %}
                                     {% if product.status == '1' %}
                                         <div class="img">
-                                            <img src="{{ product.image.url }}" alt="">
+                                            <img src="{{ product.image.url|random }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="img">
@@ -483,7 +483,7 @@
                                         {% if product.image %}
                                             {% if product.status == '1' %}
                                                 <div class="img">
-                                                    <img src="{{ product.image.url }}" alt="">
+                                                    <img src="{{ product.image.url|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 <div class="img">
@@ -510,7 +510,7 @@
                                 {% if product.image %}
                                     {% if product.status == '1' %}
                                         <div class="img">
-                                            <img src="{{ product.image.url }}" alt="">
+                                            <img src="{{ product.image.url|random }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="img">
