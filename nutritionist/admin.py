@@ -78,21 +78,23 @@ class ProductLpAdmin(admin.ModelAdmin):
         # Получаем объект файла из формы
         image = form.cleaned_data['image']
 
-        #Проверяем изменилось ли фото
-        if obj.image.file != image.file:
-            image_min = form.cleaned_data['image']
-            # Генерируем новое имя файла, например, на основе текущего времени
-            if hasattr(image, 'name'):
-                new_filename = f"{obj.pk}.{image.name.split('.')[-1]}"
+        try:
+            #Проверяем изменилось ли фото
+            if obj.image.file != image.file:
+                image_min = form.cleaned_data['image']
+                # Генерируем новое имя файла, например, на основе текущего времени
+                if hasattr(image, 'name'):
+                    new_filename = f"{obj.pk}.{image.name.split('.')[-1]}"
 
-                # Сохраняем файл с новым именем
-                obj.image.save(new_filename, image)
+                    # Сохраняем файл с новым именем
+                    obj.image.save(new_filename, image)
 
-                new_filename = f"{obj.pk}.{image.name.split('.')[-1]}"
+                    new_filename = f"{obj.pk}.{image.name.split('.')[-1]}"
 
-                # Сохраняем файл с новым именем
-                obj.image_min.save(new_filename, image_min)
-
+                    # Сохраняем файл с новым именем
+                    obj.image_min.save(new_filename, image_min)
+        except ValueError:
+            obj.image_min.delete()  # удаляем старое изображение
         # Вызываем родительский метод для сохранения объекта модели
         super().save_model(request, obj, form, change)
 
