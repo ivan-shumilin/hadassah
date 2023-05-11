@@ -47,7 +47,7 @@
                 <a style="display: none;" id="modal-close" data-modal-close>a</a>
                 <a style="display: none;" id="password-edited" data-modal-link="password-edited">a</a>
                 <a style="display: none;" id="profile-edited" data-modal-link="profile-edited">a</a>
-                
+                {% load random %}
  
                 <div id="123" class='test' data-modal="patient-archived" data-modal-width="400">
                     <div class="message-block">
@@ -1101,6 +1101,11 @@ if (not_active_users_set[0] != 'none') {
         document.getElementById(not_active_users_set[index]).classList.add('not-active')
         }
 }
+
+function getRandomNumber() {
+  return Math.floor(Math.random() * 1000) + 1;
+}
+
 filtration()
 async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_time, department, type_of_diet, room_number, bed, comment, id, floor) {
     document.getElementById("full_name_field").innerText = full_name;
@@ -1235,8 +1240,8 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
                                                 result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt=""></div>'
                                             }
                                         } else {
-                                            result += `<div class="img"><img width="96" height="96" src="${product[i].image}" alt=""></div>`
-                                            result += `<div class="info"><div class="img"><img width="96" height="96" src="src="${product[i].image}" alt=""></div>`
+                                            result += `<div class="img"><img width="96" height="96" src="${product[i].image}?v=${getRandomNumber()}" alt=""></div>`
+                                            result += `<div class="info"><div class="img"><img width="96" height="96" src="src="${product[i].image}?v=${getRandomNumber()}" alt=""></div>`
                                         }
                                     } else {
                                         result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.ru/imagecache/product/'+ product[i].image +'" alt=""></div>'

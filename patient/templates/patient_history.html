@@ -96,7 +96,7 @@
             </div>
         </div>
     </div>
-
+    {% load random %}
     <div id="content" data-scrollbar>
         {% if day_history %}
             <div class="date-form-block">
@@ -132,7 +132,7 @@
                                             {% if product.type == 'lp' %}
                                                 {% if product.image_full %}
                                                     <div class="img">
-                                                        <img src="{{ product.image_full }}" alt="">
+                                                        <img src="{{ product.image_full|random  }}" alt="">
                                                     </div>
                                                 {% else %}
                                                     {% if product.category == 'основной' %}
@@ -252,7 +252,7 @@
                                         {% if product.type == 'lp' %}
                                             {% if product.image_full %}
                                                 <div class="img">
-                                                    <img src="{{ product.image_full }}" alt="">
+                                                    <img src="{{ product.image_full|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 {% if product.category == 'основной' %}

@@ -268,7 +268,7 @@ def get_image_full_url(product):
         if product.image:
             image = product.image.url
         else:
-            image = None
+            image = ""
     else:
         image = product.image
     return image
@@ -278,7 +278,7 @@ def get_image_url(product):
         if product.image_min:
             image = product.image_min.url
         else:
-            image = None
+            image = ""
     else:
         image = product.image
     return image

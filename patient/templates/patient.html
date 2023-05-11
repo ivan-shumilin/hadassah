@@ -115,7 +115,7 @@
         <p>Сервис временно недоступен</p>
     </div>
 {% else %}
-
+{% load random %}
         <div class="eat-menu-block">
             <div class="menu">
                 <a class="active" data-tab="breakfast">Завтрак</a>
@@ -169,7 +169,7 @@
 
                                             {% if product.image %}
                                                  <div class="img" data-choose>
-                                                    <img src="{{ product.image.url }}" alt="">
+                                                    <img src="{{ product.image.url|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 <div class="img" data-choose> 
@@ -260,7 +260,7 @@
                                                 </div>
                                                 {% if product.image %}
                                                     <div class="img" data-choose>
-                                                        <img src="{{ product.image.url }}" alt="">
+                                                        <img src="{{ product.image.url|random }}" alt="">
                                                     </div>
                                                 {% else %}
                                                     <div class="img" data-choose> 
@@ -348,7 +348,7 @@
 
                                                 {% if product.image %}
                                                     <div class="img" data-choose>
-                                                        <img src="{{ product.image.url }}" alt="">
+                                                        <img src="{{ product.image.url|random }}" alt="">
                                                     </div>
                                                 {% else %}
                                                     <div class="img" data-choose> 
@@ -435,7 +435,7 @@
 
                                                 {% if product.image %}
                                                     <div class="img" data-choose>
-                                                        <img src="{{ product.image.url }}" alt="">
+                                                        <img src="{{ product.image.url|random }}" alt="">
                                                     </div>
                                                 {% else %}
                                                     <div class="img" data-choose> 
@@ -524,7 +524,7 @@
  
                                                 {% if product.image %}
                                                     <div class="img" data-choose>
-                                                        <img src="{{ product.image.url }}" alt="">
+                                                        <img src="{{ product.image.url|random }}" alt="">
                                                     </div>
                                                 {% else %}
                                                     <div class="img" data-choose> 
@@ -614,7 +614,7 @@
 
                                             {% if product.image %}
                                                 <div class="img" data-choose>
-                                                    <img src="{{ product.image.url }}" alt="">
+                                                    <img src="{{ product.image.url|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 <div class="img" data-choose> 
@@ -702,7 +702,7 @@
  
                                             {% if product.image %}
                                                 <div class="img" data-choose>
-                                                    <img src="{{ product.image.url }}" alt="">
+                                                    <img src="{{ product.image.url|random }}" alt="">
                                                 </div>
                                             {% else %}
                                                 <div class="img" data-choose> 
@@ -791,7 +791,7 @@
 
                                                 {% if product.image %}
                                                     <div class="img" data-choose>
-                                                        <img src="{{ product.image.url }}" alt="">
+                                                        <img src="{{ product.image.url|random }}" alt="">
                                                     </div>
                                                 {% else %}
                                                     <div class="img" data-choose> 
@@ -902,15 +902,15 @@
                 <div class="content">
                     <div class="eat-bottom-sheet item2 active" data-eat-bottom-sheet="item-{{ product.id }}">
                         {% if product.image %}
-                        <div class="img" data-choose>
-                            <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
-                        </div>
-                    {% else %}
-                        <div class="img" data-choose>
-                            {% load static %}
-                            <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
-                        </div>
-                    {% endif %}
+                            <div class="img" data-choose>
+                                <img src="{{ product.image.url|random }}" alt="">
+                            </div>
+                        {% else %}
+                            <div class="img" data-choose> 
+                                {% load static %}
+                                <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
+                            </div>
+                        {% endif %}
                         <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">lp-salad-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
@@ -971,14 +971,15 @@
                 <div class="toggle"></div>
                 <div class="content">
                     <div class="eat-bottom-sheet item2 active" data-eat-bottom-sheet="item-{{ product.id }}">
+
                         {% if product.image %}
                             <div class="img" data-choose>
-                                <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                <img src="{{ product.image.url|random }}" alt="">
                             </div>
                         {% else %}
-                            <div class="img" data-choose>
+                            <div class="img" data-choose> 
                                 {% load static %}
-                                    <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
+                                <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
                             </div>
                         {% endif %}
                         <div class="name">{{ product.public_name }}</div>
@@ -1041,12 +1042,13 @@
                 <div class="toggle"></div>
                 <div class="content">
                     <div class="eat-bottom-sheet item2 active" data-eat-bottom-sheet="item-{{ product.id }}">
+
                         {% if product.image %}
                             <div class="img" data-choose>
-                                <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                <img src="{{ product.image.url|random }}" alt="">
                             </div>
                         {% else %}
-                            <div class="img" data-choose>
+                            <div class="img" data-choose> 
                                 {% load static %}
                                 <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
                             </div>
@@ -1111,14 +1113,15 @@
                 <div class="toggle"></div>
                 <div class="content">
                     <div class="eat-bottom-sheet item2 active" data-eat-bottom-sheet="item-{{ product.id }}">
+
                         {% if product.image %}
                             <div class="img" data-choose>
-                                <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                <img src="{{ product.image.url|random }}" alt="">
                             </div>
                         {% else %}
-                            <div class="img" data-choose>
+                            <div class="img" data-choose> 
                                 {% load static %}
-                                <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
+                                <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
                             </div>
                         {% endif %}
                         <div class="name">{{ product.public_name }}</div>
@@ -1181,12 +1184,13 @@
                 <div class="toggle"></div>
                 <div class="content">
                     <div class="eat-bottom-sheet item2 active" data-eat-bottom-sheet="item-{{ product.id }}">
+
                         {% if product.image %}
                             <div class="img" data-choose>
-                                <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                <img src="{{ product.image.url|random }}" alt="">
                             </div>
                         {% else %}
-                            <div class="img" data-choose>
+                            <div class="img" data-choose> 
                                 {% load static %}
                                 <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
                             </div>
@@ -1217,12 +1221,13 @@
                 <div class="toggle"></div>
                 <div class="content">
                     <div class="eat-bottom-sheet item2 active" data-eat-bottom-sheet="item-{{ product.id }}">
+
                         {% if product.image %}
                             <div class="img" data-choose>
-                                <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                <img src="{{ product.image.url|random }}" alt="">
                             </div>
                         {% else %}
-                            <div class="img" data-choose>
+                            <div class="img" data-choose> 
                                 {% load static %}
                                 <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt="">
                             </div>
@@ -1253,12 +1258,13 @@
                 <div class="toggle"></div>
                 <div class="content">
                     <div class="eat-bottom-sheet item2 active" data-eat-bottom-sheet="item-{{ product.id }}">
+
                         {% if product.image %}
                             <div class="img" data-choose>
-                                <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                <img src="{{ product.image.url|random }}" alt="">
                             </div>
                         {% else %}
-                            <div class="img" data-choose>
+                            <div class="img" data-choose> 
                                 {% load static %}
                                 <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
                             </div>
@@ -1289,16 +1295,18 @@
                 <div class="toggle"></div>
                 <div class="content">
                     <div class="eat-bottom-sheet item2 active" data-eat-bottom-sheet="item-{{ product.id }}">
+
                         {% if product.image %}
                             <div class="img" data-choose>
-                                <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                <img src="{{ product.image.url|random }}" alt="">
                             </div>
                         {% else %}
-                            <div class="img" data-choose>
+                            <div class="img" data-choose> 
                                 {% load static %}
-                                <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
+                                <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
                             </div>
                         {% endif %}
+
                         <div class="name">{{ product.public_name }}</div>
                         <div class="id" style="display: none;">lp-drink-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
