@@ -295,6 +295,10 @@ class Product(models.Model):
         default=False,
         help_text='Блюдо уже с гарниром?')
 
+    class Meta:
+        verbose_name = "Блюда линии раздачи"
+        verbose_name_plural = "Блюда линии раздачи"
+
     def __str__(self):
         return f'{self.name}, {self.category}'
 
@@ -477,6 +481,10 @@ class ProductLp(models.Model):
         blank=True,
         default=False,
         help_text='Блюдо уже с гарниром?')
+
+    class Meta:
+        verbose_name = "Блюда лечебного питания"
+        verbose_name_plural = "Блюда лечебного питания"
 
     def __str__(self):
         return f'{self.name}, {self.category}'
