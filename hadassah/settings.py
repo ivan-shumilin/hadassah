@@ -9,7 +9,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'o3@)bpsxg1@wjt6jczcbl$v%4tkgfw+5h)x=#f%g@f9bx&bcr8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
         '.petrushkagroup.com',
