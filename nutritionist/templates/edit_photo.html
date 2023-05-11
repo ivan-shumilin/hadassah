@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Редактор фото</title>
+    <title>Кадрирование фото</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,7 +30,8 @@
     }
 </style>
 <body class="ed-photo">
-
+    
+    <h1>Кадрирование {% if type == 'full' %}основного фото{% else %}миниатюры{% endif %}</h1>
     <form id="form" method="post" novalidate>
         {% csrf_token %}
         <div>
@@ -46,11 +47,14 @@
 
 <script src="{% static 'doctor/js/croppr.js' %}"></script>
 <script>
+if ('{{ type }}' == 'full') {
+        var ratio =  140 / 323;
+    } else {
+        var ratio = 1;
+    }
+// var ratio = 1
 var croppr = new Croppr('#croppr', {
-    aspectRatio: 140 / 323,
-    gridVisible: true,
-    gridSize: 30,
-    
+        aspectRatio: window.ratio,
 });
 
 // ###################

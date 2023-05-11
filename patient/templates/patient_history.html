@@ -129,51 +129,57 @@
                                             <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                         </div>
                                         <div class="img">
-                                            {% if product.image %}
+                                            {% if product.type == 'lp' %}
+                                                {% if product.image_full %}
+                                                    <div class="img">
+                                                        <img src="{{ product.image_full }}" alt="">
+                                                    </div>
+                                                {% else %}
+                                                    {% if product.category == 'основной' %}
+                                                        <div class="img">
+                                                            <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if product.category == 'салат' %}
+                                                        <div class="img">
+                                                            <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if product.category == 'суп' %}
+                                                        <div class="img">
+                                                            <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if product.category == 'каша' %}
+                                                        <div class="img">
+                                                            <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if product.category == 'фрукты' %}
+                                                        <div class="img">
+                                                            <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if product.category == 'десерт' %}
+                                                        <div class="img">
+                                                            <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt="">
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if product.category == 'напиток' %}
+                                                        <div class="img">
+                                                            <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
+                                                        </div>
+                                                        {% endif %}
+                                                    {% if product.category == 'гарнир' %}
+                                                        <div class="img">
+                                                            <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% else %}
                                                 <div class="img">
                                                     <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
                                                 </div>
-                                            {% else %}
-                                                {% if product.category == 'основной' %}
-                                                    <div class="img">
-                                                        <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
-                                                    </div>
-                                                {% endif %}
-                                                {% if product.category == 'салат' %}
-                                                    <div class="img">
-                                                        <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
-                                                    </div>
-                                                {% endif %}
-                                                {% if product.category == 'суп' %}
-                                                    <div class="img">
-                                                        <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
-                                                    </div>
-                                                {% endif %}
-                                                {% if product.category == 'каша' %}
-                                                    <div class="img">
-                                                        <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
-                                                    </div>
-                                                {% endif %}
-                                                {% if product.category == 'фрукты' %}
-                                                    <div class="img">
-                                                        <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
-                                                    </div>
-                                                {% endif %}
-                                                {% if product.category == 'десерт' %}
-                                                    <div class="img">
-                                                        <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt="">
-                                                    </div>
-                                                {% endif %}
-                                                {% if product.category == 'напиток' %}
-                                                    <div class="img">
-                                                        <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
-                                                    </div>
-                                                    {% endif %}
-                                                {% if product.category == 'гарнир' %}
-                                                    <div class="img">
-                                                        <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
-                                                    </div>
-                                                {% endif %}
                                             {% endif %}
                                         </div>
                                         <div class="review">
@@ -243,51 +249,57 @@
                             <div class="content">
                                 <div class="review-bottom-sheet">
                                     <div class="img">
-                                        {% if product.image %}
+                                        {% if product.type == 'lp' %}
+                                            {% if product.image_full %}
+                                                <div class="img">
+                                                    <img src="{{ product.image_full }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                {% if product.category == 'основной' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'салат' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'суп' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'каша' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'фрукты' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'десерт' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.category == 'напиток' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
+                                                    </div>
+                                                    {% endif %}
+                                                {% if product.category == 'гарнир' %}
+                                                    <div class="img">
+                                                        <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
+                                                    </div>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% else %}
                                             <div class="img">
                                                 <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
                                             </div>
-                                        {% else %}
-                                            {% if product.category == 'основной' %}
-                                                <div class="img">
-                                                    <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
-                                                </div>
-                                            {% endif %}
-                                            {% if product.category == 'салат' %}
-                                                <div class="img">
-                                                    <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
-                                                </div>
-                                            {% endif %}
-                                            {% if product.category == 'суп' %}
-                                                <div class="img">
-                                                    <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
-                                                </div>
-                                            {% endif %}
-                                            {% if product.category == 'каша' %}
-                                                <div class="img">
-                                                    <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
-                                                </div>
-                                            {% endif %}
-                                            {% if product.category == 'фрукты' %}
-                                                <div class="img">
-                                                    <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
-                                                </div>
-                                            {% endif %}
-                                            {% if product.category == 'десерт' %}
-                                                <div class="img">
-                                                    <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt="">
-                                                </div>
-                                            {% endif %}
-                                            {% if product.category == 'напиток' %}
-                                                <div class="img">
-                                                    <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
-                                                </div>
-                                                {% endif %}
-                                            {% if product.category == 'гарнир' %}
-                                                <div class="img">
-                                                    <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
-                                                </div>
-                                            {% endif %}
                                         {% endif %}
                                     </div>
                                     <div class="name">{{ product.name }}</div>

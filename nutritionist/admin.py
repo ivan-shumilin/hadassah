@@ -48,31 +48,53 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(ProductLp)
 class ProductLpAdmin(admin.ModelAdmin):
     list_display = ('name', 'product_id', 'public_name', 'with_garnish', 'category', 'description', 'status')
-    fields = ('name', 'public_name', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
+    fields = ('name', 'public_name', 'image', 'preview', 'edit_photo', 'preview_min', 'edit_photo_min', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
               'energy', 'weight', 'description', 'comment', 'status')
     list_filter = ('category', 'status',)
     list_per_page = 1000
-    # readonly_fields = ["preview", "edit_photo"]
+    readonly_fields = ["preview", "preview_min", "edit_photo", "edit_photo_min"]
 
-    # def preview(self, obj):
-    #     return mark_safe(f'<img src="{obj.image.url}?v={str(random.randint(1, 1000))}" style="max-height: 150px;">')
-    #
-    # def edit_photo(self, obj):
-    #     link = reverse('edit_photo', args=[obj.pk])
-    #     return mark_safe(f'<a href="{link}" style="max-height: 200px; font-weight: 600;">Редактировать фото блюда</a>')
+    def preview(self, obj):
+        return mark_safe(f'<img src="{obj.image.url}?v={str(random.randint(1, 1000))}" style="max-height: 150px;">')
+    preview.short_description = 'Превью основного фото'
 
-    # def save_model(self, request, obj, form, change):
-    #     # Получаем объект файла из формы
-    #     image = form.cleaned_data['image']
-    #
-    #     # Генерируем новое имя файла, например, на основе текущего времени
-    #     new_filename = f"{obj.pk}.{image.name.split('.')[-1]}"
-    #
-    #     # Сохраняем файл с новым именем
-    #     obj.image.save(new_filename, image)
-    #
-    #     # Вызываем родительский метод для сохранения объекта модели
-    #     super().save_model(request, obj, form, change)
+    def preview_min(self, obj):
+        return mark_safe(f'<img src="{obj.image_min.url}?v={str(random.randint(1, 1000))}" style="max-height: 150px;">')
+    preview_min.short_description = 'Превью миниатюры'
+
+    def edit_photo(self, obj):
+        link = reverse('edit_photo', args=[obj.pk, 'full'])
+        return mark_safe(f'<a href="{link}" style="max-height: 200px; font-weight: 600;">Кадрировать основное фото</a>')
+    edit_photo.short_description = 'Редактировать'
+
+    def edit_photo_min(self, obj):
+        link = reverse('edit_photo', args=[obj.pk, 'min'])
+        return mark_safe(f'<a href="{link}" style="max-height: 200px; font-weight: 600;">Кадрировать миниатюру</a>')
+
+    edit_photo_min.short_description = 'Редактировать'
+
+    def save_model(self, request, obj, form, change):
+
+        # Получаем объект файла из формы
+        image = form.cleaned_data['image']
+
+        #Проверяем изменилось ли фото
+        if obj.image.file != image.file:
+            image_min = form.cleaned_data['image']
+            # Генерируем новое имя файла, например, на основе текущего времени
+            if hasattr(image, 'name'):
+                new_filename = f"{obj.pk}.{image.name.split('.')[-1]}"
+
+                # Сохраняем файл с новым именем
+                obj.image.save(new_filename, image)
+
+                new_filename = f"{obj.pk}.{image.name.split('.')[-1]}"
+
+                # Сохраняем файл с новым именем
+                obj.image_min.save(new_filename, image_min)
+
+        # Вызываем родительский метод для сохранения объекта модели
+        super().save_model(request, obj, form, change)
 
     inlines = [TimetableLpAdmin]
 

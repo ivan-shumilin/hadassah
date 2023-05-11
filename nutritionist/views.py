@@ -803,7 +803,7 @@ def manager(request):
     return render(request, 'admin.html', context=data)
 
 
-def edit_photo(request, product_id):
+def edit_photo(request, product_id, type):
     """Редактировать фотографию блюда"""
 
 
@@ -817,7 +817,8 @@ def edit_photo(request, product_id):
 
     data = {
         'product_id': product_id,
-        'image': product.image,
+        'image': product.image if type == "full" else product.image_min,
+        'type': type
     }
 
     return render(request, 'edit_photo.html', context=data)

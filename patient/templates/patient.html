@@ -165,17 +165,19 @@
                                                         </a>
                                                     </div>
                                                 {% endif %}
-                                            </div>
+                                            </div>  
+
                                             {% if product.image %}
-                                                <div class="img" data-choose>
-                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                 <div class="img" data-choose>
+                                                    <img src="{{ product.image.url }}" alt="">
                                                 </div>
                                             {% else %}
-                                                <div class="img" data-choose>
+                                                <div class="img" data-choose> 
                                                     {% load static %}
                                                     <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
                                                 </div>
                                             {% endif %}
+
                                             <div class="toggle" data-toggle>
                                                 <a href="#">Состав</a>
                                             </div>
@@ -258,15 +260,15 @@
                                                 </div>
                                                 {% if product.image %}
                                                     <div class="img" data-choose>
-                                                        <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                        <img src="{{ product.image.url }}" alt="">
                                                     </div>
                                                 {% else %}
-                                                    <div class="img" data-choose>
+                                                    <div class="img" data-choose> 
                                                         {% load static %}
-
                                                         <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
+
                                                 <div class="toggle" data-toggle>
                                                     <a href="#">Состав</a>
                                                 </div>
@@ -343,17 +345,18 @@
                                                         </div>
                                                     {% endif %}
                                                 </div>
+
                                                 {% if product.image %}
                                                     <div class="img" data-choose>
-                                                        <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                        <img src="{{ product.image.url }}" alt="">
                                                     </div>
                                                 {% else %}
-                                                    <div class="img" data-choose>
+                                                    <div class="img" data-choose> 
                                                         {% load static %}
-                                                        
                                                         <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
+
                                                 <div class="toggle" data-toggle>
                                                     <a href="#">Состав</a>
                                                 </div>
@@ -429,17 +432,18 @@
                                                         </div>
                                                     {% endif %}
                                                 </div>
+
                                                 {% if product.image %}
                                                     <div class="img" data-choose>
-                                                        <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                        <img src="{{ product.image.url }}" alt="">
                                                     </div>
                                                 {% else %}
-                                                    <div class="img" data-choose>
+                                                    <div class="img" data-choose> 
                                                         {% load static %}
-                                                        
                                                         <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
+
                                                 <div class="toggle" data-toggle>
                                                     <a href="#">Состав</a>
                                                 </div>
@@ -517,17 +521,18 @@
                                                         </div>
                                                     {% endif %}
                                                 </div>
+ 
                                                 {% if product.image %}
                                                     <div class="img" data-choose>
-                                                        <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                        <img src="{{ product.image.url }}" alt="">
                                                     </div>
                                                 {% else %}
-                                                    <div class="img" data-choose>
+                                                    <div class="img" data-choose> 
                                                         {% load static %}
-                                                        
                                                         <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
+
                                                 <div class="toggle" data-toggle>
                                                     <a href="#">Состав</a>
                                                 </div>
@@ -606,17 +611,18 @@
                                                     </div>
                                                 {% endif %}
                                             </div>
+
                                             {% if product.image %}
                                                 <div class="img" data-choose>
-                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                    <img src="{{ product.image.url }}" alt="">
                                                 </div>
                                             {% else %}
-                                                <div class="img" data-choose>
+                                                <div class="img" data-choose> 
                                                     {% load static %}
-                                                    
                                                     <img src="{% static 'doctor/css/img/dessert-f.png' %}" alt="">
                                                 </div>
                                             {% endif %}
+
                                             <div class="toggle" data-toggle>
                                                 <a href="#">Состав</a>
                                             </div>
@@ -693,17 +699,18 @@
                                                     </div>
                                                 {% endif %}
                                             </div>
+ 
                                             {% if product.image %}
                                                 <div class="img" data-choose>
-                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                    <img src="{{ product.image.url }}" alt="">
                                                 </div>
                                             {% else %}
-                                                <div class="img" data-choose>
+                                                <div class="img" data-choose> 
                                                     {% load static %}
-                                                    
                                                     <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
                                                 </div>
                                             {% endif %}
+
                                             <div class="toggle" data-toggle>
                                                 <a href="#">Состав</a>
                                             </div>
@@ -781,17 +788,18 @@
                                                         </div>
                                                     {% endif %}
                                                 </div>
+
                                                 {% if product.image %}
                                                     <div class="img" data-choose>
-                                                        <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                        <img src="{{ product.image.url }}" alt="">
                                                     </div>
                                                 {% else %}
-                                                    <div class="img" data-choose>
+                                                    <div class="img" data-choose> 
                                                         {% load static %}
-                                                        
                                                         <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
                                                     </div>
                                                 {% endif %}
+
                                                 <div class="toggle" data-toggle>
                                                     <a href="#">Состав</a>
                                                 </div>

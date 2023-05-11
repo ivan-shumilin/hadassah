@@ -40,7 +40,7 @@ urlpatterns = [
     path('manager/tk/<id>/<count>', views.tk, name='tk'),
     path('manager/admin-foods/', views.admin_foods, name='admin_foods'),
     path('manager/admin-foods-new/', views.admin_foods_new, name='admin_foods_new'),
-    path('manager/edit-photo/<product_id>', views.edit_photo, name='edit_photo'),
+    path('manager/edit-photo/<product_id>/<type>', views.edit_photo, name='edit_photo'),
 
     path('manager/menu', views.menu_lp_for_staff, name='menu_lp_for_staff'),
     path('register/', views.register, name='register'),

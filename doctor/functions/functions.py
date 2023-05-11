@@ -263,6 +263,26 @@ def create_value(product, id, is_public):
     }
     return value
 
+def get_image_full_url(product):
+    if hasattr(product, "status"):
+        if product.image:
+            image = product.image.url
+        else:
+            image = None
+    else:
+        image = product.image
+    return image
+
+def get_image_url(product):
+    if hasattr(product, "status"):
+        if product.image_min:
+            image = product.image_min.url
+        else:
+            image = None
+    else:
+        image = product.image
+    return image
+
 def check_value_two(menu_all, date_str, meal, category, user_id, is_public):
     try:
         value: list = []
@@ -273,13 +293,17 @@ def check_value_two(menu_all, date_str, meal, category, user_id, is_public):
             return [None]
         for id in id_set:
             if 'cafe' in id:
+                type: str = 'cafe'
                 product = Product.objects.get(id=id.split('-')[2])
             else:
+                type: str = 'lp'
                 product = ProductLp.objects.get(id=id)
             try:
                 product_id = product.product_id
             except:
                 product_id = None
+
+
             value.append({
                 'id': id,
                 'name': product.public_name if is_public else product.name,
@@ -287,7 +311,9 @@ def check_value_two(menu_all, date_str, meal, category, user_id, is_public):
                 'fat': round(float(0 if product.fat == None else product.fat), 1),
                 'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
                 'energy': round(float(0 if product.energy == None else product.energy), 1),
-                'image': product.image,
+                'type': type,
+                'image': get_image_url(product),
+                'image_full': get_image_full_url(product),
                 'description': product.description,
                 'category': product.category,
                 'product_id': product_id,
