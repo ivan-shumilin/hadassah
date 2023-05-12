@@ -69,7 +69,8 @@ const croppImage = async function() {
         "y": value.y,
         "width": value.width,
         "height": value.height,
-        "url": "{{ image.url }}"
+        "url": "{{ image.url }}",
+        "type": "{{ type }}"
     };
     let response = await fetch(url, {
       method: 'POST',

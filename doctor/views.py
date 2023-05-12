@@ -727,6 +727,11 @@ class ChangeDishAPIView(APIView):
 
 class CroppImageAPIView(APIView):
     def post(self, request):
+        QUALITY = {
+            'full': 75,
+            'min': 30
+        }
+
         serializer = CroppImageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         x: int = serializer.validated_data['x']
@@ -734,10 +739,11 @@ class CroppImageAPIView(APIView):
         width: int = serializer.validated_data['width']
         height: int = serializer.validated_data['height']
         url: str = '.' + serializer.validated_data['url']
+        type: str = serializer.validated_data['type']
 
         im = Image.open(url)
         im_crop = im.crop((x, y, x + width, y + height))
-        im_crop.save(url, quality=95)
+        im_crop.save(url, quality=QUALITY.get(type, 75))
         Response({'status': 'OK'})
 
         return Response({'status': 'OK'})

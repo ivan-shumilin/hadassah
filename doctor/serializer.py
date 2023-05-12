@@ -108,3 +108,4 @@ class CroppImageSerializer(serializers.Serializer):
     width = serializers.IntegerField()
     height = serializers.IntegerField()
     url = serializers.CharField()
+    type = serializers.CharField()
