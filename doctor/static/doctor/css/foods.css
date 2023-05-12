@@ -140,7 +140,7 @@ h1 {
 }
 
 #table2 .meal {
-    background-color: #226bc2;
+    background-color: #0e7abc;
     color: #fafafa;
     border-left: 1px solid #fff;
     text-align: center !important;
@@ -429,6 +429,10 @@ label {
 .pd-top-bot-ziro {
     padding-top: 0px;
     padding-bottom: 0px;
+}
+
+.pd-left-10 {
+    padding-left: 10px;
 }
 
 .info {

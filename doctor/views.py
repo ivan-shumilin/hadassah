@@ -539,6 +539,16 @@ def get_category(category):
     }
     return categorys[category]
 
+def get_category_cafe(category):
+    categorys = {
+        "салат": ["Салаты"],
+        "суп": ["Первые блюда"],
+        "каша": ["Каши"],
+        "основной": ["Завтраки", "Вторые блюда", "Блюда от шефа"],
+        "гарнир": ["Гарниры"]
+    }
+    return categorys.get(category[0], [])
+
 
 class GetPatientsAPIView(APIView):
     def get(self, request):
@@ -566,13 +576,36 @@ class GetAllDishesByCategoryAPIView(APIView):
     def get(self, request):
         category = request.GET['category']
         date = request.GET['date']
+        meal = request.GET['meal']
         day_of_the_week = get_day_of_the_week(date)
         category = get_category(category)
-        dishes = TimetableLp.objects.filter(day_of_the_week=day_of_the_week,
-                                            item__category__in=category
+        # Активные приемы пищи
+        active_diet = MenuByDay.objects.filter(date=date, meal=meal).values_list('type_of_diet', flat=True).distinct()
+
+        # Другие приемы пищи по другим активным диетам
+        dishes_all = TimetableLp.objects.filter(day_of_the_week=day_of_the_week,
+                                            item__category__in=category,
+                                            type_of_diet__in=active_diet
                                             ).distinct('item__name')
-        serializer = DishesSerializer(dishes, many=True)
-        return Response(serializer.data)
+
+        # Аналогичный прием пищи по другим активным диетам
+        dishes_meal = dishes_all.filter(meals=meal)
+
+        # Блюда линни раздачи>
+        dishes_cafe = Timetable.objects.filter(datetime=date,
+                                            item__category__in=get_category_cafe(category),
+                                            ).distinct('item__name')
+
+        dishes_all = DishesSerializer(dishes_all, many=True, context={'type': 'lp'}).data
+        dishes_meal = DishesSerializer(dishes_meal, many=True, context={'type': 'lp'}).data
+        dishes_cafe = DishesSerializer(dishes_cafe, many=True, context={'type': 'cafe'}).data
+
+        data ={
+            "dishes_all": dishes_all,
+            "dishes_meal": dishes_meal,
+            "dishes_cafe": dishes_cafe
+        }
+        return Response(data)
 
 
 class DeleteDishAPIView(APIView):

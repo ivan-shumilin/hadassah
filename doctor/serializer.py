@@ -16,6 +16,8 @@ class DishesSerializer(serializers.ModelSerializer):
         return instance.item.name
 
     def get_id(self, instance):
+        if self.context.get('type') == "cafe":
+            return f'cafe-cat-{instance.item.id}'
         return instance.item.id
 
 class PatientsSerializer(serializers.ModelSerializer):
