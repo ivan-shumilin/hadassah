@@ -89,21 +89,22 @@ def create_ready_order(meal):
     to_create = []
     for user in users:
         menu = MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
-        to_create.append(MenuByDayReadyOrder(user_id=UsersReadyOrder.objects.get(user_id=user.id),
-                                date_create=date.today(),
-                                date=menu[0].date,
-                                meal=menu[0].meal,
-                                main=menu[0].main,
-                                garnish=menu[0].garnish,
-                                porridge=menu[0].porridge,
-                                soup=menu[0].soup,
-                                dessert=menu[0].dessert,
-                                fruit=menu[0].fruit,
-                                drink=menu[0].drink,
-                                salad=menu[0].salad,
-                                products=menu[0].products,
-                                hidden=menu[0].hidden,
-                                bouillon=menu[0].bouillon))
+        if menu.exists():
+            to_create.append(MenuByDayReadyOrder(user_id=UsersReadyOrder.objects.get(user_id=user.id),
+                                    date_create=date.today(),
+                                    date=menu[0].date,
+                                    meal=menu[0].meal,
+                                    main=menu[0].main,
+                                    garnish=menu[0].garnish,
+                                    porridge=menu[0].porridge,
+                                    soup=menu[0].soup,
+                                    dessert=menu[0].dessert,
+                                    fruit=menu[0].fruit,
+                                    drink=menu[0].drink,
+                                    salad=menu[0].salad,
+                                    products=menu[0].products,
+                                    hidden=menu[0].hidden,
+                                    bouillon=menu[0].bouillon))
     MenuByDayReadyOrder.objects.bulk_create(to_create)
 
 
