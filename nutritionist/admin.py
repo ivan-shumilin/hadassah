@@ -98,14 +98,13 @@ class ProductLpAdmin(admin.ModelAdmin):
 
                     # Сохраняем файл с новым именем
                     obj.image_min.save(new_filename, image_min)
+                    obj.with_photo = True
+
         except ValueError:
             obj.image_min.delete()  # удаляем старое изображение
-        # Вызываем родительский метод для сохранения объекта модели
-        if obj.image != "" or obj.image != None:
-            obj.with_photo = True
-        else:
             obj.with_photo = False
 
+        # Вызываем родительский метод для сохранения объекта модели
         super().save_model(request, obj, form, change)
 
     inlines = [TimetableLpAdmin]
