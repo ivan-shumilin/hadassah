@@ -868,7 +868,7 @@ def admin_foods_new(request):
 def photo_statistics(request):
     """Статистика по блюдам с фотографиями"""
     count_products = ProductLp.objects.filter(status=1).count()
-    count_products_with_photo = ProductLp.objects.filter(~Q(image="")).count()
+    count_products_with_photo = ProductLp.objects.filter(~Q(image=None) & ~Q(image="")).count()
 
     data = {
         'percentage_of_completion': round((100 * count_products_with_photo / count_products), 1),
