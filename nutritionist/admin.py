@@ -6,12 +6,16 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+
+
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp, MenuByDay, Barcodes, CommentProduct, \
     BotChatId, UsersToday, СhangesUsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage, Ingredient, \
     ModifiedDish
 
 admin.site.register(Base)
+
+
 
 class TimetableAdmin(admin.ModelAdmin):
     list_display = ('item', 'datetime',)
@@ -47,10 +51,10 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(ProductLp)
 class ProductLpAdmin(admin.ModelAdmin):
-    list_display = ('name', 'product_id', 'public_name', 'with_garnish', 'category', 'description', 'status')
+    list_display = ('name', 'public_name', 'with_photo', 'with_garnish', 'category', 'description', 'status', 'product_id')
     fields = ('name', 'public_name', 'image', 'preview', 'edit_photo', 'preview_min', 'edit_photo_min', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
               'energy', 'weight', 'description', 'comment', 'status')
-    list_filter = ('category', 'status',)
+    list_filter = ('with_photo', 'status',)
     list_per_page = 1000
     readonly_fields = ["preview", "preview_min", "edit_photo", "edit_photo_min"]
 
@@ -82,7 +86,8 @@ class ProductLpAdmin(admin.ModelAdmin):
             #Проверяем изменилось ли фото
             if obj.image.file != image.file:
                 image_min = form.cleaned_data['image']
-                # Генерируем новое имя файла, например, на основе текущего времени
+
+                # Генерируем новое имя файла
                 if hasattr(image, 'name'):
                     new_filename = f"{obj.pk}.{image.name.split('.')[-1]}"
 
@@ -96,6 +101,11 @@ class ProductLpAdmin(admin.ModelAdmin):
         except ValueError:
             obj.image_min.delete()  # удаляем старое изображение
         # Вызываем родительский метод для сохранения объекта модели
+        if obj.image != "":
+            obj.with_photo = True
+        else:
+            obj.with_photo = False
+
         super().save_model(request, obj, form, change)
 
     inlines = [TimetableLpAdmin]

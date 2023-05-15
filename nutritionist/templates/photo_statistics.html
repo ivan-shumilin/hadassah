@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>Статистика</title>
+    <style>
+    body {
+        font-size: 0.9rem;
+        color: #434343;
+        padding-top: 20px;
+        padding-left: 20px;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+
+    h1 {
+    font-size: 24px;
+    color: rgb(185, 185, 189);
+    font-weight: 700;
+  }
+</style>
+
+</head>
+<body>
+<h1>Статистика по загрузке фотографий</h1>
+<div class="container-fluid " style="margin-top: 20px; margin-left: 10px;">
+    <div class="row">
+        <div class="col-4" style="margin-top: 1px">
+            <ul style="line-height: 1.8;">
+                <li><progress id="progressBar" max="100" value="{{ percentage_of_completion }}"></progress><i style="color:#0d6efd;">{{percentage_of_completion}}%</i></li>
+                <li>общее число блюд: <i style="color:#0d6efd;"> {{ count_products }}</i></li>
+                <li>число блюд с фото: <i style="color:#0d6efd;"> {{ count_products_with_photo }}</i></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

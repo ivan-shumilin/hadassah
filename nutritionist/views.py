@@ -865,6 +865,18 @@ def admin_foods_new(request):
     }
     return render(request, 'foods-new.html', context=data)
 
+def photo_statistics(request):
+    """Статистика по блюдам с фотографиями"""
+    count_products = ProductLp.objects.filter(status=1).count()
+    count_products_with_photo = ProductLp.objects.filter(~Q(image="")).count()
+
+    data = {
+        'percentage_of_completion': round((100 * count_products_with_photo / count_products), 1),
+        'count_products': str(count_products),
+        'count_products_with_photo': str(count_products_with_photo),
+    }
+    return render(request, 'photo_statistics.html', context=data)
+
 def printed_form_one_new(request):
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')

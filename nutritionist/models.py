@@ -481,6 +481,10 @@ class ProductLp(models.Model):
         blank=True,
         default=False,
         help_text='Блюдо уже с гарниром?')
+    with_photo = models.BooleanField(verbose_name="Есть фото",
+        blank=True,
+        default=False,
+        help_text='Есть фото?')
 
     class Meta:
         verbose_name = "Блюда лечебного питания"
