@@ -79,8 +79,11 @@ def create_category_dict(meal, is_ready_meal, patients):
     else:
         for patient in patients:
             for category, products_list in category_dict.items():
-                product_id = MenuByDay.objects \
-                    .filter(user_id=patient, date=date.today(), meal=meal).values()[0].get(category)
+                try:
+                    product_id = MenuByDay.objects \
+                        .filter(user_id=patient, date=date.today(), meal=meal).values()[0].get(category)
+                except:
+                    continue
                 if product_id is not None:
                     if 'cafe' in product_id:
                         for product in products_list:
