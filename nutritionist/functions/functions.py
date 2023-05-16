@@ -65,6 +65,10 @@ def checking_is_ready_meal(meal):
 
 def create_category_dict(meal, is_ready_meal, patients):
     category_dict = {'porridge': [], 'salad': [], 'soup': [], 'main': [], 'garnish': []}
+    if datetime.today().hour >= 19:
+        date = datetime.today().date() + timedelta(days=1)
+    else:
+        date = datetime.today().date()
     if is_ready_meal:
         category_dict = {
             'porridge': create_products_list_category('porridge', meal),
@@ -81,7 +85,7 @@ def create_category_dict(meal, is_ready_meal, patients):
             for category, products_list in category_dict.items():
                 try:
                     product_id = MenuByDay.objects \
-                        .filter(user_id=patient, date=date.today(), meal=meal).values()[0].get(category)
+                        .filter(user_id=patient, date=date, meal=meal).values()[0].get(category)
                 except:
                     continue
                 if product_id is not None:
