@@ -25,7 +25,7 @@ class PatientsSerializer(serializers.ModelSerializer):
         'ОВД': {'name': 'ОВД', 'color': 'blue'},
         'ОВД б/с': {'name': 'ОВД б/с', 'color': 'mint'},
         'ОВД без сахара': {'name': 'ОВД б/с', 'color': 'blue'},
-        'ОВД веган(пост) без глютена': {'name': 'ОВД веган', 'color': 'green'},
+        'ОВД веган (пост) без глютена': {'name': 'ОВД веган', 'color': 'green'},
         'Нулевая диета': {'name': 'Нулевая диета', 'color': 'green'},
         'ЩД': {'name': 'ЩД', 'color': 'yellow'},
         'ЩД без сахара': {'name': 'ЩД без сахара', 'color': 'yellow'},
