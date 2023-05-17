@@ -114,17 +114,25 @@
                                     {% endif %}
 
 
-                                    {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
-                                    {% else %}
-                                        <div class="td">{{ product.name }}</div>
-                                    {% endif %}
+                                    <div class="td">
+                                        {% if product.comments|length > 0 %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% else %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% endif %}
+
+                                        {% if product.product_id %}
+                                            <a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a>
+                                        {% else %}
+                                            {{ product.name }}
+                                        {% endif %}
+                                    </div>
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
                             {% for comment in product.comments %}
                                 {% if comment %}
-                                    <div class="tr tr-comment">
+                                    <div class="tr tr-comment hidden {{product.id}}">
                                         <div class="td"></div>
                                         <div class="td"></div>
                                         <div class="td td-comment">
@@ -175,17 +183,25 @@
                                     {% endif %}
 
 
-                                    {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
-                                    {% else %}
-                                        <div class="td">{{ product.name }}</div>
-                                    {% endif %}
+                                    <div class="td">
+                                        {% if product.comments|length > 0 %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% else %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% endif %}
+
+                                        {% if product.product_id %}
+                                            <a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a>
+                                        {% else %}
+                                            {{ product.name }}
+                                        {% endif %}
+                                    </div>
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
                             {% for comment in product.comments %}
                                 {% if comment %}
-                                    <div class="tr tr-comment">
+                                    <div class="tr tr-comment hidden {{product.id}}">
                                         <div class="td"></div>
                                         <div class="td"></div>
                                         <div class="td td-comment">
@@ -236,17 +252,25 @@
                                     {% endif %}
 
 
-                                    {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
-                                    {% else %}
-                                        <div class="td">{{ product.name }}</div>
-                                    {% endif %}
+                                    <div class="td">
+                                        {% if product.comments|length > 0 %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% else %}
+                                            <img class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% endif %}
+
+                                        {% if product.product_id %}
+                                            <a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a>
+                                        {% else %}
+                                            {{ product.name }}
+                                        {% endif %}
+                                    </div>
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
                             {% for comment in product.comments %}
                                 {% if comment %}
-                                    <div class="tr tr-comment">
+                                    <div class="tr tr-comment hidden {{ product.id }}">
                                         <div class="td"></div>
                                         <div class="td"></div>
                                         <div class="td td-comment">
@@ -297,17 +321,25 @@
                                         </div>
                                     {% endif %}
 
-                                    {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
-                                    {% else %}
-                                        <div class="td">{{ product.name }}</div>
-                                    {% endif %}
+                                    <div class="td">
+                                        {% if product.comments|length > 0 %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% else %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% endif %}
+
+                                        {% if product.product_id %}
+                                            <a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a>
+                                        {% else %}
+                                            {{ product.name }}
+                                        {% endif %}
+                                    </div>
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
                             {% for comment in product.comments %}
                                 {% if comment %}
-                                    <div class="tr tr-comment">
+                                    <div class="tr tr-comment hidden {{product.id}}">
                                         <div class="td"></div>
                                         <div class="td"></div>
                                         <div class="td td-comment">
@@ -358,18 +390,25 @@
                                         </div>
                                     {% endif %}
 
+                                    <div class="td">
+                                        {% if product.comments|length > 0 %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% else %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% endif %}
 
-                                    {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
-                                    {% else %}
-                                        <div class="td">{{ product.name }}</div>
-                                    {% endif %}
+                                        {% if product.product_id %}
+                                            <a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a>
+                                        {% else %}
+                                            {{ product.name }}
+                                        {% endif %}
+                                    </div>
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
                             {% for comment in product.comments %}
                                 {% if comment %}
-                                    <div class="tr tr-comment">
+                                    <div class="tr tr-comment hidden {{product.id}}">
                                         <div class="td"></div>
                                         <div class="td"></div>
                                         <div class="td td-comment">
@@ -421,17 +460,25 @@
                                     {% endif %}
 
 
-                                    {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
-                                    {% else %}
-                                        <div class="td">{{ product.name }}</div>
-                                    {% endif %}
+                                    <div class="td">
+                                        {% if product.comments|length > 0 %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% else %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% endif %}
+
+                                        {% if product.product_id %}
+                                            <a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a>
+                                        {% else %}
+                                            {{ product.name }}
+                                        {% endif %}
+                                    </div>
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
                             {% for comment in product.comments %}
                                 {% if comment %}
-                                    <div class="tr tr-comment">
+                                    <div class="tr tr-comment hidden {{product.id}}">
                                         <div class="td"></div>
                                         <div class="td"></div>
                                         <div class="td td-comment">
@@ -483,17 +530,25 @@
                                     {% endif %}
 
 
-                                    {% if product.product_id %}
-                                        <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
-                                    {% else %}
-                                        <div class="td">{{ product.name }}</div>
-                                    {% endif %}
+                                    <div class="td">
+                                        {% if product.comments|length > 0 %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% else %}
+                                            <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                        {% endif %}
+
+                                        {% if product.product_id %}
+                                            <a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a>
+                                        {% else %}
+                                            {{ product.name }}
+                                        {% endif %}
+                                    </div>
                                     <div class="td center">{{ product.count }}</div>
                                 </div>
                             {% endif %}
                             {% for comment in product.comments %}
                                 {% if comment %}
-                                    <div class="tr tr-comment">
+                                    <div class="tr tr-comment hidden {{product.id}}">
                                         <div class="td"></div>
                                         <div class="td"></div>
                                         <div class="td td-comment">
@@ -545,18 +600,27 @@
                                 {% endif %}
 
 
-                            {% if product.product_id %}
-                                <div class="td"><a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a></div>
-                            {% else %}
-                                <div class="td">{{ product.name }}</div>
-                            {% endif %}
+                                <div class="td">
+
+                                    {% if product.comments|length > 0 and product.id != '458' %}
+                                        <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add.svg' %}" alt="Показать/ скрыть комментарии">
+                                    {% else %}
+                                        <img onclick="toggleHiddenClassByClass('{{ product.id }}')" class="icon-for-print-form" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/add-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                    {% endif %}
+
+                                    {% if product.product_id %}
+                                        <a href="{% url 'tk' product.product_id product.count %}">{{ product.name }}</a>
+                                    {% else %}
+                                        {{ product.name }}
+                                    {% endif %}
+                                </div>
                             <div class="td center">{{ product.count }}</div>
                             </div>
                         {% endif %}
                         {% if product.id != '458' %}
                             {% for comment in product.comments %}
                                 {% if comment %}
-                                    <div class="tr tr-comment">
+                                    <div class="tr tr-comment hidden {{product.id}}">
                                         <div class="td"></div>
                                         <div class="td"></div>
                                         <div class="td td-comment">
@@ -1205,5 +1269,19 @@ const list1 = document.querySelectorAll('.tag')
 //         timer_show.innerHTML = str_timer;
 //     }
 // }, 1000)
+
+function toggleHiddenClassByClass(className) {
+  const elements = document.getElementsByClassName(className);
+
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+
+    if (element.classList.contains('hidden')) {
+      element.classList.remove('hidden');
+    } else {
+      element.classList.add('hidden');
+    }
+  }
+}
 
 </script>

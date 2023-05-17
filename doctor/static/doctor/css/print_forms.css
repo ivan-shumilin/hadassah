@@ -312,7 +312,7 @@ label {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 
@@ -389,6 +389,13 @@ label {
 
 .icon {
     margin-left: 8px;
+}
+
+.icon-for-print-form {
+    position: relative;
+    /* margin-right: 20px; */
+    top: 5px;
+    right: 8px;
 }
 
 .ed-photo {
