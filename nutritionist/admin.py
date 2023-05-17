@@ -54,7 +54,7 @@ class ProductLpAdmin(admin.ModelAdmin):
     list_display = ('name', 'public_name', 'with_phote', 'with_garnish', 'category', 'description', 'status', 'product_id')
     fields = ('name', 'public_name', 'image', 'preview', 'edit_photo', 'preview_min', 'edit_photo_min', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
               'energy', 'weight', 'description', 'comment', 'status')
-    list_filter = ('with_phote',)
+    list_filter = ('with_phote', 'category')
     list_per_page = 1000
     readonly_fields = ["preview", "preview_min", "edit_photo", "edit_photo_min"]
 
