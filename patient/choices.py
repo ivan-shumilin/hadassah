@@ -4,3 +4,8 @@ MEALS = (
     ('afternoon', 'afternoon'),
     ('dinner', 'dinner'),
 )
+
+MOD_STATUS = (
+    ('add', 'add'),
+    ('change', 'change'),
+)

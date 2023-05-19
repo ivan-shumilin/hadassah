@@ -192,6 +192,6 @@ admin.site.register(CustomUser, CustomUserAdmin)
 
 @admin.register(ModifiedDish)
 class ModifiedDishAdmin(admin.ModelAdmin):
-    list_display = ('product_id', 'date', 'meal', 'user_id')
-    fields = ('product_id', 'date', 'meal', 'user_id')
+    list_display = ('product_id', 'date', 'meal', 'user_id', 'status')
+    fields = ('product_id', 'date', 'meal', 'user_id', 'status')
     list_per_page = 600

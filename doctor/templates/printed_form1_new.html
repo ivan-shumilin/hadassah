@@ -200,7 +200,7 @@
                             <div class="th th-ward">палата</div>
                             <div class="th th-diet center">диета</div>
                             <div class="th th-eat">цех лечебного питания</div>
-                            <div class="th th-distribution">цех линии раздачи</div>
+                            <!-- <div class="th th-distribution">цех линии раздачи</div> -->
                         </div>
                     </div>
                     <div class="body">
@@ -264,21 +264,31 @@
                                     <div class="td td-eat">
                                         <ul>
                                             {% for item in user.products_lp %}
-                                                {% if item.is_modified %}
-                                                    <li>{{ item.name }}<img class="icon" width="13" height="13" src="{% static "doctor/css/img/change-pf1.svg" %}" alt=""></li>
+                                                {% if item.is_modified == "add" %}
+                                                    <li>{{ item.name }}
+                                                        {% if item.type == "cafe" %}
+                                                            <img class="icon-for-print-form" width="13" height="13" src="{% static 'doctor/css/img/p.svg' %}" alt="">
+                                                        {% endif %}
+                                                            <img class="icon-for-print-form" width="16" height="16" src="{% static 'doctor/css/img/add-pf1.svg' %}" alt=""></li>
+                                                {% elif item.is_modified == "change" %}
+                                                <li>{{ item.name }}
+                                                    {% if item.type == "cafe" %}
+                                                        <img class="icon-for-print-form" width="13" height="13" src="{% static 'doctor/css/img/p.svg' %}" alt="">
+                                                    {% endif %}
+                                                        <img class="icon-for-print-form" width="15" height="15" src="{% static 'doctor/css/img/change-pf1.svg' %}" alt=""></li>
                                                 {% else %}
                                                     <li>{{ item.name }}</li>
                                                 {% endif %}
                                             {% endfor %}
                                         </ul>
                                     </div>
-                                    <div class="td td-distribution">
+                                    <!-- <div class="td td-distribution">
                                         <ul>
                                             {% for item in user.products_cafe %}
                                                 <li>{{ item.name }}</li>
                                             {% endfor %}
                                         </ul>
-                                    </div>
+                                    </div> -->
                                     {% if user.comment %}
                                         <div class="td td-comment">
                                             <div class="comment" data-tooltip="{{ user.comment }}">
@@ -348,21 +358,31 @@
                                     <div class="td td-eat">
                                         <ul>
                                             {% for item in user.products_lp %}
-                                                {% if item.is_modified %}
-                                                    <li>{{ item.name }}<img class="icon" width="13" height="13" src="{% static "doctor/css/img/change-pf1.svg" %}" alt=""></li>
+                                                {% if item.is_modified == "add" %}
+                                                    <li>{{ item.name }}
+                                                        {% if item.type == "cafe" %}
+                                                            <img class="icon-for-print-form" width="13" height="13" src="{% static 'doctor/css/img/p.svg' %}" alt="">
+                                                        {% endif %}
+                                                            <img class="icon-for-print-form" width="16" height="16" src="{% static 'doctor/css/img/add-pf1.svg' %}" alt=""></li>
+                                                {% elif item.is_modified == "change" %}
+                                                <li>{{ item.name }}
+                                                    {% if item.type == "cafe" %}
+                                                        <img class="icon-for-print-form" width="13" height="13" src="{% static 'doctor/css/img/p.svg' %}" alt="">
+                                                    {% endif %}
+                                                        <img class="icon-for-print-form" width="15" height="15" src="{% static 'doctor/css/img/change-pf1.svg' %}" alt=""></li>
                                                 {% else %}
                                                     <li>{{ item.name }}</li>
                                                 {% endif %}
                                             {% endfor %}
                                         </ul>
                                     </div>
-                                    <div class="td td-distribution">
+                                    <!-- <div class="td td-distribution">
                                         <ul>
                                             {% for item in user.products_cafe %}
                                                 <li>{{ item.name }}</li>
                                             {% endfor %}
                                         </ul>
-                                    </div>
+                                    </div> -->
                                     {% if user.comment %}
                                         <div class="td td-comment">
                                             <div class="comment" data-tooltip="{{ user.comment }}">
@@ -433,21 +453,31 @@
                                     <div class="td td-eat">
                                         <ul>
                                             {% for item in user.products_lp %}
-                                                {% if item.is_modified %}
-                                                    <li>{{ item.name }}<img class="icon" width="13" height="13" src="{% static "doctor/css/img/change-pf1.svg" %}" alt=""></li>
+                                                {% if item.is_modified == "add" %}
+                                                    <li>{{ item.name }}
+                                                        {% if item.type == "cafe" %}
+                                                            <img class="icon-for-print-form" width="13" height="13" src="{% static 'doctor/css/img/p.svg' %}" alt="">
+                                                        {% endif %}
+                                                            <img class="icon-for-print-form" width="16" height="16" src="{% static 'doctor/css/img/add-pf1.svg' %}" alt=""></li>
+                                                {% elif item.is_modified == "change" %}
+                                                <li>{{ item.name }}
+                                                    {% if item.type == "cafe" %}
+                                                        <img class="icon-for-print-form" width="13" height="13" src="{% static 'doctor/css/img/p.svg' %}" alt="">
+                                                    {% endif %}
+                                                        <img class="icon-for-print-form" width="15" height="15" src="{% static 'doctor/css/img/change-pf1.svg' %}" alt=""></li>
                                                 {% else %}
                                                     <li>{{ item.name }}</li>
                                                 {% endif %}
                                             {% endfor %}
                                         </ul>
                                     </div>
-                                    <div class="td td-distribution">
+                                    <!-- <div class="td td-distribution">
                                         <ul>
                                             {% for item in user.products_cafe %}
                                                 <li>{{ item.name }}</li>
                                             {% endfor %}
                                         </ul>
-                                    </div>
+                                    </div> -->
                                     {% if user.comment %}
                                         <div class="td td-comment">
                                             <div class="comment" data-tooltip="{{ user.comment }}">
@@ -518,21 +548,31 @@
                                     <div class="td td-eat">
                                         <ul>
                                             {% for item in user.products_lp %}
-                                                {% if item.is_modified %}
-                                                    <li>{{ item.name }}<img class="icon" width="13" height="13" src="{% static "doctor/css/img/change-pf1.svg" %}" alt=""></li>
+                                                {% if item.is_modified == "add" %}
+                                                    <li>{{ item.name }}
+                                                        {% if item.type == "cafe" %}
+                                                            <img class="icon-for-print-form" width="13" height="13" src="{% static 'doctor/css/img/p.svg' %}" alt="">
+                                                        {% endif %}
+                                                            <img class="icon-for-print-form" width="16" height="16" src="{% static 'doctor/css/img/add-pf1.svg' %}" alt=""></li>
+                                                {% elif item.is_modified == "change" %}
+                                                <li>{{ item.name }}
+                                                    {% if item.type == "cafe" %}
+                                                        <img class="icon-for-print-form" width="13" height="13" src="{% static 'doctor/css/img/p.svg' %}" alt="">
+                                                    {% endif %}
+                                                        <img class="icon-for-print-form" width="15" height="15" src="{% static 'doctor/css/img/change-pf1.svg' %}" alt=""></li>
                                                 {% else %}
                                                     <li>{{ item.name }}</li>
                                                 {% endif %}
                                             {% endfor %}
                                         </ul>
                                     </div>
-                                    <div class="td td-distribution">
+                                    <!-- <div class="td td-distribution">
                                         <ul>
                                             {% for item in user.products_cafe %}
                                                 <li>{{ item.name }}</li>
                                             {% endfor %}
                                         </ul>
-                                    </div>
+                                    </div> -->
                                     {% if user.comment %}
                                         <div class="td td-comment">
                                             <div class="comment" data-tooltip="{{ user.comment }}">
@@ -624,7 +664,7 @@
             <td>Палата</td>
             <td>Диета</td>
             <td>Цех лечебного питания</td>
-            <td>Цех линии раздачи</td>
+            <!-- <td>Цех линии раздачи</td> -->
         </tr>
         {% load formatting_full_name %}
         {% if catalog.users_2nd_floor %}
@@ -669,7 +709,7 @@
         {% endif %}
         {% if catalog.users_3nd_floor %}
             <tr class='light-blue'>
-                <td colspan="6">Этаж 3</td>    
+                <td colspan="6">Этаж 3</td>
             </tr>
             {% for user in catalog.users_3nd_floor %}
                 {% if user.comment %}
@@ -703,7 +743,7 @@
                             {% endfor %}
                         </ul>
                     </td>
-                </tr>    
+                </tr>
             {% endfor %}
         {% endif %}
     

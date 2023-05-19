@@ -393,11 +393,19 @@ label {
 
 .icon-for-print-form {
     position: relative;
-    /* margin-right: 20px; */
-    top: 5px;
-    right: 8px;
+    margin-left: 4px;
+    top: -2px;
+
 }
 
 .ed-photo {
     padding: 10px;
+}
+
+.tr .th-eat {
+    margin-left: 30px;
+}
+
+.tr .td-eat {
+    margin-left: 30px;
 }

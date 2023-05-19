@@ -632,6 +632,10 @@ class ModifiedDish(models.Model):
         )
     date = models.DateField()
     user_id = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True)
+    status = models.CharField(max_length=30,
+                              choices=MOD_STATUS,
+                              blank=True,
+                              default='',)
 
     def __str__(self):
         return f'{self.product_id} - {self.date}'

@@ -3954,8 +3954,12 @@ html.is-report-page body .container {
   margin: 0 0 6px
 }
 
-.report-block .report.patients .tr {
+/* .report-block .report.patients .tr {
   grid-template-columns: minmax(200px, 200px) minmax(70px, 70px) minmax(70px, 70px) minmax(0, 1fr) minmax(0, 1fr)
+} */
+
+.report-block .report.patients .tr {
+  grid-template-columns: minmax(200px, 200px) minmax(70px, 70px) minmax(70px, 70px) minmax(0, 1fr) minmax(0, 0)
 }
 
 .report-block .report.patients .tr .td-comment {
@@ -5757,8 +5761,12 @@ html.is-report-page body .container {
   }
 
   .report-block .report.patients .tr {
-    grid-template-columns: minmax(120px, 120px) minmax(70px, 70px) minmax(70px, 70px) minmax(0, 1fr) minmax(0, 1fr)
+    grid-template-columns: minmax(120px, 120px) minmax(70px, 70px) minmax(70px, 70px) minmax(0, 1fr) minmax(0, 0)
   }
+
+  /* .report-block .report.patients .tr {
+    grid-template-columns: minmax(120px, 120px) minmax(70px, 70px) minmax(70px, 70px) minmax(0, 1fr) minmax(0, 1fr)
+  } */
 
   .report-block .report.patients .tr .td .comment {
     display: none
@@ -6064,8 +6072,12 @@ html.is-report-page body .container {
     text-align: left
   }
 
-  .report-block .report.patients .tr {
+  /* .report-block .report.patients .tr {
     grid-template-columns: minmax(120px, 120px) minmax(70px, 70px) minmax(70px, 70px) minmax(0, 1fr) minmax(0, 1fr)
+  } */
+
+  .report-block .report.patients .tr {
+    grid-template-columns: minmax(120px, 120px) minmax(70px, 70px) minmax(70px, 70px) minmax(0, 1fr) minmax(0, 0)
   }
 
   .report-block .report.production .head .tr .th {

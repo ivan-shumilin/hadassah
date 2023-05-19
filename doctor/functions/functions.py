@@ -1,3 +1,4 @@
+import re
 from itertools import chain
 
 from django.db.models.expressions import RawSQL
@@ -317,10 +318,10 @@ def check_value_two(menu_all, date_str, meal, category, user_id, is_public):
                 'description': product.description,
                 'category': product.category,
                 'product_id': product_id,
-                'is_modified': ModifiedDish.objects.filter(product_id=id,
-                                                           meal=meal,
-                                                           date=date_str,
-                                                           user_id=user_id).exists()
+                # 'is_modified': ModifiedDish.objects.filter(product_id=id,
+                #                                            meal=meal,
+                #                                            date=date_str,
+                #                                            user_id=user_id).exists()
             })
     except Exception:
         value = [None]
@@ -1119,6 +1120,25 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, 
         'drink': check_value_two(menu_all, date_show, meal, "drink", id, is_public),
         'products': check_value_two(menu_all, date_show, meal, "products", id, is_public),
     }
+    if lp_or_cafe == 'lp':
+        for item_category in menu.values():
+            if item_category:
+                for item in item_category:
+                    if item:
+                        menu_list.append({'name': item.get("name"),
+                                          'id': item.get("id"),
+                                          'is_modified': False,
+                                          'type': item.get("type")})
+    """
+    Если блюдо заменили (корректировака или лк пациента) значек замены,
+    если блюдо добавили (только корректировка), тогда значек добавления, 
+    бульон доп. значек добавления,
+    
+    две таблицы или одна с разными статусами "add", "change".
+    когда 
+    
+    """
+
     if lp_or_cafe == 'cafe':
         for item_category in menu.values():
             if item_category:
@@ -1126,18 +1146,14 @@ def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, 
                     if item:
                         if 'cafe' in item['id']:
                             menu_list.append({'name': item.get("name"), 'is_modified': False})
-
-    if lp_or_cafe == 'lp':
-        for item_category in menu.values():
-            if item_category:
-                for item in item_category:
-                    if item:
-                        if 'cafe' not in item['id']:
-                            # menu_list.append(f'{item.get("name")}')
-                            # # print(item.get("is_modified"))
-                            # # menu_list.append(f'{item.get("name")}')
-                            # #                  f'{"(блюдо заменили)" if item.get("is_modified") == True else ""}')
-                            menu_list.append({'name': item.get("name"), 'is_modified': item.get("is_modified")})
+    #
+    # if lp_or_cafe == 'lp':
+    #     for item_category in menu.values():
+    #         if item_category:
+    #             for item in item_category:
+    #                 if item:
+    #                     if 'cafe' not in item['id']:
+    #                         menu_list.append({'name': item.get("name"), 'is_modified': item.get("is_modified")})
     return menu_list
 
 
@@ -1179,7 +1195,38 @@ def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_p
              'department': user.department,
              'products_lp': creates_dict_test(user.user_id, user.id, str(date_create), 'lp', meal, type_order, is_public),
              'products_cafe': creates_dict_test(user.user_id, user.id, str(date_create), 'cafe', meal, type_order, is_public),
-             }
+             # 'products_cafe': []
+                      }
+
+        modified_dish_set = ModifiedDish.objects.filter(meal=meal, date=date_create, user_id=user.user_id)
+        for modified_dish in modified_dish_set:
+            for product in item['products_lp']:
+                if modified_dish.product_id == product['id']:
+                    product['is_modified'] = modified_dish.status
+                    break
+
+        for product in item['products_lp']:
+            if product['id'] == "426":
+                product['is_modified'] = "add"
+                continue
+            if "change" in product['id']:
+                product['is_modified'] = "change"
+                continue
+            # если блюдо из линии раздачи, тогда отбрсываем 'cafe-cat'
+            # if 'cafe' in modified_dish.product_id:
+            #     modified_dish_product_id = modified_dish.product_id
+            #     modified_dish_product_id = re.search(r'\d+', modified_dish_product_id)
+            #     modified_dish_product_id = modified_dish_product_id.group()
+            # else:
+            #     modified_dish_product_id = modified_dish.product_id
+            #
+            # for product in item['products_lp']:
+            #     if modified_dish_product_id == product['id']:
+            #         product['id']['is_modified'] = True
+
+
+
+
 
         # проверяем наличие 'is_modified': True
         item['diet'] = "*" + item['diet'] if have_is_modified(item['products_lp']) else item['diet']

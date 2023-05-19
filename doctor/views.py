@@ -694,7 +694,7 @@ class AddDishAPIView(APIView):
                 item_menu.save()
             # добавить изменения в ModifiedDish
             user = CustomUser.objects.get(id=id_user)
-            ModifiedDish(product_id=product_id, date=date, meal=meal, user_id=user).save()
+            ModifiedDish(product_id=product_id, date=date, meal=meal, user_id=user, status="add").save()
 
         return Response({'status':'OK'})
 
@@ -752,9 +752,7 @@ class ChangeDishAPIView(APIView):
                 pass
             # добавить изменения в ModifiedDish
             user = CustomUser.objects.get(id=id_user)
-            ModifiedDish(product_id=product_id_add, date=date, meal=meal, user_id=user).save()
-
-
+            ModifiedDish(product_id=product_id_add, date=date, meal=meal, user_id=user, status="change").save()
         return Response({'status': 'OK'})
 
 

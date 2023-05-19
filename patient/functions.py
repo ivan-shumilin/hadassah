@@ -141,49 +141,49 @@ def create_category(value):
             if list_item[0] == 'lp':
                 main = list_item[2]
             else:
-                main = 'cafe-main-' + list_item[2]
+                main = 'cafe-change-' + list_item[2]
 
         if 'garnish' in list_item:
             if list_item[0] == 'lp':
                 garnish = list_item[2]
             else:
-                garnish = 'cafe-garnish-' + list_item[2]
+                garnish = 'cafe-change-' + list_item[2]
 
         if 'porridge' in list_item:
             if list_item[0] == 'lp':
                 porridge = list_item[2]
             else:
-                porridge = 'cafe-porridge-' + list_item[2]
+                porridge = 'cafe-change-' + list_item[2]
 
         if 'soup' in list_item:
             if list_item[0] == 'lp':
                 soup = list_item[2]
             else:
-                soup = 'cafe-soup-' + list_item[2]
+                soup = 'cafe-change-' + list_item[2]
 
         if 'dessert' in list_item:
             if list_item[0] == 'lp':
                 dessert = list_item[2]
             else:
-                dessert = 'cafe-dessert-' + list_item[2]
+                dessert = 'cafe-change-' + list_item[2]
 
         if 'fruit' in list_item:
             if list_item[0] == 'lp':
                 fruit = list_item[2]
             else:
-                fruit = 'cafe-fruit-' + list_item[2]
+                fruit = 'cafe-change-' + list_item[2]
 
         if 'drink' in list_item:
             if list_item[0] == 'lp':
                 drink = list_item[2]
             else:
-                drink = 'cafe-drink-' + list_item[2]
+                drink = 'cafe-change-' + list_item[2]
 
         if 'salad' in list_item:
             if list_item[0] == 'lp':
                 salad = list_item[2]
             else:
-                salad = 'cafe-salad-' + list_item[2]
+                salad = 'cafe-change-' + list_item[2]
     return main, garnish, porridge, soup, dessert, fruit, drink, salad
 
 
