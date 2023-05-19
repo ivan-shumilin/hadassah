@@ -325,15 +325,23 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
         fruit: "фрукты",
         drink: "напитки",
         product: "Товары",
+        products: "Товары",
         hidden: "Товары",
         bouillon: "Бульон",
+    }
+
+    let meals = {
+        breakfast: "Завтрак", 
+        lunch: "Обед", 
+        afternoon: "Полдник", 
+        dinner: "Ужин"
     }
 
     let sets = {
         'dishes_meal': "Другие диеты",
         'dishes_cafe': "Линия раздачи",
         'dishes_all': "Другие приемы пищи",
-
+        'dishes_no_active_diet': `${meals[meal]} по неактивным диетам`,
     }
 
 
