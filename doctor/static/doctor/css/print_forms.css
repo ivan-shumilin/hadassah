@@ -395,7 +395,12 @@ label {
     position: relative;
     margin-left: 4px;
     top: -2px;
+}
 
+.icon-for-print-form2 {
+    position: relative;
+    margin-left: 4px;
+    top: 5px;
 }
 
 .ed-photo {
