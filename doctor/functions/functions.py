@@ -497,18 +497,32 @@ def creating_meal_menu_cafe(date_get, diet, meal):
                  'Безйодовая', 'ПЭТ/КТ']
     if diet in exception:
         return [], [], [], [], [], []
-    queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Вторые блюда').order_by(Lower('name')))
-    queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Гарниры').order_by(Lower('name')))
-    queryset_salad = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Салаты').order_by(Lower('name')))
-    queryset_soup = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Первые блюда').order_by(Lower('name')))
-    queryset_breakfast = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Завтраки').order_by(Lower('name')))
-    queryset_porridge = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
-        category='Каши').order_by(Lower('name')))
+    if diet != 'Без ограничений':
+        queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+            category='Вторые блюда').order_by(Lower('name')))
+        queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+            category='Гарниры').order_by(Lower('name')))
+        queryset_salad = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+            category='Салаты').order_by(Lower('name')))
+        queryset_soup = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+            category='Первые блюда').order_by(Lower('name')))
+        queryset_breakfast = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+            category='Завтраки').order_by(Lower('name')))
+        queryset_porridge = list(Product.objects.filter(timetable__datetime=date_get).filter(**{diet: 'True'}).filter(
+            category='Каши').order_by(Lower('name')))
+    else:
+        queryset_main_dishes = list(Product.objects.filter(timetable__datetime=date_get).filter(
+            category='Вторые блюда').order_by(Lower('name')))
+        queryset_garnish = list(Product.objects.filter(timetable__datetime=date_get).filter(
+            category='Гарниры').order_by(Lower('name')))
+        queryset_salad = list(Product.objects.filter(timetable__datetime=date_get).filter(
+            category='Салаты').order_by(Lower('name')))
+        queryset_soup = list(Product.objects.filter(timetable__datetime=date_get).filter(
+            category='Первые блюда').order_by(Lower('name')))
+        queryset_breakfast = list(Product.objects.filter(timetable__datetime=date_get).filter(
+            category='Завтраки').order_by(Lower('name')))
+        queryset_porridge = list(Product.objects.filter(timetable__datetime=date_get).filter(
+            category='Каши').order_by(Lower('name')))
 
     queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup, queryset_breakfast, queryset_porridge = \
         sorting_dishes(meal,
@@ -1077,7 +1091,7 @@ def create_without_comment(users_diet, floors, diet):
 def counting_diets(users, floors):
     diets_name = ['ОВД', 'ОВД без сахара', 'ЩД', 'ЩД без сахара', 'БД день 1',\
                   'БД день 2', 'ОВД веган (пост) без глютена', 'Нулевая диета',\
-                  'НБД', 'ВБД', 'НКД', 'ВКД', 'Безйодовая', 'ПЭТ/КТ']
+                  'НБД', 'ВБД', 'НКД', 'ВКД', 'Безйодовая', 'ПЭТ/КТ', 'Без ограничений']
     diets_count = []
     for diet in diets_name:
         users_diet = users.filter(type_of_diet=diet)

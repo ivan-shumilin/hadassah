@@ -225,15 +225,15 @@ class SubmitPatientSelectionAPIView(APIView):
         patient_name = CustomUser.objects.get(id=data['id_user']).full_name
 
         for key, value in data['menu']['id'].items():
-            main, garnish, porridge, soup, dessert, fruit, drink, salad = create_category(value)
+            category = create_category(value)
             menu_item = menu.get(meal=key)
-            menu_item.main = main
-            menu_item.garnish = garnish
-            menu_item.porridge = porridge
-            menu_item.soup = soup
-            menu_item.dessert = dessert
-            menu_item.fruit = fruit
-            menu_item.salad = salad
+            menu_item.main = category["main"]
+            menu_item.garnish = category["garnish"]
+            menu_item.porridge = category["porridge"]
+            menu_item.soup = category["soup"]
+            menu_item.dessert = category["dessert"]
+            menu_item.fruit = category["fruit"]
+            menu_item.salad = category["salad"]
             menu_item.save()
 
         message = f"Пациент {patient_name} ({data['id_user']}) подтвердил заказ на {data['date']}:\n"

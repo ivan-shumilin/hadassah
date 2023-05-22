@@ -629,6 +629,10 @@ var diet_menu = document.getElementById('diet-menu')
             diet_menu.classList.add('pink')
             diet_name.innerHTML = 'ПЭТ/КТ'
         }
+        if (diet_name.innerHTML == 'Без ограничений') {
+            diet_menu.classList.add('pink')
+            diet_name.innerHTML = 'Без ограничений'
+        }
 
 async function validationChangeEmailForm() {
     var form1 = document.getElementById('profile-form-id');

@@ -591,6 +591,7 @@ class GetAllDishesByCategoryAPIView(APIView):
             'Безйодовая',
             'ВКД',
             'ПЭТ/КТ',
+            'Без ограничений'
         }
         category = request.GET['category']
         date = request.GET['date']

@@ -193,7 +193,7 @@
                                                 {% else %}
                                                     <div class="name" data-choose>{{ product.public_name }}</div>
                                                 {% endif %}
-                                                <div class="id" style="display: none;">cafe-salad-{{ product.id }}</div>
+                                                <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                 <div class="text" data-toggle>
                                                     {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -282,7 +282,7 @@
                                                     {% else %}
                                                         <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
-                                                    <div class="id" style="display: none;">cafe-soup-{{ product.id }}</div>
+                                                    <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                     <div class="text" data-toggle>
                                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -370,7 +370,7 @@
                                                     {% else %}
                                                         <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
-                                                    <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
+                                                    <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                     <div class="text" data-toggle>
                                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -457,7 +457,7 @@
                                                     {% else %}
                                                         <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
-                                                    <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
+                                                    <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                     <div class="text" data-toggle>
                                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -546,7 +546,7 @@
                                                     {% else %}
                                                         <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
-                                                    <div class="id" style="display: none;">cafe-porridge-{{ product.id }}</div>
+                                                    <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                     <div class="text" data-toggle>
                                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -636,7 +636,7 @@
                                                 {% else %}
                                                     <div class="name" data-choose>{{ product.public_name }}</div>
                                                 {% endif %}
-                                                <div class="id" style="display: none;">cafe-dessert-{{ product.id }}</div>
+                                                <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                 <div class="text" data-toggle>
                                                     {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -724,7 +724,7 @@
                                                 {% else %}
                                                     <div class="name" data-choose>{{ product.public_name }}</div>
                                                 {% endif %}
-                                                <div class="id" style="display: none;">cafe-fruit-{{ product.id }}</div>
+                                                <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                                                 <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                 <div class="text" data-toggle>
                                                     {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -813,7 +813,7 @@
                                                     {% else %}
                                                         <div class="name" data-choose>{{ product.public_name }}</div>
                                                     {% endif %}
-                                                    <div class="id" style="display: none;">cafe-drink-{{ product.id }}</div>
+                                                    <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                                                     <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                                                     <div class="text" data-toggle>
                                                         {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -946,7 +946,7 @@
                             </div>
                         {% endif %}
                         <div class="name">{{ product.public_name }}</div>
-                        <div class="id" style="display: none;">cafe-salad-{{ product.id }}</div>
+                        <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -1017,7 +1017,7 @@
                             </div>
                         {% endif %}
                         <div class="name">{{ product.public_name }}</div>
-                        <div class="id" style="display: none;">cafe-soup-{{ product.id }}</div>
+                        <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -1088,7 +1088,7 @@
                             </div>
                         {% endif %}
                         <div class="name">{{ product.public_name }}</div>
-                        <div class="id" style="display: none;">cafe-main-{{ product.id }}</div>
+                        <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
@@ -1159,7 +1159,7 @@
                             </div>
                         {% endif %}
                         <div class="name">{{ product.public_name }}</div>
-                        <div class="id" style="display: none;">cafe-garnish-{{ product.id }}</div>
+                        <div class="id" style="display: none;">cafe-change-{{ product.id }}</div>
                         <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
                         <div class="text">
                             {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
