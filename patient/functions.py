@@ -127,64 +127,104 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
 
 
 def create_category(value):
-    main = ''
-    garnish = ''
-    porridge = ''
-    soup = ''
-    dessert = ''
-    fruit = ''
-    drink = ''
-    salad = ''
+    category = {
+        "main": '',
+        "garnish": '',
+        "porridge": '',
+        "soup": '',
+        "dessert": '',
+        "fruit": '',
+        "drink": '',
+        "salad": '',
+    }
+
+    category_lp_trans = {
+        "гарнир": "garnish",
+        "десерт": "dessert",
+        "каша": "porridge",
+        "напиток": "drink",
+        "основной": "main",
+        "салат": "salad",
+        "суп": "soup",
+        "фрукты": "fruit",
+    }
+
+    salad = ["Салаты"]
+    soup = ["Первые блюда"]
+    porridge = ["Каши"]
+    main = ["Завтраки", "Вторые блюда", "Блюда от шефа"]
+    garnish = ["Гарниры"]
+
     for item in value:
         list_item = item.split('-')
-        if 'main' in list_item:
-            if list_item[0] == 'lp':
-                main = list_item[2]
-            else:
-                main = 'cafe-change-' + list_item[2]
+        # if 'main' in list_item:
+        #     if list_item[0] == 'lp':
+        #         main = list_item[2]
+        #     else:
+        #         main = 'cafe-change-' + list_item[2]
+        #
+        # if 'garnish' in list_item:
+        #     if list_item[0] == 'lp':
+        #         garnish = list_item[2]
+        #     else:
+        #         garnish = 'cafe-change-' + list_item[2]
+        #
+        # if 'porridge' in list_item:
+        #     if list_item[0] == 'lp':
+        #         porridge = list_item[2]
+        #     else:
+        #         porridge = 'cafe-change-' + list_item[2]
+        #
+        # if 'soup' in list_item:
+        #     if list_item[0] == 'lp':
+        #         soup = list_item[2]
+        #     else:
+        #         soup = 'cafe-salad-' + list_item[2]
+        #
+        # if 'dessert' in list_item:
+        #     if list_item[0] == 'lp':
+        #         dessert = list_item[2]
+        #     else:
+        #         dessert = 'cafe-change-' + list_item[2]
+        #
+        # if 'fruit' in list_item:
+        #     if list_item[0] == 'lp':
+        #         fruit = list_item[2]
+        #     else:
+        #         fruit = 'cafe-change-' + list_item[2]
+        #
+        # if 'drink' in list_item:
+        #     if list_item[0] == 'lp':
+        #         drink = list_item[2]
+        #     else:
+        #         drink = 'cafe-change-' + list_item[2]
+        #
+        # if 'salad' in list_item:
+        #     if list_item[0] == 'lp':
+        #         salad = list_item[2]
+        #     else:
+        #         salad = 'cafe-change-' + list_item[2]
+        if list_item[0] == 'lp':
+            id = list_item[2]
+            category_name = ProductLp.objects.get(id=id).category
+            category_name = category_lp_trans[category_name]
+            category[category_name] = id
+        else:
+            id = list_item[2]
+            category_name = Product.objects.get(id=id).category
+            if category_name in salad:
+                category_name = "salad"
+            elif category_name in soup:
+                category_name = "soup"
+            elif category_name in porridge:
+                category_name = "porridge"
+            elif category_name in main:
+                category_name = "main"
+            elif category_name in garnish:
+                category_name = "garnish"
+            category[category_name] = 'cafe-change-' + id
 
-        if 'garnish' in list_item:
-            if list_item[0] == 'lp':
-                garnish = list_item[2]
-            else:
-                garnish = 'cafe-change-' + list_item[2]
-
-        if 'porridge' in list_item:
-            if list_item[0] == 'lp':
-                porridge = list_item[2]
-            else:
-                porridge = 'cafe-change-' + list_item[2]
-
-        if 'soup' in list_item:
-            if list_item[0] == 'lp':
-                soup = list_item[2]
-            else:
-                soup = 'cafe-change-' + list_item[2]
-
-        if 'dessert' in list_item:
-            if list_item[0] == 'lp':
-                dessert = list_item[2]
-            else:
-                dessert = 'cafe-change-' + list_item[2]
-
-        if 'fruit' in list_item:
-            if list_item[0] == 'lp':
-                fruit = list_item[2]
-            else:
-                fruit = 'cafe-change-' + list_item[2]
-
-        if 'drink' in list_item:
-            if list_item[0] == 'lp':
-                drink = list_item[2]
-            else:
-                drink = 'cafe-change-' + list_item[2]
-
-        if 'salad' in list_item:
-            if list_item[0] == 'lp':
-                salad = list_item[2]
-            else:
-                salad = 'cafe-change-' + list_item[2]
-    return main, garnish, porridge, soup, dessert, fruit, drink, salad
+    return category
 
 
 def create_patient_select(id, date_get):
