@@ -33,6 +33,7 @@ class PatientsSerializer(serializers.ModelSerializer):
         'БД день 1': {'name': 'БД день 1', 'color': 'pink'},
         'БД день 2': {'name': 'БД день 2', 'color': 'pink'},
         'ВБД': {'name': 'ВБД', 'color': 'orange'},
+        'Без ограничений': {'name': 'Без ограничений', 'color': 'orange'},
         'НБД': {'name': 'НБД', 'color': 'red'},
         'НКД': {'name': 'НКД', 'color': 'red'},
         'ВКД': {'name': 'ВКД', 'color': 'purple'},

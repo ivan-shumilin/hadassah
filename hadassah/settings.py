@@ -18,11 +18,10 @@ ALLOWED_HOSTS = [
         '.petrushkagroup.ru',
         'petrushkagroup.ru',
         '158.160.6.40',
-        '158.160.15.85',
         '127.0.0.1',
         'loclhost',
-        # 'https://c451-85-117-111-121.eu.ngrok.io',
-        # 'c451-85-117-111-121.eu.ngrok.io',
+        'https://2a3d-178-89-129-243.ngrok-free.app',
+        '2a3d-178-89-129-243.ngrok-free.app',
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -99,7 +98,7 @@ WSGI_APPLICATION = 'hadassah.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hadassah1',
+        'NAME': 'hadassah',
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
         'HOST': 'localhost',
@@ -174,7 +173,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
