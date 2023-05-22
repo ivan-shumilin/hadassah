@@ -17,7 +17,7 @@ ALLOWED_HOSTS = [
         'lk-doctor.petrushkagroup.com',
         '.petrushkagroup.ru',
         'petrushkagroup.ru',
-        '158.160.6.40',
+        '158.160.15.85',
         '127.0.0.1',
         'loclhost',
         'https://2a3d-178-89-129-243.ngrok-free.app',
@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'hadassah.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hadassah',
+        'NAME': 'hadassah1',
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
         'HOST': 'localhost',
