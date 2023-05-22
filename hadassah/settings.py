@@ -18,6 +18,7 @@ ALLOWED_HOSTS = [
         '.petrushkagroup.ru',
         'petrushkagroup.ru',
         '158.160.6.40',
+        '158.160.15.85',
         '127.0.0.1',
         'loclhost',
         # 'https://c451-85-117-111-121.eu.ngrok.io',
