@@ -1191,62 +1191,63 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
                         if ((product[0] != null)) {
                             for (var i in product) {
                                 result += '<div class="item">'
-                                    if (product[i].type === "lp") {
-                                        if (product[i].image == null) {
-                                            result += '<div class="img">'
-                                            if (key == 'main') {
-                                                result +='<img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt="">'
-                                                result +='</div>'
-                                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt=""></div>'
-                                            }
-                                            if (key == 'salad') {
-                                                result +='<img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt="">'
-                                                result +='</div>'
-                                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt=""></div>'
-                                            }
-                                            if (key == 'soup') {
-                                                result +='<img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt="">'
-                                                result +='</div>'
-                                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt=""></div>'
-                                            }
-                                            if (key == 'bouillon') {
-                                                result +='<img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt="">'
-                                                result +='</div>'
-                                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt=""></div>'
-                                            }
-                                            if (key == 'dessert') {
-                                                result +='<img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt="">'
-                                                result +='</div>'
-                                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt=""></div>'
-                                            }
-                                            if (key == 'porridge') {
-                                                result +='<img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt="">'
-                                                result +='</div>'
-                                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt=""></div>'
-                                            }
-                                            if (key == 'fruit') {
-                                                result +='<img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt="">'
-                                                result +='</div>'
-                                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt=""></div>'
-                                            }
-                                            if (key == 'drink') {
-                                                result +='<img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt="">'
-                                                result +='</div>'
-                                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt=""></div>'
-                                            }
-                                            if (key == 'garnish') {
-                                                result +='<img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt="">'
-                                                result +='</div>'
-                                                result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt=""></div>'
-                                            }
-                                        } else {
-                                            result += `<div class="img"><img width="96" height="96" src="${product[i].image}?v=${getRandomNumber()}" alt=""></div>`
-                                            result += `<div class="info"><div class="img"><img width="96" height="96" src="${product[i].image}?v=${getRandomNumber()}" alt=""></div>`
+                                    if (product[i].image == null) {
+                                        result += '<div class="img">'
+                                        if (key == 'main') {
+                                            result +='<img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt="">'
+                                            result +='</div>'
+                                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/main-doctor.png" %}" alt=""></div>'
+                                        }
+                                        if (key == 'salad') {
+                                            result +='<img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt="">'
+                                            result +='</div>'
+                                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/salad-doctor.png" %}" alt=""></div>'
+                                        }
+                                        if (key == 'soup') {
+                                            result +='<img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt="">'
+                                            result +='</div>'
+                                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt=""></div>'
+                                        }
+                                        if (key == 'bouillon') {
+                                            result +='<img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt="">'
+                                            result +='</div>'
+                                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/soup-doctor.png" %}" alt=""></div>'
+                                        }
+                                        if (key == 'dessert') {
+                                            result +='<img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt="">'
+                                            result +='</div>'
+                                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/dessert-doctor.png" %}" alt=""></div>'
+                                        }
+                                        if (key == 'porridge') {
+                                            result +='<img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt="">'
+                                            result +='</div>'
+                                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/porridge-doctor.png" %}" alt=""></div>'
+                                        }
+                                        if (key == 'fruit') {
+                                            result +='<img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt="">'
+                                            result +='</div>'
+                                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/fruit-doctor.png" %}" alt=""></div>'
+                                        }
+                                        if (key == 'drink') {
+                                            result +='<img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt="">'
+                                            result +='</div>'
+                                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/drink-doctor.png" %}" alt=""></div>'
+                                        }
+                                        if (key == 'garnish') {
+                                            result +='<img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt="">'
+                                            result +='</div>'
+                                            result +='<div class="info"><div class="img"><img width="96" height="96" src="{% static "doctor/css/img/garnish-doctor.png" %}" alt=""></div>'
                                         }
                                     } else {
-                                        result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.ru/imagecache/product/'+ product[i].image +'" alt=""></div>'
-                                        result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.ru/imagecache/product/'+ product[i].image +'" alt=""></div>'
+                                        if (product[i].type === "lp") {
+                                            result += `<div class="img"><img width="96" height="96" src="${product[i].image}?v=${getRandomNumber()}" alt=""></div>`
+                                            result += `<div class="info"><div class="img"><img width="96" height="96" src="${product[i].image}?v=${getRandomNumber()}" alt=""></div>`
+                                        } else {
+                                            result += '<div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.ru/imagecache/product/'+ product[i].image +'" alt=""></div>'
+                                            result += '<div class="info"><div class="img"><img width="96" height="96" src="https://hadassah.petrushkagroup.ru/imagecache/product/'+ product[i].image +'" alt=""></div>'
+                                        }
                                     }
+                                 
                                 
                                 result += '<div id="name_today" class="name">' + product[i].name + '</div>'
                                 result += '<div class="value">' + 'Б - '+ formattingFFC(product[i].fiber) +  ', Ж -  '+ formattingFFC(product[i].fat) +  ', У -  '+ formattingFFC(product[i].carbohydrate) + ', Ккал - ' + formattingFFC(product[i].energy) +  '</div>'
