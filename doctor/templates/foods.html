@@ -286,7 +286,12 @@ function addHtmlLeft(obj) {
             for (var cat in categorys ) {
                 for (var item in obj[meal][cat] ) {
                     if (obj[meal][cat][item] != null) {
-                        result += `<tr><td class="pd-top-bot-ziro pd-left-10" title="${obj[meal][cat][item]['description']}">${obj[meal][cat][item]['name']}`
+                        if (obj[meal][cat][item]['description'] == null) {
+                            var description = "—————"
+                        } else {
+                            var description = obj[meal][cat][item]['description']
+                        }
+                        result += `<tr><td class="pd-top-bot-ziro pd-left-10" title="${description}">${obj[meal][cat][item]['name']}`
                         result += `<img onclick="changeDish('${cat}', '${meal}', '${obj[meal][cat][item]['id']}', '${obj[meal][cat][item]['name'].replace(/"/g, '&quot;')}')" class="icon" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
                         result += `<img onclick="deleteDish('${obj[meal][cat][item]['id']}', '${obj[meal][cat][item]['name'].replace(/"/g, '&quot;')}', '${cat}', '${meal}')" class="icon" width="18" height="19" title="Удалить блюдо" src="{% static "doctor/css/img/delete.svg" %}" alt="Удалить блюдо">`
                         result += `</td></tr>`
@@ -353,7 +358,12 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
             result += `<tr><td class='meal'>${sets[set]}</tr></td>`
             if (mode === 'change') {
                 for (var item in obj[set]) {
-                    result += `<tr><td class="pd-top-bot-ziro pd-left-10" title="${obj[set][item]['description']}">`
+                    if (obj[set][item]['description'] == null) {
+                            var description = "—————"
+                        } else {
+                            var description = obj[set][item]['description']
+                        }
+                    result += `<tr><td class="pd-top-bot-ziro pd-left-10" title="${description}">`
                     result += `<a onclick="chooseDish('${obj[set][item]['id']}', '${obj[set][item]['name'].replace(/"/g, '&quot;')}', '${product_id_del.replace(/"/g, '&quot;')}', '${name_del.replace(/"/g, '&quot;')}', '${category}', '${meal}')">${obj[set][item]['name'].replace(/"/g, '&quot;')}`
                     result += `<img class="icon" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
 
@@ -361,7 +371,12 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
                 }
             } else {
                 for (var item in obj[set]) {
-                    result += `<tr><td class="pd-top-bot-ziro pd-left-10" title="${obj[set][item]['description']}">`
+                    if (obj[set][item]['description'] == null) {
+                            var description = "—————"
+                        } else {
+                            var description = obj[set][item]['description']
+                        }
+                    result += `<tr><td class="pd-top-bot-ziro pd-left-10" title="${description}">`
                     result += `<a onclick="addDishModal('${obj[set][item]['id']}', '${obj[set][item]['name'].replace(/"/g, '&quot;')}', '${category}', '${meal}')">${obj[set][item]['name'].replace(/"/g, '&quot;')}`
                     result += `<img class="icon" width="17" height="17" title="Добавить блюдо" src="{% static "doctor/css/img/add.svg" %}" alt="Добавить блюдо">`
                     result += `</a></td></tr>`
