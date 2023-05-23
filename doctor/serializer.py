@@ -7,13 +7,16 @@ from nutritionist.models import TimetableLp, CustomUser
 class DishesSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
-
+    description = serializers.SerializerMethodField()
     class Meta:
         model = TimetableLp
-        fields = ('name', 'type_of_diet', 'id')
+        fields = ('name', 'type_of_diet', 'id', 'description')
 
     def get_name(self, instance):
         return instance.item.name
+
+    def get_description(self, instance):
+        return instance.item.description
 
     def get_id(self, instance):
         if self.context.get('type') == "cafe":
