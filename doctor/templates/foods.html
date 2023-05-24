@@ -286,7 +286,7 @@ function addHtmlLeft(obj) {
             for (var cat in categorys ) {
                 for (var item in obj[meal][cat] ) {
                     if (obj[meal][cat][item] != null) {
-                        if (obj[meal][cat][item]['description'] == null) {
+                        if (obj[meal][cat][item]['description'] == "" || obj[meal][cat][item]['description'] == null) {
                             var description = "—————"
                         } else {
                             var description = obj[meal][cat][item]['description']
@@ -358,7 +358,7 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
             result += `<tr><td class='meal'>${sets[set]}</tr></td>`
             if (mode === 'change') {
                 for (var item in obj[set]) {
-                    if (obj[set][item]['description'] == null) {
+                    if (obj[set][item]['description'] == "" || obj[set][item]['description'] == null) {
                             var description = "—————"
                         } else {
                             var description = obj[set][item]['description']
@@ -371,7 +371,7 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
                 }
             } else {
                 for (var item in obj[set]) {
-                    if (obj[set][item]['description'] == null) {
+                    if (obj[set][item]['description'] == "" || obj[set][item]['description'] == null) {
                             var description = "—————"
                         } else {
                             var description = obj[set][item]['description']
