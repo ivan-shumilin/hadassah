@@ -92,20 +92,22 @@ def create_category_dict(meal, is_ready_meal, patients):
                     continue
                 if product_id is not None:
                     if 'cafe' in product_id:
-                        product_set = re.findall(r'\d+', product_id)
-                        for product_id in product_set:
-                            for product in products_list:
-                                if product['id'] == product_id:
-                                    product['count'] += 1
-                                    product['type_of_diet'].add(patient.type_of_diet)
-                                    break
-                            else:
-                                products_list.append(
-                                    {'category': category,
-                                     'id': product_id,
-                                     'name': Product.objects.get(id=product_id).name,
-                                     'type_of_diet': {patient.type_of_diet},
-                                     'count': 1})
+                        product_set_all = product_id.split(',')
+                        for product_id in product_set_all:
+                            if 'cafe' in product_id:
+                                product_id = re.findall(r'\d+', product_id)[0]
+                                for product in products_list:
+                                    if product['id'] == product_id:
+                                        product['count'] += 1
+                                        product['type_of_diet'].add(patient.type_of_diet)
+                                        break
+                                else:
+                                    products_list.append(
+                                        {'category': category,
+                                         'id': product_id,
+                                         'name': Product.objects.get(id=product_id).name,
+                                         'type_of_diet': {patient.type_of_diet},
+                                         'count': 1})
     return category_dict
 
 
