@@ -6,7 +6,7 @@ urlpatterns = [
     path('', views.doctor, name='doctor'),
     path('archive', views.archive, name='archive'),
     path('menu', views.menu, name='menu'),
-    # path('menu_for_staff', views.menu_for_staff, name='menu_for_staff'),
+    # path('menu-guest', views.menu_for_staff, name='menu_for_staff'),
     path('api/v1/password/verify', views.VerifyPasswordAPIView.as_view()),
     path('api/v1/get/occupiedrooms', views.GetOccupiedRoomsAPIView.as_view()),
     path('api/v1/patient/menu', views.GetPatientMenuAPIView.as_view()),

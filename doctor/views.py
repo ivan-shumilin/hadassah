@@ -90,6 +90,8 @@ def load_nomenclature():
 
 def group_doctors_check(user):
     return user.groups.filter(name='doctors').exists()
+def group_doctors_check_guest(user):
+    return user.groups.filter(name='guest').exists() or user.groups.filter(name='doctors').exists()
 
 
 @login_required(login_url='login')
@@ -330,7 +332,7 @@ def archive(request):
 
 
 @login_required(login_url='login')
-@user_passes_test(group_doctors_check, login_url='login')
+@user_passes_test(group_doctors_check_guest, login_url='login')
 def menu(request):
     import datetime
     page = 'menu-menu'
