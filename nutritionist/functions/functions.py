@@ -209,7 +209,7 @@ def create_stickers_pdf(catalog):
             pdf.cell(50, 10, txt="", ln=5, align="L")
             ln += 1
 
-            for index, product in enumerate(item['products_lp'] + item['products_cafe']):
+            for index, product in enumerate(item['products_lp']):
 
                 if len(product['name']) >= max_count_in_line:
                     res_list = create_res_list(product['name'], max_count_in_line, 'products')
