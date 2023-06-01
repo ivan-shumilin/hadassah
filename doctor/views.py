@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from PIL import Image
 from django.db import transaction
 from django.shortcuts import render
@@ -629,11 +631,20 @@ class GetAllDishesByCategoryAPIView(APIView):
         dishes_meal = DishesSerializer(dishes_meal, many=True, context={'type': 'lp'}).data
         dishes_cafe = DishesSerializer(dishes_cafe, many=True, context={'type': 'cafe'}).data
         dishes_no_active_diet = DishesSerializer(dishes_no_active_diet, many=True, context={'type': 'lp'}).data
+        other = [
+            OrderedDict([
+                ('name', 'Сыр Гауда 60 гр.'),
+                ('type_of_diet', 'Безйодовая'),
+                ('id', 482),
+                ('description', 'Сыр Гауда.')
+            ])
+        ]
         data ={
             "dishes_all": dishes_all,
             "dishes_meal": dishes_meal,
             "dishes_cafe": dishes_cafe,
-            "dishes_no_active_diet": dishes_no_active_diet
+            "dishes_no_active_diet": dishes_no_active_diet,
+            "other": other
         }
         return Response(data)
 
