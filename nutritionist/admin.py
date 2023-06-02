@@ -42,7 +42,7 @@ class TimetableAdmin(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'public_name', 'iditem', 'with_garnish', 'ovd', 'ovd_vegan', 'ovd_sugarless', 'shd',
                     'shd_sugarless', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category', 'iodine_free',)
-    fields = ('name', 'public_name', 'iditem', 'with_garnish', 'ovd', 'ovd_vegan', 'ovd_sugarless',\
+    fields = ('id', 'name', 'public_name', 'iditem', 'with_garnish', 'ovd', 'ovd_vegan', 'ovd_sugarless',\
               'shd', 'shd_sugarless', 'iodine_free', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category', 'description',)
     list_filter = ('category', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd',)
     list_per_page = 500
@@ -52,11 +52,11 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(ProductLp)
 class ProductLpAdmin(admin.ModelAdmin):
     list_display = ('name', 'public_name', 'with_phote', 'with_garnish', 'category', 'description', 'status', 'product_id')
-    fields = ('name', 'public_name', 'image', 'preview', 'edit_photo', 'preview_min', 'edit_photo_min', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
+    fields = ('name', 'public_name', 'primary_key', 'image', 'preview', 'edit_photo', 'preview_min', 'edit_photo_min', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
               'energy', 'weight', 'description', 'comment', 'status')
     list_filter = ('with_phote', 'category')
     list_per_page = 1000
-    readonly_fields = ["preview", "preview_min", "edit_photo", "edit_photo_min"]
+    readonly_fields = ["preview", "preview_min", "edit_photo", "edit_photo_min", "primary_key"]
 
     def preview(self, obj):
         return mark_safe(f'<img src="{obj.image.url}?v={str(random.randint(1, 1000))}" style="max-height: 150px;">')
@@ -74,8 +74,11 @@ class ProductLpAdmin(admin.ModelAdmin):
     def edit_photo_min(self, obj):
         link = reverse('edit_photo', args=[obj.pk, 'min'])
         return mark_safe(f'<a href="{link}" style="max-height: 200px; font-weight: 600;">Кадрировать миниатюру</a>')
-
     edit_photo_min.short_description = 'Редактировать'
+
+    def primary_key(self, obj):
+        return obj.pk
+    primary_key.short_description = 'Primary key'
 
     def save_model(self, request, obj, form, change):
 
