@@ -1,123 +1,726 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="utf-8">
-    <title>Рацион лечебного питания</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+{% extends "base_generic_doctor.html" %}
+{% block content %}
+<input style='display: none;' type="radio" id='input_{{ date_menu.today }}' name='date' value='{{ date_menu.today }}'>
+<input style='display: none;' type="radio" id='input_{{ date_menu.tomorrow }}' name='date' value='{{ date_menu.tomorrow }}'>
+<input style='display: none;' type="radio" id='input_{{ date_menu.day_after_tomorrow }}' name='date' value='{{ date_menu.day_after_tomorrow }}'>
+<input style='display: none;' type="text" id='input_type_of_diet' name='input_type_of_diet' value=''>
+<input style='display: none;' type="text" id='meal' name='meal' value=''>
+<input style="display: none;" type="text" id="sorting_value"  name="sorting_value">
+<input style="display: none;" type="text" id="is_pressing_again"  name="is_pressing_again">
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Add additional CSS in static file -->
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
+<a style="display: none;" id="password-edited" data-modal-link="password-edited">a</a>
+<a style="display: none;" id="profile-edited" data-modal-link="profile-edited">a</a>
+<div style="display: none;" id="status">{{ modal }}</div>
 
-</head>
-<body class='table-menu'>
-    <form id="form"  action="{% url 'menu_lp_for_staff' %}" method="get" novalidate>
-        <div class="container-flex">
-            <div class="div-order">
-                <div class="order">
-                    <select id="select-diet" onchange="formSubmit()" class="form-select mg-top-bottom form-select-sm" name="diet">
-                        <option value="ОВД" selected>ОВД</option>
-                        <option value="ОВД без сахара">ОВД без сахара</option>
-                        <option value="ОВД веган (пост) без глютена">ОВД веган (пост) без глютена</option>
-                        <option value="Нулевая диета">Нулевая диета</option>
-                        <option value="ЩД">ЩД</option>
-                        <option value="ЩД без сахара">ЩД без сахара</option>
-                        <option value="БД" >БД</option>
-                        <option value="ВБД">ВБД</option>
-                        <option value="НКД">НКД</option>
-                        <option value="НБД">НБД</option>
-                        <option value="ВКД">ВКД</option>
-                        <option value="Безйодовая">Безйодовая</option>
-                        <option value="ПЭТ/КТ">ПЭТ/КТ</option>
-                        <option value="Без ограничений">Без ограничений</option>
-                    </select>
 
-                    <select id="select-day" onchange="formSubmit()" class="form-select mg-top-bottom form-select-sm" name="day">
-                        <option value="вся неделя">вся неделя</option>
-                        <option value="понедельник">понедельник</option>
-                        <option value="вторник">вторник</option>
-                        <option value="среда">среда</option>
-                        <option value="четверг">четверг</option>
-                        <option value="пятница">пятница</option>
-                        <option value="суббота" >суббота</option>
-                        <option value="воскресенье">воскресенье</option>
-                    </select>
-                </div>
+<div id="center">
+    <div id="header">
+        <div class="mobile-header-block">
+            <div class="logo">
+                <a href='https://hadassah.moscow/' class="logo">
+                    {% load static %}
+                    <img src="{% static 'doctor/css/img/logo.svg' %}" alt="">
+                </a>
             </div>
-            <div class="div-order" style="margin-top: 16px; margin-left: 30px;">
-                <div class="order">
-                    <a href="{% url 'printed_form_one_new' %}">Сводный отчет</a>
-                </div>
+            <a class="menu" data-sidebar-toggle>
+                <div class="i i-menu"></div>
+            </a>
+            <div class="petrushka">
+                <img src="{% static 'nutritionist/css/img/petrushka.png' %}" alt="">
             </div>
-            
         </div>
-    </form>
-<table id='table2'>
-    <tr>
-        <td class="pd-left-right">День недели</td>
-        <td class="pd-left-right">Прием пищи</td>
-        <td>Название блюда</td>
-    </tr>
-    {% for name_day_of_the_week, day_of_the_week in menu.items %}
-        {% for name_meal, meal in day_of_the_week.items %}
-                {% if forloop.last %}
-                    <tr class="solid">
-                {% else %}
-                    <tr>
+        <div class="header-block">
+            <div class="menu-link-and-name">
+                {% if type != 'menu_for_staff' %}
+                    <a class="menu-link" data-sidebar-toggle>
+                        <div class="i i-menu"></div>
+                    </a>
                 {% endif %}
-                        {% if forloop.first %}
-                            <td class="pd-left-right">{{ name_day_of_the_week }}</td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
-                        {% if not forloop.last %}
-                            <td class="pd-left-right" class="solid-grey">{{ name_meal }}</td>
-                            <td class="solid-grey">
-                        {% else %}
-                            <td class="pd-left-right">{{ name_meal }}</td>
-                            <td>
-                        {% endif %}
-                                {% if name_meal != "Общий КБЖУ" %}
-                                    <ul class="pd-ul">
-                                        {% for product in meal %}
-                                            <li>{{ product.name }} <span class="font-weight-normal">({{ product.energy_value }})</span></li>
-                                        {% endfor %}
-                                    </ul>
+                <div class="title">Меню</div>
+            </div>
+            <div class="menu">
+                {% if diet == 'БД' %}
+                    <div class="switch">
+                        <a id='{{ date_menu.today }}'
+                           onclick="data_function('input_{{ date_menu.today }}')" style="
+                                    padding-left: 30px;
+                                    padding-right: 30px;">День 1</a>
+                        <a id='{{ date_menu.tomorrow }}'
+                           onclick="data_function('input_{{ date_menu.tomorrow }}')">  День 2  </a>
+                    </div>
+                {% else %}
+                    <div class="switch">
+                        <a id='{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
+                        <a id='{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
+                        <a id='{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+                    </div>
+                {% endif %}
+
+            </div>
+            <div id='diet-menu' class="green-menu">
+                <a data-modal-link="diet">Диета</a>
+                <a id='diet_name' class="active" data-modal-link="diet">{{ diet }}</a>
+            </div>
+        </div>
+        <div class="day-switch-block">
+            {% if diet == 'БД' %}
+                <div class="switch">
+                    <a id='test{{ date_menu.today }}'
+                           onclick="data_function('input_{{ date_menu.today }}')" style="
+                                    padding-left: 30px;
+                                    padding-right: 30px;">День 1</a>
+                    <a id='test{{ date_menu.tomorrow }}'
+                           onclick="data_function('input_{{ date_menu.tomorrow }}')">  День 2  </a>
+                    </div>
+                {% else %}
+                    <div class="switch">
+                        <a id='test{{ date_menu.today }}' onclick="data_function('input_{{ date_menu.today }}')" >Сегодня</a>
+                        <a id='test{{ date_menu.tomorrow }}' onclick="data_function('input_{{ date_menu.tomorrow }}')">Завтра</a>
+                        <a id='test{{ date_menu.day_after_tomorrow }}' onclick="data_function('input_{{ date_menu.day_after_tomorrow }}')">Послезавтра</a>
+                    </div>
+                {% endif %}
+        </div>
+        <div class="eat-menu-block">
+            <div class="menu">
+                <a id='breakfast' onclick="submitMeals('breakfast')" >Завтрак</a>
+                <a id='lunch' onclick="submitMeals('lunch')" >Обед</a>
+                <a id='afternoon' onclick="submitMeals('afternoon')">Полдник</a>
+                <a id='dinner' onclick="submitMeals('dinner')">Ужин</a>
+            </div>
+            <div class="date">{{ formatted_date|lower  }}</div>
+        </div>
+    </div>
+    {% load random %}
+        <div id="content" data-scrollbar>
+            <div class="eat-grid-block">
+                {% if products_salad %}
+                    <div class="category">Салат</div>
+                    <div class="eat-grid">
+                        {% for product in products_salad %}
+                            <div class="item">
+                                <div class="info">
+                                    <div class="name-and-value">
+                                        {% if product.image %}
+                                            {% if product.status == '1' %}
+                                                <div class="img">
+                                                    <img src="{{ product.image.url|random }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="img mobile">
+                                                {% load static %}
+                                                <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
+
+                                        {% if product.public_name %}
+                                            <div class="name">{{ product.public_name }}</div>
+                                        {% else %}
+                                            <div class="name">{{ product.name }}</div>
+                                        {% endif %}
+                                        <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
+                                    </div>
+                                    <div class="text">
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                </div>
+
+                                {% if product.image %}
+                                    {% if product.status == '1' %}
+                                        <div class="img">
+                                            <img src="{{ product.image.url|random }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
                                 {% else %}
-                                    <ul style="list-style-type: none;" class="pd-ul">
-                                        <li>{{ meal }}</li>
-                                    </ul>
+                                    <div class="img">
+                                        {% load static %}
+                                        <img src="{% static 'doctor/css/img/salad-f.png' %}" alt="">
+                                    </div>
                                 {% endif %}
-                            </td>
-                    </tr>
-            {% endfor %}
-    {% endfor %}
-</table>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if products_soup %}
+                    <div class="category">Суп</div>
+                    <div class="eat-grid">
+                        {% for product in products_soup %}
+                            <div class="item">
+                                <div class="info">
+                                    <div class="name-and-value">
+                                        {% if product.image %}
+                                            {% if product.status == '1' %}
+                                                <div class="img">
+                                                    <img src="{{ product.image.url|random }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="img mobile">
+                                                {% load static %}
+                                                <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
+                                        {% if product.public_name %}
+                                            <div class="name">{{ product.public_name }}</div>
+                                        {% else %}
+                                            <div class="name">{{ product.name }}</div>
+                                        {% endif %}
+                                        <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
+                                    </div>
+                                    <div class="text">
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    {% if product.status == '1' %}
+                                        <div class="img">
+                                            <img src="{{ product.image.url|random }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="img">
+                                        {% load static %}
+                                        <img src="{% static 'doctor/css/img/soup-f.png' %}" alt="">
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if products_main %}
+                    <div class="category">Основное блюдо</div>
+                    <div class="eat-grid">
+                        {% for product in products_main %}
+                            <div class="item">
+                                <div class="info">
+                                    <div class="name-and-value">
+                                        {% if product.image %}
+                                            {% if product.status == '1' %}
+                                                <div class="img">
+                                                    <img src="{{ product.image.url|random }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="img mobile">
+                                                {% load static %}
+                                                <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
+                                        {% if product.public_name %}
+                                            <div class="name">{{ product.public_name }}</div>
+                                        {% else %}
+                                            <div class="name">{{ product.name }}</div>
+                                        {% endif %}
+                                        <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
+                                    </div>
+                                    <div class="text">
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    {% if product.status == '1' %}
+                                        <div class="img">
+                                            <img src="{{ product.image.url|random }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="img">
+                                        {% load static %}
+                                        <img src="{% static 'doctor/css/img/main-f.png' %}" alt="">
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if products_porridge %}
+                <div class="category">Каша</div>
+                    <div class="eat-grid">
+                        {% for product in products_porridge %}
+                            <div class="item">
+                                <div class="info">
+                                    <div class="name-and-value">
+                                        {% if product.image %}
+                                            {% if product.status == '1' %}
+                                                <div class="img">
+                                                    <img src="{{ product.image.url|random }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="img mobile">
+                                                {% load static %}
+                                                <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
+                                        {% if product.public_name %}
+                                            <div class="name">{{ product.public_name }}</div>
+                                        {% else %}
+                                            <div class="name">{{ product.name }}</div>
+                                        {% endif %}
+                                        <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
+                                    </div>
+                                    <div class="text">
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    {% if product.status == '1' %}
+                                        <div class="img">
+                                            <img src="{{ product.image.url|random }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="img">
+                                        {% load static %}
+                                        <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if products_dessert %}
+                    <div class="category">Десерт</div>
+                    <div class="eat-grid">
+                        {% for product in products_dessert %}
+                            <div class="item">
+                                <div class="info">
+                                    <div class="name-and-value">
+                                        {% if product.image %}
+                                            {% if product.status == '1' %}
+                                                <div class="img">
+                                                    <img src="{{ product.image.url|random }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="img mobile">
+                                                {% load static %}
+                                                <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
+                                        {% if product.public_name %}
+                                            <div class="name">{{ product.public_name }}</div>
+                                        {% else %}
+                                            <div class="name">{{ product.name }}</div>
+                                        {% endif %}
+                                        <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
+                                    </div>
+                                    <div class="text">
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    {% if product.status == '1' %}
+                                        <div class="img">
+                                            <img src="{{ product.image.url|random }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="img">
+                                        {% load static %}
+                                        <img src="{% static 'doctor/css/img/porridge-f.png' %}" alt="">
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if products_fruit %}
+                    <div class="category">Фрукт</div>
+                    <div class="eat-grid">
+                        {% for product in products_fruit %}
+                            <div class="item">
+                                <div class="info">
+                                    <div class="name-and-value">
+                                        {% if product.image %}
+                                            {% if product.status == '1' %}
+                                                <div class="img">
+                                                    <img src="{{ product.image.url|random }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="img mobile">
+                                                {% load static %}
+                                                <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
+                                        {% if product.public_name %}
+                                            <div class="name">{{ product.public_name }}</div>
+                                        {% else %}
+                                            <div class="name">{{ product.name }}</div>
+                                        {% endif %}
+                                        <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
+                                    </div>
+                                    <div class="text">
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    {% if product.status == '1' %}
+                                        <div class="img">
+                                            <img src="{{ product.image.url|random }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="img">
+                                        {% load static %}
+                                        <img src="{% static 'doctor/css/img/fruit-f.png' %}" alt="">
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if products_garnish %}
+                    <div class="category">Гарнир</div>
+                    <div class="eat-grid">
+                        {% for product in products_garnish %}
+                            <div class="item">
+                                <div class="info">
+                                    <div class="name-and-value">
+                                        {% if product.image %}
+                                            {% if product.status == '1' %}
+                                                <div class="img">
+                                                    <img src="{{ product.image.url|random }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="img mobile">
+                                                {% load static %}
+                                                <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
+                                        {% if product.public_name %}
+                                            <div class="name">{{ product.public_name }}</div>
+                                        {% else %}
+                                            <div class="name">{{ product.name }}</div>
+                                        {% endif %}
+                                        <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
+                                    </div>
+                                    <div class="text">
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    {% if product.status == '1' %}
+                                        <div class="img">
+                                            <img src="{{ product.image.url|random }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="img">
+                                        {% load static %}
+                                        <img src="{% static 'doctor/css/img/garnish-f.png' %}" alt="">
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if products_drink %}
+                    <div class="category">Напиток</div>
+                    <div class="eat-grid">
+                        {% for product in products_drink %}
+                            <div class="item">
+                                <div class="info">
+                                    <div class="name-and-value">
+                                        {% if product.image %}
+                                            {% if product.status == '1' %}
+                                                <div class="img">
+                                                    <img src="{{ product.image.url|random }}" alt="">
+                                                </div>
+                                            {% else %}
+                                                <div class="img">
+                                                    <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="img mobile">
+                                                {% load static %}
+                                                <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
+                                            </div>
+                                        {% endif %}
+                                        {% if product.public_name %}
+                                            <div class="name">{{ product.public_name }}</div>
+                                        {% else %}
+                                            <div class="name">{{ product.name }}</div>
+                                        {% endif %}
+                                        <div class="value">Б - {{ product.fiber|floatformat  }}, Ж - {{ product.fat|floatformat  }}, У - {{ product.carbohydrate|floatformat  }}, Ккал - {{ product.energy|floatformat  }}</div>
+                                    </div>
+                                    <div class="text">
+                                        {{ product.description|cut:"Состав:"|cut:"Состав"|cut:" :" }}
+                                    </div>
+                                </div>
+                                {% if product.image %}
+                                    {% if product.status == '1' %}
+                                        <div class="img">
+                                            <img src="{{ product.image.url|random }}" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="img">
+                                            <img src="https://hadassah.petrushkagroup.ru/imagecache/catalog-product/{{ product.image }}" alt="">
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="img">
+                                        {% load static %}
+                                        <img src="{% static 'doctor/css/img/drink-f.png' %}" alt="">
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+        </div>
+    </div>
+</div>
+<div data-modal="diet" data-modal-width="480">
+    <div class="title">Выберите диету из списка</div>
+    <!-- <form action="#"> -->
+        <div class="form-group">
+            <label for="#">Диета</label>
+            {{ diet_form.type_of_diet }}
+        </div>
+        <div class="form-group item-actions flex flex-center">
+            <button onclick="submitDietForm('{{ diet_form.type_of_diet.id_for_label }}')">Показать</button>
+            <a  class="button white" data-modal-close>Отменить</a>
+        </div>
+    <!-- </form> -->
+</div>
 <script>
-function formSubmit() {
-    var form = document.getElementById('form');
+document.getElementById('{{ date_get }}').classList.add('active');
+document.getElementById('test{{ date_get }}').classList.add('active');
+document.getElementById('input_{{ date_get }}').setAttribute('checked', 'true');
+document.getElementById('input_type_of_diet').value = '{{ diet }}'
+document.getElementById('{{ meal }}').classList.add('active');
+document.getElementById('meal').value = '{{ meal }}'
+
+
+function data_function(value) {
+    document.getElementById(value).setAttribute('checked', 'true');
+    submitForm();
+}
+
+
+
+function submitDietForm(id_type_of_diet) {
+    var type_of_diet = document.getElementById(id_type_of_diet)
+    document.getElementById('input_type_of_diet').value = type_of_diet.value
+    submitForm();
+}
+
+function submitForm() {
+    var form = document.getElementById('form-get');
     form.submit();
 }
 
-var optionSelectDiet = document.getElementById("select-diet")
-for (var i = 0; i < optionSelectDiet.length; i++) {
-    if (optionSelectDiet[i].value == "{{ diet }}") {
-        optionSelectDiet[i].selected = true
+function submitMeals(meal) {
+    document.getElementById('meal').value = meal
+    submitForm()
+}
+
+var diet_name = document.getElementById('diet_name')
+var diet_menu = document.getElementById('diet-menu')
+        if (diet_name.innerHTML == 'ovd') {
+            diet_menu.classList.add('blue-menu')
+            diet_name.innerHTML = 'ОВД'
+        }
+        if (diet_name.innerHTML == 'ovd_sugarless') {
+            diet_menu.classList.add('mint-menu')
+            diet_name.innerHTML = 'ОВД б/с'
+        }
+        if (diet_name.innerHTML == 'shd') {
+            diet_menu.classList.add('yellow-menu')
+            (diet_name.innerHTML = 'ЩД')
+        }
+        if (diet_name.innerHTML == 'ЩД без сахара') {
+            diet_menu.classList.add('yellow-menu')
+            (diet_name.innerHTML = 'ЩД без сахара')
+        }
+        if (diet_name.innerHTML == 'bd') {
+            diet_menu.classList.add('yellow-menu')
+            diet_name.innerHTML = 'БД'
+        }
+        if (diet_name.innerHTML == 'ОВД веган (пост) без глютена') {
+            diet_menu.classList.add('green')
+            diet_name.innerHTML = 'ОВД веган'
+        }
+        if (diet_name.innerHTML == 'Нулевая диета') {
+            diet_name.innerHTML = 'Нулевая диета'
+            diet_name.classList.add('green')
+        }
+        if (diet_name.innerHTML == 'vbd') {
+            diet_menu.classList.add('orange-menu')
+            diet_name.innerHTML = 'ВБД'
+        }
+        if (diet_name.innerHTML == 'nbd') {
+            diet_menu.classList.add('yellow-menu')
+            diet_name.innerHTML = 'НБД'
+        }
+        if (diet_name.innerHTML == 'nkd') {
+            diet_menu.classList.add('blue-menu')
+            diet_name.innerHTML = 'НКД'
+        }
+        if (diet_name.innerHTML == 'vkd') {
+            diet_menu.classList.add('purple-menu')
+            diet_name.innerHTML = 'ВКД'
+        }
+        if (diet_name.innerHTML == 'Безйодовая') {
+            diet_menu.classList.add('purple-menu')
+            diet_name.innerHTML = 'Безйодовая'
+        }
+        if (diet_name.innerHTML == 'ПЭТ/КТ') {
+            diet_menu.classList.add('pink')
+            diet_name.innerHTML = 'ПЭТ/КТ'
+        }
+        if (diet_name.innerHTML == 'Без ограничений') {
+            diet_menu.classList.add('pink')
+            diet_name.innerHTML = 'Без ограничений'
+        }
+
+async function validationChangeEmailForm() {
+    var form1 = document.getElementById('profile-form-id');
+    var email = document.getElementById('change-email')
+    var errors = document.getElementById('change-email-error')
+    document.getElementById('change-email-form').classList.remove('error')
+    errors.innerHTML = ""
+    var error = 0
+    var st = new RegExp("[^a-zA-Z0-9/-/./@/_-]+");
+    if (st.test(email.value)) {
+        document.getElementById('change-email-error').innerHTML = "Такой почты не существует"
+        document.getElementById('change-email-error').classList.add('error')
+        document.getElementById('change-email-form').classList.add('error')
+        error = error + 1
+    }
+    if (!email.value.includes('@') || !email.value.includes('.')) {
+        document.getElementById('change-email-error').innerHTML = 'Такой почты не существует'
+        document.getElementById('change-email-error').classList.add('error')
+        document.getElementById('change-email-form').classList.add('error')
+        error = error + 1
+    }
+
+    if (error == 0) {
+        document.getElementById('change-email_flag').setAttribute('checked', 'true');
+        document.getElementById('changed-email').value = email.value
+        form1.submit();
     }
 }
 
-var optionSelectDayOfTheWeek = document.getElementById("select-day")
-for (var i = 0; i < optionSelectDayOfTheWeek.length; i++) {
-    if (optionSelectDayOfTheWeek[i].value == "{{ day_of_the_week }}") {
-        optionSelectDayOfTheWeek[i].selected = true
+async function validationChangePasswordForm() {
+    var form1 = document.getElementById('profile-form-id');
+    var old_password = document.getElementById('old_password');
+    var new_password = document.getElementById('new_password');
+    document.getElementById('old-password-error').innerHTML = "";
+    document.getElementById('new-password-error').innerHTML = "";
+    document.getElementById('change-email-form-old-password').classList.remove('error');
+    document.getElementById('change-email-form-new-password').classList.remove('error')
+ 
+    var error = 0
+    let res = await checkPassword('{{ user.id }}', old_password.value)
+    if (!res) {
+            document.getElementById('change-email-form-old-password').classList.add('error');
+            document.getElementById('old-password-error').classList.add('error');
+            document.getElementById('old-password-error').innerHTML = 'Введён неверный пароль';
+            error = error + 1;
+        }
+    if (new_password.value == old_password.value) {
+        document.getElementById('change-email-form-new-password').classList.add('error')
+        document.getElementById('new-password-error').classList.add('error');
+        document.getElementById('new-password-error').innerHTML = 'Пароли совпадают';
+        error = error + 1
+    }
+    if (error == 0) {        
+        document.getElementById('change-password_flag').setAttribute('checked', 'true');
+        document.getElementById('changed-password').value = new_password.value
+        form1.submit();
     }
 }
+
+const checkPassword = async function(userId, oldPassword) {  
+    let url = 'https://www.sk.petrushkagroup.com/doctor/api/v1/password/verify'
+    let body = {
+        "id_user": userId,
+        "row_password": oldPassword
+    };
+
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    console.log(result, userId, oldPassword)
+    console.log(JSON.stringify(body))
+    console.log(typeof(result))
+    console.log(result == 'Yes')
+    console.log(result == "Yes")
+    if (result === "\"Yes\"") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
+
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-
-</body>
-</html>
+    {% endblock %}

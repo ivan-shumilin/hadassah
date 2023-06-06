@@ -9,7 +9,6 @@ def formatting_full_name(full_name):
     list = full_name.split()
     res = ''
     for index, value in enumerate(list):
-        print(index, len(list))
         if index == 0:
             res += value.capitalize() + ' '
             continue

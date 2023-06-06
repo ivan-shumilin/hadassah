@@ -5,16 +5,17 @@ from datetime import datetime, date, timedelta
 def check_change(flag):
     """Проверка с какого приема пищи изменения вступят в силу"""
     time = datetime.today().time()
-    if time.hour > 0 and time.hour < 7:
-        return ('зактрака', 0) if flag == 'True' else 'зактрака'
-    if time.hour >= 7 and time.hour < 11:
+
+    if (time.hour >= 0 and time.hour < 8) or (time.hour == 8 and time.minute <= 30):
+        return ('завтрака', 0) if flag == 'True' else 'завтрака'
+    if (time.hour == 8 and time.minute > 30) or (time.hour == 12 and time.minute == 0) or time.hour >= 9 and time.hour < 12:
         return ('обеда', 1) if flag == 'True' else 'обеда'
-    if time.hour >= 11 and time.hour < 14:
+    if (time.hour == 12 and time.minute >= 1) or (time.hour == 15 and time.minute <= 30) or time.hour > 12 and time.hour < 15:
         return ('полдника', 2) if flag == 'True' else 'полдника'
-    if time.hour >= 14 and time.hour < 17:
+    if (time.hour == 15 and time.minute > 30) or (time.hour == 18 and time.minute == 0) or time.hour > 15 and time.hour < 18:
         return ('ужина', 3) if flag == 'True' else 'ужина'
-    if time.hour >= 17:
-        return ('завтра', 4) if flag == 'True' else 'ужина'
+    if time.hour > 18 or (time.hour == 18 and time.minute >= 1):
+        return ('завтра', 4) if flag == 'True' else 'завтра'
     return ('завтра', 4) if flag == 'True' else 'завтра'
 
 

@@ -55,12 +55,12 @@ class CustomUser(AbstractUser):
         default='',
         help_text='Выбор диеты')
 
-    is_accompanying =  models.BooleanField(
+    is_accompanying = models.BooleanField(
         blank=True,
         default=False,
         help_text='Cопровождающий?')
 
-    is_probe =  models.BooleanField(
+    is_probe = models.BooleanField(
         blank=True,
         default=False,
         help_text='Питание через зонд')
@@ -102,6 +102,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f'{self.full_name}, {self.type_of_diet}, {self.is_change_diet_bd}'
+
 
 class UsersToday(models.Model):
     # таблица создаёться 1 раз в сутки, в 00:00.
@@ -185,7 +186,6 @@ class UsersToday(models.Model):
         default='',
         help_text='Тип оплаты')
 
-
     def __str__(self):
         return f'{self.full_name}'
 
@@ -243,7 +243,6 @@ class СhangesUsersToday(models.Model):
         blank=True,
         default='',
         help_text='Выбор диеты')
-
 
     def __str__(self):
         return f'{self.full_name}'
@@ -421,7 +420,6 @@ class UsersReadyOrder(models.Model):
         default='',
         help_text='Тип оплаты')
 
-
     def __str__(self):
         return f'{self.full_name}'
 
@@ -493,6 +491,7 @@ class ProductLp(models.Model):
     def __str__(self):
         return f'{self.name}, {self.category}'
 
+
 class TimetableLp(models.Model):
     item = models.ForeignKey('ProductLp', on_delete=models.SET_NULL, null=True)
     day_of_the_week = models.CharField(
@@ -526,6 +525,7 @@ class Barcodes(models.Model):
        )
     def __str__(self):
         return f'{self.number}'
+
 
 class CommentProduct(models.Model):
     user_id = models.ForeignKey('CustomUser', on_delete=models.SET_NULL, null=True)
@@ -636,6 +636,5 @@ class ModifiedDish(models.Model):
                               choices=MOD_STATUS,
                               blank=True,
                               default='',)
-
     def __str__(self):
         return f'{self.product_id} - {self.date}'

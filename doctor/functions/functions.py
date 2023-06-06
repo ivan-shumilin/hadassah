@@ -575,7 +575,7 @@ def check_meal_user(user):
     receipt_date = user.receipt_date
     # Если пользователь есть в UsersReadyOrder, тогда вернем "завтрак".
     if receipt_date >= date.today():
-        if receipt_time.hour > 0 and receipt_time.hour < 10:
+        if receipt_time.hour >= 0 and receipt_time.hour < 10:
             return 'зактрака', 0
         if receipt_time.hour >= 10 and receipt_time.hour < 14:
             return 'обеда', 1
@@ -591,8 +591,8 @@ def check_meal_user(user):
 def get_now_show_meal():
     """Вернет след прием пищи."""
     time = datetime.today().time()
-    if time.hour > 0 and time.hour < 9:
-        return 'зактрака'
+    if time.hour >= 0 and time.hour < 9:
+        return 'завтрака'
     if time.hour >= 9 and time.hour < 12:
         return 'обеда'
     if time.hour >= 12 and time.hour < 16:
@@ -653,8 +653,6 @@ def create_user(user_form, request):
                 extra_bouillon.append(meal[0])
     extra_bouillon = ", ".join(extra_bouillon)
 
-
-
     is_user = is_user_look(
         user_form,
         is_accompanying,
@@ -700,11 +698,12 @@ def create_user(user_form, request):
         get_is_change_diet(user)
 
     user_name = get_user_name(request) # получаем имя пользователя (вносит изменения в ЛК)
-    logging_messang = f'пользователь ({user_name}), cоздан пациент {user_form.data["full_name"]} ({user_form.data["type_of_diet"]})'
+    logging_messang = f'Пользователь ({user_name}). Создан пациент {user_form.data["full_name"]} ({user_form.data["type_of_diet"]})'
     logging_messang += f', доп. бульон: {extra_bouillon}]'
     logging.info(logging_messang)
     add_the_patient_menu(user, 'creation', extra_bouillon)
     messang = ''
+    # Если время больше или равно 19
     if datetime.today().time().hour >= 19:
         if parse(str(user.receipt_date)).date() == (date.today() + timedelta(days=1)) and \
             (parse(str(user.receipt_date) + ' ' + str(user.receipt_time)).time() <= parse(str(user.receipt_date) + ' ' + '10:00').time()):
@@ -724,7 +723,7 @@ def create_user(user_form, request):
             now_show_meal = get_now_show_meal()
             if meal_order == now_show_meal and meal_order != 'завтра':
                 update_UsersToday(user)
-            if do_messang_send(user.full_name) and meal_order != 'завтра':  # c 17 до 7 утра не отправляем сообщения
+            if do_messang_send(user.full_name) and meal_order != 'завтра':
                 regard = u'\u26a0\ufe0f'
                 messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
     messang += f'Поступил пациент {formatting_full_name(user.full_name)}, {user.type_of_diet}\n'
@@ -738,6 +737,7 @@ def create_user(user_form, request):
     messang += f'({user_name})'
     if user.full_name != "Leslie William Nielsen":
         my_job_send_messang_changes.delay(messang)
+
 
 @transaction.atomic
 def load_menu_for_future(user, meal, change_day):
@@ -1261,10 +1261,11 @@ def what_meal():
         return 'breakfast', 'tomorrow'
 
 def what_type_order():
-    if (datetime.today().time().hour >= 7  and datetime.today().time().hour < 9)\
-        or (datetime.today().time().hour >= 11  and datetime.today().time().hour < 12) \
-        or (datetime.today().time().hour >= 14 and datetime.today().time().hour < 16) \
-        or (datetime.today().time().hour >= 17 and datetime.today().time().hour < 19):
+    now = datetime.today().time()
+    if ((now.hour == 8 and now.minute >= 31) and now.hour < 9)\
+        or (now.hour > 11  and now.hour < 12) \
+        or ((now.hour == 15 and now.minute >= 31) and now.hour < 16) \
+        or (now.hour >= 18 and now.hour < 19):
         return 'fix-order'
     return 'flex-order'
 
