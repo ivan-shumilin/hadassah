@@ -1,6 +1,8 @@
 """
 В этом файле функции, которые отвечают за формирование рациона у пациентов.
 """
+import pdb
+
 from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId,\
     UsersToday, MenuByDayReadyOrder, UsersReadyOrder
 from doctor.functions.helpers import check_value
@@ -14,15 +16,20 @@ from django.utils import dateformat
 
 def get_next_meals():
     """Вернет следующий прием пищи."""
+
     time = datetime.today().time()
-    if time.hour > 0 and time.hour < 7:
+
+    if time.hour >= 0 and time.hour < 8 or (time.hour == 8 and time.minute <= 30):
         return ['breakfast', 'lunch', 'afternoon', 'dinner']
-    if time.hour >= 7 and time.hour < 11:
-        return ['lunch', 'afternoon', 'dinner']
-    if time.hour >= 11 and time.hour < 14:
-        return ['afternoon', 'dinner']
-    if time.hour >= 14 and time.hour < 17:
-        return ['dinner']
+    if time.hour > 9 or (time.hour == 8 and time.minute >= 31):
+        if time.hour < 12 or (time.hour == 12 and time.minute < 1):
+            return ['lunch', 'afternoon', 'dinner']
+    if time.hour > 12 or (time.hour == 12 and time.minute >= 1):
+        if time.hour < 15 or (time.hour == 15 and time.minute <= 30):
+            return ['afternoon', 'dinner']
+    if time.hour > 15 or (time.hour == 15 and time.minute > 30):
+            if time.hour < 19 or (time.hour == 19 and time.minute == 0):
+                return ['dinner']
     return []
 
 def add_the_patient_menu(user, user_change_type, extra_bouillon):
