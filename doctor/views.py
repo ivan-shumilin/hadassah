@@ -264,20 +264,29 @@ def archive(request):
     page = 'menu-archive'
     filter_by = 'full_name'  # дефолтная фильтрация
     sorting = 'top'
-    queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)[0:200]
+    queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
     # full_name__icontains = "Алекс"
+    # если есть поисковый запрос, то фильтруем по нему
+    count: int = 100
+    search_query_filter: Q = Q()
+    try:
+        search_query = request.POST.getlist('search')[0]
+        search_query_filter = Q(full_name__icontains=search_query)
+        count: int = 150
+    except:
+        pass
+    queryset = queryset.filter(search_query_filter)
 
     if request.method == 'POST' and 'filter_by_flag' in request.POST:
         filter_by = request.POST.getlist('filter_by')[0]
         if request.POST['is_pressing_again'] == 'True':
             if request.POST['sorting_value'] == 'top':
-                queryset = CustomUser.objects.filter(status='patient_archive').order_by(f'-{filter_by}')
+                queryset = queryset.order_by(f'-{filter_by}')
                 sorting = 'down'
             else:
-                queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
+                queryset = queryset.order_by(filter_by)
                 sorting = 'top'
-        else:
-            queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
+
 
     if request.method == 'POST' and 'archive' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
@@ -293,7 +302,7 @@ def archive(request):
         user.email = request.POST['changed-email']
         user.username = request.POST['changed-email']
         user.save()
-        formset = CustomUserFormSet(queryset=queryset)
+        formset = CustomUserFormSet(queryset=queryset.all()[:count])
         request.user.email = request.POST['changed-email']
         data = {
             'formset': formset,
@@ -308,7 +317,7 @@ def archive(request):
     if request.method == 'POST' and 'change-password_flag' in request.POST:
         if request.POST['change-password_flag'] == 'on':
             user_form = PatientRegistrationForm()
-            formset = CustomUserFormSet(queryset=queryset)
+            formset = CustomUserFormSet(queryset=queryset.all()[:count])
             user = CustomUser.objects.get(id=request.user.id)
             user.set_password(request.POST['changed-password'])
             user.save()
@@ -323,7 +332,7 @@ def archive(request):
             return render(request, 'doctor.html', context=data)
 
     user_form = PatientRegistrationForm()
-    formset = CustomUserFormSet(queryset=queryset)
+    formset = CustomUserFormSet(queryset=queryset.all()[:count])
     data = {
         'sorting': sorting,
         'formset': formset,

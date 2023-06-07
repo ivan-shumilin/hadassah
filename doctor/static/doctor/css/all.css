@@ -6429,3 +6429,23 @@ font-weight: 200;
     padding-left: 0px;
   }
 }
+
+.search {
+  display: flex;
+  margin-bottom: 7px;
+}
+
+.search-input {
+  margin-right: 20px;
+  width: 60%;
+  background: #fdfeff;
+  border: 1px solid var(--color-main);
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-family: Montserrat, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  height: 36px;
+  line-height: 36px;
+  padding: 0 12px;
+}
