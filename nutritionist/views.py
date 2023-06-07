@@ -1429,8 +1429,14 @@ def tk(request, id, count):
 
     result['items'].sort(key=operator.itemgetter('sortWeight'))
 
+    try:
+        img = ProductLp.objects.filter(product_id=id).first().image
+    except:
+        img = None
+
 
     data = {
+        'img': img,
         'result': result,
         'error': error,
         'count': count + 1,

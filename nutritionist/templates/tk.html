@@ -9,9 +9,11 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         {% load static %}
+
         <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
     </head>
     <body>
+
 
         <div class="card-header-block">
             <div class="container inner">
@@ -146,7 +148,8 @@
 
                                 </div>
                                 <div class="img">
-                                    <img src="./img/card.jpg" alt="">
+                                    <script>alert("{{ img.url }}")</script>
+                                    <img src="{{ img.url }}" alt="">
                                 </div>
                                 <div class="allergens">
                                     <div class="title">Аллергены</div>
