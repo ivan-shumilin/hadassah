@@ -264,7 +264,7 @@ def archive(request):
     page = 'menu-archive'
     filter_by = 'full_name'  # дефолтная фильтрация
     sorting = 'top'
-    queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)[0:300]
+    queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)[0:200]
     # full_name__icontains = "Алекс"
 
     if request.method == 'POST' and 'filter_by_flag' in request.POST:
