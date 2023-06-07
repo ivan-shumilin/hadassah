@@ -269,6 +269,7 @@ def archive(request):
     # если есть поисковый запрос, то фильтруем по нему
     count: int = 100
     search_query_filter: Q = Q()
+    search_query: str = ''
     try:
         search_query = request.POST.getlist('search')[0]
         search_query_filter = Q(full_name__icontains=search_query)
@@ -334,6 +335,7 @@ def archive(request):
     user_form = PatientRegistrationForm()
     formset = CustomUserFormSet(queryset=queryset.all()[:count])
     data = {
+        'search_query': search_query,
         'sorting': sorting,
         'formset': formset,
         'user_form': user_form,
