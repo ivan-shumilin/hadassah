@@ -267,13 +267,13 @@ def archive(request):
     queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
     # full_name__icontains = "Алекс"
     # если есть поисковый запрос, то фильтруем по нему
-    count: int = 100
+    count: int = 90
     search_query_filter: Q = Q()
     search_query: str = ''
     try:
         search_query = request.POST.getlist('search')[0]
         search_query_filter = Q(full_name__icontains=search_query)
-        count: int = 150
+        count: int = 120
     except:
         pass
     queryset = queryset.filter(search_query_filter)
