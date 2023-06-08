@@ -18,6 +18,22 @@ def check_change(flag):
         return ('завтра', 4) if flag == 'True' else 'завтра'
     return ('завтра', 4) if flag == 'True' else 'завтра'
 
+def check_change_set():
+    """Проверка с какого приема пищи изменения вступят в силу"""
+    time = datetime.today().time()
+
+    if (time.hour >= 0 and time.hour < 8) or (time.hour == 8 and time.minute <= 30):
+        return ['breakfast', 'lunch', 'afternoon', 'dinner']
+    if (time.hour == 8 and time.minute > 30) or (time.hour == 12 and time.minute == 0) or time.hour >= 9 and time.hour < 12:
+        return ['lunch', 'afternoon', 'dinner']
+    if (time.hour == 12 and time.minute >= 1) or (time.hour == 15 and time.minute <= 30) or time.hour > 12 and time.hour < 15:
+        return ['afternoon', 'dinner']
+    if (time.hour == 15 and time.minute > 30) or (time.hour == 18 and time.minute == 0) or time.hour > 15 and time.hour < 18:
+        return ['dinner']
+    if time.hour > 18 or (time.hour == 18 and time.minute >= 1):
+        return  []
+    return []
+
 
 def formatting_full_name(full_name):
     list = full_name.split()

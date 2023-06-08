@@ -3,6 +3,7 @@
 """
 import pdb
 
+from doctor.functions.bot import check_change_set
 from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId,\
     UsersToday, MenuByDayReadyOrder, UsersReadyOrder
 from doctor.functions.helpers import check_value
@@ -29,6 +30,25 @@ def get_next_meals():
             return ['afternoon', 'dinner']
     if time.hour > 15 or (time.hour == 15 and time.minute > 30):
             if time.hour < 19 or (time.hour == 19 and time.minute == 0):
+                return ['dinner']
+    return []
+
+
+def get_next_meals_set(user) -> list:
+    """Вернет следующий прием пищи, для пациента"""
+
+    time = user.receipt_time
+
+    if time.hour >= 0 and time.hour < 10 or (time.hour == 10 and time.minute == 0):
+        return ['breakfast', 'lunch', 'afternoon', 'dinner']
+    if time.hour > 10 or (time.hour == 10 and time.minute >= 1):
+        if time.hour < 14 or (time.hour == 14 and time.minute == 0):
+            return ['lunch', 'afternoon', 'dinner']
+    if time.hour > 14 or (time.hour == 14 and time.minute >= 1):
+        if time.hour < 17 or (time.hour == 17 and time.minute == 0):
+            return ['afternoon', 'dinner']
+    if time.hour > 17 or (time.hour == 17 and time.minute >= 1):
+            if time.hour < 21 or (time.hour == 21 and time.minute == 0):
                 return ['dinner']
     return []
 
@@ -123,9 +143,21 @@ def writes_the_patient_menu_to_the_database(user, days, next_meals, extra_bouill
         if user.type_of_diet == 'БД день 2':
             days_for_bd = ['вторник', 'вторник', 'вторник']
 
-
     for index, change_day in enumerate(days):
         next_meals = next_meals if index == 0 else ['breakfast', 'lunch', 'afternoon', 'dinner']
+        # делаем проверку: входит ли дата и время регистрации в диапазон даты и времени приема пищи
+        if user.receipt_date > change_day:
+            continue
+        # если дата регистрации совпадает с датой приема пищи и не сегодня,
+        # тогда выясняем с какого приема пищи начинать формировать меню
+        elif user.receipt_date == change_day and user.receipt_date != date.today():
+            # тут функция, которая возвращает список с пиемами пищи,
+            # с которого нужно начинать формировать меню
+            next_meals = get_next_meals_set(user)
+        elif user.receipt_date == change_day and user.receipt_date == date.today():
+            # оставляем приемы пищи, которые вернули обе функции
+            next_meals = list(set(get_next_meals_set(user)) & set(check_change_set()))
+
         for meal in next_meals:
             if user.type_of_diet in ['БД день 1', 'БД день 2']:
                 day = days_for_bd[index]
