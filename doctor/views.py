@@ -264,10 +264,9 @@ def archive(request):
     page = 'menu-archive'
     filter_by = 'full_name'  # дефолтная фильтрация
     sorting = 'top'
-    queryset = CustomUser.objects.filter(status='patient_archive').order_by(filter_by)
-    # full_name__icontains = "Алекс"
+    queryset = CustomUser.objects.filter(status='patient_archive').distinct('full_name').order_by(filter_by)
     # если есть поисковый запрос, то фильтруем по нему
-    count: int = 90
+    count: int = 80
     search_query_filter: Q = Q()
     search_query: str = ''
     try:
