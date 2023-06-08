@@ -207,6 +207,7 @@ def update_UsersToday(user):
             user_today.receipt_time=user.receipt_time
             user_today.department=user.department
             user_today.room_number=user.room_number
+            user_today.floor = user.floor
             user_today.type_of_diet=user.type_of_diet
             user_today.comment=user.comment
             user_today.status=user.status
@@ -227,6 +228,7 @@ def update_UsersToday(user):
             department=user.department,
             room_number=user.room_number,
             type_of_diet=user.type_of_diet,
+            floor=user.floor,
             comment=user.comment,
             status=user.status,
             is_accompanying=user.is_accompanying,
