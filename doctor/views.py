@@ -648,6 +648,12 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 482),
                 ('description', 'Сыр Гауда.')
+            ]),
+            OrderedDict([
+                ('name', 'Салат из огурцов и помидоров 150 гр'),
+                ('type_of_diet', 'Безйодовая'),
+                ('id', 551),
+                ('description', '')
             ])
         ]
         data ={
