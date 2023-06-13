@@ -39,7 +39,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core import management
 import telepot
-from doctor.tasks import send_messang, my_job_create_ready_order_dinner
+from doctor.tasks import send_messang, my_job_create_ready_order_dinner, my_job_send_messang_changes
 from .functions.download import get_token, download
 from .logic.create_ingredient import create_ingredients
 
@@ -48,7 +48,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from .serializer import DishesSerializer, PatientsSerializer, InfoPatientSerializer, InputDataSerializer, \
-    AddDishSerializer, ChangeDishSerializer, CroppImageSerializer
+    AddDishSerializer, ChangeDishSerializer, CroppImageSerializer, SendEmergencyFoodAPIViewSerializer
 
 
 class ServiceWorkerView(TemplateView):
@@ -159,24 +159,32 @@ def doctor(request):
 
     if request.method == 'POST' and 'add_patient' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        create_user(user_form, request)
+        first_meal_user, data = create_user(user_form, request)
+        messages.add_message(request, messages.INFO, first_meal_user)
         messages.add_message(request, messages.INFO, 'patient-added')
+        messages.add_message(request, messages.INFO, data)
         return HttpResponseRedirect(reverse('doctor'))
 
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
         is_edited = edit_user(user_form, 'edit', request)
         if is_edited:
+            messages.add_message(request, messages.INFO, 'first')
             messages.add_message(request, messages.INFO, 'edited')
+            messages.add_message(request, messages.INFO, 'last')
         else:
+            messages.add_message(request, messages.INFO, 'first')
             messages.add_message(request, messages.INFO, 'patient was discharged')
+            messages.add_message(request, messages.INFO, 'last')
         return HttpResponseRedirect(reverse('doctor'))
 
     if request.method == 'POST' and 'archive' in request.POST:
         id_user = request.POST.getlist('id_edit_user')[0]
         user = CustomUser.objects.get(id=id_user)
         modal = archiving_user(user, request)
+        messages.add_message(request, messages.INFO, 'first')
         messages.add_message(request, messages.INFO, modal)
+        messages.add_message(request, messages.INFO, 'last')
         return HttpResponseRedirect(reverse('doctor'))
 
     if request.method == 'POST' and 'change-email' in request.POST:
@@ -524,6 +532,18 @@ class GetPatientMenuDayTestAPIView(APIView):
         response = json.dumps(response)
         return Response(response)
 
+class SendEmergencyFoodAPIView(APIView):
+    def post(self, request):
+        # serializer = SendEmergencyFoodAPIViewSerializer(data=request.data)
+        # serializer.is_valid(raise_exception=True)
+        # id_user = serializer.validated_data['id_user']
+        # date_show = serializer.validated_data['date_show']
+        # response = creates_dict_with_menu_patients_on_day_test(id_user, date_show)
+        # response = json.dumps(response)
+        messang = 'Пациенту необходимо срочно принести еду!'
+        my_job_send_messang_changes.delay(messang, '-658303105')
+        return Response('ok')
+
 
 def get_day_of_the_week(date):
     number_day_of_the_week = {
@@ -692,7 +712,7 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('description', 'Капуста брюссельская, соус сливочный (сливки 33%, уксус винный,  перец черный молотый, зелень, сок лимона, лук репчатый).')
             ])
         ]
-        data ={
+        data = {
             "dishes_all": dishes_all,
             "dishes_meal": dishes_meal,
             "dishes_cafe": dishes_cafe,

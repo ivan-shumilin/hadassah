@@ -15,17 +15,25 @@ def send_messang(messang):
         bot.sendMessage(item.chat_id, messang, parse_mode="html")
 
 
-def send_messang_changes(messang):
+def send_messang_changes(messang, only_chat_id=None):
+    TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
     # пробуем 20 раз отправить сообщение
     for attempt in range(1, 21):
-        try:
-            TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
-            bot = telepot.Bot(TOKEN)
-            for item in BotChatId.objects.all():
-                bot.sendMessage(item.chat_id, messang, parse_mode="html")
-            return attempt
-        except:
-            continue
+        if only_chat_id:
+            try:
+                bot = telepot.Bot(TOKEN)
+                bot.sendMessage(only_chat_id, messang, parse_mode="html")
+                return attempt
+            except:
+                continue
+        else:
+            try:
+                bot = telepot.Bot(TOKEN)
+                for item in BotChatId.objects.all():
+                    bot.sendMessage(item.chat_id, messang, parse_mode="html")
+                return attempt
+            except:
+                continue
 
 def delete_menu_by_arhived_users():
     users = CustomUser.objects.filter(status='patient_archive')
@@ -117,8 +125,8 @@ def my_job_create_user_tomorrow():
 
 
 @shared_task()
-def my_job_send_messang_changes(messang):
-    return f'попытка - {send_messang_changes(messang)}'
+def my_job_send_messang_changes(messang, only_chat_id=None):
+    return f'попытка - {send_messang_changes(messang, only_chat_id)}'
 
 @shared_task()
 def my_job_create_product_storage_breakfast():

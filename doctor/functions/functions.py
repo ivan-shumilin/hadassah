@@ -662,7 +662,7 @@ def create_user(user_form, request):
         is_without_lactose,
         is_pureed_nutrition)
     if is_user:
-        return
+        return None, None
 
     # генерируем уникальный логин
     while True:
@@ -737,7 +737,7 @@ def create_user(user_form, request):
                  user.is_probe,
                  user.is_without_salt,
                  user.is_without_lactose,
-                user.is_pureed_nutrition)
+                 user.is_pureed_nutrition)
     if comment:
         messang += f'Комментарий: "{comment}"'
     messang += f'({user_name})'
