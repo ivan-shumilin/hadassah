@@ -1957,10 +1957,10 @@ a {
 }
 
 .button.white, button.white {
-  background: 0 0;
-  border: 2px solid var(--color-main);
-  color: var(--color-main);
-  position: relative
+    background: 0 0;
+    border: 2px solid var(--color-main);
+    color: var(--color-main);
+    position: relative
 }
 
 .button.white:hover, button.white:hover {
@@ -6413,6 +6413,14 @@ font-weight: 200;
 
 .mr-top-20 {
   margin-top: 20px;
+}
+
+.mr-top-15 {
+  margin-top: 15px;
+}
+
+.mr-left-15 {
+  margin-left: 15px;
 }
 
 .container-flex {

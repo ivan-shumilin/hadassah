@@ -295,10 +295,13 @@
             <input id="edit_afternoonBouillon" name="afternoon">
             <input id="edit_dinnerBouillon" name="dinner">
         </div>
+
         {% if messages %}
-                {% for message in messages %}
+            {% for message in messages %}
+                {% if not forloop.first and not forloop.last %}
                     <input style="display: none;" class="messages" type="text" value="{{ message }}">
-                {% endfor %}
+                {% endif %}
+            {% endfor %}
         {% endif %}
 
         <div  data-modal="patient-edited" data-modal-width="400">
@@ -450,16 +453,28 @@
                     <a class="button white" data-modal-close>Отменить</a>
                 </div>
         </div>
+        {% if messages %}
+                {% for message in messages %}
+                    {% if forloop.first %}
+                        <div data-modal="patient-added" data-modal-width="400">
+                            <div class="message-block">
+                                <div class="icon">
+                                    <div class="i i-ok"></div>
+                                </div>
+                                <div class="title">Учётная запись создана</div>
+                                <div class="text">Пациент включён в порционник с {{ message }}. Требуется ли срочное питание?</div>
+                    {% endif %}
+                    {% if forloop.last %}
+                                <div class="flex flex-center last_form_group mr-top-15">
+                                    <a class="button" data-modal-close>Нет</a>   
+                                    <button style="margin-left: 15px;background: 0 0;border: 2px solid var(--color-main);color: var(--color-main);position: relative;" сlass="white" id="yes" name="yes" onclick="sendEmergencyFood('{{ message }}')">Да</button>
+                                </div>                       
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+        {% endif %}
 
-        <div data-modal="patient-added" data-modal-width="400">
-            <div class="message-block">
-                <div class="icon">
-                    <div class="i i-ok"></div>
-                </div>
-                <div class="title">Учётная запись создана</div>
-                <div class="text">Пациент получит доступ к выбору рациона в личном кабинете по QR-коду в его палате</div>
-            </div>
-        </div>
 
         <div data-modal="logout" data-modal-width="400">
             <div class="title align-center">Вы уверены, что хотите выйти?</div>
@@ -493,3 +508,35 @@
 </form>
 </body>
 </html>
+<script>
+// ###################
+// Запросы по API   ##
+// ###################
+
+const sendEmergencyFood = async function(data) {
+    let url = '/doctor/api/v1/send_emergency_food'
+    let body = {
+        "data": data
+    };
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+
+// ###################
+// Основные функции ##
+// ###################
+
+// отправляем информацию об экстренном питании
+async function addEmergencyFood(data) {
+// получаем информацию о пациенте
+    let res0 = await sendEmergencyFood(data)
+}
+</script>

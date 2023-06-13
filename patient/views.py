@@ -121,7 +121,7 @@ def patient(request, id):
     # проверяем есть ли ганрир, если нет удаляем блюда, которые идут без гарнира
     menu_for_lk_patient = del_if_not_garnish(menu_for_lk_patient)
 
-    # проверяем есть ли блюда в которым нужен гарнир , если нет, тогда удаляем гарниры
+    # проверяем есть ли блюда в которым нужен гарнир, если нет, тогда удаляем гарниры
     # из блюд cafe
     menu_for_lk_patient = del_if_not_product_without_garnish(menu_for_lk_patient)
 

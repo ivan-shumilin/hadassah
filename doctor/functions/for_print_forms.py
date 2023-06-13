@@ -9,7 +9,7 @@ from django.db.models import Q
 def check_change_time(user):
     """Проверка с какого приема пищи изменения вступят в силу"""
     if datetime.today().time().hour >= 0 and datetime.today().time().hour < 10:
-        return 'зактрака'
+        return 'завтрака'
     if datetime.today().time().hour >= 10 and datetime.today().time().hour < 13:
         return 'обеда'
     if datetime.today().time().hour >= 13 and datetime.today().time().hour < 17:
