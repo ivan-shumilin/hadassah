@@ -92,6 +92,11 @@ class InputDataSerializer(serializers.Serializer):
     date_show = serializers.DateField()
 
 
+class SendEmergencyFoodAPIViewSerializer(serializers.Serializer):
+    id_user = serializers.IntegerField()
+    date_show = serializers.DateField()
+
+
 class AddDishSerializer(serializers.Serializer):
     id_user = serializers.CharField()
     date = serializers.DateField()
