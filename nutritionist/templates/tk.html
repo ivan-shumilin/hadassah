@@ -147,8 +147,11 @@
                                     {% endif %}
 
                                 </div>
+                                
                                 <div class="img">
-                                    <img src="{{ img.url }}" alt="">
+                                    {% if img.url %}
+                                        <img src="{{ img.url }}" alt="">
+                                    {% endif %}
                                 </div>
                                 <div class="allergens">
                                     <div class="title">Аллергены</div>
