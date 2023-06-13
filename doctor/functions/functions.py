@@ -403,9 +403,9 @@ def get_order_status(meal, date_show):
             return 'done'
 
     if meal == 'lunch':
-        if datetime.today().time().hour < 11:
+        if datetime.today().time().hour < 12:
             return 'flex-order'
-        if datetime.today().time().hour >= 11 and datetime.today().time().hour < 13:
+        if datetime.today().time().hour >= 12 and datetime.today().time().hour < 13:
             return 'fix-order'
         if datetime.today().time().hour >= 13:
             return 'done'
@@ -576,7 +576,7 @@ def check_meal_user(user):
     # Если пользователь есть в UsersReadyOrder, тогда вернем "завтрак".
     if receipt_date >= date.today():
         if receipt_time.hour >= 0 and receipt_time.hour < 10:
-            return 'зактрака', 0
+            return 'завтрака', 0
         if receipt_time.hour >= 10 and receipt_time.hour < 14:
             return 'обеда', 1
         if receipt_time.hour >= 14 and receipt_time.hour < 17:
@@ -586,7 +586,7 @@ def check_meal_user(user):
         if receipt_time.hour >= 21:
             return 'завтра', 4
     else:
-        return 'зактрака', 0
+        return 'завтрака', 0
 
 def get_now_show_meal():
     """Вернет след прием пищи."""
@@ -711,8 +711,9 @@ def create_user(user_form, request):
         else:
             if parse(str(user.receipt_date)).date() == date.today():
                 update_UsersToday(user)
-    else:  # время меньше 19
-        if parse(str(user.receipt_date)).date() == date.today():
+        meal_order, _ = check_meal_user(user)
+    # Сегодня, меньше 19
+    elif parse(str(user.receipt_date)).date() == date.today():
             # Проверяем с какого приема пищи мы можем накормить пациента.
             meal_permissible, weight_meal_permissible = check_change('True')
             # Проверяем на какой прием пищи успевает пациент пациента.
@@ -726,6 +727,11 @@ def create_user(user_form, request):
             if do_messang_send(user.full_name) and meal_order != 'завтра':
                 regard = u'\u26a0\ufe0f'
                 messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+    # Больше 19 или не сегодня
+    else:
+        meal_order, _ = check_meal_user(user)
+    first_meal_user = meal_order if meal_order != 'завтра' else 'завтрака'
+
     messang += f'Поступил пациент {formatting_full_name(user.full_name)}, {user.type_of_diet}\n'
     comment = add_features(user.comment,
                  user.is_probe,
@@ -737,6 +743,9 @@ def create_user(user_form, request):
     messang += f'({user_name})'
     if user.full_name != "Leslie William Nielsen":
         my_job_send_messang_changes.delay(messang)
+    # возвращаем первый прием пищи с которого пациент будет добавлен в заказ
+    type_diet = 'without_sugar' if user.type_of_diet in ['ШД без сахара', 'ОВД без сахара'] else 'without_sugar'
+    return first_meal_user, f'{user.id}&{first_meal_user}&{user.receipt_date}&{type_diet}'
 
 
 @transaction.atomic
