@@ -395,9 +395,9 @@ def get_order_status(meal, date_show):
         return 'flex-order'
 
     if meal == 'breakfast':
-        if datetime.today().time().hour < 7:
+        if datetime.today().time().hour < 8 or datetime.today().time().hour == 8 and datetime.today().time().minute <= 30:
             return 'flex-order'
-        if datetime.today().time().hour >= 7 and datetime.today().time().hour < 9:
+        if datetime.today().time().hour == 8 and datetime.today().time().minute >= 31:
             return 'fix-order'
         if datetime.today().time().hour >= 9:
             return 'done'
@@ -411,17 +411,17 @@ def get_order_status(meal, date_show):
             return 'done'
 
     if meal == 'afternoon':
-        if datetime.today().time().hour < 14:
+        if datetime.today().time().hour < 15 or datetime.today().time().hour == 15 and datetime.today().time().minute >= 30:
             return 'flex-order'
-        if datetime.today().time().hour >= 14 and datetime.today().time().hour < 16:
+        if datetime.today().time().hour == 15 and datetime.today().time().minute < 30:
             return 'fix-order'
         if datetime.today().time().hour >= 16:
             return 'done'
 
     if meal == 'dinner':
-        if datetime.today().time().hour < 17:
+        if datetime.today().time().hour < 18:
             return 'flex-order'
-        if datetime.today().time().hour >= 17 and datetime.today().time().hour < 19:
+        if datetime.today().time().hour >= 18 and datetime.today().time().hour < 19:
             return 'fix-order'
         if datetime.today().time().hour >= 19:
             return 'done'
