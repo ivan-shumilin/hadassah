@@ -195,6 +195,16 @@ def translate_meal(meal):
     }
     return MEALS[meal]
 
+
+def translate_first_meal(meal):
+    MEALS = {
+        'завтрака': 'breakfast',
+        'обеда': 'lunch',
+        'полдника': 'afternoon',
+        'ужина': 'dinner'
+    }
+    return MEALS[meal.lower()]
+
 def сhange_password(email, request):
     user = CustomUser.objects.get(id=request.user.id)
     user.email = email
@@ -744,8 +754,7 @@ def create_user(user_form, request):
     if user.full_name != "Leslie William Nielsen":
         my_job_send_messang_changes.delay(messang)
     # возвращаем первый прием пищи с которого пациент будет добавлен в заказ
-    type_diet = 'without_sugar' if user.type_of_diet in ['ШД без сахара', 'ОВД без сахара'] else 'without_sugar'
-    return first_meal_user, f'{user.id}&{first_meal_user}&{user.receipt_date}&{type_diet}'
+    return first_meal_user, f'{user.id}&{first_meal_user}'
 
 
 @transaction.atomic

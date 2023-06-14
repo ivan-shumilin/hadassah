@@ -230,7 +230,10 @@ def add_try(report):
                     'Булочка французская 35гр. в асс., 3 шт',
                     'Хлеб бородинский/ржаной 20 гр., 2 шт.',
                     'Хлеб из зеленой гречки пряный 35 гр., 2 шт.',
-                    'Батончик  "SOJ" в асс.'
+                    'Батончик  "SOJ" в асс.',
+                    'R.A.W. криспы кокос-манго 35 гр',
+                    'Nutrien Sugarless 200 мл',
+                    'Nutrien Standard 200 мл',
                  ]
     for product in report:
         if product['name'] not in exception:

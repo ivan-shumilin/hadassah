@@ -70,9 +70,7 @@ class PatientsSerializer(serializers.ModelSerializer):
 
 
 class InfoPatientSerializer(serializers.ModelSerializer):
-
     comment = serializers.SerializerMethodField()
-
 
     class Meta:
         model = CustomUser
@@ -92,9 +90,17 @@ class InputDataSerializer(serializers.Serializer):
     date_show = serializers.DateField()
 
 
-class SendEmergencyFoodAPIViewSerializer(serializers.Serializer):
-    id_user = serializers.IntegerField()
-    date_show = serializers.DateField()
+# class SendEmergencyFoodAPIViewSerializer(serializers.Serializer):
+#     id_user = serializers.SerializerMethodField()
+#     date = serializers.SerializerMethodField()
+#
+#     def get_comment(self, instance):
+#         comment = add_features(instance.comment,
+#                                instance.is_probe,
+#                                instance.is_without_salt,
+#                                instance.is_without_lactose,
+#                                instance.is_pureed_nutrition)
+#         return comment
 
 
 class AddDishSerializer(serializers.Serializer):

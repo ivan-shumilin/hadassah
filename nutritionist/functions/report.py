@@ -31,6 +31,7 @@ def create_external_report(filtered_report):
     for date_key, one_day_report in report_.items():
         report[date_key] = {}
         count_all = 0 # все рационы кроме "Нулевой диеты"
+        count_emergency_food_all = 0
         count_just_wather = 0
         count_bd_2 = 0
         price_all = 750
@@ -41,6 +42,9 @@ def create_external_report(filtered_report):
             price_bouillon = 0
         else:
             price_bouillon = 90
+        # экстренное питание
+        # !!! указать значение для экстренного питания
+        price_emergency_food = 0
         for meal_key in ['breakfast', 'lunch', 'afternoon', 'dinner']:
             meal_report = one_day_report.get(meal_key, [])
             # создать функцию, которая добаляет уникальные диеты в report
@@ -48,20 +52,24 @@ def create_external_report(filtered_report):
             users = list(set([item_report.user_id for item_report in meal_report]))
             for user in users:
                 report_user_set = [report for report in meal_report if report.user_id==user]
-                if len([report_item for report_item in report_user_set if report_item.product_id=='426']) > 0 and \
-                        report_user_set[0].meal == 'dinner' and report_user_set[0].type_of_diet == 'БД день 2' or \
-                        len([report_item for report_item in report_user_set if report_item.product_id == '426']) == 0:
+                # if len([report_item for report_item in report_user_set if report_item.product_id=='426']) > 0 and \
+                #         report_user_set[0].meal == 'dinner' and report_user_set[0].type_of_diet == 'БД день 2' or \
+                #         len([report_item for report_item in report_user_set if report_item.product_id == '426']) == 0:
+                if len([report_item for report_item in report_user_set if report_item.product_id in ['569', '568', '570']]) == 0:
                     for report_user in report_user_set:
                         report[date_key][meal_key].setdefault(str(report_user.type_of_diet), []).append(report_user)
                 else:
                     for report_user in report_user_set:
-                        report[date_key][meal_key].setdefault(f'{report_user.type_of_diet} + бульон', []).append(report_user)
+                        report[date_key][meal_key].setdefault(f'{report_user.type_of_diet} + экстренное питание', []).append(report_user)
             for diet_key, on_diet_report in report[date_key][meal_key].items():
                 count_items = len(set([user.user_id for user in (report[date_key][meal_key][diet_key])]))
                 count_bouillon = \
                     len(set([user.user_id for user in (report[date_key][meal_key][diet_key])
                                 if user.product_id == '426' and\
                                 not (meal_key == 'dinner' and diet_key == 'БД день 2')]))
+                count_emergency_food = \
+                    len(set([user.user_id for user in (report[date_key][meal_key][diet_key])
+                                if user.product_id in ['569', '568', '570']]))
                 if diet_key == 'Нулевая диета':
                     price = price_just_wather
                     count_just_wather += count_items
@@ -74,15 +82,18 @@ def create_external_report(filtered_report):
                 else:
                     price = price_all
                 count_all += count_items
+                count_emergency_food_all += count_emergency_food
                 report[date_key][meal_key][diet_key] =\
                     {'count': count_items,
                      'count_bouillon': count_bouillon,
-                     'money': (count_items * price) + (count_bouillon * price_bouillon)}
+                     'count_emergency_food': count_emergency_food,
+                     'money': (count_items * price) + (count_bouillon * price_bouillon) + (count_emergency_food * price_emergency_food)}
 
         money = (count_all - count_just_wather - count_bd_2) * price_all + \
                 (count_just_wather * price_just_wather) + \
                 (count_bd_2 * price_count_bd_2) + \
-                (count_bouillon * price_bouillon)
+                (count_bouillon * price_bouillon) + \
+                (count_emergency_food_all * price_emergency_food)
         report[date_key]['Всего'] = {'count': count_all,
                                      'money': money}
         money_total += money

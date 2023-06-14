@@ -466,8 +466,12 @@
                     {% endif %}
                     {% if forloop.last %}
                                 <div class="flex flex-center last_form_group mr-top-15">
-                                    <a class="button" data-modal-close>Нет</a>   
-                                    <button style="margin-left: 15px;background: 0 0;border: 2px solid var(--color-main);color: var(--color-main);position: relative;" сlass="white" id="yes" name="yes" onclick="addEmergencyFood('{{ message }}')">Да</button>
+                                    <a id="no" class="button" data-modal-close>Нет</a>   
+                <button style="margin-left: 15px;background: 0 0;border: 2px solid var(--color-main);color: var(--color-main);position: relative;" 
+                        сlass="white" id="yes" name="yes" 
+                        onclick="addEmergencyFood('{{ message }}',
+                                                  '{{ user.first_name }}',
+                                                  '{{ user.last_name }}')">Да</button>
                                 </div>                       
                             </div>
                         </div>
@@ -513,12 +517,13 @@
 // Запросы по API   ##
 // ###################
 
-const sendEmergencyFood = async function(data) {
+const sendEmergencyFood = async function(data, first_name, last_name) {
     let url = '/doctor/api/v1/send_emergency_food'
     
     let body = {
-        "data": data
-    };
+        "data": data,
+        "user_name": `${first_name} ${last_name}`
+    }
     let response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -527,7 +532,7 @@ const sendEmergencyFood = async function(data) {
       body: JSON.stringify(body)
     });
     let result = await response.text();
-    alert(result)
+    document.getElementById('no').click()
     return result;
 }
 
@@ -537,9 +542,9 @@ const sendEmergencyFood = async function(data) {
 // ###################
 
 // отправляем информацию об экстренном питании
-async function addEmergencyFood(data) {
+async function addEmergencyFood(data, first_name, last_name) {
 // получаем информацию о пациенте
     
-    let res0 = await sendEmergencyFood(data)
+    let res0 = await sendEmergencyFood(data, first_name, last_name)
 }
 </script>
