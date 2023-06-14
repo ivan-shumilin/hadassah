@@ -162,9 +162,10 @@ def doctor(request):
     if request.method == 'POST' and 'add_patient' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
         first_meal_user, data = create_user(user_form, request)
-        messages.add_message(request, messages.INFO, first_meal_user)
-        messages.add_message(request, messages.INFO, 'patient-added')
-        messages.add_message(request, messages.INFO, data)
+        if False:
+            messages.add_message(request, messages.INFO, first_meal_user)
+            messages.add_message(request, messages.INFO, 'patient-added')
+            messages.add_message(request, messages.INFO, data)
         return HttpResponseRedirect(reverse('doctor'))
 
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
