@@ -513,21 +513,22 @@
 // Запросы по API   ##
 // ###################
 
-// const sendEmergencyFood = async function(data) {
-//     let url = '/doctor/api/v1/send_emergency_food'
-//     let body = {
-//         "data": data
-//     };
-//     let response = await fetch(url, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json;',
-//       },
-//       body: JSON.stringify(body)
-//     });
-//     let result = await response.text();
-//     return result;
-// }
+const sendEmergencyFood = async function(data) {
+    let url = '/doctor/api/v1/send_emergency_food'
+    alert('test')
+    let body = {
+        "data": data
+    };
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
 
 
 // ###################
@@ -537,7 +538,7 @@
 // отправляем информацию об экстренном питании
 async function addEmergencyFood(data) {
 // получаем информацию о пациенте
-    alert('test')
-    // let res0 = await sendEmergencyFood(data)
+    
+    let res0 = await sendEmergencyFood(data)
 }
 </script>
