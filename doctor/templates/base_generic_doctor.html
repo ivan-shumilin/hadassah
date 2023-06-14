@@ -515,7 +515,7 @@
 
 const sendEmergencyFood = async function(data) {
     let url = '/doctor/api/v1/send_emergency_food'
-    alert('test')
+    
     let body = {
         "data": data
     };
@@ -527,6 +527,7 @@ const sendEmergencyFood = async function(data) {
       body: JSON.stringify(body)
     });
     let result = await response.text();
+    alert(result)
     return result;
 }
 
