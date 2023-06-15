@@ -7,19 +7,20 @@ from doctor.functions.bot import formatting_full_name
 
 def create_products_list_category(category, meal):
     """ Создет список словарей с продуктами и их колличеством. """
+
     products_all = []
     products_list = ProductStorage.objects \
         .filter(meal=meal, date_create=date.today(), category=category)
     for product in products_list:
         for product_dly_sravneniya in products_all:
-            if product.products_id == product_dly_sravneniya['id']:
+            if product.products_id.split('-')[2] == product_dly_sravneniya['id']:
                 product_dly_sravneniya['count'] += 1
                 product_dly_sravneniya['type_of_diet'].add(product.type_of_diet)
                 break
         else:
             products_all.append(
                 {'category': category,
-                    'id': product.products_id,
+                    'id': product.products_id.split('-')[2],
                     'name': Product.objects.get(id=product.products_id.split('-')[2]).public_name,
                     'type_of_diet': {product.type_of_diet},
                     'count': 1})
