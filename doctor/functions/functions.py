@@ -754,7 +754,7 @@ def create_user(user_form, request):
     if user.full_name != "Leslie William Nielsen":
         my_job_send_messang_changes.delay(messang)
     # возвращаем первый прием пищи с которого пациент будет добавлен в заказ
-    return first_meal_user, f'{user.id}&{first_meal_user}'
+    return first_meal_user, f'{user.id}&{first_meal_user}', user.receipt_date, user.receipt_time
 
 
 @transaction.atomic
@@ -1359,3 +1359,5 @@ def get_occupied_rooms(user_script):
         return one_bed_free
     if user_script == 'easy_mode':
         return occupied_rooms
+
+

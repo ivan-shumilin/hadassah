@@ -525,6 +525,15 @@ label {
 
 .pointer {
   cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+.hover-a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+  color: #252527;
 }
 
 .button-admin-foods {

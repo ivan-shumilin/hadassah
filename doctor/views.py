@@ -33,7 +33,8 @@ from doctor.functions.bot import check_change, do_messang_send, formatting_full_
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes, create_user_tomorrow, create_ready_order, create_report, create_products_lp, add_products_lp,\
     add_products_lp, create_product_storage
-from doctor.functions.diet_formation import add_menu_three_days_ahead, update_diet_bd
+from doctor.functions.diet_formation import add_menu_three_days_ahead, update_diet_bd, \
+    add_the_patient_emergency_food_to_the_database, get_meal_emergency_food
 from doctor.functions.translator import get_day_of_the_week, translate_diet
 from django.db.models import Q
 from rest_framework.views import APIView
@@ -50,7 +51,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from .serializer import DishesSerializer, PatientsSerializer, InfoPatientSerializer, InputDataSerializer, \
-    AddDishSerializer, ChangeDishSerializer, CroppImageSerializer
+    AddDishSerializer, ChangeDishSerializer, CroppImageSerializer, SendPatientProductsAPIViewSerializer
 
 
 class ServiceWorkerView(TemplateView):
@@ -128,23 +129,13 @@ def doctor(request):
                                                  'extra_bouillon': TextInput(attrs={'required': "True"}),
                                              },
                                              extra=0,)
-
-    # load_nomenclature()
-    # load_ttk()
-    # create_ingredients()
-    # get_token()
-
-
     not_active_users_set = get_not_active_users_set()
-
     CustomUserFormSet = delete_choices(CustomUserFormSet)
 
     page = 'menu-doctor'
     filter_by = 'full_name'  # дефолтная фильтрация
     sorting = 'top'
     today = date.today().strftime("%d.%m.%Y")
-
-
 
     queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
     if request.method == 'POST' and 'filter_by_flag' in request.POST:
@@ -158,14 +149,28 @@ def doctor(request):
                 sorting = 'top'
         else:
             queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
-
+# 11
     if request.method == 'POST' and 'add_patient' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        first_meal_user, data = create_user(user_form, request)
-        if False:
+        first_meal_user, data, patient_receipt_date, patient_receipt_time = create_user(user_form, request)
+        # if False:
+        #     messages.add_message(request, messages.INFO, first_meal_user)
+        #     messages.add_message(request, messages.INFO, 'patient-added')
+        #     messages.add_message(request, messages.INFO, data)
+        # нерабочие часы
+        time = datetime.today().time()
+        # если нужно экстренное питание добавим в эту переменную
+        need_emergency_food = False
+        if time.hour >= 18 or time.hour <= 8:
+            need_emergency_food = '&no_working_hours'
+        else:
+            meal_emergency_food = get_meal_emergency_food(patient_receipt_date, patient_receipt_time)
+            if meal_emergency_food:
+                need_emergency_food = f'&{meal_emergency_food}'
+        if need_emergency_food:
             messages.add_message(request, messages.INFO, first_meal_user)
             messages.add_message(request, messages.INFO, 'patient-added')
-            messages.add_message(request, messages.INFO, data)
+            messages.add_message(request, messages.INFO, data + need_emergency_food)
         return HttpResponseRedirect(reverse('doctor'))
 
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
@@ -535,38 +540,76 @@ class GetPatientMenuDayTestAPIView(APIView):
         response = json.dumps(response)
         return Response(response)
 
+# 333
+class SendPatientProductsAPIView(APIView):
+    def post(self, request):
+        serializer = SendPatientProductsAPIViewSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        patient_id = serializer.validated_data['id_user']
+        date_show = serializer.validated_data['date_show']
+        products = serializer.validated_data['products']
+
+        patient = CustomUser.objects.get(id=patient_id)
+        full_name = formatting_full_name(patient.full_name)
+        # user_name = formatting_full_name(user_name)
+        room_number = patient.room_number + ', ' if patient.room_number != 'Не выбрано' else ''
+
+        messang = f'Корректировка питания: {room_number}{full_name}, {patient.type_of_diet}\n'
+        for product_name in products.strip('&?&').split('&?&'):
+            messang += f'– {product_name}\n'
+
+
+        # messang += f'({user_name})'
+        # send_messang_changes(messang, '-658303105')
+        my_job_send_messang_changes.delay(messang, '-658303105')
+
+        return Response('ok')
+
+
 class SendEmergencyFoodAPIView(APIView):
     MENU = {
         'without_sugar': 569,
         'standard': 568,
         'snack': 570,
     }
+# 22
     def post(self, request):
         # получаем id пациента и первый прием пищи
         data = request.data['data']
         data = data.split('&')
         patient_id = data[0]
         first_meal = translate_first_meal(data[1])
+        # если нерабочие часы no_working_hours, если рабочии приходит прием пищи, который нужно добавить
+        data_no_name = data[2]
         user_name = request.data['user_name']
 
         patient = CustomUser.objects.get(id=patient_id)
-        type_diet = 'without_sugar' if patient.type_of_diet in ['ШД без сахара', 'ОВД без сахара'] else 'without_sugar'
-
-        # получаем рацион для пациента
-        product_add: list = []
-        if type_diet == 'without_sugar':
-            product_add.append(self.MENU['without_sugar'])
-        else:
-            product_add.append(self.MENU['standard'])
-
-        if not patient.is_probe and not patient.is_pureed_nutrition:
-            product_add.append(self.MENU['snack'])
-
-        # добавить в отчеты
         full_name = formatting_full_name(patient.full_name)
         user_name = formatting_full_name(user_name)
         room_number = patient.room_number + ', ' if patient.room_number != 'Не выбрано' else ''
-        messang = f'Питание в нерабочие часы: {room_number}{full_name}, {patient.type_of_diet}\n'
+        # если нерабочие часы
+        if data_no_name == 'no_working_hours':
+            type = 'нерабочие часы'
+            type_diet = 'without_sugar' if patient.type_of_diet in ['ШД без сахара', 'ОВД без сахара'] else 'without_sugar'
+            # получаем рацион для пациента
+            product_add: list = []
+            if type_diet == 'without_sugar':
+                product_add.append(self.MENU['without_sugar'])
+            else:
+                product_add.append(self.MENU['standard'])
+
+            if not patient.is_probe and not patient.is_pureed_nutrition:
+                product_add.append(self.MENU['snack'])
+        # если рабочие часы
+        else:
+            meal = data_no_name
+            type = 'рабочие часы'
+            # добавить прием пищи в MenuByDayReadyOrder и в MenuByDay
+            date_today = str(date.today())
+            product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal, extra_bouillon=False)
+
+        # добавить в отчеты и отправить сообщение
+        messang = f'Питание в {type}: {room_number}{full_name}, {patient.type_of_diet}\n'
         for product_id in product_add:
             messang += f'– {ProductLp.objects.get(id=product_id).name}\n'
             Report(user_id=patient,
@@ -576,7 +619,6 @@ class SendEmergencyFoodAPIView(APIView):
                    type_of_diet=patient.type_of_diet).save()
 
         messang += f'({user_name})'
-        # my_job_send_messang_changes.delay(messang, '-658303105')
         send_messang_changes(messang, '-658303105')
         return Response('ok')
 

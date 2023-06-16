@@ -100,6 +100,25 @@ var date = "{{ date }}"
 // Запросы по API   ##
 // ###################
 
+const sendProducts = async function(products, id, date) {
+    let url = '/doctor/api/v1/send-patient-products'
+    let body = {
+        "id_user": id,
+        "date_show": date,
+        "products": products
+    };
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+      body: JSON.stringify(body)
+    });
+    let result = await response.text();
+    return result;
+}
+
+
 const getMenuForPatient = async function(userId, date) {
     let url = '/doctor/api/v1/menu-patient-one-day'
     let body = {
@@ -282,6 +301,7 @@ function addHtmlLeft(obj) {
     for (var meal in meals ) {
         result += '<tr>'
         result += `<td class='meal'>${meals[meal]}: ${orderStatus[obj[meal].order_status]}</td>`
+        var products_str = ''
         if (obj[meal] != null) {
             for (var cat in categorys ) {
                 for (var item in obj[meal][cat] ) {
@@ -295,13 +315,18 @@ function addHtmlLeft(obj) {
                         result += `<img onclick="changeDish('${cat}', '${meal}', '${obj[meal][cat][item]['id']}', '${obj[meal][cat][item]['name'].replace(/"/g, '&quot;')}')" class="icon" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
                         result += `<img onclick="deleteDish('${obj[meal][cat][item]['id']}', '${obj[meal][cat][item]['name'].replace(/"/g, '&quot;')}', '${cat}', '${meal}')" class="icon" width="18" height="19" title="Удалить блюдо" src="{% static "doctor/css/img/delete.svg" %}" alt="Удалить блюдо">`
                         result += `</td></tr>`
+                        products_str += `${obj[meal][cat][item]['name'].replace(/"/g, '&quot;')}&?&`
                     }
 
                 }
             
             }
-            result += `<tr><td><a onclick="addDish('${meal}')">Добавить блюдо`
+            result += `<tr><td><a onclick="addDish('${meal}')" class="pointer hover-a">Добавить блюдо`
             result += `<img class="icon" width="17" height="17" src="{% static "doctor/css/img/add.svg" %}" alt="">`
+            result += `</a></td></tr>`
+
+            result += `<tr><td><a onclick="bot('${products_str}')" class="pointer hover-a">Отправить в чат`
+            result += `<img class="icon" width="17" height="17" src="{% static "doctor/css/img/telegram.svg" %}" alt="">`
             result += `</a></td></tr>`
         }
         result += '</tr>'
@@ -599,6 +624,17 @@ async function deleteDishAPI(category, product_id, meal) {
     } else {
         displayInfoPatient()
     }
+}
+
+
+// ############################
+// Отправить сообщение в чат ##
+// ############################
+async function bot(products) {
+    var id = window.userId
+    var date = window.date
+    let res = await sendProducts(products, id, date);
+    var obj = JSON.parse(res);
 }
 
 </script>

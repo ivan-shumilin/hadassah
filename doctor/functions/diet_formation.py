@@ -248,3 +248,111 @@ def update_diet_bd():
         patient.is_change_diet_bd = True
         patient.save()
     return
+
+
+@transaction.atomic
+def add_the_patient_emergency_food_to_the_database(user, date_add, meal, extra_bouillon):
+    """
+
+    Добавляет в БД экстренное питание для пациента на один прием пищи.
+    """
+    day: str = ''
+    if user.type_of_diet == 'БД день 1':
+        day = 'понедельник'
+    if user.type_of_diet == 'БД день 2':
+        day = 'вторник'
+
+    if not day:
+        day = get_day_of_the_week(date_add)
+    products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day) &
+                                        Q(timetablelp__type_of_diet=user.type_of_diet) &
+                                        Q(timetablelp__meals=meal))
+
+    products_id: list = [] # список id продуктов, отсортированнвый по категориям
+    category = ['каша', 'салат', 'суп', 'основной', 'гарнир', 'десерт', 'напиток', 'фрукты', 'товар', 'hidden']
+    for cat in category:
+        for product in products.filter(category=cat):
+            products_id.append(product.id)
+
+    products_id
+    MenuByDay(
+        user_id=user,
+        date=date_add,
+        meal=meal,
+        type_of_diet=user.type_of_diet,
+        main=check_value('основной', products),
+        garnish=check_value('гарнир', products),
+        porridge=check_value('каша', products),
+        soup=check_value('суп', products),
+        dessert=check_value('десерт', products),
+        fruit=check_value('фрукты', products),
+        drink=check_value('напиток', products),
+        salad=check_value('салат', products),
+        products=check_value('товар', products),
+        bouillon=f"{'426' if extra_bouillon else ''}"
+    ).save()
+
+    UsersReadyOrder(
+            user_id=user.id,
+            date_create=date.today(),
+            full_name=user.full_name,
+            floor=user.floor,
+            bed=user.bed,
+            receipt_date=user.receipt_date,
+            receipt_time=user.receipt_time,
+            department=user.department,
+            room_number=user.room_number,
+            type_of_diet=user.type_of_diet,
+            comment=user.comment,
+            status=user.status,
+            is_accompanying=user.is_accompanying,
+            is_probe=user.is_probe,
+            is_without_salt=user.is_without_salt,
+            is_without_lactose=user.is_without_lactose,
+            is_pureed_nutrition=user.is_pureed_nutrition,
+            type_pay=user.type_pay,
+        ).save()
+
+    menu = MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
+    if menu.exists():
+        MenuByDayReadyOrder(user_id=UsersReadyOrder.objects.filter(user_id=user.id).first(),
+                            date_create=date.today(),
+                            date=menu[0].date,
+                            meal=menu[0].meal,
+                            main=menu[0].main,
+                            garnish=menu[0].garnish,
+                            porridge=menu[0].porridge,
+                            soup=menu[0].soup,
+                            dessert=menu[0].dessert,
+                            fruit=menu[0].fruit,
+                            drink=menu[0].drink,
+                            salad=menu[0].salad,
+                            products=menu[0].products,
+                            hidden=menu[0].hidden,
+                            bouillon=menu[0].bouillon).save()
+    return products_id
+
+def get_meal_emergency_food(r_date, r_time):
+    """
+    Возвращает прием пищи на который можно заказать экстренное питание:
+    8:30 до 10:00 - могут заказать завтрак
+    12:00 до 14:00 - могут заказать обед
+    15:30 до 16:30 - могут заказать полдник
+    Нужно чтобы время и время регистации пациенат были в одном диапазоне
+    """
+    time = datetime.today().time()
+    if r_date == date.today():
+        if time.hour == 9 or (time.hour == 8 and time.minute >= 30) or (time.hour == 10 and time.minute == 00):
+            if r_time.hour == 9 or (r_time.hour == 8 and r_time.minute >= 30) or \
+                (r_time.hour == 10 and r_time.minute == 00):
+                return 'breakfast'
+
+        if time.hour >= 12 and time.hour < 14 or time.hour == 14 and time.minute == 00:
+            if r_time.hour >= 12 and r_time.hour < 14 or (r_time.hour == 14 and r_time.minute == 00):
+                return 'lunch'
+
+        # pdb.set_trace()
+        if (time.hour == 15 and time.minute >= 30) or (time.hour == 16 and time.minute <= 30):
+            if r_time.hour == 15 and r_time.minute >= 30 or (r_time.hour == 16 and r_time.minute <= 30):
+                return 'afternoon'
+    return False
