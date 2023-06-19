@@ -308,7 +308,9 @@ def archive(request):
         user_form = PatientRegistrationForm(request.POST)
         is_archive = edit_user(user_form, 'restore', request)
         if is_archive:
+            messages.add_message(request, messages.INFO, 'first')
             messages.add_message(request, messages.INFO, 'patient-restored')
+            messages.add_message(request, messages.INFO, 'last')
         return HttpResponseRedirect(reverse('archive'))
 
     if request.method == 'POST' and 'change-email' in request.POST:
