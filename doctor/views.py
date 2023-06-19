@@ -175,11 +175,26 @@ def doctor(request):
 
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        is_edited = edit_user(user_form, 'edit', request)
+        first_meal_user, data, patient_receipt_date, patient_receipt_time, is_edited, emergency_food = edit_user(user_form, 'edit', request)
         if is_edited:
-            messages.add_message(request, messages.INFO, 'first')
-            messages.add_message(request, messages.INFO, 'edited')
-            messages.add_message(request, messages.INFO, 'last')
+            if emergency_food:
+                # нерабочие часы
+                time = datetime.today().time()
+                # если нужно экстренное питание добавим в эту переменную
+                need_emergency_food = False
+                if time.hour >= 18 or time.hour <= 8:
+                    need_emergency_food = '&no_working_hours'
+                else:
+                    meal_emergency_food = get_meal_emergency_food(patient_receipt_date, patient_receipt_time)
+                    if meal_emergency_food:
+                        need_emergency_food = f'&{meal_emergency_food}'
+                if need_emergency_food:
+                    messages.add_message(request, messages.INFO, first_meal_user)
+                    messages.add_message(request, messages.INFO, 'edited')
+                    messages.add_message(request, messages.INFO, data + need_emergency_food)
+                # messages.add_message(request, messages.INFO, 'first')
+                # messages.add_message(request, messages.INFO, 'edited')
+                # messages.add_message(request, messages.INFO, 'last')
         else:
             messages.add_message(request, messages.INFO, 'first')
             messages.add_message(request, messages.INFO, 'patient was discharged')
@@ -306,11 +321,25 @@ def archive(request):
 
     if request.method == 'POST' and 'archive' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        is_archive = edit_user(user_form, 'restore', request)
+        first_meal_user, data, patient_receipt_date, patient_receipt_time, is_archive, emergency_food = edit_user(user_form, 'restore', request)
         if is_archive:
-            messages.add_message(request, messages.INFO, 'first')
-            messages.add_message(request, messages.INFO, 'patient-restored')
-            messages.add_message(request, messages.INFO, 'last')
+            # нерабочие часы
+            time = datetime.today().time()
+            # если нужно экстренное питание добавим в эту переменную
+            need_emergency_food = False
+            if time.hour >= 18 or time.hour <= 8:
+                need_emergency_food = '&no_working_hours'
+            else:
+                meal_emergency_food = get_meal_emergency_food(patient_receipt_date, patient_receipt_time)
+                if meal_emergency_food:
+                    need_emergency_food = f'&{meal_emergency_food}'
+            if need_emergency_food:
+                messages.add_message(request, messages.INFO, first_meal_user)
+                messages.add_message(request, messages.INFO, 'patient-added')
+                messages.add_message(request, messages.INFO, data + need_emergency_food)
+            # messages.add_message(request, messages.INFO, 'first')
+            # messages.add_message(request, messages.INFO, 'patient-restored')
+            # messages.add_message(request, messages.INFO, 'last')
         return HttpResponseRedirect(reverse('archive'))
 
     if request.method == 'POST' and 'change-email' in request.POST:

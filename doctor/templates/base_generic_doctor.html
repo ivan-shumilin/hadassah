@@ -313,14 +313,45 @@
             {% endfor %}
         {% endif %}
 
-        <div  data-modal="patient-edited" data-modal-width="400">
-            <div class="message-block">
-                <div class="icon">
-                    <div class="i i-ok"></div>
+            <!-- <div  data-modal="patient-edited" data-modal-width="400">
+                <div class="message-block">
+                    <div class="icon">
+                        <div class="i i-ok"></div>
+                    </div>
+                    <div class="title">Учётная запись отредактирована</div>
                 </div>
-                <div class="title">Учётная запись отредактирована</div>
-            </div>
-        </div>
+            </div> -->
+
+
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if forloop.first %}
+                    <div data-modal="patient-edited" data-modal-width="400">
+                        <div class="message-block">
+                            <div class="icon">
+                                <div class="i i-ok"></div>
+                            </div>
+                            <div class="title">Учётная запись отредактированаа</div>
+                            <div class="text">Пациент включён в порционник с {{ message }}. Требуется ли срочное питание?</div>
+                {% endif %}
+                {% if forloop.last %}
+                            <div class="flex flex-center last_form_group mr-top-15">
+                                <a id="no" class="button" data-modal-close>Нет</a>   
+            <button style="margin-left: 15px;background: 0 0;border: 2px solid var(--color-main);color: var(--color-main);position: relative;" 
+                    сlass="white" id="yes" name="yes" 
+                    onclick="addEmergencyFood('{{ message }}',
+                                            '{{ user.first_name }}',
+                                            '{{ user.last_name }}')">Да</button>
+                            </div>                       
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+
+
 
         <div class="patient-add" data-modal="patient-add" data-modal-width="480">
             <div class="title">Добавить нового пациента</div>

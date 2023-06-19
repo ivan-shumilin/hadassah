@@ -755,7 +755,7 @@ def create_user(user_form, request):
         my_job_send_messang_changes.delay(messang)
     # возвращаем первый прием пищи с которого пациент будет добавлен в заказ
     return first_meal_user, f'{user.id}&{first_meal_user}', user.receipt_date, user.receipt_time
-
+# 111
 
 @transaction.atomic
 def load_menu_for_future(user, meal, change_day):
@@ -816,6 +816,7 @@ def edit_user(user_form, type, request):
     is_change_diet = False
     flag_add_comment = False
     flag_change_bouillon = False
+    emergency_food = False
     user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
 
     # если пациента уже восстоновлен из архива
@@ -864,6 +865,10 @@ def edit_user(user_form, type, request):
             get_is_change_diet(user)
         else:
             user.is_change_diet = True
+
+        if user.type_of_diet == "Нулевая диета":
+            emergency_food = True
+
     user.type_of_diet = user_form.data['type_of_diet1']
 
     is_probe = False if request.POST['edit_is_probe'] == 'False' else True
@@ -958,6 +963,7 @@ def edit_user(user_form, type, request):
         add_the_patient_menu(user, type, extra_bouillon)
     regard = u'\u26a0\ufe0f'
     messang = ''
+    # Если время больше или равно 19
     if datetime.today().time().hour >= 19:
         if user.receipt_date == (date.today() + timedelta(days=1)) and \
                 (user.receipt_time <= datetime(1, 1, 1, 10, 00).time()):
@@ -965,8 +971,9 @@ def edit_user(user_form, type, request):
         else:
             if user.receipt_date <= date.today():
                 update_UsersToday(user)
-    else:  # время меньше 19
-        if user.receipt_date <= date.today():
+        meal_order, _ = check_meal_user(user)
+    # Сегодня, меньше 19
+    elif parse(str(user.receipt_date)).date() == date.today():
             # Проверяем с какого приема пищи мы можем накормить пациента.
             meal_permissible, weight_meal_permissible = check_change('True')
             # Проверяем на какой прием пищи успевает пациент пациента.
@@ -979,6 +986,11 @@ def edit_user(user_form, type, request):
                 update_UsersToday(user)
             if do_messang_send(user.full_name):  # c 17 до 7 утра не отправляем сообщения
                 messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+    # Больше 19 или не сегодня
+    else:
+        meal_order, _ = check_meal_user(user)
+    first_meal_user = meal_order if meal_order != 'завтра' else 'завтрака'
+
     if type == 'edit' and len(changes) > 0:
         messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
         for change in changes:
@@ -992,7 +1004,9 @@ def edit_user(user_form, type, request):
         if user.full_name != "Leslie William Nielsen":
             messang += f'({user_name})'
             my_job_send_messang_changes.delay(messang)
-    return True
+    # return True
+    return first_meal_user, f'{user.id}&{first_meal_user}', user.receipt_date, user.receipt_time, True, emergency_food
+# 222
 
 # test
 def archiving_user(user, request):
