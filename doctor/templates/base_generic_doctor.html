@@ -295,6 +295,15 @@
             <input id="edit_afternoonBouillon" name="afternoon">
             <input id="edit_dinnerBouillon" name="dinner">
         </div>
+        <a style="" id="archived" data-modal-link="patient-archived">Пациент перенесен в архив</a>
+        <div id="123" class='test' data-modal="patient-archived" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Учётная запись архивирована</div>
+            </div>
+        </div>
 
         {% if messages %}
             {% for message in messages %}
@@ -490,7 +499,7 @@
             </div>
         </div>
 
-        <div data-modal="patient-archive" data-modal-width="400">
+        <!-- <div data-modal="patient-archive" data-modal-width="400">
             <div class="title align-center">Перенести учётную запись пациента в архив?</div>
             <div class="confirm-block">
                 <div class="buttons">
@@ -507,7 +516,7 @@
                 </div>
                 <div class="title">Учётная запись архивирована</div>
             </div>
-          </div>
+          </div> -->
     <script src="{% static 'doctor/js/all.js' %}"></script>
 </form>
 </body>
@@ -547,4 +556,16 @@ async function addEmergencyFood(data, first_name, last_name) {
     
     let res0 = await sendEmergencyFood(data, first_name, last_name)
 }
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    var page = document.getElementById('page')
+    document.getElementById(page.innerHTML).classList.add('active');
+    setTimeout(function() {
+    var messages = document.getElementsByClassName('messages');
+    if (messages.length != 0) {
+        var link = document.getElementById(messages[0].value); 
+        link.click(); 
+    } 
+    }, 500);
+});
 </script>
