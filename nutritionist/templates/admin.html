@@ -43,6 +43,10 @@
         .select2 .select2-selection .select2-selection__arrow {
             background-image: none;
         }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            font-size: 15px !important;
+        }
         
     </style>
 </head>
@@ -200,17 +204,17 @@
             <div id="content" data-simplebar>
                 <div class="title-20">Печатные формы</div>
                 <ul class='links'>
-                    <li class="mr-top-20"><a href="{% url 'printed_form_one_new'  %}">Сводный отчет</a></li>
+                    <li class="mr-top-10"><a href="{% url 'printed_form_one_new'  %}">Сводный отчет</a></li>
                     <li><a href="{% url 'printed_form_two_lp_new'  %}">Заявка для цеха лечебного питания</a></li>
                     <li><a href="{% url 'printed_form_cafe_new'  %}">Заявка по блюдам раздачи</a></li>
-                    <li class="mr-top-20"><a href="{% url 'menu_lp_for_staff'  %}">Меню на неделю</a></li>
+                    <li class="mr-top-10"><a href="{% url 'menu_lp_for_staff'  %}">Меню на неделю</a></li>
                     <li><a href="{% url 'admin_foods'  %}">Корректировка рациона пациента</a></li>
                 </ul>
  
-                <div class="title-20 mr-top-20">Печать этикеток</div>
+                <div class="title-20 mr-top-35">Печать этикеток</div>
 
                 <ul class='links'>
-                    <li class="width-350 mr-top-20">
+                    <li class="width-350 mr-top-10">
                         <label for="meal-list">Выберете прием пищи:</label>
                         <select id="meal-list" class="custom-input">
                             <option value='now_meal' selected>Текущий прием пищи</option>
@@ -221,7 +225,7 @@
                         </select>
 
                     </li>
-                    <li class="mr-top-20 width-350">
+                    <li class="mr-top-10 width-350">
                         <label for="patients-list">Выберете пациента:</label>
                         <select id="patients-list" class="js-states custom-input">
                             <option value="all">Все пациенты</option>
