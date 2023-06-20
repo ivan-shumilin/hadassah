@@ -1582,7 +1582,7 @@ class CreateSitckers(APIView):
     def post(self, request):
         is_public = True  # используем публичные названия для блюд
         meal = request.data['meal']
-        meal, day = what_meal() if meal == 'now_meal' else (translate_first_meal(meal), None)
+        meal, day = what_meal() if meal == 'now_meal' else (meal, None)
         patient = request.data['patient']
         try:
             catalog = create_сatalog(is_public, meal, patient, day)
