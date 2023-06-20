@@ -11,6 +11,9 @@
     <!-- Add additional CSS in static file -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'doctor/select/css/select2.min.css' %}">
+    <script src="{% static 'doctor/select/js/select2.min.js' %}"></script>
     <style>
         .table input[type="radio"] {
             display: none;
@@ -36,7 +39,11 @@
             background-color: #156a9f;
             border-color: #2d556d;
         }
+
+        .select2 .select2-selection .select2-selection__arrow {
+            background-image: none;
         }
+        
     </style>
 </head>
 <!-- Если на странице "меню" -->
@@ -185,34 +192,80 @@
                         </div>
                     </div>
 
-                    <div class="header-block">
-                        <div class="menu-link-and-name">
-                            <a class="menu-link" data-sidebar-toggle>
-                                <div class="i i-menu"></div>
-                            </a>
-                            <div class="title">Печатные формы</div>
-                        </div>
-                    </div>
-                </div>
+
+                    
+        
 
 
             <div id="content" data-simplebar>
+                <div class="title-20">Печатные формы</div>
                 <ul class='links'>
-                    <li>
-                        <button id="button" type="button" onclick="downloadsStickers()" class="btn download" type="button">
-                            <span id="span1" class="" role="status" aria-hidden="true"></span>
-                            <span id="span2" class="visually-hidden">Этикетки</span>
-                        </button>
-                    </li>
                     <li class="mr-top-20"><a href="{% url 'printed_form_one_new'  %}">Сводный отчет</a></li>
                     <li><a href="{% url 'printed_form_two_lp_new'  %}">Заявка для цеха лечебного питания</a></li>
                     <li><a href="{% url 'printed_form_cafe_new'  %}">Заявка по блюдам раздачи</a></li>
                     <li class="mr-top-20"><a href="{% url 'menu_lp_for_staff'  %}">Меню на неделю</a></li>
                     <li><a href="{% url 'admin_foods'  %}">Корректировка рациона пациента</a></li>
                 </ul>
+ 
+                <div class="title-20 mr-top-20">Печать этикеток</div>
+
+                <ul class='links'>
+                    <li class="width-350 mr-top-20">
+                        <label for="meal-list">Выберете прием пищи:</label>
+                        <select id="meal-list" class="custom-input">
+                            <option value='now_meal' selected>Текущий прием пищи</option>
+                            <option value='breakfast' >Завтрак</option>
+                            <option value='lunch'>Обед</option>
+                            <option value='afternoon'>Полдник</option>
+                            <option value='dinner'>Ужин</option>`
+                        </select>
+
+                    </li>
+                    <li class="mr-top-20 width-350">
+                        <label for="patients-list">Выберете пациента:</label>
+                        <select id="patients-list" class="js-states custom-input">
+                            <option value="all">Все пациенты</option>
+                            {% for patient in patients %}
+                                <option value="{{ patient.id }}">{{ patient.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </li>
+                    <li class="mr-top-20">
+                        <button id="button" type="button" onclick="downloadsStickers()" class="btn download" type="button">
+                            <span id="span1" class="" role="status" aria-hidden="true"></span>
+                            <span id="span2" class="visually-hidden">Напечатать</span>
+                        </button>
+                    </li>
+
+                </ul>       
+
             </div>
+
     {% load static %}
         </div>  <!-- div wrapper -->
+        <div id="modal" class="modal">
+            <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-title">Печать стикеров</h5>
+                        <button id="close-modal" type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+
+                    </div>
+        
+                    <div id="modal-footer" class="modal-footer">
+                    </div>
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button style="display: none;" id="modal-start" type="button" data-bs-toggle="modal" data-bs-target="#modal">hidden</button>
+
 
 
 
@@ -252,13 +305,6 @@
                 </div>
         </div>
 
-
-
-
-
-
-
-
         <div data-modal="logout" data-modal-width="400">
             <div class="title align-center">Вы уверены, что хотите выйти?</div>
             <div class="confirm-block">
@@ -271,7 +317,17 @@
 
 
 <a id="link-download" style="display: none;" href="{% static 'stickers.pdf' %}"> Download </a>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+</body>
 <script>
+// выбор пациента
+$('select').select2();
+
+$(".js-states").select2();
+function filterStikers() {
+    document.getElementById('modal-start').click();
+}
 
 function printPDF (url)
 {
@@ -283,9 +339,12 @@ function printPDF (url)
 
 
 
-    const downloadsStickersAPI = async function() {
+    const downloadsStickersAPI = async function(meal, patient) {
         let url = 'api/v1/get/downloadsstickers'
-        let body = {};
+        let body = {
+            'meal': meal,
+            'patient': patient,
+        };
     
         let response = await fetch(url, {
             method: 'POST',
@@ -304,6 +363,10 @@ function printPDF (url)
             span2.innerHTML = "Этикетки"
             button.removeAttribute("disabled");
         }
+        // получить прием пищи и пациентов (всех или одного )
+        let meal = document.getElementById('meal-list').value
+        let patient = document.getElementById('patients-list').value
+
 
         let button = document.getElementById('button')
         let span2 = document.getElementById('span2')
@@ -312,7 +375,7 @@ function printPDF (url)
         span1.classList.add('spinner-border-sm')
         button.setAttribute('disabled', '')
         span2.innerHTML = "Создаем этикетки ..."
-        let res = await downloadsStickersAPI();
+        let res = await downloadsStickersAPI(meal, patient);
         res = JSON.parse(res);
         if (res.response == 'yes') {
             console.log('yes')
@@ -331,7 +394,4 @@ function printPDF (url)
     }
 </script>
 <script src="{% static 'doctor/js/all.js' %}"></script>
-</form>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-</body>
 </html>

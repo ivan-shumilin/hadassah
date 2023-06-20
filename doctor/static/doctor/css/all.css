@@ -6457,3 +6457,22 @@ font-weight: 200;
   line-height: 36px;
   padding: 0 12px;
 }
+.custom-input {
+    background-image: none !important;
+}
+
+.title-20 {
+    color: #0e7abc;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.width-350 {
+    width: 350px !important;
+}
+
+@media screen and (max-width:744px) {
+    .width-350 {
+        width: 100% !important;
+    }
+}

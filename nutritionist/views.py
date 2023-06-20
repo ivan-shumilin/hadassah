@@ -39,7 +39,8 @@ from django.contrib.auth.models import Group
 from doctor.functions.functions import sorting_dishes, parsing, \
     creates_dict_with_menu_patients, creating_meal_menu_lp, creating_meal_menu_cafe, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, counting_diets, \
-    create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features
+    create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features, \
+    get_now_show_meal, translate_first_meal
 from doctor.functions.bot import check_change
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes
@@ -801,8 +802,8 @@ def password_reset(request):
     return render(request, 'nutritionist/registration/password_reset_email.html', {'user_form': user_form, 'errors': errors})
 
 def manager(request):
-    data = {}
-    return render(request, 'admin.html', context=data)
+    patients = CustomUser.objects.filter(status='patient').order_by('full_name').values('id', 'full_name')
+    return render(request, 'admin.html', context={'patients': patients})
 
 
 def edit_photo(request, product_id, type):
@@ -1534,7 +1535,7 @@ class DownloadReportAPIView(APIView):
         response = json.dumps(response)
         return Response(response)
 
-def create_сatalog(is_public):
+def create_сatalog(is_public, meal, patient, day):
     """ Создание словаря этикеток. """
 
     # floors = {
@@ -1548,13 +1549,24 @@ def create_сatalog(is_public):
     # }
 
     # какой прием пищи
-    meal, day = what_meal() # после return 'breakfast', 'tomorrow'
-    type_order = what_type_order()
-    date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
-    if type_order == 'flex-order':
-        users = UsersToday.objects.all()
+    # meal, day = what_meal() # после return 'breakfast', 'tomorrow'
+    # если прием пищи не равер now_meal тогда всегда flex-order
+    if (meal, day) == what_meal():
+        type_order = what_type_order()
     else:
-        users = UsersReadyOrder.objects.all()
+        type_order = 'flex-order'
+
+    date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
+    if patient == 'all':
+        if type_order == 'flex-order':
+            users = UsersToday.objects.all()
+        else:
+            users = UsersReadyOrder.objects.all()
+    else:
+        if type_order == 'flex-order':
+            users = UsersToday.objects.filter(user_id=patient)
+        else:
+            users = UsersReadyOrder.objects.filter(user_id=patient)
 
     catalog = {'meal': translate_meal(meal),
                'users_not_floor': create_list_users_on_floor(users, 'Не выбрано', meal, date_create, type_order,
@@ -1569,8 +1581,11 @@ def create_сatalog(is_public):
 class CreateSitckers(APIView):
     def post(self, request):
         is_public = True  # используем публичные названия для блюд
+        meal = request.data['meal']
+        meal, day = what_meal() if meal == 'now_meal' else (translate_first_meal(meal), None)
+        patient = request.data['patient']
         try:
-            catalog = create_сatalog(is_public)
+            catalog = create_сatalog(is_public, meal, patient, day)
             create_stickers_pdf(catalog)
         except:
             response = {"response": "no"}

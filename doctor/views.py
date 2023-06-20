@@ -129,6 +129,8 @@ def doctor(request):
                                                  'extra_bouillon': TextInput(attrs={'required': "True"}),
                                              },
                                              extra=0,)
+
+
     not_active_users_set = get_not_active_users_set()
     CustomUserFormSet = delete_choices(CustomUserFormSet)
 

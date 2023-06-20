@@ -611,6 +611,8 @@ def get_now_show_meal():
         return 'ужина'
     return 'завтра'
 
+
+
 def comment_formatting(comment):
     comment = comment.strip().capitalize()
     if comment != '':

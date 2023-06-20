@@ -1,12 +1,12 @@
 from django.db import transaction
 
-from nutritionist.models import TimetableLp
+from nutritionist.models import TimetableLp, ProductLp
 
 
 @transaction.atomic
-def copy_diet():
+def add_product():
     """
-    Копирует существуюшию диету в новую диету.
+    Добавляет продукт в меню
     """
     to_create = []
     days = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
@@ -16,16 +16,15 @@ def copy_diet():
              'ЩД', 'ЩД без сахара', 'НБД', 'ВБД', 'НКД', 'ВКД', 'Безйодовая', 'ПЭТ/КТ', 'Без ограничений']
     # diets = ['ОВД']
     # diet_change = 'Без ограничений'
+    product = ProductLp.objects.get(id='458')
     for diet in diets:
         for day in days:
             for meal in meals:
-                protduct_set = TimetableLp.objects.filter(type_of_diet=diet, day_of_the_week=day, meals=meal)
-                for product in protduct_set:
-                    to_create.append(TimetableLp(
-                        item=product.item,
-                        type_of_diet=diet_change,
-                        day_of_the_week=day,
-                        meals=meal,
-                    ))
+                to_create.append(TimetableLp(
+                    item=product,
+                    type_of_diet=diet,
+                    day_of_the_week=day,
+                    meals=meal,
+                ))
     TimetableLp.objects.bulk_create(to_create)
     return 'OK'
