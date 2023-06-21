@@ -589,7 +589,7 @@ class SendPatientProductsAPIView(APIView):
 
         room_number = patient.room_number + ', ' if patient.room_number != 'Не выбрано' else ''
 
-        messang = f'<b>Корректировка питания на {meal}:</   b> {room_number}{full_name}, {patient.type_of_diet}\n'
+        messang = f'<b>Корректировка питания на {meal}:</b> {room_number}{full_name}, {patient.type_of_diet}\n'
         for product_name in products.strip('&?&').split('&?&'):
             messang += f'– {product_name}\n'
 
