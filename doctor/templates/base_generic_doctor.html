@@ -479,6 +479,15 @@
                 {% endfor %}
         {% endif %}
 
+        <div data-modal="patient-added-2" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Учётная запись создана</div>
+            </div>
+        </div>
+
         {% if messages %}
                 {% for message in messages %}
                     {% if forloop.first %}
@@ -504,14 +513,15 @@
                     {% endif %}
                 {% endfor %}
         {% endif %}
-        <!-- <div data-modal="patient-edited" data-modal-width="400">
+
+        <div data-modal="patient-edited-2" data-modal-width="400">
             <div class="message-block">
                 <div class="icon">
                     <div class="i i-ok"></div>
                 </div>
                 <div class="title">Учётная запись отредактирована</div>
             </div>
-        </div> -->
+        </div>
 
 
         {% if messages %}
@@ -540,6 +550,15 @@
                 {% endfor %}
         {% endif %}
 
+        <div data-modal="patient-restored-2" data-modal-width="400">
+            <div class="message-block">
+                <div class="icon">
+                    <div class="i i-ok"></div>
+                </div>
+                <div class="title">Учётная запись восстановлена</div>
+            </div>
+        </div>
+
 
         <div data-modal="logout" data-modal-width="400">
             <div class="title align-center">Вы уверены, что хотите выйти?</div>
@@ -559,16 +578,9 @@
                     <a  class="button white" data-modal-close>Отменить</a>
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <div id="123" class='test' data-modal="patient-archived" data-modal-width="400">
-            <div class="message-block">
-                <div class="icon">
-                    <div class="i i-ok"></div>
-                </div>
-                <div class="title">Учётная запись архивирована</div>
-            </div>
-          </div> -->
+
     <script src="{% static 'doctor/js/all.js' %}"></script>
 </form>
 </body>

@@ -173,6 +173,10 @@ def doctor(request):
             messages.add_message(request, messages.INFO, first_meal_user)
             messages.add_message(request, messages.INFO, 'patient-added')
             messages.add_message(request, messages.INFO, data + need_emergency_food)
+        else:
+            messages.add_message(request, messages.INFO, 'first')
+            messages.add_message(request, messages.INFO, 'patient-added-2')
+            messages.add_message(request, messages.INFO, 'last')
         return HttpResponseRedirect(reverse('doctor'))
 
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
@@ -196,13 +200,10 @@ def doctor(request):
                     messages.add_message(request, messages.INFO, first_meal_user)
                     messages.add_message(request, messages.INFO, 'patient-edited')
                     messages.add_message(request, messages.INFO, data + need_emergency_food)
-                # messages.add_message(request, messages.INFO, 'first')
-                # messages.add_message(request, messages.INFO, 'edited')
-                # messages.add_message(request, messages.INFO, 'last')
-        else:
-            messages.add_message(request, messages.INFO, 'first')
-            messages.add_message(request, messages.INFO, 'patient was discharged')
-            messages.add_message(request, messages.INFO, 'last')
+            else:
+                messages.add_message(request, messages.INFO, 'first')
+                messages.add_message(request, messages.INFO, 'patient-edited-2')
+                messages.add_message(request, messages.INFO, 'last')
         return HttpResponseRedirect(reverse('doctor'))
 
     if request.method == 'POST' and 'archive' in request.POST:
@@ -341,9 +342,10 @@ def archive(request):
                 messages.add_message(request, messages.INFO, first_meal_user)
                 messages.add_message(request, messages.INFO, 'patient-restored')
                 messages.add_message(request, messages.INFO, data + need_emergency_food)
-            # messages.add_message(request, messages.INFO, 'first')
-            # messages.add_message(request, messages.INFO, 'patient-restored')
-            # messages.add_message(request, messages.INFO, 'last')
+            else:
+                messages.add_message(request, messages.INFO, 'first')
+                messages.add_message(request, messages.INFO, 'patient-restored-2')
+                messages.add_message(request, messages.INFO, 'last')
         return HttpResponseRedirect(reverse('archive'))
 
     if request.method == 'POST' and 'change-email' in request.POST:
