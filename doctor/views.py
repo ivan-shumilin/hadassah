@@ -618,7 +618,8 @@ class SendEmergencyFoodAPIView(APIView):
         first_meal = translate_first_meal(data[1])
         # если нерабочие часы no_working_hours, если рабочии приходит прием пищи, который нужно добавить
         data_no_name = data[2]
-        user_name = get_user_name(request)
+        user_name = request.data['user_name']
+        user_name = formatting_full_name(user_name)
 
         patient = CustomUser.objects.get(id=patient_id)
         full_name = formatting_full_name(patient.full_name)
