@@ -179,6 +179,7 @@ def doctor(request):
         user_form = PatientRegistrationForm(request.POST)
         first_meal_user, data, patient_receipt_date, patient_receipt_time, is_edited, emergency_food = edit_user(user_form, 'edit', request)
         if is_edited:
+            # если меняем с нулевой диеты
             if emergency_food:
                 # нерабочие часы
                 time = datetime.today().time()
@@ -187,12 +188,13 @@ def doctor(request):
                 if time.hour >= 18 or time.hour <= 8:
                     need_emergency_food = '&no_working_hours'
                 else:
-                    meal_emergency_food = get_meal_emergency_food(patient_receipt_date, patient_receipt_time)
+                    # если рабочие часы
+                    meal_emergency_food = get_meal_emergency_food()
                     if meal_emergency_food:
                         need_emergency_food = f'&{meal_emergency_food}'
                 if need_emergency_food:
                     messages.add_message(request, messages.INFO, first_meal_user)
-                    messages.add_message(request, messages.INFO, 'edited')
+                    messages.add_message(request, messages.INFO, 'patient-edited')
                     messages.add_message(request, messages.INFO, data + need_emergency_food)
                 # messages.add_message(request, messages.INFO, 'first')
                 # messages.add_message(request, messages.INFO, 'edited')
@@ -337,7 +339,7 @@ def archive(request):
                     need_emergency_food = f'&{meal_emergency_food}'
             if need_emergency_food:
                 messages.add_message(request, messages.INFO, first_meal_user)
-                messages.add_message(request, messages.INFO, 'patient-added')
+                messages.add_message(request, messages.INFO, 'patient-restored')
                 messages.add_message(request, messages.INFO, data + need_emergency_food)
             # messages.add_message(request, messages.INFO, 'first')
             # messages.add_message(request, messages.INFO, 'patient-restored')

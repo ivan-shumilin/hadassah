@@ -356,3 +356,28 @@ def get_meal_emergency_food(r_date, r_time):
             if r_time.hour == 15 and r_time.minute >= 30 or (r_time.hour == 16 and r_time.minute <= 30):
                 return 'afternoon'
     return False
+
+def get_meal_emergency_food(r_date=datetime.today().date(), r_time=datetime.today().time()):
+    """
+    Возвращает прием пищи на который можно заказать экстренное питание:
+    8:30 до 10:00 - могут заказать завтрак
+    12:00 до 14:00 - могут заказать обед
+    15:30 до 16:30 - могут заказать полдник
+    Нужно чтобы время и время регистации пациенат были в одном диапазоне
+    """
+    time = datetime.today().time()
+    if r_date == date.today():
+        if time.hour == 9 or (time.hour == 8 and time.minute >= 30) or (time.hour == 10 and time.minute == 00):
+            if r_time.hour == 9 or (r_time.hour == 8 and r_time.minute >= 30) or \
+                (r_time.hour == 10 and r_time.minute == 00):
+                return 'breakfast'
+
+        if time.hour >= 12 and time.hour < 14 or time.hour == 14 and time.minute == 00:
+            if r_time.hour >= 12 and r_time.hour < 14 or (r_time.hour == 14 and r_time.minute == 00):
+                return 'lunch'
+
+        # pdb.set_trace()
+        if (time.hour == 15 and time.minute >= 30) or (time.hour == 16 and time.minute <= 30):
+            if r_time.hour == 15 and r_time.minute >= 30 or (r_time.hour == 16 and r_time.minute <= 30):
+                return 'afternoon'
+    return False

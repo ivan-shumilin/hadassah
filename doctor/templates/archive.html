@@ -358,14 +358,6 @@
                             </div>
 
 
-                            <div data-modal="patient-restored" data-modal-width="400">
-                                <div class="message-block">
-                                    <div class="icon">
-                                        <div class="i i-ok"></div>
-                                    </div>
-                                    <div class="title">Учётная запись восстановлена</div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -816,27 +808,29 @@ function validationEditForm(id_full_name,
         error = error + 1
     }
 
-    let nowDate = new Date();
-    let todayDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), nowDate.getHours(), nowDate.getMinutes());
-    let receiptDateListNew = (receipt_date.value).split(".");
-    let receiptTimeListNew = (receipt_time.value).split(":");
-    receiptDateNew = new Date(receiptDateListNew[2], receiptDateListNew[1] - 1, receiptDateListNew[0], receiptTimeListNew[0], receiptTimeListNew[1])
 
-    if (moment(receiptDateNew).isBefore(todayDate, 'day')) {
-            document.getElementById('error_receipt_date').innerHTML = 'Дата госпитализации не может быть раньше текущей даты';
-            document.getElementById('error_receipt_date').classList.add('error');
-            document.getElementById('receipt_date_edit').classList.add('error');
-            error = error + 1
-        }
-    if (moment(receiptDateNew).isSame(todayDate, 'day')) {
-        if (moment(receiptDateNew).isBefore(todayDate, 'minute')) {
-            document.getElementById('error_receipt_time').innerHTML = 'Время госпитализации не может быть раньше текущего времени';
-            document.getElementById('error_receipt_time').classList.add('error')
-            document.getElementById('receipt_time_edit').classList.add('error');
-            error = error + 1
+    // !!! ВЕРНУТЬ 
+    // let nowDate = new Date();
+    // let todayDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), nowDate.getHours(), nowDate.getMinutes());
+    // let receiptDateListNew = (receipt_date.value).split(".");
+    // let receiptTimeListNew = (receipt_time.value).split(":");
+    // receiptDateNew = new Date(receiptDateListNew[2], receiptDateListNew[1] - 1, receiptDateListNew[0], receiptTimeListNew[0], receiptTimeListNew[1])
+
+    // if (moment(receiptDateNew).isBefore(todayDate, 'day')) {
+    //         document.getElementById('error_receipt_date').innerHTML = 'Дата госпитализации не может быть раньше текущей даты';
+    //         document.getElementById('error_receipt_date').classList.add('error');
+    //         document.getElementById('receipt_date_edit').classList.add('error');
+    //         error = error + 1
+    //     }
+    // if (moment(receiptDateNew).isSame(todayDate, 'day')) {
+    //     if (moment(receiptDateNew).isBefore(todayDate, 'minute')) {
+    //         document.getElementById('error_receipt_time').innerHTML = 'Время госпитализации не может быть раньше текущего времени';
+    //         document.getElementById('error_receipt_time').classList.add('error')
+    //         document.getElementById('receipt_time_edit').classList.add('error');
+    //         error = error + 1
             
-        }
-    }
+    //     }
+    // }
 
 
     if (!receipt_time.value) {
