@@ -583,7 +583,7 @@ const sendEmergencyFood = async function(data, first_name, last_name) {
     
     let body = {
         "data": data,
-        "user_name": `${first_name} ${last_name}`
+        "user_name": `${last_name} ${first_name}`
     }
     let response = await fetch(url, {
       method: 'POST',

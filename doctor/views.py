@@ -584,10 +584,12 @@ class SendPatientProductsAPIView(APIView):
         date_show = serializer.validated_data['date_show']
         products = serializer.validated_data['products']
         meal = serializer.validated_data['meal']
+        user_name = serializer.validated_data['user_name']
 
         meal = translate_meal(meal).lower()
         patient = CustomUser.objects.get(id=patient_id)
         full_name = formatting_full_name(patient.full_name)
+        user_name = formatting_full_name(user_name)
 
         room_number = patient.room_number + ', ' if patient.room_number != 'Не выбрано' else ''
 
@@ -596,9 +598,9 @@ class SendPatientProductsAPIView(APIView):
             messang += f'– {product_name}\n'
 
 
-        # messang += f'({user_name})'
-        # send_messang_changes(messang, '-658303105')
-        my_job_send_messang_changes.delay(messang, '-658303105')
+        messang += f'({user_name})'
+        send_messang_changes(messang, '-658303105')
+        # my_job_send_messang_changes.delay(messang, '-658303105')
 
         return Response('ok')
 
@@ -647,7 +649,7 @@ class SendEmergencyFoodAPIView(APIView):
             product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal, extra_bouillon=False)
 
         # добавить в отчеты и отправить сообщение
-        messang = f'<b>Питание в {type}:</b> {room_number}{full_name}, {patient.type_of_diet}\n'
+        messang = f'<b>Питание в {type}:</b> {room_number}{full_name}, {patient.type_of_diet}, {translate_meal(first_meal).lower()}\n'
         for product_id in product_add:
             messang += f'– {ProductLp.objects.get(id=product_id).name}\n'
             Report(user_id=patient,

@@ -264,6 +264,9 @@ def add_the_patient_emergency_food_to_the_database(user, date_add, meal, extra_b
 
     if not day:
         day = get_day_of_the_week(date_add)
+    # нужно удалить старое меню
+    MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal).delete()
+    MenuByDayReadyOrder.objects.filter(user_id=UsersReadyOrder.objects.filter(user_id=user.id).first()).filter(date=date.today()).filter(meal=meal).delete()
     products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day) &
                                         Q(timetablelp__type_of_diet=user.type_of_diet) &
                                         Q(timetablelp__meals=meal))
@@ -274,7 +277,7 @@ def add_the_patient_emergency_food_to_the_database(user, date_add, meal, extra_b
         for product in products.filter(category=cat):
             products_id.append(product.id)
 
-    products_id
+    # products_id
     MenuByDay(
         user_id=user,
         date=date_add,
@@ -292,26 +295,30 @@ def add_the_patient_emergency_food_to_the_database(user, date_add, meal, extra_b
         bouillon=f"{'426' if extra_bouillon else ''}"
     ).save()
 
-    UsersReadyOrder(
-            user_id=user.id,
-            date_create=date.today(),
-            full_name=user.full_name,
-            floor=user.floor,
-            bed=user.bed,
-            receipt_date=user.receipt_date,
-            receipt_time=user.receipt_time,
-            department=user.department,
-            room_number=user.room_number,
-            type_of_diet=user.type_of_diet,
-            comment=user.comment,
-            status=user.status,
-            is_accompanying=user.is_accompanying,
-            is_probe=user.is_probe,
-            is_without_salt=user.is_without_salt,
-            is_without_lactose=user.is_without_lactose,
-            is_pureed_nutrition=user.is_pureed_nutrition,
-            type_pay=user.type_pay,
-        ).save()
+
+    if UsersReadyOrder.objects.filter(user_id=user.id).exists():
+        UsersReadyOrder(
+                user_id=user.id,
+                date_create=date.today(),
+                full_name=user.full_name,
+                floor=user.floor,
+                bed=user.bed,
+                receipt_date=user.receipt_date,
+                receipt_time=user.receipt_time,
+                department=user.department,
+                room_number=user.room_number,
+                type_of_diet=user.type_of_diet,
+                comment=user.comment,
+                status=user.status,
+                is_accompanying=user.is_accompanying,
+                is_probe=user.is_probe,
+                is_without_salt=user.is_without_salt,
+                is_without_lactose=user.is_without_lactose,
+                is_pureed_nutrition=user.is_pureed_nutrition,
+                type_pay=user.type_pay,
+            ).save()
+    else:
+        UsersReadyOrder.objects.filter(user_id=user.id).update(type_of_diet=user.type_of_diet)
 
     menu = MenuByDay.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
     if menu.exists():

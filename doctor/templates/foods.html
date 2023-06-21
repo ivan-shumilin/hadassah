@@ -106,7 +106,8 @@ const sendProducts = async function(products, id, date, meal) {
         "id_user": id,
         "date_show": date,
         "products": products,
-        "meal": meal
+        "meal": meal,
+        "user_name": '{{ user.last_name }} {{ user.first_name }}'
     };
     let response = await fetch(url, {
       method: 'POST',

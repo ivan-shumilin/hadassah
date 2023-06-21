@@ -95,6 +95,7 @@ class SendPatientProductsAPIViewSerializer(serializers.Serializer):
     date_show = serializers.CharField()
     products = serializers.CharField()
     meal = serializers.CharField()
+    user_name = serializers.CharField()
 
 class AddDishSerializer(serializers.Serializer):
     id_user = serializers.CharField()
