@@ -44,7 +44,7 @@ def create_external_report(filtered_report):
             price_bouillon = 90
         # экстренное питание
         # !!! указать значение для экстренного питания
-        price_emergency_food = 0
+        price_emergency_food = 350
         for meal_key in ['breakfast', 'lunch', 'afternoon', 'dinner']:
             meal_report = one_day_report.get(meal_key, [])
             # создать функцию, которая добаляет уникальные диеты в report
