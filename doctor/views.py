@@ -581,13 +581,15 @@ class SendPatientProductsAPIView(APIView):
         patient_id = serializer.validated_data['id_user']
         date_show = serializer.validated_data['date_show']
         products = serializer.validated_data['products']
+        meal = serializer.validated_data['meal']
 
+        meal = translate_meal(meal).lower()
         patient = CustomUser.objects.get(id=patient_id)
         full_name = formatting_full_name(patient.full_name)
-        # user_name = formatting_full_name(user_name)
+
         room_number = patient.room_number + ', ' if patient.room_number != 'Не выбрано' else ''
 
-        messang = f'Корректировка питания: {room_number}{full_name}, {patient.type_of_diet}\n'
+        messang = f'<b>Корректировка питания на {meal}:</   b> {room_number}{full_name}, {patient.type_of_diet}\n'
         for product_name in products.strip('&?&').split('&?&'):
             messang += f'– {product_name}\n'
 
@@ -605,7 +607,7 @@ class SendEmergencyFoodAPIView(APIView):
         'standard': 568,
         'snack': 570,
     }
-# 22
+
     def post(self, request):
         # получаем id пациента и первый прием пищи
         data = request.data['data']
@@ -614,11 +616,11 @@ class SendEmergencyFoodAPIView(APIView):
         first_meal = translate_first_meal(data[1])
         # если нерабочие часы no_working_hours, если рабочии приходит прием пищи, который нужно добавить
         data_no_name = data[2]
-        user_name = request.data['user_name']
+        user_name = get_user_name(request)
 
         patient = CustomUser.objects.get(id=patient_id)
         full_name = formatting_full_name(patient.full_name)
-        user_name = formatting_full_name(user_name)
+
         room_number = patient.room_number + ', ' if patient.room_number != 'Не выбрано' else ''
         # если нерабочие часы
         if data_no_name == 'no_working_hours':
@@ -642,7 +644,7 @@ class SendEmergencyFoodAPIView(APIView):
             product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal, extra_bouillon=False)
 
         # добавить в отчеты и отправить сообщение
-        messang = f'Питание в {type}: {room_number}{full_name}, {patient.type_of_diet}\n'
+        messang = f'<b>Питание в {type}:</b> {room_number}{full_name}, {patient.type_of_diet}\n'
         for product_id in product_add:
             messang += f'– {ProductLp.objects.get(id=product_id).name}\n'
             Report(user_id=patient,

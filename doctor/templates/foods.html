@@ -100,12 +100,13 @@ var date = "{{ date }}"
 // Запросы по API   ##
 // ###################
 
-const sendProducts = async function(products, id, date) {
+const sendProducts = async function(products, id, date, meal) {
     let url = '/doctor/api/v1/send-patient-products'
     let body = {
         "id_user": id,
         "date_show": date,
-        "products": products
+        "products": products,
+        "meal": meal
     };
     let response = await fetch(url, {
       method: 'POST',
@@ -325,7 +326,7 @@ function addHtmlLeft(obj) {
             result += `<img class="icon" width="17" height="17" src="{% static "doctor/css/img/add.svg" %}" alt="">`
             result += `</a></td></tr>`
 
-            result += `<tr><td><a onclick="bot('${products_str}')" class="pointer hover-a">Отправить в чат`
+            result += `<tr><td><a onclick="bot('${products_str}', '${meal}')" class="pointer hover-a">Отправить в чат`
             result += `<img class="icon" width="17" height="17" src="{% static "doctor/css/img/telegram.svg" %}" alt="">`
             result += `</a></td></tr>`
         }
@@ -630,10 +631,10 @@ async function deleteDishAPI(category, product_id, meal) {
 // ############################
 // Отправить сообщение в чат ##
 // ############################
-async function bot(products) {
+async function bot(products, meal) {
     var id = window.userId
     var date = window.date
-    let res = await sendProducts(products, id, date);
+    let res = await sendProducts(products, id, date, meal);
     var obj = JSON.parse(res);
 }
 
