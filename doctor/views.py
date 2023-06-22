@@ -593,9 +593,11 @@ class SendPatientProductsAPIView(APIView):
         full_name = formatting_full_name(patient.full_name)
         user_name = formatting_full_name(user_name)
 
-        room_number = patient.room_number + ', ' if patient.room_number != 'Не выбрано' else ''
+        room_number = ', ' + patient.room_number if patient.room_number != 'Не выбрано' else ''
 
-        messang = f'<b>Корректировка питания на {meal}:</b> {room_number}{full_name}, {patient.type_of_diet}\n'
+        messang = f'<b>Корректировка для экстренной госпитализации:</b>\n'
+        messang += f'{full_name}{room_number}\n'
+        messang += f'{patient.type_of_diet}, {meal}\n'
         for product_name in products.strip('&?&').split('&?&'):
             messang += f'– {product_name}\n'
 
@@ -628,7 +630,7 @@ class SendEmergencyFoodAPIView(APIView):
         patient = CustomUser.objects.get(id=patient_id)
         full_name = formatting_full_name(patient.full_name)
 
-        room_number = patient.room_number + ', ' if patient.room_number != 'Не выбрано' else ''
+        room_number = ', ' + patient.room_number if patient.room_number != 'Не выбрано' else ''
         # если нерабочие часы
         if data_no_name == 'no_working_hours':
             type = 'нерабочие часы'
@@ -651,7 +653,10 @@ class SendEmergencyFoodAPIView(APIView):
             product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal, extra_bouillon=False)
 
         # добавить в отчеты и отправить сообщение
-        messang = f'<b>Питание в {type}:</b> {room_number}{full_name}, {patient.type_of_diet}, {translate_meal(first_meal).lower()}\n'
+
+        messang = f'<b>Доп. питание для экстренной госпитализации:</b>\n'
+        messang += f'{full_name}{room_number}\n'
+        messang += f'{patient.type_of_diet}, {translate_meal(meal).lower()}\n'
         for product_id in product_add:
             messang += f'– {ProductLp.objects.get(id=product_id).name}\n'
             Report(user_id=patient,
