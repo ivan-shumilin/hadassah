@@ -28,7 +28,7 @@ from doctor.functions.functions import sorting_dishes, parsing, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two, archiving_user, get_not_active_users_set, \
     get_occupied_rooms, creates_dict_with_menu_patients_on_day_test, what_type_order, get_order_status, get_user_name, \
-    translate_first_meal
+    translate_first_meal, add_features
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes, create_user_tomorrow, create_ready_order, create_report, create_products_lp, add_products_lp,\
@@ -129,7 +129,6 @@ def doctor(request):
                                                  'extra_bouillon': TextInput(attrs={'required': "True"}),
                                              },
                                              extra=0,)
-
 
     not_active_users_set = get_not_active_users_set()
     CustomUserFormSet = delete_choices(CustomUserFormSet)
@@ -587,6 +586,7 @@ class SendPatientProductsAPIView(APIView):
         products = serializer.validated_data['products']
         meal = serializer.validated_data['meal']
         user_name = serializer.validated_data['user_name']
+        comment = serializer.validated_data['comment']
 
         meal = translate_meal(meal).lower()
         patient = CustomUser.objects.get(id=patient_id)
@@ -598,6 +598,7 @@ class SendPatientProductsAPIView(APIView):
         messang = f'<b>Корректировка для экстренной госпитализации:</b>\n'
         messang += f'{full_name}{room_number}\n'
         messang += f'{patient.type_of_diet}, {meal}\n'
+        messang += f'Комментарий: {comment}\n' if comment != '' else ''
         for product_name in products.strip('&?&').split('&?&'):
             messang += f'– {product_name}\n'
 
@@ -629,11 +630,15 @@ class SendEmergencyFoodAPIView(APIView):
 
         patient = CustomUser.objects.get(id=patient_id)
         full_name = formatting_full_name(patient.full_name)
+        comment = add_features(patient.comment,
+                               patient.is_probe,
+                               patient.is_without_salt,
+                               patient.is_without_lactose,
+                               patient.is_pureed_nutrition)
 
         room_number = ', ' + patient.room_number if patient.room_number != 'Не выбрано' else ''
         # если нерабочие часы
         if data_no_name == 'no_working_hours':
-            type = 'нерабочие часы'
             type_diet = 'without_sugar' if patient.type_of_diet in ['ШД без сахара', 'ОВД без сахара'] else 'without_sugar'
             # получаем рацион для пациента
             product_add: list = []
@@ -647,7 +652,6 @@ class SendEmergencyFoodAPIView(APIView):
         # если рабочие часы
         else:
             meal = data_no_name
-            type = 'рабочие часы'
             # добавить прием пищи в MenuByDayReadyOrder и в MenuByDay
             date_today = str(date.today())
             product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal, extra_bouillon=False)
@@ -657,6 +661,7 @@ class SendEmergencyFoodAPIView(APIView):
         messang = f'<b>Доп. питание для экстренной госпитализации:</b>\n'
         messang += f'{full_name}{room_number}\n'
         messang += f'{patient.type_of_diet}, {translate_meal(meal).lower()}\n'
+        messang += f'Комментарий: {comment}\n' if comment != '' else ''
         for product_id in product_add:
             messang += f'– {ProductLp.objects.get(id=product_id).name}\n'
             Report(user_id=patient,

@@ -1520,6 +1520,15 @@ def internal_report(request):
     return render(request, 'internal_report.html', context=date)
 
 
+def weight_meal(meal):
+    MEALS = {
+        'breakfast': 0,
+        'lunch': 1,
+        'afternoon': 2,
+        'dinner': 3,
+    }
+    return MEALS[meal]
+
 
 class DownloadReportAPIView(APIView):
     def post(self, request):
@@ -1551,22 +1560,34 @@ def create_сatalog(is_public, meal, patient, day):
     # какой прием пищи
     # meal, day = what_meal() # после return 'breakfast', 'tomorrow'
     # если прием пищи не равер now_meal тогда всегда flex-order
-    if (meal, day) == what_meal():
+    meal_now, day_now = what_meal()
+    # если выбранный прием пищи совпадает с текущим (настоящее)
+    if (meal, day) == (meal_now, day_now):
         type_order = what_type_order()
-    else:
+    # если выбранный прием пищи раньше текущего (прошлое)
+    elif weight_meal(meal) < weight_meal(meal_now):
+        type_order = 'report-order'
+    # если выбранный прием пищи позже текушего (будущее)
+    elif weight_meal(meal) > weight_meal(meal_now):
         type_order = 'flex-order'
 
     date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
-    if patient == 'all':
-        if type_order == 'flex-order':
-            users = UsersToday.objects.all()
-        else:
-            users = UsersReadyOrder.objects.all()
-    else:
-        if type_order == 'flex-order':
-            users = UsersToday.objects.filter(user_id=patient)
-        else:
-            users = UsersReadyOrder.objects.filter(user_id=patient)
+
+    filter_patients = Q() if patient == 'all' else Q(user_id=patient)
+    if type_order == 'flex-order':
+        users = UsersToday.objects.filter(filter_patients)
+    elif type_order == 'fix-order':
+        users = UsersReadyOrder.objects.filter(filter_patients)
+    elif type_order == 'report-order':
+        users = Report.objects.filter(
+            date_create=date_create,
+            meal=meal,
+        ).filter(
+            filter_patients
+        ).values('user_id').distinct('user_id')
+        users = CustomUser.objects.filter(id__in=users)
+
+
 
     catalog = {'meal': translate_meal(meal),
                'users_not_floor': create_list_users_on_floor(users, 'Не выбрано', meal, date_create, type_order,

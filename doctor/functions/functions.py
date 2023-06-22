@@ -4,7 +4,7 @@ from itertools import chain
 from django.db.models.expressions import RawSQL
 
 from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId, \
-    UsersToday, MenuByDayReadyOrder, UsersReadyOrder, ModifiedDish
+    UsersToday, MenuByDayReadyOrder, UsersReadyOrder, ModifiedDish, Report
 from django.db import transaction
 from django.contrib import messages
 from django.contrib.messages import get_messages
@@ -328,14 +328,51 @@ def check_value_two(menu_all, date_str, meal, category, user_id, is_public):
                 'description': product.description,
                 'category': product.category,
                 'product_id': product_id,
-                # 'is_modified': ModifiedDish.objects.filter(product_id=id,
-                #                                            meal=meal,
-                #                                            date=date_str,
-                #                                            user_id=user_id).exists()
             })
     except Exception:
         value = [None]
     return value
+
+
+def check_value_tree(menu_all, date_str, meal, category, user_id, is_public):
+    try:
+        value: list = []
+        items = menu_all.filter(date_create=date_str, meal=meal, category=category).values('product_id')
+        id_set = items[0]['product_id'].split(',')
+
+        if len(id_set) == 0:
+            return [None]
+        for id in id_set:
+            if 'cafe' in id:
+                type: str = 'cafe'
+                product = Product.objects.get(id=id.split('-')[2])
+            else:
+                type: str = 'lp'
+                product = ProductLp.objects.get(id=id)
+            try:
+                product_id = product.product_id
+            except:
+                product_id = None
+
+
+            value.append({
+                'id': id,
+                'name': product.public_name if is_public else product.name,
+                'carbohydrate': round(float(0 if product.carbohydrate == None else product.carbohydrate), 1),
+                'fat': round(float(0 if product.fat == None else product.fat), 1),
+                'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
+                'energy': round(float(0 if product.energy == None else product.energy), 1),
+                'type': type,
+                'image': get_image_url(product),
+                'image_full': get_image_full_url(product),
+                'description': product.description,
+                'category': product.category,
+                'product_id': product_id,
+            })
+    except Exception:
+        value = [None]
+    return value
+
 
 def creates_dict_with_menu_patients(id):
     """Создаем меню на 3 дня для вывода в ЛК врача."""
@@ -1148,26 +1185,44 @@ def counting_diets(users, floors):
 
     return diets_count
 
-def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, is_public):
+def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, is_public, patient=None):
     """Создаем словарь с блюдами на конкретный прием пищи для пациента."""
 
     if type_order == 'flex-order':
         menu_all = MenuByDay.objects.filter(user_id=id)
-    else:
+    elif type_order == 'fix-order':
         menu_all = MenuByDayReadyOrder.objects.filter(user_id=id_fix_user)
+    elif type_order == 'report-order':
+        menu_all = Report.objects.filter(user_id=patient)
     menu_list = []
-    menu = {
-        'salad': check_value_two(menu_all, date_show, meal, "salad", id, is_public),
-        'soup': check_value_two(menu_all, date_show, meal, "soup", id, is_public) + \
-                check_value_two(menu_all, date_show, meal, "bouillon", id, is_public),
-        'main': check_value_two(menu_all, date_show, meal, "main", id, is_public),
-        'garnish': check_value_two(menu_all, date_show, meal, "garnish", id, is_public),
-        'porridge': check_value_two(menu_all, date_show, meal, "porridge", id, is_public),
-        'dessert': check_value_two(menu_all, date_show, meal, "dessert", id, is_public),
-        'fruit': check_value_two(menu_all, date_show, meal, "fruit", id, is_public),
-        'drink': check_value_two(menu_all, date_show, meal, "drink", id, is_public),
-        'products': check_value_two(menu_all, date_show, meal, "products", id, is_public),
-    }
+
+    if type_order != "report-order":
+        menu = {
+            'salad': check_value_two(menu_all, date_show, meal, "salad", id, is_public),
+            'soup': check_value_two(menu_all, date_show, meal, "soup", id, is_public) + \
+                    check_value_two(menu_all, date_show, meal, "bouillon", id, is_public),
+            'main': check_value_two(menu_all, date_show, meal, "main", id, is_public),
+            'garnish': check_value_two(menu_all, date_show, meal, "garnish", id, is_public),
+            'porridge': check_value_two(menu_all, date_show, meal, "porridge", id, is_public),
+            'dessert': check_value_two(menu_all, date_show, meal, "dessert", id, is_public),
+            'fruit': check_value_two(menu_all, date_show, meal, "fruit", id, is_public),
+            'drink': check_value_two(menu_all, date_show, meal, "drink", id, is_public),
+            'products': check_value_two(menu_all, date_show, meal, "products", id, is_public),
+        }
+    else:
+        menu = {
+            'salad': check_value_tree(menu_all, date_show, meal, "salad", id, is_public),
+            'soup': check_value_tree(menu_all, date_show, meal, "soup", id, is_public) + \
+                    check_value_tree(menu_all, date_show, meal, "bouillon", id, is_public),
+            'main': check_value_tree(menu_all, date_show, meal, "main", id, is_public),
+            'garnish': check_value_tree(menu_all, date_show, meal, "garnish", id, is_public),
+            'porridge': check_value_tree(menu_all, date_show, meal, "porridge", id, is_public),
+            'dessert': check_value_tree(menu_all, date_show, meal, "dessert", id, is_public),
+            'fruit': check_value_tree(menu_all, date_show, meal, "fruit", id, is_public),
+            'drink': check_value_tree(menu_all, date_show, meal, "drink", id, is_public),
+            'products': check_value_tree(menu_all, date_show, meal, "products", id, is_public),
+        }
+
     if lp_or_cafe == 'lp':
         for item_category in menu.values():
             if item_category:
@@ -1230,6 +1285,21 @@ def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_p
 
     users_on_floor = []
     for user in users:
+        # если заказ из отчета (прошлое) нужно определить диету, которыя была на момент заказа
+        if type_order == "report-order":
+            type_of_diet = Report.objects.filter(
+                date_create=date_create,
+                meal=meal).first().type_of_diet
+            products_lp = creates_dict_test(None, None, str(date_create), 'lp', meal, type_order,
+                                            is_public, user)
+            products_cafe = creates_dict_test(None, None, str(date_create), 'cafe', meal, type_order,
+                                              is_public, user)
+        else:
+            type_of_diet = user.type_of_diet
+            products_lp = creates_dict_test(user.user_id, user.id, str(date_create), 'lp', meal, type_order,
+                                             is_public, user)
+            products_cafe = creates_dict_test(user.user_id, user.id, str(date_create), 'cafe', meal, type_order,
+                                               is_public, user)
         item: dict = {'name': user.full_name,
              'number': '',
              'comment': add_features(user.comment,
@@ -1239,12 +1309,11 @@ def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_p
                              user.is_pureed_nutrition),
              'room_number': user.room_number,
              'bed': user.bed,
-             'diet': user.type_of_diet,
+             'diet': type_of_diet,
              'department': user.department,
-             'products_lp': creates_dict_test(user.user_id, user.id, str(date_create), 'lp', meal, type_order, is_public),
-             'products_cafe': creates_dict_test(user.user_id, user.id, str(date_create), 'cafe', meal, type_order, is_public),
-             # 'products_cafe': []
-                      }
+             'products_lp': products_lp,
+             'products_cafe': products_cafe,
+             }
 
         modified_dish_set = ModifiedDish.objects.filter(meal=meal, date=date_create, user_id=user.user_id)
         for modified_dish in modified_dish_set:

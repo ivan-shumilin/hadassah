@@ -115,28 +115,25 @@ def create_report(meal):
     Создает отчет по проданным блюдам.
     """
     to_create = []
+    catergorys = ['salad', 'soup', 'bouillon', 'main', 'garnish', 'porridge', 'dessert', 'fruit', 'drink', 'products', 'hidden']
     patients = UsersReadyOrder.objects.all()
 
-    report_dict = {}
     for user in patients:
         menu = MenuByDayReadyOrder.objects.filter(user_id=user.id).filter(date=date.today()).filter(meal=meal)
         if menu:
-            products = [menu[0].main, menu[0].garnish, menu[0].porridge, menu[0].soup, menu[0].dessert, menu[0].fruit,
-                        menu[0].drink, menu[0].salad, menu[0].products, menu[0].hidden, menu[0].bouillon]
-            products = [product for product in products if product not in ['', None, 'None']]
-            report_dict[user.user_id] = {'type_of_diet': user.type_of_diet,
-                                      'meal': meal,
-                                      'products': products}
-        else:
-            pass
-    to_create = []
-    for user, value in report_dict.items():
-        for product in value['products']:
-            to_create.append(Report(user_id=CustomUser.objects.get(id=user),
-                                    date_create=date.today(),
-                                    meal=value['meal'],
-                                    product_id=product,
-                                    type_of_diet=value['type_of_diet']))
+            for category in catergorys:
+                product = getattr(menu[0], category, None)
+                if product not in ['', None, 'None']:
+                    to_create.append(
+                        Report(
+                            user_id=CustomUser.objects.get(id=user.user_id),
+                            date_create=date.today(),
+                            meal=meal,
+                            product_id=product,
+                            type_of_diet=user.type_of_diet,
+                            category=category,
+                        )
+                    )
     Report.objects.bulk_create(to_create)
 
 

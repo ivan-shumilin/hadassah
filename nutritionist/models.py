@@ -565,6 +565,14 @@ class Report(models.Model):
         default='ОВД',
         help_text='Выбор диеты')
 
+    category = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text='Категория')
+
+
+
     def __str__(self):
         return f'{self.user_id} {self.date_create} {self.meal}'
 
