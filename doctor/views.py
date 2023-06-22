@@ -182,13 +182,15 @@ def doctor(request):
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
         first_meal_user, data, patient_receipt_date, patient_receipt_time, is_edited, emergency_food = edit_user(user_form, 'edit', request)
+        # если нужно экстренное питание добавим в эту переменную
+        need_emergency_food = ""
         if is_edited:
+            type_pop_up = 'patient-edited-2'
             # если меняем с нулевой диеты
             if emergency_food:
                 # нерабочие часы
                 time = datetime.today().time()
-                # если нужно экстренное питание добавим в эту переменную
-                need_emergency_food = False
+
                 if time.hour >= 18 or time.hour <= 8:
                     need_emergency_food = '&no_working_hours'
                 else:
@@ -197,13 +199,11 @@ def doctor(request):
                     if meal_emergency_food:
                         need_emergency_food = f'&{meal_emergency_food}'
                 if need_emergency_food:
-                    messages.add_message(request, messages.INFO, first_meal_user)
-                    messages.add_message(request, messages.INFO, 'patient-edited')
-                    messages.add_message(request, messages.INFO, data + need_emergency_food)
-            else:
-                messages.add_message(request, messages.INFO, 'first')
-                messages.add_message(request, messages.INFO, 'patient-edited-2')
-                messages.add_message(request, messages.INFO, 'last')
+                    type_pop_up = 'patient-edited'
+
+            messages.add_message(request, messages.INFO, first_meal_user)
+            messages.add_message(request, messages.INFO, type_pop_up)
+            messages.add_message(request, messages.INFO, data + need_emergency_food)
         return HttpResponseRedirect(reverse('doctor'))
 
     if request.method == 'POST' and 'archive' in request.POST:
