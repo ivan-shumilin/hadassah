@@ -22,7 +22,7 @@ def get_next_meals():
 
     if time.hour >= 0 and time.hour < 8 or (time.hour == 8 and time.minute <= 30):
         return ['breakfast', 'lunch', 'afternoon', 'dinner']
-    if time.hour > 9 or (time.hour == 8 and time.minute >= 31):
+    if time.hour >= 9 or (time.hour == 8 and time.minute >= 31):
         if time.hour < 12 or (time.hour == 12 and time.minute < 1):
             return ['lunch', 'afternoon', 'dinner']
     if time.hour > 12 or (time.hour == 12 and time.minute >= 1):
