@@ -657,10 +657,10 @@ class SendEmergencyFoodAPIView(APIView):
             product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal, extra_bouillon=False)
 
         # добавить в отчеты и отправить сообщение
-
+        meal = ', ' + translate_meal(meal).lower() if data_no_name != 'no_working_hours' else ''
         messang = f'<b>Доп. питание для экстренной госпитализации:</b>\n'
         messang += f'{full_name}{room_number}\n'
-        messang += f'{patient.type_of_diet}, {translate_meal(meal).lower()}\n'
+        messang += f'{patient.type_of_diet}{meal}\n'
         messang += f'Комментарий: {comment}\n' if comment != '' else ''
         for product_id in product_add:
             messang += f'– {ProductLp.objects.get(id=product_id).name}\n'

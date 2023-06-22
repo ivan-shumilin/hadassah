@@ -191,7 +191,8 @@ def translate_meal(meal):
         'breakfast': 'Завтрак',
         'lunch': 'Обед',
         'afternoon': 'Полдник',
-        'dinner': 'Ужин'
+        'dinner': 'Ужин',
+        'data_no_name': '',
     }
     return MEALS[meal]
 
