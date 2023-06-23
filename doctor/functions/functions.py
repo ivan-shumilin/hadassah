@@ -299,7 +299,7 @@ def check_value_two(menu_all, date_str, meal, category, user_id, is_public):
     try:
         value: list = []
         item = menu_all.filter(date=date_str).get(meal=meal)
-        id_set = getattr(item, category, None).split(',')
+        id_set = getattr(item, category, "").split(',')
 
         if len(id_set) == 0:
             return [None]
