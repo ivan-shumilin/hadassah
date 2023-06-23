@@ -16,6 +16,6 @@ def check_value(category, products):
 
 def formatting_full_name_mode_full(full_name_row):
     full_name_row_list = full_name_row.strip().split(' ')
-    full_name_list = [item.strip().capitalize() for item in full_name_row_list]
+    full_name_list = [item.strip().capitalize() for item in full_name_row_list if item.strip() != '']
     return ' '.join(full_name_list)
 
