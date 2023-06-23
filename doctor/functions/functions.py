@@ -1290,7 +1290,8 @@ def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_p
         if type_order == "report-order":
             type_of_diet = Report.objects.filter(
                 date_create=date_create,
-                meal=meal).first().type_of_diet
+                meal=meal,
+                user_id=user).first().type_of_diet
             products_lp = creates_dict_test(None, None, str(date_create), 'lp', meal, type_order,
                                             is_public, user)
             products_cafe = creates_dict_test(None, None, str(date_create), 'cafe', meal, type_order,

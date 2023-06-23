@@ -1599,7 +1599,7 @@ def create_сatalog(is_public, meal, patient, day):
 
     return catalog
 
-class CreateSitckers(APIView):
+class CreateStickers(APIView):
     def post(self, request):
         is_public = True  # используем публичные названия для блюд
         meal = request.data['meal']
