@@ -1315,21 +1315,21 @@ def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_p
              'products_lp': products_lp,
              'products_cafe': products_cafe,
              }
+        if type_order != "report-order":
+            modified_dish_set = ModifiedDish.objects.filter(meal=meal, date=date_create, user_id=user.user_id)
+            for modified_dish in modified_dish_set:
+                for product in item['products_lp']:
+                    if modified_dish.product_id == product['id']:
+                        product['is_modified'] = modified_dish.status
+                        break
 
-        modified_dish_set = ModifiedDish.objects.filter(meal=meal, date=date_create, user_id=user.user_id)
-        for modified_dish in modified_dish_set:
             for product in item['products_lp']:
-                if modified_dish.product_id == product['id']:
-                    product['is_modified'] = modified_dish.status
-                    break
-
-        for product in item['products_lp']:
-            if product['id'] == "426":
-                product['is_modified'] = "add"
-                continue
-            if "change" in product['id']:
-                product['is_modified'] = "change"
-                continue
+                if product['id'] == "426":
+                    product['is_modified'] = "add"
+                    continue
+                if "change" in product['id']:
+                    product['is_modified'] = "change"
+                    continue
             # если блюдо из линии раздачи, тогда отбрсываем 'cafe-cat'
             # if 'cafe' in modified_dish.product_id:
             #     modified_dish_product_id = modified_dish.product_id
