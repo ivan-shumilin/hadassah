@@ -98,20 +98,54 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
         #     products_cafe: tuple = [], [], [], []
         # else:
         products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
-        products_lp = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
-                                            Q(timetablelp__type_of_diet=translated_diet) &
-                                            Q(timetablelp__meals=meal))
+
+        products_menu_cafe: dict = {}
+        products_lp: list = []
+        menu_lp = MenuByDay.objects.filter(date=date_get, user_id=user, meal=meal).first()
+        catergorys = ['salad', 'soup', 'main', 'garnish', 'porridge', 'dessert', 'fruit',]
+        # 'bouillon',
+        for cat in catergorys:
+            id_set = getattr(menu_lp, cat, None)
+            if id_set:
+                id_set = id_set.split(',')
+                if len(id_set) > 0:
+                    for id in id_set:
+                        if 'cafe' in id:
+                            type: str = 'cafe'
+                            product = Product.objects.get(id=id.split('-')[2])
+                            products_menu_cafe[cat] = product
+                        else:
+                            type: str = 'lp'
+                            products_lp.append(id)
+        # products_lp = ProductLp.objects.filter(id__in=products_lp)
+
+        products_lp = ProductLp.objects.filter(
+            Q(timetablelp__day_of_the_week=day_of_the_week) &
+            Q(timetablelp__type_of_diet=translated_diet) &
+            Q(timetablelp__meals=meal)
+        )
+
+
+
+        # cформировать лист с id продуктов
+        menu_cafe: dict = {}
+        for cat in ['main', 'garnish', 'salad', 'soup', 'porridge']:
+            product = products_menu_cafe.get(cat, None)
+            if product:
+                menu_cafe[cat] = [product]
+            else:
+                menu_cafe[cat] = []
 
         menu[meal] = {'cafe': {
-                    'main': products_cafe[0],
-                    'garnish': products_cafe[1],
-                    'salad': products_cafe[2],
-                    'soup': products_cafe[3],
-                    'porridge': products_cafe[5]
+                    'main': list(set(products_cafe[0] + menu_cafe['main'])),
+                    'garnish': list(set(products_cafe[1] + menu_cafe['garnish'])),
+                    'salad': list(set(products_cafe[2] + menu_cafe['salad'])),
+                    'soup': list(set(products_cafe[3] + menu_cafe['soup'])),
+                    'porridge': list(set(products_cafe[5] + menu_cafe['porridge'])),
                 }}
 
         if meal == 'breakfast':
-            menu[meal]['cafe']['main'] = products_cafe[4]
+            menu[meal]['cafe']['main'] = list(set(products_cafe[4] + menu_cafe['main']))
 
         menu[meal].update({'lp': {
             'porridge': create_dict_products_lp(list(products_lp.filter(category='каша'))),
@@ -239,15 +273,25 @@ def create_patient_select(id, date_get):
             menu_item = menu.get(meal=meal)
         except:
             continue
+
+        main = 'cafe-change-' + menu_item.main.split("-")[2] if "cafe" in menu_item.main else menu_item.main
+        garnish = 'cafe-change-' + menu_item.garnish.split("-")[2] if "cafe" in menu_item.garnish else menu_item.garnish
+        porridge = 'cafe-change-' + menu_item.porridge.split("-")[2] if "cafe" in menu_item.porridge else menu_item.porridge
+        soup = 'cafe-change-' + menu_item.soup.split("-")[2] if "cafe" in menu_item.soup else menu_item.soup
+        dessert = 'cafe-change-' + menu_item.dessert.split("-")[2] if "cafe" in menu_item.dessert else menu_item.dessert
+        fruit = 'cafe-change-' + menu_item.fruit.split("-")[2] if "cafe" in menu_item.fruit else menu_item.fruit
+        drink = 'cafe-change-' + menu_item.drink.split("-")[2] if "cafe" in menu_item.drink else menu_item.drink
+        salad = 'cafe-change-' + menu_item.salad.split("-")[2] if "cafe" in menu_item.salad else menu_item.salad
+
         patient_select[meal] = {
-            'main': menu_item.main,
-            'garnish': menu_item.garnish,
-            'porridge': menu_item.porridge,
-            'soup': menu_item.soup,
-            'dessert': menu_item.dessert,
-            'fruit': menu_item.fruit,
-            'drink': menu_item.drink,
-            'salad': menu_item.salad,
+            'main': main,
+            'garnish': garnish,
+            'porridge': porridge,
+            'soup': soup,
+            'dessert': dessert,
+            'fruit': fruit,
+            'drink': drink,
+            'salad': salad,
         }
 # сделаем из словаря список
     patient_select_list = []
