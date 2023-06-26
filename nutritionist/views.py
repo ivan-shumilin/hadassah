@@ -88,6 +88,7 @@ def load_menu(dict_tests, dict_tk):
             to_create.append(Product(
                 iditem=menu_item['product']['id'],
                 name=menu_item['product']['name'],
+                public_name=menu_item['product']['name'],
                 price=menu_item['product']['price'],
                 carbohydrate=menu_item['product']['carbohydrate'],
                 fat=menu_item['product']['fat'],
