@@ -1567,7 +1567,8 @@ def create_сatalog(is_public, meal, patient, day):
         type_order = what_type_order()
     # если выбранный прием пищи раньше текущего (прошлое)
     elif weight_meal(meal) < weight_meal(meal_now):
-        type_order = 'report-order'
+        # type_order = 'report-order'
+        type_order = 'flex-order'
     # если выбранный прием пищи позже текушего (будущее)
     elif weight_meal(meal) > weight_meal(meal_now):
         type_order = 'flex-order'
