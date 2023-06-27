@@ -1565,19 +1565,31 @@ def create_сatalog(is_public, meal, patient, day):
     # если выбранный прием пищи совпадает с текущим (настоящее)
     if (meal, day) == (meal_now, day_now):
         type_order = what_type_order()
+        type_time = None
     # если выбранный прием пищи раньше текущего (прошлое)
     elif weight_meal(meal) < weight_meal(meal_now):
         # type_order = 'report-order'
+        # 555
         type_order = 'flex-order'
-    # если выбранный прием пищи позже текушего (будущее)
+        type_time = 'past'
+    # если выбранный прием пищи позже текущего (будущее)
     elif weight_meal(meal) > weight_meal(meal_now):
         type_order = 'flex-order'
+        type_time = 'future'
 
     date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
 
     filter_patients = Q() if patient == 'all' else Q(user_id=patient)
-    if type_order == 'flex-order':
+    if type_order == 'flex-order' and not type_time:
         users = UsersToday.objects.filter(filter_patients)
+    if type_order == 'flex-order' and type_time == 'past' or type_time == 'future':
+        users = MenuByDay.objects.filter(
+            date=date_create,
+            meal=meal,
+        ).filter(
+            filter_patients
+        ).values('user_id').distinct('user_id')
+        users = CustomUser.objects.filter(id__in=users)
     elif type_order == 'fix-order':
         users = UsersReadyOrder.objects.filter(filter_patients)
     elif type_order == 'report-order':
@@ -1593,10 +1605,10 @@ def create_сatalog(is_public, meal, patient, day):
 
     catalog = {'meal': translate_meal(meal),
                'users_not_floor': create_list_users_on_floor(users, 'Не выбрано', meal, date_create, type_order,
-                                                             is_public),
-               'users_2nd_floor': create_list_users_on_floor(users, "2", meal, date_create, type_order, is_public),
-               'users_3nd_floor': create_list_users_on_floor(users, "3", meal, date_create, type_order, is_public),
-               'users_4nd_floor': create_list_users_on_floor(users, "4", meal, date_create, type_order, is_public),
+                                                             is_public, type_time),
+               'users_2nd_floor': create_list_users_on_floor(users, "2", meal, date_create, type_order, is_public, type_time),
+               'users_3nd_floor': create_list_users_on_floor(users, "3", meal, date_create, type_order, is_public, type_time),
+               'users_4nd_floor': create_list_users_on_floor(users, "4", meal, date_create, type_order, is_public, type_time),
                }
 
     return catalog

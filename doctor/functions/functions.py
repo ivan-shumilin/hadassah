@@ -1269,7 +1269,7 @@ def have_is_modified(menu):
         return False
 
 
-def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_public):
+def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_public, type_time=None):
     try:
         if floor != 'Не выбрано':
             users_filter = users.filter(~Q(room_number="Не выбрано") & Q(floor=floor))
@@ -1296,6 +1296,15 @@ def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_p
                                             is_public, user)
             products_cafe = creates_dict_test(None, None, str(date_create), 'cafe', meal, type_order,
                                               is_public, user)
+        if type_order == "flex-order" and type_time in ['past', 'future']:
+            type_of_diet = MenuByDay.objects.filter(
+                date=date_create,
+                meal=meal,
+                user_id=user).first().type_of_diet
+            products_lp = creates_dict_test(None, None, str(date_create), 'lp', meal, type_order,
+                                            is_public, user)
+            products_cafe = creates_dict_test(None, None, str(date_create), 'cafe', meal, type_order,
+                                              is_public, user)
         else:
             type_of_diet = user.type_of_diet
             products_lp = creates_dict_test(user.user_id, user.id, str(date_create), 'lp', meal, type_order,
@@ -1316,7 +1325,7 @@ def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_p
              'products_lp': products_lp,
              'products_cafe': products_cafe,
              }
-        if type_order != "report-order":
+        if type_order != "report-order" and type_time == None:
             modified_dish_set = ModifiedDish.objects.filter(meal=meal, date=date_create, user_id=user.user_id)
             for modified_dish in modified_dish_set:
                 for product in item['products_lp']:
