@@ -1186,11 +1186,13 @@ def counting_diets(users, floors):
 
     return diets_count
 
-def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, is_public, patient=None):
+def creates_dict_test(id, id_fix_user, date_show, lp_or_cafe, meal, type_order, is_public, patient=None, time_type=None):
     """Создаем словарь с блюдами на конкретный прием пищи для пациента."""
 
-    if type_order == 'flex-order':
+    if type_order == 'flex-order' and time_type is None:
         menu_all = MenuByDay.objects.filter(user_id=id)
+    elif type_order == 'flex-order' and time_type is not None:
+        menu_all = MenuByDay.objects.filter(user_id=patient)
     elif type_order == 'fix-order':
         menu_all = MenuByDayReadyOrder.objects.filter(user_id=id_fix_user)
     elif type_order == 'report-order':
@@ -1302,9 +1304,9 @@ def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_p
                 meal=meal,
                 user_id=user).first().type_of_diet
             products_lp = creates_dict_test(None, None, str(date_create), 'lp', meal, type_order,
-                                            is_public, user)
+                                            is_public, user, type_time)
             products_cafe = creates_dict_test(None, None, str(date_create), 'cafe', meal, type_order,
-                                              is_public, user)
+                                              is_public, user, type_time)
         else:
             type_of_diet = user.type_of_diet
             products_lp = creates_dict_test(user.user_id, user.id, str(date_create), 'lp', meal, type_order,
