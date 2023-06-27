@@ -827,7 +827,7 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('name', 'Куриная грудка 200 гр.'),
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 575),
-                ('description', 'Индейка филе грудки, тимьян, соль, помидоры, зелень в асс.')
+                ('description', '')
             ]),
             OrderedDict([
                 ('name', 'Котлета из трески 100 гр'),
