@@ -604,8 +604,8 @@ class SendPatientProductsAPIView(APIView):
 
 
         messang += f'({user_name})'
-        send_messang_changes(messang, '-1001913194437')
-        # my_job_send_messang_changes.delay(messang, '-658303105')
+        # send_messang_changes(messang, '-1001913194437')
+        my_job_send_messang_changes.delay(messang, '-1001913194437')
 
         return Response('ok')
 
@@ -671,7 +671,8 @@ class SendEmergencyFoodAPIView(APIView):
                    type_of_diet=patient.type_of_diet).save()
 
         messang += f'({user_name})'
-        send_messang_changes(messang, '-1001913194437')
+        # send_messang_changes(messang, '-1001913194437')
+        my_job_send_messang_changes.delay(messang, '-1001913194437')
         return Response('ok')
 
 
