@@ -596,9 +596,11 @@ class SendPatientProductsAPIView(APIView):
         room_number = ', ' + patient.room_number if patient.room_number != 'Не выбрано' else ''
 
         messang = f'<b>Корректировка для экстренной госпитализации:</b>\n'
+        messang = f'\n'
         messang += f'{full_name}{room_number}\n'
         messang += f'{patient.type_of_diet}, {meal}\n'
         messang += f'Комментарий: {comment}\n' if comment != '' else ''
+        messang = f'\n'
         for product_name in products.strip('&?&').split('&?&'):
             messang += f'– {product_name}\n'
 
@@ -659,9 +661,11 @@ class SendEmergencyFoodAPIView(APIView):
         # добавить в отчеты и отправить сообщение
         meal = ', ' + translate_meal(meal).lower() if data_no_name != 'no_working_hours' else ''
         messang = f'<b>Доп. питание для экстренной госпитализации:</b>\n'
+        messang = f'\n'
         messang += f'{full_name}{room_number}\n'
         messang += f'{patient.type_of_diet}{meal}\n'
         messang += f'Комментарий: {comment}\n' if comment != '' else ''
+        messang = f'\n'
         for product_id in product_add:
             messang += f'– {ProductLp.objects.get(id=product_id).name}\n'
             Report(user_id=patient,
