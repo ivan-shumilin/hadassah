@@ -153,18 +153,18 @@ def doctor(request):
 # 11
     if request.method == 'POST' and 'add_patient' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        first_meal_user, data, patient_receipt_date, patient_receipt_time = create_user(user_form, request)
-        # if False:
-        #     messages.add_message(request, messages.INFO, first_meal_user)
-        #     messages.add_message(request, messages.INFO, 'patient-added')
-        #     messages.add_message(request, messages.INFO, data)
+        first_meal_user, data, patient_receipt_date, patient_receipt_time, meal_order = create_user(user_form, request)
         # нерабочие часы
         time = datetime.today().time()
         # если нужно экстренное питание добавим в эту переменную
         need_emergency_food = False
-        if time.hour >= 18 or time.hour <= 8:
+        # если время госпитализации пациента попадает на нерабочее время
+        if patient_receipt_time.hour >= 18 or patient_receipt_time.hour <= 8 and meal_order == 'завтра':
             need_emergency_food = '&no_working_hours'
-        else:
+        if patient_receipt_time.hour >= 18 or patient_receipt_time.hour <= 7 and meal_order == 'завтрака':
+            need_emergency_food = '&no_working_hours'
+        # если рабочее время кухни
+        if time.hour <= 17 or time.hour >= 9 and need_emergency_food != '&no_working_hours':
             meal_emergency_food = get_meal_emergency_food(patient_receipt_date, patient_receipt_time)
             if meal_emergency_food:
                 need_emergency_food = f'&{meal_emergency_food}'

@@ -794,7 +794,7 @@ def create_user(user_form, request):
     if user.full_name != "Leslie William Nielsen":
         my_job_send_messang_changes.delay(messang)
     # возвращаем первый прием пищи с которого пациент будет добавлен в заказ
-    return first_meal_user, f'{user.id}&{first_meal_user}', user.receipt_date, user.receipt_time
+    return first_meal_user, f'{user.id}&{first_meal_user}', user.receipt_date, user.receipt_time, meal_order
 # 111
 
 @transaction.atomic
