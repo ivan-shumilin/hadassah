@@ -237,7 +237,7 @@
                                     </div>
                                     <div class="eat-choose-grid" data-eat-choose-grid>
                                         {% for product in menu_for_the_meal.lp.soup %}
-                                            <div onclick="submitPatientSelection()" class="item active" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" class="item" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.public_name }}</div>

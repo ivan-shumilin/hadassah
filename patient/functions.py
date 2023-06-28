@@ -100,9 +100,23 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
         products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
 
         products_menu_cafe: dict = {}
-        products_lp: list = []
+        products_add_lp: list = []
         menu_lp = MenuByDay.objects.filter(date=date_get, user_id=user, meal=meal).first()
         catergorys = ['salad', 'soup', 'main', 'garnish', 'porridge', 'dessert', 'fruit',]
+
+        category_translation = {
+            'salad': 'салат',
+            'soup': 'суп',
+            'main': 'основной',
+            'garnish': 'гарнир',
+            'porridge': 'каша',
+            'dessert': 'десерт',
+            'fruit': 'фрукты',
+        }
+
+
+        excluded_categories_for_lp: list = []
+        excluded_categories_for_cafe: list = []
         # 'bouillon',
         for cat in catergorys:
             id_set = getattr(menu_lp, cat, None)
@@ -116,20 +130,30 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
                             products_menu_cafe[cat] = product
                         else:
                             type: str = 'lp'
-                            products_lp.append(id)
+                            products_add_lp.append(id)
+            else:
+            # если в этой категории нет блюд, тогда нужно исключить ее
+            # из products_lp и products_cafe
+                excluded_categories_for_lp.append(category_translation[cat])
+                excluded_categories_for_cafe.append(category_translation[cat])
+
         # products_lp = ProductLp.objects.filter(id__in=products_lp)
+
 
         products_lp = ProductLp.objects.filter(
             Q(timetablelp__day_of_the_week=day_of_the_week) &
             Q(timetablelp__type_of_diet=translated_diet) &
-            Q(timetablelp__meals=meal)
-        )
+            Q(timetablelp__meals=meal) &
+            ~Q(category__in=excluded_categories_for_lp) |
+            Q(id__in=products_add_lp)
+        ).distinct()
 
 
 
         # cформировать лист с id продуктов
         menu_cafe: dict = {}
-        for cat in ['main', 'garnish', 'salad', 'soup', 'porridge']:
+        catergorys_cafe = [cat for cat in ['main', 'garnish', 'salad', 'soup', 'porridge'] if cat not in excluded_categories_for_cafe]
+        for cat in catergorys_cafe:
             product = products_menu_cafe.get(cat, None)
             if product:
                 menu_cafe[cat] = [product]
@@ -274,14 +298,14 @@ def create_patient_select(id, date_get):
         except:
             continue
 
-        main = 'cafe-change-' + menu_item.main.split("-")[2] if "cafe" in menu_item.main else menu_item.main
-        garnish = 'cafe-change-' + menu_item.garnish.split("-")[2] if "cafe" in menu_item.garnish else menu_item.garnish
-        porridge = 'cafe-change-' + menu_item.porridge.split("-")[2] if "cafe" in menu_item.porridge else menu_item.porridge
-        soup = 'cafe-change-' + menu_item.soup.split("-")[2] if "cafe" in menu_item.soup else menu_item.soup
-        dessert = 'cafe-change-' + menu_item.dessert.split("-")[2] if "cafe" in menu_item.dessert else menu_item.dessert
-        fruit = 'cafe-change-' + menu_item.fruit.split("-")[2] if "cafe" in menu_item.fruit else menu_item.fruit
-        drink = 'cafe-change-' + menu_item.drink.split("-")[2] if "cafe" in menu_item.drink else menu_item.drink
-        salad = 'cafe-change-' + menu_item.salad.split("-")[2] if "cafe" in menu_item.salad else menu_item.salad
+        main = 'cafe-change-' + menu_item.main.split("-")[2] if "cafe" in menu_item.main else 'lp-main-' + menu_item.main
+        garnish = 'cafe-change-' + menu_item.garnish.split("-")[2] if "cafe" in menu_item.garnish else 'lp-garnish-' + menu_item.garnish
+        porridge = 'cafe-change-' + menu_item.porridge.split("-")[2] if "cafe" in menu_item.porridge else 'lp-porridge-' + menu_item.porridge
+        soup = 'cafe-change-' + menu_item.soup.split("-")[2] if "cafe" in menu_item.soup else 'lp-soup-' + menu_item.soup
+        dessert = 'cafe-change-' + menu_item.dessert.split("-")[2] if "cafe" in menu_item.dessert else 'lp-dessert-' + menu_item.dessert
+        fruit = 'cafe-change-' + menu_item.fruit.split("-")[2] if "cafe" in menu_item.fruit else 'lp-fruit-' + menu_item.fruit
+        drink = 'cafe-change-' + menu_item.drink.split("-")[2] if "cafe" in menu_item.drink else 'lp-drink-' + menu_item.drink
+        salad = 'cafe-change-' + menu_item.salad.split("-")[2] if "cafe" in menu_item.salad else 'lp-salad-' + menu_item.salad
 
         patient_select[meal] = {
             'main': main,
@@ -299,7 +323,8 @@ def create_patient_select(id, date_get):
 
         for key2 in patient_select[key].keys():
             if patient_select[key][key2] != None:
-                if patient_select[key][key2] != '' and 'cafe' in patient_select[key][key2]:
+                if patient_select[key][key2] != '':
+                    # if patient_select[key][key2] != '' and 'cafe' in patient_select[key][key2]:
                     patient_select_list.append(patient_select[key][key2])
 
     return ','.join(patient_select_list)
