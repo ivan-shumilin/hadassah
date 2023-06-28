@@ -845,6 +845,12 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 574),
                 ('description', ' ')
+            ]),
+            OrderedDict([
+                ('name', 'Суфле из отварной говядины (ЩД) 115 гр.'),
+                ('type_of_diet', 'Безйодовая'),
+                ('id', 348),
+                ('description', ' ')
             ])
         ]
         data = {
