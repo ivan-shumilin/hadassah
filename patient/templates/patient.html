@@ -403,7 +403,7 @@
                                 {% endif %}
 
                                 {% if menu_for_the_meal.lp.garnish or menu_for_the_meal.cafe.garnish %}
-                                    <div onclick="submitPatientSelection()" id="category-garnish-{{ meal }}" class="category">
+                                    <div class="category">
                                         <div class="name">Гарнир</div>
                                         {% if not menu_for_the_meal.cafe.garnish %}
                                             <div class="info">Это блюдо нельзя заменить</div>
@@ -411,7 +411,7 @@
                                     </div>
                                     <div id="garnish-{{ meal }}" class="eat-choose-grid" data-eat-choose-grid>
                                         {% for product in menu_for_the_meal.lp.garnish %}
-                                            <div class="item active garnish {{ meal }}" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" id='{{ product.id }}' class="item active garnish {{ meal }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.public_name }}</div>
@@ -450,7 +450,7 @@
                                             </div>
                                         {% endfor %}
                                         {% for product in menu_for_the_meal.cafe.garnish %}
-                                            <div onclick="submitPatientSelection()" class="item garnish {{ meal }}" data-item="item-{{ product.id }}">
+                                            <div onclick="submitPatientSelection()" id='{{ product.id }}' class="item garnish {{ meal }}" data-item="item-{{ product.id }}">
                                                 <div class="info">
                                                     {% if today %}
                                                         <div class="name">{{ product.public_name }}</div>
@@ -1350,6 +1350,27 @@ if (isWithGarnishDinner == 'True') {
             chooses[index1].classList.add('pointer-events-none');
         }
 }
+// если нет у пациента гарнира и основного блюда, тогда спрячим гарниры
+let isHideSideDishesLunch = '{{ hide_side_dishes.lunch }}'
+let isHideSideDishesDinner = '{{ hide_side_dishes.dinner }}'
+
+if (isHideSideDishesLunch == 'True') {
+    let chooses = document.querySelectorAll('.eat-choose-grid>.garnish.lunch')
+    for (var index1 = 0; index1 < chooses.length; index1++ ) {
+            chooses[index1].classList.remove('active');
+            chooses[index1].classList.add('hide-item');
+            document.getElementById("category-garnish-lunch").classList.add('hide-item');
+        }
+}
+
+if (isHideSideDishesDinner == 'True') {
+    let chooses = document.querySelectorAll('.eat-choose-grid>.garnish.dinner')
+    for (var index1 = 0; index1 < chooses.length; index1++ ) {
+            chooses[index1].classList.remove('active');
+            chooses[index1].classList.add('hide-item');
+            document.getElementById("category-garnish-dinner").classList.add('hide-item');
+        }
+}
 
 
 // var observer = new MutationObserver(function (mutations) {
@@ -1397,20 +1418,30 @@ if (isWithGarnishDinner == 'True') {
 // }
 
 //  отмечаем блюда, которые выбрал пациент
+// 111
 selectPatientChoice()
 function selectPatientChoice() {
     const split_str = '{{ patient_select }}'.split(",");
+    // блюда которые надо зафиксировть
+    const fix_dishes = '{{ fix_dishes }}'.split(",");
     let chooses = document.querySelectorAll('.eat-choose-grid')
     for (var index1 = 0; index1 < chooses.length; index1++ ) {
         let items = chooses[index1].querySelectorAll('.eat-choose-grid>.item')
             for (var index2 = 0; index2 < items.length; index2++ ) {
                 let item = items[index2].querySelector('.info>.id')
                 if (split_str.includes(item.innerText)) {
-                    for (var index3 = 0; index3 < items.length; index3++ ) {
-                        items[index3].classList.remove('active')
+                    if (!fix_dishes.includes(item.innerText)) {
+                        for (var index3 = 0; index3 < items.length; index3++ ) {
+                            items[index3].classList.remove('active')
+                        }
+                    items[index2].classList.add('active');
                     }
-                    items[index2].classList.add('active')
                 }
+                // если есть блюдо в зафиксированных блюдах, тогда делаем всю категорию 
+                // некликабельной
+                if (fix_dishes.includes(item.innerText)) {
+                        chooses[index1].classList.add('pointer-events-none')
+                    }
             }
     }
 

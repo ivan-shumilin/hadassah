@@ -92,12 +92,21 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
         которые выбрал пациент.
     """
     menu = {}
+    fix_dishes = []
 
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         # if check_is_comment(user):
         #     products_cafe: tuple = [], [], [], []
         # else:
-        products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
+        products_cafe: list = list(creating_meal_menu_cafe(date_get, diet, meal))
+        cat_index = {
+            'main': 0,
+            'garnish': 1,
+            'salad': 2,
+            'soup': 3,
+            'porridge': 5,
+            'main-breakfast': 4,
+        }
 
         products_menu_cafe: dict = {}
         products_add_lp: list = []
@@ -125,17 +134,30 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
                 if len(id_set) > 0:
                     for id in id_set:
                         if 'cafe' in id:
-                            type: str = 'cafe'
                             product = Product.objects.get(id=id.split('-')[2])
                             products_menu_cafe[cat] = product
                         else:
-                            type: str = 'lp'
                             products_add_lp.append(id)
+                if len(id_set) > 1:
+                    excluded_categories_for_lp.append(category_translation[cat])
+                    excluded_categories_for_cafe.append(cat)
+                    if meal == 'breakfast':
+                        if cat == 'main':
+                            products_cafe[cat_index['main-breakfast']] = []
+                    else:
+                        products_cafe[cat_index[cat]] = []
+                    for id in id_set:
+                        if 'cafe' in id:
+                            fix_dishes.append(id)
+                        else:
+                            fix_dishes.append(f'lp-{cat}-{id}')
+
+
             else:
             # если в этой категории нет блюд, тогда нужно исключить ее
             # из products_lp и products_cafe
                 excluded_categories_for_lp.append(category_translation[cat])
-                excluded_categories_for_cafe.append(category_translation[cat])
+                excluded_categories_for_cafe.append(cat)
 
         # products_lp = ProductLp.objects.filter(id__in=products_lp)
 
@@ -153,6 +175,7 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
         # cформировать лист с id продуктов
         menu_cafe: dict = {}
         catergorys_cafe = [cat for cat in ['main', 'garnish', 'salad', 'soup', 'porridge'] if cat not in excluded_categories_for_cafe]
+        # catergorys_cafe = ['main', 'garnish', 'salad', 'soup', 'porridge']
         for cat in catergorys_cafe:
             product = products_menu_cafe.get(cat, None)
             if product:
@@ -161,15 +184,15 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
                 menu_cafe[cat] = []
 
         menu[meal] = {'cafe': {
-                    'main': list(set(products_cafe[0] + menu_cafe['main'])),
-                    'garnish': list(set(products_cafe[1] + menu_cafe['garnish'])),
-                    'salad': list(set(products_cafe[2] + menu_cafe['salad'])),
-                    'soup': list(set(products_cafe[3] + menu_cafe['soup'])),
-                    'porridge': list(set(products_cafe[5] + menu_cafe['porridge'])),
+                    'main': list(set(products_cafe[0] + menu_cafe.get('main', []))),
+                    'garnish': list(set(products_cafe[1] + menu_cafe.get('garnish', []))),
+                    'salad': list(set(products_cafe[2] + menu_cafe.get('salad', []))),
+                    'soup': list(set(products_cafe[3] + menu_cafe.get('soup', []))),
+                    'porridge': list(set(products_cafe[5] + menu_cafe.get('porridge', []))),
                 }}
 
         if meal == 'breakfast':
-            menu[meal]['cafe']['main'] = list(set(products_cafe[4] + menu_cafe['main']))
+            menu[meal]['cafe']['main'] = list(set(products_cafe[4] + menu_cafe.get('main', [])))
 
         menu[meal].update({'lp': {
             'porridge': create_dict_products_lp(list(products_lp.filter(category='каша'))),
@@ -181,7 +204,7 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
             'fruit': create_dict_products_lp(list(products_lp.filter(category='фрукты'))),
             'drink': create_dict_products_lp(list(products_lp.filter(category='напиток')))
         }})
-    return menu
+    return menu, fix_dishes
 
 
 def create_category(value):
@@ -266,7 +289,13 @@ def create_category(value):
             id = list_item[2]
             category_name = ProductLp.objects.get(id=id).category
             category_name = category_lp_trans[category_name]
-            category[category_name] = id
+            # category[category_name] = id
+            category[category_name] = category[category_name].split(',')
+            if '' in category[category_name]:
+                category[category_name].remove('')
+            category[category_name].append(id)
+            category[category_name] = ','.join(category[category_name])
+            category[category_name].split(',')
         else:
             id = list_item[2]
             category_name = Product.objects.get(id=id).category
@@ -308,14 +337,14 @@ def create_patient_select(id, date_get):
         salad = 'cafe-change-' + menu_item.salad.split("-")[2] if "cafe" in menu_item.salad else 'lp-salad-' + menu_item.salad
 
         patient_select[meal] = {
-            'main': main,
-            'garnish': garnish,
-            'porridge': porridge,
-            'soup': soup,
-            'dessert': dessert,
-            'fruit': fruit,
-            'drink': drink,
-            'salad': salad,
+            'main': main if main != 'lp-main-' else None,
+            'garnish': garnish if garnish != 'lp-garnish-' else None,
+            'porridge': porridge if porridge != 'lp-porridge-' else None,
+            'soup': soup if soup != 'lp-soup-' else None,
+            'dessert': dessert if dessert != 'lp-dessert-' else None,
+            'fruit': fruit if fruit != 'lp-fruit-' else None,
+            'drink': drink if drink != 'lp-drink-' else None,
+            'salad': salad if salad != 'lp-salad-' else None,
         }
 # сделаем из словаря список
     patient_select_list = []
@@ -371,6 +400,9 @@ def del_if_not_product_without_garnish(menu_for_lk_patient):
         count_product_without_garnish = \
             len([product for product in menu_for_lk_patient[meal]['lp']['main'] if not product.with_garnish] + \
                 [product for product in menu_for_lk_patient[meal]['cafe']['main'] if not product.with_garnish])
-        if count_product_without_garnish == 0:
+        count_product_main = \
+            len([product for product in menu_for_lk_patient[meal]['lp']['main']] + \
+                [product for product in menu_for_lk_patient[meal]['cafe']['main']])
+        if count_product_without_garnish == 0 and count_product_main > 0:
             menu_for_lk_patient[meal]['cafe']['garnish'] = []
     return menu_for_lk_patient

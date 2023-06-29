@@ -104,7 +104,7 @@ def patient(request, id):
     if parse(date_get).date() < user.receipt_date:
         is_have = 'date'  # выводим сообщение об ошибке
 
-    menu_for_lk_patient = creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, user)
+    menu_for_lk_patient, fix_dishes = creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, user)
 
     products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
                                         Q(timetablelp__type_of_diet=translated_diet) &
@@ -149,7 +149,8 @@ def patient(request, id):
             dinner_is_with_garnish = False
     else:
         lunch_is_with_garnish = dinner_is_with_garnish = False
-    fix_dishes = "lp-main-363,lp-main-465"
+    # fix_dishes = "lp-main-363,lp-main-465"
+    fix_dishes = ','.join(fix_dishes)
     data = {'is_have': is_have,
             'user': user,
             'breakfast': breakfast,
