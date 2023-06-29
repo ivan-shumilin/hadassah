@@ -130,14 +130,15 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
         for cat in catergorys:
             id_set = getattr(menu_lp, cat, None)
             if id_set:
-                id_set = id_set.split(',')
+                id_set = id_set.strip(',').split(',')
                 if len(id_set) > 0:
                     for id in id_set:
                         if 'cafe' in id:
                             product = Product.objects.get(id=id.split('-')[2])
                             products_menu_cafe[cat] = product
                         else:
-                            products_add_lp.append(id)
+                            if id != '':
+                                products_add_lp.append(id)
                 if len(id_set) > 1:
                     excluded_categories_for_lp.append(category_translation[cat])
                     excluded_categories_for_cafe.append(cat)
