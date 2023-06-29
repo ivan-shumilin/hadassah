@@ -129,8 +129,7 @@ def doctor(request):
                                                  'extra_bouillon': TextInput(attrs={'required': "True"}),
                                              },
                                              extra=0,)
-    # УДАЛИТЬ
-    create_product_storage('breakfast')
+
     not_active_users_set = get_not_active_users_set()
     CustomUserFormSet = delete_choices(CustomUserFormSet)
 
