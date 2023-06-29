@@ -118,6 +118,17 @@ def patient(request, id):
     date_timer = parse(date_get)
     today = (date_get == str(date.today()))
 
+    # проверяем, если нет гарнира и основного блюда, тогда надо спрятать гарниры
+    menu_all_lunch = MenuByDay.objects.filter(
+        date=date_get, user_id=user, meal='lunch'
+    ).first()
+    menu_all_dinner = MenuByDay.objects.filter(
+        date=date_get, user_id=user, meal='dinner'
+    ).first()
+    hide_side_dishes = {
+        'lunch': True if getattr(menu_all_lunch, 'garnish', '') == '' and getattr(menu_all_lunch, 'main', '') == '' else False,
+        'dinner': True if getattr(menu_all_dinner, 'garnish', '') == '' and getattr(menu_all_dinner, 'main', '') == '' else False,
+    }
     # проверяем есть ли ганрир, если нет удаляем блюда, которые идут без гарнира
     menu_for_lk_patient = del_if_not_garnish(menu_for_lk_patient)
 
@@ -138,6 +149,7 @@ def patient(request, id):
             dinner_is_with_garnish = False
     else:
         lunch_is_with_garnish = dinner_is_with_garnish = False
+    fix_dishes = "lp-main-363,lp-main-465"
     data = {'is_have': is_have,
             'user': user,
             'breakfast': breakfast,
@@ -152,7 +164,9 @@ def patient(request, id):
             'patient_select': patient_select,
             'today': today,
             'lunch_is_with_garnish': lunch_is_with_garnish,
-            'dinner_is_with_garnish': dinner_is_with_garnish
+            'dinner_is_with_garnish': dinner_is_with_garnish,
+            'hide_side_dishes': hide_side_dishes,
+            'fix_dishes': fix_dishes,
             }
     return render(request, 'patient.html', context=data)
 

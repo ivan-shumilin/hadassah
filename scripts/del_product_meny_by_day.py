@@ -3,7 +3,7 @@ from typing import Optional
 
 from django.db.models import Q
 
-from nutritionist.models import MenuByDay
+from nutritionist.models import MenuByDay, MenuByDayReadyOrder
 
 
 @transaction.atomic
@@ -14,16 +14,16 @@ def delete_or_change_product() -> str:
     Если ProductLp - id
     Если Product - cafe-cat-id
     """
-    start_date: str = '2023-06-15'
-    end_date: str = '2023-06-15'
-    old_product_id: str = '314'
+    start_date: str = '2023-06-29'
+    end_date: str = '2023-06-29'
+    old_product_id: str = '271'
     meals = ['dinner',]
-    new_product_id: Optional[str] = '563'
+    new_product_id: Optional[str] = '516'
     diet = "ОВД"
 
     # patient_id: Optional[str] = None
 
-    category = 'main'
+    category = 'garnish'
 
     all_menu = MenuByDay.objects.filter(
         Q(date__range=[start_date, end_date]),
@@ -39,4 +39,33 @@ def delete_or_change_product() -> str:
         setattr(menu, category, product_set)
 
     MenuByDay.objects.bulk_update(all_menu, [category])
+
+
+# добавить позицию в меню
+from nutritionist.models import MenuByDay
+all_menu = MenuByDay.objects.filter(
+    Q(date__range=["2023-06-22", "2023-06-22"]),
+    Q(meal__in=['afternoon',]),
+    Q(type_of_diet__in=["ОВД", "ЩД", "ВБД", "ВКД"]),
+)
+for menu in all_menu:
+    product_set = menu.dessert.split(',')
+    product_set.append('458')
+    product_set = ','.join(product_set)
+    menu.drink = product_set.strip(',')
+    menu.save()
+
+
+
+# жесткое добавление позиции в меню
+from nutritionist.models import MenuByDay
+all_menu = MenuByDay.objects.filter(
+    Q(date__range=["2023-06-22", "2023-06-22"]),
+    Q(meal__in=['afternoon',]),
+    Q(type_of_diet__in=["ОВД", "ЩД", "ВБД", "ВКД"]),
+)
+for menu in all_menu:
+    menu.dessert = '573'
+    menu.save()
+
 
