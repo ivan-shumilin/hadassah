@@ -18,12 +18,13 @@ def create_products_list_category(category, meal):
                 product_dly_sravneniya['type_of_diet'].add(product.type_of_diet)
                 break
         else:
-            products_all.append(
-                {'category': category,
-                    'id': product.products_id.split('-')[2],
-                    'name': Product.objects.get(id=product.products_id.split('-')[2]).public_name,
-                    'type_of_diet': {product.type_of_diet},
-                    'count': 1})
+            products_all.append({
+                'category': category,
+                'id': product.products_id.split('-')[2],
+                'name': Product.objects.get(id=product.products_id.split('-')[2]).public_name,
+                'type_of_diet': {product.type_of_diet},
+                'count': 1,
+            })
     return products_all
 
 
