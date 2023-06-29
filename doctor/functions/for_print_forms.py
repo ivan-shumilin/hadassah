@@ -414,11 +414,13 @@ def create_product_storage(meal):
         for item in menu.values():
             for category in ['main', 'garnish', 'soup', 'salad', 'porridge']:
                 if item[category] is not None:
-                    if 'cafe' in item[category]:
-                        to_create.append(ProductStorage(date_create=date.today(),
-                                                meal=meal,
-                                                type_of_diet=user.type_of_diet,
-                                                category=category,
-                                                products_id=item[category]))
+                    item_set = item[category].split(',')
+                    for product in item_set:
+                        if 'cafe' in item[category]:
+                            to_create.append(ProductStorage(date_create=date.today(),
+                                                    meal=meal,
+                                                    type_of_diet=user.type_of_diet,
+                                                    category=category,
+                                                    products_id=product))
     ProductStorage.objects.bulk_create(to_create)
 
