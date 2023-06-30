@@ -140,7 +140,7 @@ def update_product_description():
     """
     Обновляет состав продукта в ProductLp.
     """
-    products = ProductLp.objects.all()[0:10]
+    products = ProductLp.objects.all()
     for i, p in enumerate(products):
         if p.product_id:
             description = description_parsing(p.product_id)
