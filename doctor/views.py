@@ -8,6 +8,7 @@ from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput, CheckboxInput
 from drf_spectacular.utils import extend_schema_view, extend_schema
 
+from scripts.del_product_meny_by_day import delete_or_change_product
 from .forms import PatientRegistrationForm, DietChoiceForm
 from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, BotChatId, СhangesUsersToday, \
     UsersToday, TimetableLp, Ingredient, MenuByDayReadyOrder, UsersReadyOrder, ModifiedDish, Report
@@ -856,13 +857,13 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('name', 'Гречка отварная 150 гр.'),
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 463),
-                ('description', ' ')
+                ('description', 'Масло подсолнечное, соль, вода для производства, гречка')
             ]),
             OrderedDict([
                 ('name', 'Яйцо куриное отварное 1 шт.'),
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 577),
-                ('description', ' ')
+                ('description', 'Яйцо куриное')
             ]),
         ]
         data = {
