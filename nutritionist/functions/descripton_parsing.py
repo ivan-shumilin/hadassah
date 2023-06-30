@@ -145,6 +145,6 @@ def update_product_description():
         if p.product_id:
             description = description_parsing(p.product_id)
             print(f'{i}. {p.name}, {description}')
-            p.description
+            p.description = description
 
     ProductLp.objects.bulk_update(products, ['description', ])
