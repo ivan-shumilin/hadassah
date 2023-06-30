@@ -10,7 +10,7 @@
         <!-- Add additional CSS in static file -->
         {% load static %}
         <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
     </head>
     <style>
@@ -37,13 +37,37 @@
             color: var(--color-main);
             text-decoration: none;
         }
+        .all-show {
+            border: 2px solid #a7bbc7 !important;
+            color: #a7bbc7 !important;
+            cursor: pointer;
+        }
+        .toast {
+            background: #0e7abc;
+            color: #f6f8f9;
+            font-size: 16px;
+        }
+        .button-order {
+            position: relative;
+            bottom: 2px;
+        }
     </style>
 <div class="screen">
     <body>
+        <div class="toast-container position-fixed bottom-0 end-0 p-3 top-0">
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div id="toast-text" class="toast-body">
+
+                   </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+                  </div>
+                </div>
+          </div>
 
         <div class="report-header-block" style="margin-bottom: 5px;">
             <div class="container inner">
-                <h1>Сводный отчёт</h1>
+                <h1>Сводный отчёт <span class="order button-order" ><a class="all-show" id="show-comment" onclick="showHiddenComment()">Только с комментариями</a></span></h1>
 
                 <div class="item item-eat">
                     <div class="text">{{ catalog.meal }} {% if day %}<span>(Заказ на завтра, {{ date_create }})</span> {% endif %}</div>
@@ -73,7 +97,7 @@
                     <a href="{% url 'menu_lp_for_staff' %}">Меню на неделю</a>
                 </div>
             </div>
-</div>
+        </div>
 
         </div>
 
@@ -116,6 +140,11 @@
                         {% for diet in catalog.count_diet %}
                             <div class="tr group">
                                 <div class="td inline">
+                                    {% if diet.with_comment|length > 0 %}
+                                        <img id="icon-{{ diet.name }}" onclick="toggleHiddenClassByClass('{{ diet.name }}', 'icon-{{ diet.name }}')" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть комментарии">
+                                    {% else %}
+                                            <img id="icon-{{ diet.name }}" onclick="toggleHiddenClassByClass('{{ diet.name }}', 'icon-{{ diet.name }}')" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                    {% endif %}
                                     <div class="tags">
                                         {% if diet.name == "Нулевая диета" %}
                                             <div class="tag green">{{ diet.name }}</div>
@@ -142,6 +171,8 @@
                                         {% else %}
                                             <div class="tag pink">{{ diet.name }}</div>
                                         {% endif %}
+
+
                                     </div>
                                 </div>
                                 <div class="td value total">{{ diet.total }}</div>
@@ -150,8 +181,9 @@
                                 <div class="td value">{{ diet.4nd_floor }}</div>
                                 <div class="td value">{{ diet.not_floor }}</div>
                             </div>
+
                             {% for diet1 in diet.without_comment %}
-                                <div class="tr dashed">
+                                <div class="tr dashed hidden {{ diet.name }}">
                                     <div class="td">
                                         <div class="comment" data-tooltip="Без комментария">Без комментария</div>
                                     </div>
@@ -163,7 +195,7 @@
                                 </div>
                             {% endfor %}
                             {% for diet1 in diet.with_comment %}
-                                <div class="tr dashed">
+                                <div class="tr dashed hidden {{ diet.name }}">
                                     <div class="td">
                                         <div class="comment" data-tooltip="{{ diet1.name }}">{{ diet1.name }}</div>
                                     </div>
@@ -212,7 +244,7 @@
                                 </div>
                             </div>
                             {% for user in catalog.users_2nd_floor %}
-                                <div class="tr">
+                                <div class="tr {% if not user.comment %}without_comment{% endif %}">
                                     <div class="td td-patient">
                                         <div class="patient">{{ user.name|formatting_full_name }}</div>
                                         {% if user.comment %}
@@ -307,7 +339,7 @@
                                 </div>
                             </div>
                                 {% for user in catalog.users_3nd_floor %}
-                                <div class="tr">
+                                <div class="tr {% if not user.comment %}without_comment{% endif %}">
                                     <div class="td td-patient">
                                         <div class="patient">{{ user.name|formatting_full_name }}</div>
                                         {% if user.comment %}
@@ -401,7 +433,7 @@
                                 </div>
                             </div>
                             {% for user in catalog.users_4nd_floor %}
-                                <div class="tr">
+                                <div class="tr {% if not user.comment %}without_comment{% endif %}">
                                     <div class="td td-patient">
                                         <div class="patient">{{ user.name|formatting_full_name }}</div>
                                         {% if user.comment %}
@@ -496,7 +528,7 @@
                                 </div>
                             </div>
                             {% for user in catalog.users_not_floor %}
-                                <div class="tr">
+                                <div class="tr {% if not user.comment %}without_comment{% endif %}">
                                     <div class="td td-patient">
                                         <div class="patient">{{ user.name|formatting_full_name }}</div>
                                         {% if user.comment %}
@@ -827,7 +859,59 @@
         {% endif %}
     </table>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script>
+function toggleHiddenClassByClass(className, iconId) {
+  const elements = document.getElementsByClassName(className);
 
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+
+    if (element.classList.contains('hidden')) {
+      document.getElementById(iconId).classList.add('flip');
+      element.classList.remove('hidden');
+    } else {
+      element.classList.add('hidden');
+      document.getElementById(iconId).classList.remove('flip');
+    }
+  }
+}
+
+
+function showHiddenComment() {
+    classNow = document.getElementById('show-comment');
+    const elements = document.getElementsByClassName('without_comment');
+    let toastText = document.getElementById('toast-text');
+    if (classNow.classList.contains('all-show')) {
+        classNow.classList.remove('all-show')
+        classNow.classList.add('comment-show')
+        toastText.innerHTML = 'Показаны пациенты только с комментариями'
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i];
+            element.classList.add('hidden');
+        }
+        
+    } else {
+        classNow.classList.remove('comment-show')
+        classNow.classList.add('all-show')
+        toastText.innerHTML = 'Показаны все пациенты'
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i];
+            element.classList.remove('hidden');
+        }
+    }
+
+}
+
+const toastTrigger = document.getElementById('show-comment')
+const toastLiveExample = document.getElementById('liveToast')
+
+if (toastTrigger) {
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+  toastTrigger.addEventListener('click', () => {
+    toastBootstrap.show()
+  })
+}
+</script>
 </html>
 
