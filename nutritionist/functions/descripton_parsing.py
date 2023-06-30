@@ -1,6 +1,9 @@
 """ Модуль по API получает ТТК и из ингридиентов собирает состав блюда. """
 from doctor.functions.download import get_tk, get_name, get_ingredients
 from nutritionist.models import Ingredient
+from django.db import transaction
+
+from nutritionist.models import ProductLp
 
 
 def get_ttk(id):
@@ -131,3 +134,17 @@ def description_parsing(id):
         compileall = "Отсутствует"
     return compileall
 
+
+@transaction.atomic
+def update_product_description():
+    """
+    Обновляет состав продукта в ProductLp.
+    """
+    products = ProductLp.objects.all()[0:10]
+    for i, p in enumerate(products):
+        if p.product_id:
+            description = description_parsing(p.product_id)
+            print(f'{i}. {p.name}, {description}')
+            p.description
+
+    ProductLp.objects.bulk_update(products, ['description', ])
