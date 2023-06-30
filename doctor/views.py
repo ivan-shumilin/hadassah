@@ -851,7 +851,19 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 348),
                 ('description', ' ')
-            ])
+            ]),
+            OrderedDict([
+                ('name', 'Гречка отварная 150 гр.'),
+                ('type_of_diet', 'Безйодовая'),
+                ('id', 463),
+                ('description', ' ')
+            ]),
+            OrderedDict([
+                ('name', 'Яйцо куриное отварное 1 шт.'),
+                ('type_of_diet', 'Безйодовая'),
+                ('id', 577),
+                ('description', ' ')
+            ]),
         ]
         data = {
             "dishes_all": dishes_all,
