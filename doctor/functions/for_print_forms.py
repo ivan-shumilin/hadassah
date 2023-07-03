@@ -416,7 +416,7 @@ def create_product_storage(meal):
                 if item[category] is not None:
                     item_set = item[category].split(',')
                     for product in item_set:
-                        if 'cafe' in item[category]:
+                        if 'cafe' in product:
                             to_create.append(ProductStorage(date_create=date.today(),
                                                     meal=meal,
                                                     type_of_diet=user.type_of_diet,
