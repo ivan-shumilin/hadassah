@@ -14,149 +14,155 @@
     </head>
     <body>
 
-
-        <div class="card-header-block">
-            <div class="container inner">
-                <div class="back">
-                    <a href="{% url 'printed_form_two_lp_new' %}">Назад к заявке</a>
-                </div>
-                <div class="name">{{ result.name }}</div>
-                <div class="fields">
-                    <div class="portion field">
-                        <div class="label">Порций</div>
-                        <div class="input-controls">
-                            <span onclick="" class="minus"></span>
-                            <input onchange="inputEnter()" id="count" type="text" name="portion" value="{{ count }}">
-                            <span onclick="" class="plus"></span>
-                        </div>
+        {% if result == "Нет данных" %}
+            <div class="back mr-top-10 mr-left-10">
+                <a href="{% url 'printed_form_two_lp_new' %}">Назад к заявке</a>
+            </div>
+            <div class="mr-top-30 mr-left-10">Нет данных</div>
+        {% else %}
+            <div class="card-header-block">
+                <div class="container inner">
+                    <div class="back">
+                        <a href="{% url 'printed_form_two_lp_new' %}">Назад к заявке</a>
                     </div>
-                    <div class="weight field">
-                        <div class="label">Грамм</div>
-                        <input id="weight" type="text" name="weight" value="{{ weight|floatformat:'0' }}">
-                        <input class="hidden-edit" id="weight-const" value="{{ result.weight }}">
+                    <div class="name">{{ result.name }}</div>
+                    <div class="fields">
+                        <div class="portion field">
+                            <div class="label">Порций</div>
+                            <div class="input-controls">
+                                <span onclick="" class="minus"></span>
+                                <input onchange="inputEnter()" id="count" type="text" name="portion" value="{{ count }}">
+                                <span onclick="" class="plus"></span>
+                            </div>
+                        </div>
+                        <div class="weight field">
+                            <div class="label">Грамм</div>
+                            <input id="weight" type="text" name="weight" value="{{ weight|floatformat:'0' }}">
+                            <input class="hidden-edit" id="weight-const" value="{{ result.weight }}">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
 
-        <div class="card-block">
-            <div class="inner container">
-                <div class="card-block-left">
-                    <div class="table" data-table>
-                        <div class="thead">
-                            <div class="tr">
-                                <div class="th name">продукт</div>
-                                <div class="th">
-                                    <div>
-                                        <div class="value">ед. изм.</div>
+            <div class="card-block">
+                <div class="inner container">
+                    <div class="card-block-left">
+                        <div class="table" data-table>
+                            <div class="thead">
+                                <div class="tr">
+                                    <div class="th name">продукт</div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">ед. изм.</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="th">
-                                    <div>
-                                        <div class="value">брутто</div>
-                                        <div class="unit">ед. изм.</div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">брутто</div>
+                                            <div class="unit">ед. изм.</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="th">
-                                    <div>
-                                        <div class="value">брутто</div>
-                                        <div class="unit">кг</div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">брутто</div>
+                                            <div class="unit">кг</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="th">
-                                    <div>
-                                        <div class="value">нетто</div>
-                                        <div class="unit">п/ф, кг</div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">нетто</div>
+                                            <div class="unit">п/ф, кг</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="th">
-                                    <div>
-                                        <div class="value">выход</div>
-                                        <div class="unit">кг</div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">выход</div>
+                                            <div class="unit">кг</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="tbody">
-                            {% for ing1 in result.items %}
-                                {% if ing1.items %}
-                                    <div class="tr parent">
-                                        <div class="td name">{{ ing1.name }}</div>
-                                        <div class="td">{{ ing1.measure_unit }}</div>
-                                        <div class="td weighting">{{ ing1.amountIn }}</div>
-                                        <div class="td weighting">{{ ing1.amountIn }}</div>
-                                        <div class="td weighting">{{ ing1.amountMiddle }}</div>
-                                        <div class="td weighting">{{ ing1.amountOut }}</div>
-                                        <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
-                                        <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
-                                        <div class="td weighting-const hide-item">{{ ing1.amountMiddle }}</div>
-                                        <div class="td weighting-const hide-item">{{ ing1.amountOut }}</div>
-                                            <div class="children table">
-                                                <div class="tbody">
-                                                    {% for ing2 in ing1.items %}
-                                                        <div class="tr">
-                                                            <div class="td name">{{ ing2.name }}</div>
-                                                            <div class="td">{{ ing2.measure_unit }}</div>
-                                                            <div class="td weighting">{{ ing2.amountIn }}</div>
-                                                            <div class="td weighting">{{ ing2.amountIn }}</div>
-                                                            <div class="td weighting">{{ ing2.amountMiddle }}</div>
-                                                            <div class="td weighting">{{ ing2.amountOut }}</div>
-                                                            <div class="td weighting-const hide-item">{{ ing2.amountIn }}</div>
-                                                            <div class="td weighting-const hide-item">{{ ing2.amountIn }}</div>
-                                                            <div class="td weighting-const hide-item">{{ ing2.amountMiddle }}</div>
-                                                            <div class="td weighting-const hide-item">{{ ing2.amountOut }}</div>
-                                                        </div>
-                                                    {% endfor %}
+                            <div class="tbody">
+                                {% for ing1 in result.items %}
+                                    {% if ing1.items %}
+                                        <div class="tr parent">
+                                            <div class="td name">{{ ing1.name }}</div>
+                                            <div class="td">{{ ing1.measure_unit }}</div>
+                                            <div class="td weighting">{{ ing1.amountIn }}</div>
+                                            <div class="td weighting">{{ ing1.amountIn }}</div>
+                                            <div class="td weighting">{{ ing1.amountMiddle }}</div>
+                                            <div class="td weighting">{{ ing1.amountOut }}</div>
+                                            <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
+                                            <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
+                                            <div class="td weighting-const hide-item">{{ ing1.amountMiddle }}</div>
+                                            <div class="td weighting-const hide-item">{{ ing1.amountOut }}</div>
+                                                <div class="children table">
+                                                    <div class="tbody">
+                                                        {% for ing2 in ing1.items %}
+                                                            <div class="tr">
+                                                                <div class="td name">{{ ing2.name }}</div>
+                                                                <div class="td">{{ ing2.measure_unit }}</div>
+                                                                <div class="td weighting">{{ ing2.amountIn }}</div>
+                                                                <div class="td weighting">{{ ing2.amountIn }}</div>
+                                                                <div class="td weighting">{{ ing2.amountMiddle }}</div>
+                                                                <div class="td weighting">{{ ing2.amountOut }}</div>
+                                                                <div class="td weighting-const hide-item">{{ ing2.amountIn }}</div>
+                                                                <div class="td weighting-const hide-item">{{ ing2.amountIn }}</div>
+                                                                <div class="td weighting-const hide-item">{{ ing2.amountMiddle }}</div>
+                                                                <div class="td weighting-const hide-item">{{ ing2.amountOut }}</div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                {% else %}
-                                    <div class="tr">
-                                        <div class="td name">{{ ing1.name }}</div>
-                                        <div class="td">{{ ing1.measure_unit }}</div>
-                                        <div class="td weighting">{{ ing1.amountIn }}</div>
-                                        <div class="td weighting">{{ ing1.amountIn }}</div>
-                                        <div class="td weighting">{{ ing1.amountMiddle }}</div>
-                                        <div class="td weighting">{{ ing1.amountOut }}</div>
-                                        <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
-                                        <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
-                                        <div class="td weighting-const hide-item">{{ ing1.amountMiddle }}</div>
-                                        <div class="td weighting-const hide-item">{{ ing1.amountOut }}</div>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                           
-                    </div>
-                </div>
-
-                <div class="card-block-right">
-                    <div class="card-detail">
-                        <div class="only-mobile">
-                            <div class="toggle">
-                                Технология приготовления
-                            </div>
-                        </div>
-                        <div class="content">
-                            <div class="card-detail-inner">
-                                <div class="text">
-                                    {% if result.technologyDescription == "" %}
-                                        <p>Отсутствует</p>
                                     {% else %}
-                                        {{ result.technologyDescription }}
+                                        <div class="tr">
+                                            <div class="td name">{{ ing1.name }}</div>
+                                            <div class="td">{{ ing1.measure_unit }}</div>
+                                            <div class="td weighting">{{ ing1.amountIn }}</div>
+                                            <div class="td weighting">{{ ing1.amountIn }}</div>
+                                            <div class="td weighting">{{ ing1.amountMiddle }}</div>
+                                            <div class="td weighting">{{ ing1.amountOut }}</div>
+                                            <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
+                                            <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
+                                            <div class="td weighting-const hide-item">{{ ing1.amountMiddle }}</div>
+                                            <div class="td weighting-const hide-item">{{ ing1.amountOut }}</div>
+                                        </div>
                                     {% endif %}
+                                {% endfor %}
+                            
+                        </div>
+                    </div>
 
+                    <div class="card-block-right">
+                        <div class="card-detail">
+                            <div class="only-mobile">
+                                <div class="toggle">
+                                    Технология приготовления
                                 </div>
-                                
-                                <div class="img">
-                                    {% if img %}
-                                        <img src="{{ img.url }}" alt="">
-                                    {% endif %}
-                                </div>
-                                <div class="allergens">
-                                    <div class="title">Аллергены</div>
-                                    <div class="tags">
+                            </div>
+                            <div class="content">
+                                <div class="card-detail-inner">
+                                    <div class="text">
+                                        {% if result.technologyDescription == "" %}
+                                            <p>Отсутствует</p>
+                                        {% else %}
+                                            {{ result.technologyDescription }}
+                                        {% endif %}
 
+                                    </div>
+                                    
+                                    <div class="img">
+                                        {% if img %}
+                                            <img src="{{ img.url }}" alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="allergens">
+                                        <div class="title">Аллергены</div>
+                                        <div class="tags">
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -164,7 +170,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+    {% endif %}
 
 
     {% load static %}

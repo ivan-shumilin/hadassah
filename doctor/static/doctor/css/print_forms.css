@@ -370,9 +370,13 @@ label {
     color: #fff !important;
   }
   
-  .mr-top-20 {
+.mr-top-20 {
     margin-top: 20px;
   }
+
+.mr-top-30 {
+    margin-top: 30px;
+}
   
   .container-flex {
     display: flex;
@@ -418,3 +422,8 @@ label {
 .flip {
     transform: rotate(180deg);
   }
+
+.link {
+    color: #0e7abc;
+    text-decoration: auto;
+}

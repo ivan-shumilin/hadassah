@@ -1345,8 +1345,7 @@ def printed_form_two_cafe_new(request):
 def tk(request, id, count):
     import operator
     from nutritionist.models import Ingredient
-    count: int = int(count) + 2  # сутчная проба и бракераж
-
+    count: int = int(count) + 2 if count != '0' else 1  # сутчная проба и бракераж
 
     tk, error = get_tk(id)
 
@@ -1404,31 +1403,37 @@ def tk(request, id, count):
 #             except:
 #                 item_tk_2['name'] = None
 
+    try:
+        result = tk['assemblyCharts'][0]
+    except:
+        result = "Нет данных"
 
-    result = tk['assemblyCharts'][0]
+    if result != "Нет данных":
+        for ing in result['items']:
+            for ing2 in tk['assemblyCharts'][1:]:
+                try:
+                    if ing['productId'] == ing2['assembledProductId']:
+                        ing['items'] = ing2['items'].copy()
+                except:
+                    pass
+            if 'items' not in ing:
+                ing['items'] = None
 
+        result['allergens'] = get_allergens(id)
 
-    for ing in result['items']:
-        for ing2 in tk['assemblyCharts'][1:]:
-            try:
-                if ing['productId'] == ing2['assembledProductId']:
-                    ing['items'] = ing2['items'].copy()
-            except:
-                pass
-        if 'items' not in ing:
-            ing['items'] = None
+        for item in result['items']:
+            if item['items']:
+                item['weight_tk'] = get_weight_tk(item['productId'])
+                for sub_item in item['items']:
+                    sub_item['amountIn'] = item['amountIn'] * sub_item['amountIn']
+                    sub_item['amountMiddle'] = item['amountMiddle'] * sub_item['amountMiddle']
+                    sub_item['amountOut'] = item['amountOut'] * sub_item['amountOut']
 
-    result['allergens'] = get_allergens(id)
+        result['items'].sort(key=operator.itemgetter('sortWeight'))
 
-    for item in result['items']:
-        if item['items']:
-            item['weight_tk'] = get_weight_tk(item['productId'])
-            for sub_item in item['items']:
-                sub_item['amountIn'] = item['amountIn'] * sub_item['amountIn']
-                sub_item['amountMiddle'] = item['amountMiddle'] * sub_item['amountMiddle']
-                sub_item['amountOut'] = item['amountOut'] * sub_item['amountOut']
-
-    result['items'].sort(key=operator.itemgetter('sortWeight'))
+        weight = count * int(result['weight'])
+    else:
+        weight = 0
 
     try:
         img = ProductLp.objects.filter(product_id=id).first().image
@@ -1436,12 +1441,13 @@ def tk(request, id, count):
         img = None
 
 
+
     data = {
         'img': img,
         'result': result,
         'error': error,
         'count': count,
-        'weight': count * int(result['weight'])
+        'weight': weight,
     }
     return render(request, 'tk.html', context=data)
 
@@ -1679,23 +1685,23 @@ def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):
                                         Q(timetablelp__type_of_diet=translated_diet) &
                                         Q(timetablelp__meals=meal))
 
-    products_porridge = [{'name': product.name, 'energy_value':get_energy_value(product)}
+    products_porridge = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
                          for product in products.filter(category='каша')]
-    products_salad = [{'name': product.name, 'energy_value':get_energy_value(product)}
+    products_salad = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
                          for product in products.filter(category='салат')]
-    products_soup = [{'name': product.name, 'energy_value':get_energy_value(product)}
+    products_soup = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
                      for product in products.filter(category='суп')]
-    products_main = [{'name': product.name, 'energy_value':get_energy_value(product)}
+    products_main = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
                      for product in products.filter(category='основной')]
-    products_garnish = [{'name': product.name, 'energy_value':get_energy_value(product)}
+    products_garnish = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
                         for product in products.filter(category='гарнир')]
-    products_dessert = [{'name': product.name, 'energy_value':get_energy_value(product)}
+    products_dessert = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
                         for product in products.filter(category='десерт')]
-    products_fruit = [{'name': product.name, 'energy_value':get_energy_value(product)}
+    products_fruit = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
                       for product in products.filter(category='фрукты')]
-    products_drink = [{'name': product.name, 'energy_value':get_energy_value(product)}
+    products_drink = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
                       for product in products.filter(category='напиток')]
-    products_product = [{'name': product.name, 'energy_value':get_energy_value(product)}
+    products_product = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
                         for product in products.filter(category='товар')]
 
     all_products = products_salad,\
