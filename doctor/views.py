@@ -871,6 +871,18 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('id', 521),
                 ('description', 'Тофники замороженные')
             ]),
+            OrderedDict([
+                ('name', 'Сметана 15% 40 гр.'),
+                ('type_of_diet', 'Безйодовая'),
+                ('id', 474),
+                ('description', 'Сметана 15%')
+            ]),
+            OrderedDict([
+                ('name', 'Блин 2 шт.'),
+                ('type_of_diet', 'Безйодовая'),
+                ('id', 579),
+                ('description', 'Масло подсолнечное, тесто для блинов (молоко 3,2%, яйцо куриное, масло подсолнечное, сахар песок, соль, мука пшеничная)')
+            ]),
         ]
         data = {
             "dishes_all": dishes_all,
