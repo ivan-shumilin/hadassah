@@ -14,21 +14,21 @@ def delete_or_change_product() -> str:
     Если ProductLp - id
     Если Product - cafe-cat-id
     """
-    start_date: str = '2023-06-29'
-    end_date: str = '2023-06-29'
-    old_product_id: str = '271'
-    meals = ['dinner',]
-    new_product_id: Optional[str] = '516'
-    diet = "ОВД"
+    start_date: str = '2023-07-03'
+    end_date: str = '2023-07-03'
+    old_product_id: str = '436'
+    meals = ['lunch',]
+    new_product_id: Optional[str] = '578'
+    # diet = "ОВД"
 
     # patient_id: Optional[str] = None
 
-    category = 'garnish'
+    category = 'soup'
 
     all_menu = MenuByDay.objects.filter(
         Q(date__range=[start_date, end_date]),
         Q(meal__in=meals),
-        type_of_diet=diet,
+        # type_of_diet=diet,
     )
     for menu in all_menu:
         product_set = getattr(menu, category)
