@@ -328,14 +328,45 @@ def create_patient_select(id, date_get):
         except:
             continue
 
-        main = 'cafe-change-' + menu_item.main.split("-")[2] if "cafe" in menu_item.main else 'lp-main-' + menu_item.main
-        garnish = 'cafe-change-' + menu_item.garnish.split("-")[2] if "cafe" in menu_item.garnish else 'lp-garnish-' + menu_item.garnish
-        porridge = 'cafe-change-' + menu_item.porridge.split("-")[2] if "cafe" in menu_item.porridge else 'lp-porridge-' + menu_item.porridge
-        soup = 'cafe-change-' + menu_item.soup.split("-")[2] if "cafe" in menu_item.soup else 'lp-soup-' + menu_item.soup
-        dessert = 'cafe-change-' + menu_item.dessert.split("-")[2] if "cafe" in menu_item.dessert else 'lp-dessert-' + menu_item.dessert
-        fruit = 'cafe-change-' + menu_item.fruit.split("-")[2] if "cafe" in menu_item.fruit else 'lp-fruit-' + menu_item.fruit
-        drink = 'cafe-change-' + menu_item.drink.split("-")[2] if "cafe" in menu_item.drink else 'lp-drink-' + menu_item.drink
-        salad = 'cafe-change-' + menu_item.salad.split("-")[2] if "cafe" in menu_item.salad else 'lp-salad-' + menu_item.salad
+        try:
+            main = 'cafe-change-' + menu_item.main.split("-")[2] if "cafe" in menu_item.main else 'lp-main-' + menu_item.main
+        except:
+            main = 'cafe-change-'
+
+        try:
+            garnish = 'cafe-change-' + menu_item.garnish.split("-")[2] if "cafe" in menu_item.garnish else 'lp-garnish-' + menu_item.garnish
+        except:
+            garnish = 'cafe-change-'
+
+        try:
+            porridge = 'cafe-change-' + menu_item.porridge.split("-")[2] if "cafe" in menu_item.porridge else 'lp-porridge-' + menu_item.porridge
+        except:
+            porridge = 'cafe-change-'
+
+        try:
+            soup = 'cafe-change-' + menu_item.soup.split("-")[2] if "cafe" in menu_item.soup else 'lp-soup-' + menu_item.soup
+        except:
+            soup = 'cafe-change-'
+
+        try:
+            dessert = 'cafe-change-' + menu_item.dessert.split("-")[2] if "cafe" in menu_item.dessert else 'lp-dessert-' + menu_item.dessert
+        except:
+            dessert = 'cafe-change-'
+
+        try:
+            fruit = 'cafe-change-' + menu_item.fruit.split("-")[2] if "cafe" in menu_item.fruit else 'lp-fruit-' + menu_item.fruit
+        except:
+            fruit = 'cafe-change-'
+
+        try:
+            drink = 'cafe-change-' + menu_item.drink.split("-")[2] if "cafe" in menu_item.drink else 'lp-drink-' + menu_item.drink
+        except:
+            drink = 'cafe-change-'
+
+        try:
+            salad = 'cafe-change-' + menu_item.salad.split("-")[2] if "cafe" in menu_item.salad else 'lp-salad-' + menu_item.salad
+        except:
+            salad = 'cafe-change-'
 
         patient_select[meal] = {
             'main': main if main != 'lp-main-' else None,
