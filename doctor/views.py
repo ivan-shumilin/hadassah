@@ -865,6 +865,12 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('id', 577),
                 ('description', 'Яйцо куриное')
             ]),
+            OrderedDict([
+                ('name', 'Тофники  120 гр.'),
+                ('type_of_diet', 'Безйодовая'),
+                ('id', 521),
+                ('description', 'Тофники замороженные')
+            ]),
         ]
         data = {
             "dishes_all": dishes_all,
