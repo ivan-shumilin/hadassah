@@ -84,7 +84,14 @@
                                 {% if name_meal != "Общий КБЖУ" %}
                                     <ul class="pd-ul">
                                         {% for product in meal %}
-                                            <li>{{ product.name }} <span class="font-weight-normal">({{ product.energy_value }})</span></li>
+                                            <li>
+                                                {% if product.product_id %}
+                                                    <a class="link" href="{% url 'tk' product.product_id '0' %}">{{ product.name }}</a>
+                                                {% else %}
+                                                    {{ product.name }}
+                                                {% endif %}                                                
+                                                <span class="font-weight-normal">({{ product.energy_value }})</span>
+                                            </li>
                                         {% endfor %}
                                     </ul>
                                 {% else %}

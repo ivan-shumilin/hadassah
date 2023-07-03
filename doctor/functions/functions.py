@@ -1367,9 +1367,9 @@ def create_list_users_on_floor(users, floor, meal, date_create, type_order, is_p
 def what_meal():
     if datetime.today().time().hour < 9:
         return 'breakfast', None
-    if datetime.today().time().hour >= 9 and datetime.today().time().hour < 12:
+    if datetime.today().time().hour >= 9 and datetime.today().time().hour < 13:
         return 'lunch', None
-    if datetime.today().time().hour >= 12 and datetime.today().time().hour < 16:
+    if datetime.today().time().hour >= 13 and datetime.today().time().hour < 16:
         return 'afternoon', None
     if datetime.today().time().hour >= 16 and datetime.today().time().hour < 19:
         return 'dinner', None
@@ -1379,7 +1379,7 @@ def what_meal():
 def what_type_order():
     now = datetime.today().time()
     if ((now.hour == 8 and now.minute >= 31) and now.hour < 9)\
-        or (now.hour > 11  and now.hour < 12) \
+        or (now.hour > 11  and now.hour < 13) \
         or ((now.hour == 15 and now.minute >= 31) and now.hour < 16) \
         or (now.hour >= 18 and now.hour < 19):
         return 'fix-order'
