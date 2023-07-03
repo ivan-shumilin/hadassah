@@ -21,7 +21,6 @@ from django.db.models.functions import Lower
 from django.views.generic import TemplateView
 
 from doctor.functions.download import get_token, get_tk, get_name, get_allergens, get_weight_tk, get_measure_unit
-from .functions.descripton_parsing import description_parsing
 from .functions.report import create_external_report, create_external_report_detailing, get_report
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
     UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage
@@ -1346,7 +1345,7 @@ def printed_form_two_cafe_new(request):
 def tk(request, id, count):
     import operator
     from nutritionist.models import Ingredient
-    count: int = int(count)
+    count: int = int(count) + 2  # сутчная проба и бракераж
 
 
     tk, error = get_tk(id)
@@ -1441,8 +1440,8 @@ def tk(request, id, count):
         'img': img,
         'result': result,
         'error': error,
-        'count': count + 1,
-        'weight': (count + 1) * int(result['weight'])
+        'count': count,
+        'weight': count * int(result['weight'])
     }
     return render(request, 'tk.html', context=data)
 
