@@ -41,7 +41,7 @@ def complete_catalog(category_dict):
 def checking_is_ready_meal(meal):
     time_ready_meals = {
         'breakfast': 7,
-        'lunch': 11,
+        'lunch': 12,
         'dinner': 17
     }
     # время до которого кормим пациентов
