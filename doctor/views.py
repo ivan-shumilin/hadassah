@@ -883,6 +883,12 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('id', 579),
                 ('description', 'Масло подсолнечное, тесто для блинов (молоко 3,2%, яйцо куриное, масло подсолнечное, сахар песок, соль, мука пшеничная)')
             ]),
+            OrderedDict([
+                ('name', 'Кефир 200 мл'),
+                ('type_of_diet', 'Безйодовая'),
+                ('id', 580),
+                ('description', 'Кефир')
+            ]),
         ]
         data = {
             "dishes_all": dishes_all,
