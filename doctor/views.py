@@ -52,7 +52,8 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from .serializer import DishesSerializer, PatientsSerializer, InfoPatientSerializer, InputDataSerializer, \
-    AddDishSerializer, ChangeDishSerializer, CroppImageSerializer, SendPatientProductsAPIViewSerializer
+    AddDishSerializer, ChangeDishSerializer, CroppImageSerializer, SendPatientProductsAPIViewSerializer, \
+    UpdateSearchAPIViewSerializer, ProductsSerializer
 
 
 class ServiceWorkerView(TemplateView):
@@ -613,6 +614,43 @@ class SendPatientProductsAPIView(APIView):
         return Response('ok')
 
 
+class UpdateSearchAPIView(APIView):
+    def post(self, request):
+        serializer = UpdateSearchAPIViewSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        type_menu = serializer.validated_data['type']
+        category = serializer.validated_data['cat']
+
+        product_lp: list = []
+        product_cafe: list = []
+
+        if type_menu in ['lp', 'all']:
+            filter: Q = Q(category__in=get_category(category)) if category != 'all' else Q()
+
+            product_lp = list(ProductLp.objects.filter(
+                filter
+            ).values('name', 'id'))
+
+
+        if type_menu in ['cafe', 'all']:
+            filter: Q = Q(category__in=get_category_cafe_2(category)) if category != 'all' else Q()
+
+            product_cafe = list(Product.objects.filter(
+                filter
+            ).values('name', 'id'))
+
+            # добавляем префикс к id для категории "Кафе"
+            for p in list(product_cafe):
+                p['id'] = f'cafe-cat-{p["id"]}'
+
+        products = product_lp + product_cafe
+
+
+
+        serializer = ProductsSerializer(products, many=True)
+        return Response(serializer.data)
+
+
 class SendEmergencyFoodAPIView(APIView):
     MENU = {
         'without_sugar': 569,
@@ -709,6 +747,44 @@ def get_category(category):
         'bouillon': ["бульон"],
     }
     return categorys[category]
+
+def get_category_cafe_2(category):
+    categorys = {
+        "salad": ["Салаты"],
+        "soup": ["Первые блюда"],
+        "porridge": ["Каши"],
+        "main": ["Завтраки", "Вторые блюда", "Блюда от шефа"],
+        "garnish": ["Гарниры"]
+    }
+    return categorys.get(category, [])
+
+def get_category_by_id(id_product):
+    if 'cafe' in id_product:
+        category_name = Product.objects.get(id=id_product.split('-'[2])).category
+    else:
+        category_name = ProductLp.objects.get(id=id_product).category
+    return get_category_product(category_name)
+def get_category_product(category_name):
+    category_mapping = {
+        'salad': ["салат", "Салаты"],
+        'soup': ["суп", "Первые блюда"],
+        'porridge': ["каша", "Каши"],
+        'main': ["основной", "Завтраки", "Вторые блюда", "Блюда от шефа"],
+        'garnish': ["гарнир", "Гарниры"],
+        'dessert': ["десерт"],
+        'fruit': ["фрукты"],
+        'drink': ["напиток"],
+        'products': ["товар", "hidden"],
+        'hidden': ["hidden"],
+        'bouillon': ["бульон"],
+    }
+
+    for category, values in category_mapping.items():
+        if category_name in values:
+            return category
+
+    return None
+
 
 def get_category_cafe(category):
     categorys = {
@@ -1017,20 +1093,24 @@ class ChangeDishAPIView(APIView):
                 try:
                     with transaction.atomic():
                         item_menu = menu.select_for_update().get(user_id=id, date=date, meal=meal)
+                        # удаление блюда
                         products = getattr(item_menu, category)
                         products = products.split(',')
                         products.remove(product_id_del)
                         products = ','.join(products)
                         setattr(item_menu, category, products)
 
-                        products = getattr(item_menu, category)
+                        # добавление блюда
+                        # получение категории блюда
+                        category_add = get_category_by_id(product_id_add)
+                        products = getattr(item_menu, category_add)
                         if products == "":
                             products = product_id_add
                         else:
                             products = products.split(',')
                             products.append(product_id_add)
                             products = ','.join(products)
-                        setattr(item_menu, category, products)
+                        setattr(item_menu, category_add, products)
                         item_menu.save()
 
                 except:

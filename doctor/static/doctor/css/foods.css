@@ -479,7 +479,11 @@ label {
 }
 
 .js-states {
-    width: 200px;
+    width: 200px !important;
+  }
+
+.js-states-1 {
+    width: 100% !important;
   }
 
 .table .tr .th a {
@@ -556,4 +560,7 @@ label {
     background-color: #fafafc ;
     z-index: 1 ;
 }
-  
+
+.mr-bottom-4 {
+    margin-bottom: 4px;
+}

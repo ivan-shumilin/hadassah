@@ -98,6 +98,17 @@ class SendPatientProductsAPIViewSerializer(serializers.Serializer):
     user_name = serializers.CharField(allow_blank=True)
     comment = serializers.CharField(allow_blank=True)
 
+
+class UpdateSearchAPIViewSerializer(serializers.Serializer):
+    type = serializers.CharField()
+    cat = serializers.CharField()
+
+
+class ProductsSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    id = serializers.CharField()
+
+
 class AddDishSerializer(serializers.Serializer):
     id_user = serializers.CharField()
     date = serializers.DateField()
