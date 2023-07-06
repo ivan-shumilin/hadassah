@@ -779,7 +779,7 @@ function changeDishModalforSearch(category, meal, product_id_del, name_del) {
     var product = document.getElementById('patients-list-1')
     var product_id_add = product.value
     var name_add = product.options[product.selectedIndex].textContent;
-
+    document.getElementById('close-modal').click();
     modal = document.getElementById('modal-delet')
     createModalChooseDish(product_id_add, name_add, product_id_del, name_del, category, meal)
 }

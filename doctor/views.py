@@ -760,7 +760,7 @@ def get_category_cafe_2(category):
 
 def get_category_by_id(id_product):
     if 'cafe' in id_product:
-        category_name = Product.objects.get(id=id_product.split('-'[2])).category
+        category_name = Product.objects.get(id=id_product.split('-')[2]).category
     else:
         category_name = ProductLp.objects.get(id=id_product).category
     return get_category_product(category_name)
