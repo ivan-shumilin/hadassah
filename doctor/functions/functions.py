@@ -459,9 +459,9 @@ def get_order_status(meal, date_show):
             return 'done'
 
     if meal == 'afternoon':
-        if datetime.today().time().hour < 15 or datetime.today().time().hour == 15 and datetime.today().time().minute >= 30:
+        if datetime.today().time().hour < 15 or datetime.today().time().hour == 15 and datetime.today().time().minute <= 30:
             return 'flex-order'
-        if datetime.today().time().hour == 15 and datetime.today().time().minute < 30:
+        if datetime.today().time().hour == 15 and datetime.today().time().minute > 30:
             return 'fix-order'
         if datetime.today().time().hour >= 16:
             return 'done'
