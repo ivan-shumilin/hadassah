@@ -409,8 +409,11 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
     result += `<tr><td class='meal'>Поиск по базе</tr></td>`
     result += `<tr><td class="pd-top-bot-ziro pd-left-10">`
     result += `<a onclick="addAllDish('${meal}', '${category}', '${mode}', '${product_id_del.replace(/"/g, '&quot;')}', '${name_del.replace(/"/g, '&quot;')}')">Поиск по всей базе`
-
-    result += `<img class="icon" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
+    if (mode === 'change') {
+        result += `<img class="icon" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
+    } else {
+        result += `<img class="icon" width="17" height="17" title="Добавить блюдо" src="{% static "doctor/css/img/add.svg" %}" alt="Добавить блюдо">`
+    }
     result += `</a>`      
     result += `</td></tr>`
     for (var set in sets) {
