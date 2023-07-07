@@ -131,6 +131,11 @@ function end() {
     setTimeout(testTimeout, 3000);
     span1.classList.remove('spinner-border');
     span1.classList.remove('spinner-border-sm');
+
+    function testTimeout() {
+        span2.innerHTML = "Сформировать отчет";
+        button.removeAttribute("disabled");
+    }
 }
 
 
@@ -169,10 +174,7 @@ async function checkFormDownload() {
             }
     }
 
-    function testTimeout() {
-        span2.innerHTML = "Сформировать отчет";
-        button.removeAttribute("disabled");
-    }
+
 
 
     if (error == 0) {
