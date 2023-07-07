@@ -150,8 +150,8 @@ def my_job_update_diet_bd():
 
 @shared_task()
 def create_report_download(date_start, date_finish, id):
-    date_start_str = str(date_start)
-    date_finish_str = str(date_finish)
+    date_start_str = date_start.strftime("%Y-%m-%d")
+    date_finish_str = date_finish.strftime("%Y-%m-%d")
     filtered_report = Report.objects.filter(date_create__gte=date_start_str,
         date_create__lte=date_finish_str,
     ).exclude(
