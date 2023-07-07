@@ -1,7 +1,7 @@
 import json
 
 from celery import shared_task
-import telepot
+import telepot, datetime
 
 from nutritionist.functions.report import create_external_report, create_external_report_detailing, get_report
 from nutritionist.models import BotChatId, CustomUser, MenuByDay, UsersReadyOrder, Report, IsReportCreate
@@ -150,13 +150,14 @@ def my_job_update_diet_bd():
 
 @shared_task()
 def create_report_download(date_start, date_finish, id):
-    date_start_str = date_start.strftime("%Y-%m-%d")
-    date_finish_str = date_finish.strftime("%Y-%m-%d")
-    filtered_report = Report.objects.filter(date_create__gte=date_start_str,
-        date_create__lte=date_finish_str,
+
+    filtered_report = Report.objects.filter(date_create__gte=date_start,
+        date_create__lte=date_finish,
     ).exclude(
         user_id__type_pay='petrushka'
     )
+    date_start = datetime.strptime(date_start, "%Y-%m-%d").date()
+    date_finish = datetime.strptime(date_finish, "%Y-%m-%d").date()
     report = create_external_report(filtered_report)
     report_detailing = create_external_report_detailing(filtered_report)
     get_report(report, report_detailing, date_start, date_finish)

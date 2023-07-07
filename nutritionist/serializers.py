@@ -12,5 +12,5 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class DownloadReportSerializer(serializers.Serializer):
-    start = serializers.DateField()
-    finish = serializers.DateField()
+    start = serializers.CharField()
+    finish = serializers.CharField()
