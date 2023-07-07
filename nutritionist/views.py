@@ -21,9 +21,10 @@ from django.db.models.functions import Lower
 from django.views.generic import TemplateView
 
 from doctor.functions.download import get_token, get_tk, get_name, get_allergens, get_weight_tk, get_measure_unit
+from doctor.tasks import create_report_download
 from .functions.report import create_external_report, create_external_report_detailing, get_report
-from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday,\
-    UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage
+from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday, \
+    UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage, IsReportCreate
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import ProductSerializer
 from rest_framework import generics
@@ -1535,20 +1536,36 @@ def weight_meal(meal):
     }
     return MEALS[meal]
 
-
+# 888
 class DownloadReportAPIView(APIView):
     def post(self, request):
         data = request.data
         date_start = parse(data['start'])
         date_finish = parse(data['finish'])
+        # создать запись что пошел поцесс создания отчета
+        id = IsReportCreate.objects.create(is_report_create=False).id
+        # create_report_download.delay(date_start, date_finish, id)
+        create_report_download(date_start, date_finish, id)
 
-        filtered_report = Report.objects.filter(date_create__gte=date_start, date_create__lte=date_finish).exclude(user_id__type_pay='petrushka')
-        report = create_external_report(filtered_report)
-        report_detailing = create_external_report_detailing(filtered_report)
-        get_report(report, report_detailing, date_start, date_finish)
-        response = {"response": "yes"}
+        response = {"response": str(id)}
+        response = json.dumps(response)
+
+        return Response(response)
+
+
+class CheckIsReportAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        id = data['id']['response']
+        response = {"response": 'no'}
+        item = IsReportCreate.objects.filter(id=id)
+        if item.exists():
+            if item.first().is_report_create:
+                response = {"response": 'yes'}
+
         response = json.dumps(response)
         return Response(response)
+
 
 def create_сatalog(is_public, meal, patient, day):
     """ Создание словаря этикеток. """

@@ -427,3 +427,8 @@ label {
     color: #0e7abc;
     text-decoration: auto;
 }
+
+.width-50-percent {
+    width: 50%;
+
+}

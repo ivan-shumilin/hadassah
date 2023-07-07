@@ -14,62 +14,6 @@
 
 </head>
 <body class='report'>
-    <div id="modal" class="modal" tabindex="-1">
-        <div class="modal-dialog">
-                <div class="modal-content">
-                    <form action="{% url 'report' %}" method="get">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Отчет за период</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                                <label for="data-start" class="form-label">Дата начала отчетного периода</label>
-                                <input onclick="removeError('data-start', 'data-start-error')" id="data-start" type="date" class="form-control" name='start'>
-                                <div id="data-start-error" class="error-field"></div>
-                                <label for="date-finish" class="form-label">Дата конца отчетного периода</label>
-                                <input onclick="removeError('date-finish', 'data-finish-error')" id="date-finish" type="date" class="form-control" name='finish'>
-                                <div id="data-finish-error" class="error-field"></div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" onclick="checkForm()" class="btn-close btn btn-secondary">Сформировать</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    <div>
-
-    <div id="modal-download" class="modal" tabindex="-1">
-        <div class="modal-dialog">
-                <div class="modal-content">
-                    <form action="" method="get">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Отчет для Hadassah</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <label for="data-start-download" class="form-label">Дата начала отчетного периода</label>
-                            <input onclick="removeError('data-start-download', 'data-start-error-download')" id="data-start-download" type="date" class="form-control" name='start'>
-                            <div id="data-start-error-download" class="error-field"></div>
-                            <label for="date-finish-download" class="form-label">Дата конца отчетного периода</label>
-                            <input onclick="removeError('date-finish-download', 'data-finish-error-download')" id="date-finish-download" type="date" class="form-control" name='finish'>
-                            <div id="data-finish-error-download" class="error-field"></div>
-                        </div>
-                        <div class="modal-footer">
-                            <button id="button" type="button" onclick="checkFormDownload()" class="btn btn-primary" type="button">
-                                <span id="span1" class="" role="status" aria-hidden="true"></span>
-                                <span id="span2" class="visually-hidden">Сформировать отчет</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    <div>
 
 
 <div class="container-fluid">
@@ -78,13 +22,25 @@
             <h1 class="">Отчет по лечебному питанию для <br>Hadassah Medical Moscow</h1>
         </div>
     </div>
-    <div class="row align-items-center justify-content-between">
-        <div class="col-sm-6">
-            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                <button class="btn btn-primary" data-bs-target="#modal-download" data-bs-toggle="modal">Отчет</button>
+    <div class="width-50-percent">
+        <form action="" method="get">
+            <div class="modal-body">
+                <label for="data-start-download" class="form-label">Дата начала отчетного периода</label>
+                <input onclick="removeError('data-start-download', 'data-start-error-download')" id="data-start-download" type="date" class="form-control" name='start'>
+                <div id="data-start-error-download" class="error-field"></div>
+                <label for="date-finish-download" class="form-label">Дата конца отчетного периода</label>
+                <input onclick="removeError('date-finish-download', 'data-finish-error-download')" id="date-finish-download" type="date" class="form-control" name='finish'>
+                <div id="data-finish-error-download" class="error-field"></div>
             </div>
-        </div>
+            <div class="modal-footer">
+                <button id="button" type="button" onclick="checkFormDownload()" class="btn btn-primary" type="button">
+                    <span id="span1" class="" role="status" aria-hidden="true"></span>
+                    <span id="span2" class="visually-hidden">Сформировать отчет</span>
+                </button>
+            </div>
+        </form>
     </div>
+
 </div>
 
 
@@ -150,6 +106,34 @@ const downloadReport = async function(start, finish) {
 }
 
 
+
+const checkIsReportCreate = async function(id) {
+    let url = '/api/v1/get/check-is-report'
+    let body = {'id': id};
+
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;',
+        },
+        body: JSON.stringify(body)
+    });
+    let result = await response.json();
+    return result;
+}
+
+function end() {
+    console.log('Ссылка на скачивание');
+    document.getElementById('link-download').click();
+
+    button.setAttribute('disabled', 'false');
+    span2.innerHTML = "Сейчас начнется скачивание";
+    setTimeout(testTimeout, 3000);
+    span1.classList.remove('spinner-border');
+    span1.classList.remove('spinner-border-sm');
+}
+
+
 async function checkFormDownload() {
     let start = document.getElementById('data-start-download');
     let finish = document.getElementById('date-finish-download');
@@ -180,36 +164,44 @@ async function checkFormDownload() {
 
         if (moment(dateFinish).isBefore(dateStart, 'day')) {
             document.getElementById('data-start-error-download').innerHTML = 'Дата конца не может быть раньше даты начала';
-            start.classList.add('error')
+            start.classList.add('error');
             error = error + 1;
             }
     }
 
     function testTimeout() {
-        span2.innerHTML = "Сформировать отчет"
+        span2.innerHTML = "Сформировать отчет";
         button.removeAttribute("disabled");
     }
 
 
     if (error == 0) {
-        let button = document.getElementById('button')
-        let span2 = document.getElementById('span2')
-        let span1 = document.getElementById('span1')
-        span1.classList.add('spinner-border')
-        span1.classList.add('spinner-border-sm')
-        button.setAttribute('disabled', '')
-        span2.innerHTML = "Формируем отчет ..."
+        let button = document.getElementById('button');
+        let span2 = document.getElementById('span2');
+        let span1 = document.getElementById('span1');
+        span1.classList.add('spinner-border');
+        span1.classList.add('spinner-border-sm');
+        button.setAttribute('disabled', '');
+        span2.innerHTML = "Формируем отчет ...";
         let res = await downloadReport(start.value, finish.value);
         res = JSON.parse(res);
-        if (res.response == 'yes') {
-            console.log('yes')
-            document.getElementById('link-download').click()
+        let response1 = 'no'
+
+        for (let i = 0; i < 100000; i++) {
+            console.log(i)
+            response1 = await checkIsReportCreate(res);
+            response1 = JSON.parse(response1);
+            if (response1.response == 'yes') {
+                console.log('пришел ответ yes');
+                end();
+                break;
+            }
+
+            if (response1.response == 'no') {
+                console.log('пришел ответ no');
+            }
         }
-        button.setAttribute('disabled', 'false')
-        span2.innerHTML = "Сейчас начнется скачивание"
-        setTimeout(testTimeout, 3000);
-        span1.classList.remove('spinner-border')
-        span1.classList.remove('spinner-border-sm')
+
 
     }
 }

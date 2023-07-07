@@ -646,3 +646,9 @@ class ModifiedDish(models.Model):
                               default='',)
     def __str__(self):
         return f'{self.product_id} - {self.date}'
+
+
+class IsReportCreate(models.Model):
+    is_report_create = models.BooleanField(default=False)
+    def __str__(self):
+        return f'{self.id} - {self.is_report_create}'

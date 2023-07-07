@@ -1,6 +1,10 @@
+import json
+
 from celery import shared_task
 import telepot
-from nutritionist.models import BotChatId, CustomUser, MenuByDay, UsersReadyOrder
+
+from nutritionist.functions.report import create_external_report, create_external_report_detailing, get_report
+from nutritionist.models import BotChatId, CustomUser, MenuByDay, UsersReadyOrder, Report, IsReportCreate
 from doctor.functions.diet_formation import add_menu_three_days_ahead, update_diet_bd
 from doctor.functions.for_print_forms import create_user_today, applies_changes, create_user_tomorrow,\
     create_ready_order, create_report, create_product_storage
@@ -143,3 +147,21 @@ def my_job_create_product_storage_dinner():
 @shared_task()
 def my_job_update_diet_bd():
     update_diet_bd()
+
+@shared_task()
+def create_report_download(date_start, date_finish, id):
+    filtered_report = Report.objects.filter(
+        date_create__gte=date_start,
+        date_create__lte=date_finish
+    ).exclude(
+        user_id__type_pay='petrushka'
+    )
+    report = create_external_report(filtered_report)
+    report_detailing = create_external_report_detailing(filtered_report)
+    get_report(report, report_detailing, date_start, date_finish)
+
+    item = IsReportCreate.objects.get(id=id)
+    item.is_report_create = True
+    item.save()
+
+    return
