@@ -1012,8 +1012,8 @@ def edit_user(user_form, type, request):
             if user.receipt_date <= date.today():
                 update_UsersToday(user)
         meal_order, _ = check_meal_user(user)
-    # Сегодня, меньше 19
-    elif parse(str(user.receipt_date)).date() == date.today():
+    # Сегодня, меньше 19 (для восстановления пациетов из архива)
+    elif type == 'restore' and parse(str(user.receipt_date)).date() == date.today():
             # Проверяем с какого приема пищи мы можем накормить пациента.
             meal_permissible, weight_meal_permissible = check_change('True')
             # Проверяем на какой прием пищи успевает пациент пациента.
@@ -1026,6 +1026,36 @@ def edit_user(user_form, type, request):
                 update_UsersToday(user)
             if do_messang_send(user.full_name):  # c 17 до 7 утра не отправляем сообщения
                 messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+    # Сегодня, меньше 19 (для редактирования пациетов из архива)
+    elif type == 'edit':
+        try:
+            user_today = UsersToday.objects.get(user_id=user.id)
+            user_today.date_create = date.today()
+            user_today.full_name = user.full_name
+            user_today.bed = user.bed
+            user_today.receipt_date = user.receipt_date
+            user_today.receipt_time = user.receipt_time
+            user_today.department = user.department
+            user_today.room_number = user.room_number
+            user_today.floor = user.floor
+            user_today.type_of_diet = user.type_of_diet
+            user_today.comment = user.comment
+            user_today.status = user.status
+            user_today.is_accompanying = user.is_accompanying
+            user_today.is_probe = user.is_probe
+            user_today.is_without_salt = user.is_without_salt
+            user_today.is_without_lactose = user.is_without_lactose
+            user_today.is_pureed_nutrition = user.is_pureed_nutrition
+            user_today.type_pay = user.type_pay
+            user_today.save()
+
+            # Проверяем с какого приема пищи мы можем накормить пациента.
+            meal_order, _ = check_change('True')
+            if meal_order != 'завтра':
+                messang += f'{regard} <b>Изменение с {meal_order}</b>\n'
+        except:
+            pass
+
     # Больше 19 или не сегодня
     else:
         meal_order, _ = check_meal_user(user)
