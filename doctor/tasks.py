@@ -151,8 +151,8 @@ def my_job_update_diet_bd():
 @shared_task()
 def create_report_download(date_start, date_finish, id):
     filtered_report = Report.objects.filter(
-        date_create__gte=date_start,
-        date_create__lte=date_finish
+        date_create__gte=str(date_start),
+        date_create__lte=str(date_finish),
     ).exclude(
         user_id__type_pay='petrushka'
     )

@@ -1545,8 +1545,8 @@ class DownloadReportAPIView(APIView):
         data = serializer.validated_data
         # date_start = data['start']
         # date_finish = data['finish']
-        date_start = str(data['start'])
-        date_finish = str(data['finish'])
+        date_start = data['start']
+        date_finish = data['finish']
         # создать запись что пошел поцесс создания отчета
         id = IsReportCreate.objects.create(is_report_create=False).id
         create_report_download.delay(date_start, date_finish, id)
