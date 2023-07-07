@@ -193,7 +193,7 @@ async function checkFormDownload() {
             response1 = JSON.parse(response1);
             if (response1.response == 'yes') {
                 console.log('пришел ответ yes');
-                end();
+                end(button, span2, span1);
                 break;
             }
 

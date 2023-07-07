@@ -1544,8 +1544,8 @@ class DownloadReportAPIView(APIView):
         date_finish = parse(data['finish'])
         # создать запись что пошел поцесс создания отчета
         id = IsReportCreate.objects.create(is_report_create=False).id
-        # create_report_download.delay(date_start, date_finish, id)
-        create_report_download(date_start, date_finish, id)
+        create_report_download.delay(date_start, date_finish, id)
+        # create_report_download(date_start, date_finish, id)
 
         response = {"response": str(id)}
         response = json.dumps(response)
