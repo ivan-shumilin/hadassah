@@ -152,8 +152,7 @@ def my_job_update_diet_bd():
 def create_report_download(date_start, date_finish, id):
     date_start_str = str(date_start)
     date_finish_str = str(date_finish)
-    filtered_report = Report.objects.filter(
-        date_create__gte=date_start_str,
+    filtered_report = Report.objects.filter(date_create__gte=date_start_str,
         date_create__lte=date_finish_str,
     ).exclude(
         user_id__type_pay='petrushka'
