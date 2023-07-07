@@ -1,7 +1,8 @@
 import json
 
 from celery import shared_task
-import telepot, datetime
+import telepot
+from datetime import datetime
 
 from nutritionist.functions.report import create_external_report, create_external_report_detailing, get_report
 from nutritionist.models import BotChatId, CustomUser, MenuByDay, UsersReadyOrder, Report, IsReportCreate
