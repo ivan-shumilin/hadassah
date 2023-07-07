@@ -26,7 +26,7 @@ from .functions.report import create_external_report, create_external_report_det
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday, \
     UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage, IsReportCreate
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, DownloadReportSerializer
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -1539,12 +1539,15 @@ def weight_meal(meal):
 # 888
 class DownloadReportAPIView(APIView):
     def post(self, request):
-        data = request.data
-        date_start = parse(data['start'])
-        date_finish = parse(data['finish'])
+        serializer = DownloadReportSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        data = serializer.validated_data
+        date_start = data['start']
+        date_finish = data['finish']
         # создать запись что пошел поцесс создания отчета
         id = IsReportCreate.objects.create(is_report_create=False).id
-        create_report_download.delay(date_start, date_finish, id)
+        create_report_download(date_start, date_finish, id)
         # create_report_download(date_start, date_finish, id)
 
         response = {"response": str(id)}

@@ -9,3 +9,8 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ('iditem', 'name', 'description', 'ovd', 'ovd_sugarless', 'shd', 'bd', 'vbd', 'nbd', 'nkd',
             'vkd', 'carbohydrate', 'fat', 'fiber', 'energy', 'category')
+
+
+class DownloadReportSerializer(serializers.Serializer):
+    start = serializers.DateField()
+    finish = serializers.DateField()
