@@ -157,7 +157,7 @@ const updateSearch = async function(type, cat) {
 // Старт страницы   ##
 // ###################
 // Показать рацион пациента после открытия страницы
-displayDish('all', 'all')
+displayDish('lp', 'all')
 
 async function displayDish(type, cat) {
 
@@ -221,7 +221,7 @@ async function addDishAPI(category, product_id, meal) {
 function createModalProduct(item) {
     document.getElementById('modal-title-product').innerHTML = result[item]['name'].replace(/"/g, '&quot;');
     document.getElementById('description').innerHTML = result[item]['description_annotation'].toLowerCase().replace(/"/g, '&quot;').replace('состав: ', '');
-    let PFC = `белки - ${result[item]['fiber']} г, жиры - ${result[item]['fat']} г, углеводы - ${result[item]['carbohydrate']}} г, ккал - ${result[item]['energy']}.`
+    let PFC = `белки - ${result[item]['fiber']} г, жиры - ${result[item]['fat']} г, углеводы - ${result[item]['carbohydrate']} г, ккал - ${result[item]['energy']}.`
     document.getElementById('PFC').innerHTML = PFC;
     document.getElementById('cooking_method').innerHTML = result[item]['cooking_method_annotation'].replace(/"/g, '&quot;').toLowerCase();
     
