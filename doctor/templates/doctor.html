@@ -460,7 +460,7 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script> -->
 <script>
 function changeDiet(value) {
-    console.log(value);
+
     if (value == 'НБД') {
         document.getElementById('is_without_salt').checked = true;
         document.getElementById('is_without_salt').disabled = true;
@@ -475,7 +475,7 @@ function changeDietEditForm(value) {
     var userId = document.getElementById("card-user-id").value;
     var isWithoutSaltId = `is_without_salt_form_${userId}`;
 
-    console.log(userId);
+
     if (value == 'НБД') {
         document.getElementById(isWithoutSaltId).checked = true;
         document.getElementById(isWithoutSaltId).disabled = true;
@@ -556,7 +556,7 @@ async function clickEditForm() {
     let res = await getOccupiedRooms('departments');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
-    console.log(occupiedRooms)
+
     let result = '' 
     result += `<option selected value="${userRoom}">${userRoom}</option>`
     if (userBed != "Не выбрано") {
@@ -597,7 +597,7 @@ async function clickEditForm() {
     item.insertAdjacentHTML("beforeend", result);
     var userBedId = `id_bed-${userId}`
     item = document.getElementById(userBedId);
-    console.log(userBedId)
+
     let singleRooms = ['2а-1', '2а-5', '2а-6', '2а-7', '2а-8', '2а-9', '2а-10', '2а-12', '2а-13',
                        '2а-14', '2а-15', '3а-1', '3а-5', '3а-6', '3а-7',
                        '3а-8', '3а-9', '3а-10', '3а-11', '3а-12', '3а-13',
@@ -617,7 +617,7 @@ async function clickEditForm() {
     res = await getOccupiedRooms('rooms');
     occupiedRooms1 = JSON.parse(res);
     occupiedRooms1 = JSON.parse(occupiedRooms1);
-    console.log(occupiedRooms1)
+
     if (singleRooms.includes(userRoom)) {
         
         item.setAttribute("disabled", "disabled");
@@ -722,9 +722,7 @@ for (var ii = 0; ii < depList.length; ii++) {
     let selectRoomId = `#id-room-number-${idList[ii].value} .optionValue`
     var optionRoom = document.querySelectorAll(selectRoomId);
     for (var i = 0; i < optionDepartment.length; i++) {
-         console.log(optionDepartment[i].value)
         if (optionDepartment[i].value == depList[ii].value) {
-            console.log("Yes");
             optionDepartment[i].selected = true
     }
 }
@@ -809,7 +807,6 @@ async function addRoomNumberEditForm(value, idRoomNumber, floor, room, bed, divR
     let res = await getOccupiedRooms('departments');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
-    console.log(occupiedRooms)
     let result = ''
     result += `<option selected value="Не выбрано">Не выбрано</option>`;
 // удаляем все варианты select
@@ -877,7 +874,6 @@ async function addBed(value) {
     let res = await getOccupiedRooms('easy_mode');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
-    console.log(occupiedRooms)
     if (singleRooms.includes(value)) {
         selectBed.setAttribute("disabled", "disabled");
         result += `<option value="K1">K1</option>`;
@@ -946,7 +942,7 @@ async function addBedEditForm(value, idBed, userRoom, userBed) {
     let res = await getOccupiedRooms('easy_mode');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
-    console.log(occupiedRooms)
+  
     if (singleRooms.includes(value)) {
         selectBed.setAttribute("disabled", "disabled");
         result += `<option value="K1">K1</option>`;
@@ -1045,7 +1041,7 @@ async function checkBed(value) {
     let res = await getOccupiedRooms('easy_mode');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
-    console.log(occupiedRooms)
+
     if (typeof occupiedRooms[room_number.value] !== "undefined") {
     //ключ есть
         if (occupiedRooms[room_number.value].includes(bed.value) ) {
@@ -1071,7 +1067,7 @@ async function checkBedEditForm(value, id_bed, id_room_number) {
     let res = await getOccupiedRooms('easy_mode');
     var occupiedRooms = JSON.parse(res);
     var occupiedRooms = JSON.parse(occupiedRooms);
-    console.log(occupiedRooms)
+
     if (typeof occupiedRooms[room_number.value] !== "undefined") {
     //ключ есть
         if (occupiedRooms[room_number.value].includes(bed.value)) {
@@ -1105,7 +1101,6 @@ filtration()
 async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_time, department, type_of_diet, room_number, bed, comment, id, floor) {
     document.getElementById("full_name_field").innerText = full_name;
     document.getElementById("card-full_name").value = full_name;
-    console.log(full_name)
     document.getElementById("birthdate_field").innerHTML = birthdate;
     document.getElementById("receipt_datetime_field").innerHTML = receipt_date + ', ' + receipt_time;
     if (department == 'Не выбрано') {
@@ -1142,7 +1137,7 @@ async function displayInfoPatient(full_name, birthdate, receipt_date, receipt_ti
     let res = await getMenuForPatient(id)
     var obj = JSON.parse(res);
     var obj = JSON.parse(obj);
-    console.log(receipt_date)
+
     let days = {
         today: {"name": "today", "date": ""},
         tomorrow: {"name": "tomorrow", "date": ""},
@@ -1167,8 +1162,7 @@ function addHtml(day, obj, meals, item, result, product, receiptDate) {
     }
     result = '';
     result += '<div class="date">' + obj[day].date_human_style + '</div>'
-    console.log(obj)
-    console.log('receipt_date-', Date.parse(receiptDate))
+
 // проверяем, если дата раньше даты госпитализации, выводим сообщение
     receiptDate = receiptDate.split(".");
     receiptDate = new Date(receiptDate[2], receiptDate[1] - 1, receiptDate[0]);
@@ -1642,6 +1636,7 @@ function validationEditForm(id_full_name,
     var receipt_dateOld = document.getElementById("card-receipt_date").value
     var receipt_timeOld = document.getElementById("receipt_time_field_hidden").innerText
     var departmentOld = document.getElementById("department_field").innerText
+
     if (departmentOld == '————') {
         departmentOld = 'Не выбрано'
     }
@@ -1994,11 +1989,7 @@ const checkPassword = async function(userId, oldPassword) {
       body: JSON.stringify(body)
     });
     let result = await response.text();
-    console.log(result, userId, oldPassword)
-    console.log(JSON.stringify(body))
-    console.log(typeof(result))
-    console.log(result == 'Yes')
-    console.log(result == "Yes")
+
     if (result === "\"Yes\"") {
         return true;
     } else {
