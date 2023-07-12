@@ -11,4 +11,5 @@ urlpatterns = [
     path('catalog/side_dishes/<page>', views.catalog_side_dishes, name='side_dishes'),
     path('catalog/breakfast/<page>', views.catalog_breakfast, name='breakfast'),
     path('backup/', views.backup, name='backup'),
+    path('catalog/', views.catalog_all_products, name='catalog_all_products'),
 ]

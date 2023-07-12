@@ -3,6 +3,8 @@ from rest_framework import serializers
 from doctor.functions.functions import add_features
 from nutritionist.models import TimetableLp, CustomUser
 
+from dateutil.parser import parse
+
 
 class DishesSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -107,6 +109,14 @@ class UpdateSearchAPIViewSerializer(serializers.Serializer):
 class ProductsSerializer(serializers.Serializer):
     name = serializers.CharField()
     id = serializers.CharField()
+    number_tk = serializers.CharField()
+    description_annotation = serializers.CharField()
+    carbohydrate = serializers.CharField()
+    fat = serializers.CharField()
+    fiber = serializers.CharField()
+    energy = serializers.CharField()
+    cooking_method_annotation = serializers.CharField()
+
 
 
 class AddDishSerializer(serializers.Serializer):

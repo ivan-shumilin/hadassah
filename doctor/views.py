@@ -1,7 +1,8 @@
 from collections import OrderedDict
 
 from PIL import Image
-from django.db import transaction
+from django.db import transaction, models
+from django.db.models import Value
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
@@ -37,7 +38,7 @@ from doctor.functions.for_print_forms import create_user_today, check_time, upda
 from doctor.functions.diet_formation import add_menu_three_days_ahead, update_diet_bd, \
     add_the_patient_emergency_food_to_the_database, get_meal_emergency_food
 from doctor.functions.translator import get_day_of_the_week, translate_diet
-from django.db.models import Q
+from django.db.models import Q, F, Case, When, Value
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core import management
@@ -629,7 +630,16 @@ class UpdateSearchAPIView(APIView):
 
             product_lp = list(ProductLp.objects.filter(
                 filter
-            ).values('name', 'id'))
+            ).annotate(
+                cooking_method_annotation=Value("Отсутствует", output_field=models.CharField()),
+                description_annotation=Case(
+                    When(description__isnull=True, then=Value("Отсутствует")),
+                    default=F('description'),
+                    output_field=models.CharField()
+                ),
+            ).values(
+                'name', 'id', 'number_tk', 'description_annotation', 'carbohydrate', 'fat', 'fiber', 'energy', 'cooking_method_annotation',
+            ))
 
 
         if type_menu in ['cafe', 'all']:
@@ -637,14 +647,27 @@ class UpdateSearchAPIView(APIView):
 
             product_cafe = list(Product.objects.filter(
                 filter
-            ).values('name', 'id'))
+            ).annotate(
+                number_tk=F('iditem'),
+                cooking_method_annotation=Case(
+                    When(cooking_method__isnull=True, then=Value("Отсутствует")),
+                    default=F('cooking_method'),
+                    output_field=models.CharField()
+                ),
+                description_annotation=Case(
+                    When(description__isnull=True, then=Value("Отсутствует")),
+                    default=F('description'),
+                    output_field=models.CharField()
+                )
+            ).values(
+                'name', 'id', 'number_tk', 'description_annotation', 'carbohydrate', 'fat', 'fiber', 'energy', 'cooking_method_annotation',
+            ))
 
             # добавляем префикс к id для категории "Кафе"
             for p in list(product_cafe):
                 p['id'] = f'cafe-cat-{p["id"]}'
 
         products = product_lp + product_cafe
-
 
 
         serializer = ProductsSerializer(products, many=True)
@@ -965,6 +988,7 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('id', 580),
                 ('description', 'Кефир')
             ]),
+
         ]
         data = {
             "dishes_all": dishes_all,

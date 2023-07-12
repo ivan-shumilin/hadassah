@@ -1768,3 +1768,12 @@ def menu_lp_for_staff(request):
     data = {'menu': menu, 'diet': diet, 'day_of_the_week': day_of_the_week}
 
     return render(request, 'menu_lp_for_staff.html', context=data)
+
+
+def catalog_all_products(request):
+    """
+    Вывод всех блюд
+    """
+
+    data = {}
+    return render(request, 'catalog_all_products.html', context=data)
