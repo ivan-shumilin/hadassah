@@ -637,8 +637,18 @@ class UpdateSearchAPIView(APIView):
                     default=F('description'),
                     output_field=models.CharField()
                 ),
+                id_annotetion=F('id'),
             ).values(
-                'name', 'id', 'number_tk', 'description_annotation', 'carbohydrate', 'fat', 'fiber', 'energy', 'cooking_method_annotation',
+                'name',
+                'id',
+                'number_tk',
+                'description_annotation',
+                'carbohydrate',
+                'fat',
+                'fiber',
+                'energy',
+                'cooking_method_annotation',
+                'id_annotetion',
             ))
 
 
@@ -658,9 +668,19 @@ class UpdateSearchAPIView(APIView):
                     When(description__isnull=True, then=Value("Отсутствует")),
                     default=F('description'),
                     output_field=models.CharField()
-                )
+                ),
+                id_annotetion=F('id'),
             ).values(
-                'name', 'id', 'number_tk', 'description_annotation', 'carbohydrate', 'fat', 'fiber', 'energy', 'cooking_method_annotation',
+                'name',
+                'id',
+                'number_tk',
+                'description_annotation',
+                'carbohydrate',
+                'fat',
+                'fiber',
+                'energy',
+                'cooking_method_annotation',
+                'id_annotetion'
             ))
 
             # добавляем префикс к id для категории "Кафе"

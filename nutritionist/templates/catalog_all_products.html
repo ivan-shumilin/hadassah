@@ -41,13 +41,13 @@
 </div>
 
 
-<table id='table' width="100%">
+<table id='table' width="100%" class="mr-top-20">
 
 </table>
 
 <div id="modal-delet" class="modal">
     <div class="modal-dialog">
-            <div class="modal-content">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal-title">Выбор категории</h5>
                 <button id="close-modal" type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -55,38 +55,34 @@
                 </button>
             </div>
             <div class="modal-body">
-               <p id="modal-body">
-                    <div>
-                        <label for="inputType">Выберете тип:</label>
-                        <select id="inputType" class="form-control">
-                            <option value='all' selected>Не выбрано</option>
-                            <option value='lp'>Лечебное питание</option>
-                            <option value='cafe'>Блюда раздачи</option>
-                        </select>
-                    </div>
-                
-                    <div>
-                        <label for="inputCat">Выберете категорию:</label>
-                        <select id="inputCat" class="form-control">
-                            <option value='all' selected>Не выбрано</option>
-                            <option value='salad'>Салаты</option>
-                            <option value='soup'>Первые блюда</option>
-                            <option value='porridge'>Кашы</option>
-                            <option value='main'>Основные блюда</option>
-                            <option value='garnish'>Гарниры</option>
-                            <option value='dessert'>Десерты</option>
-                            <option value='fruit'>Фрукты</option>
-                            <option value='drink'>Напитки</option>
-                            <option value='products'>Товары</option>
-                        </select>
-                    </div>
-                </p>
+                <div class="">
+                    <label class="font-size-14" for="inputType">Выберете тип:</label>
+                    <select id="inputType" class="form-control">
+                        <option value='all' selected>Не выбрано</option>
+                        <option value='lp'>Лечебное питание</option>
+                        <option value='cafe'>Блюда раздачи</option>
+                    </select>
+                </div>
+        
+                <div class="">
+                    <label class="font-size-14" for="inputCat">Выберете категорию:</label>
+                    <select id="inputCat" class="form-control">
+                        <option value='all' selected>Не выбрано</option>
+                        <option value='salad'>Салаты</option>
+                        <option value='soup'>Первые блюда</option>
+                        <option value='porridge'>Кашы</option>
+                        <option value='main'>Основные блюда</option>
+                        <option value='garnish'>Гарниры</option>
+                        <option value='dessert'>Десерты</option>
+                        <option value='fruit'>Фрукты</option>
+                        <option value='drink'>Напитки</option>
+                        <option value='products'>Товары</option>
+                    </select>
+                </div>    
             </div>
 
             <div class="modal-footer">
                 <input class="btn btn-info" onclick="changeDishModalforSearch()" type="submit" value="Выбрать">
-            </div>
-
             </div>
         </div>
     </div>
@@ -126,8 +122,7 @@
 <script>
 
 // выбор пациента
-$('select').select2();
-$(".js-states").select2();
+
 let result;
 
 
@@ -178,20 +173,24 @@ function addHtmlLeft(obj) {
     }
 
     let result = "";
-    result += '<tr>';
-    result += `<td class='meal'>Номер</td>`;
-    result += `<td class='meal'>Название</td>`;
+    result += '<tr class="solid-grey">';
+    result += `<td class='meal pr-left-5'>№</td>`;
+    result += `<td class='meal pr-left-5'>Название</td>`;
     result += `<td class='meal'>Номер ТК</td>`;
     result += '</tr>';
 
     for (var item in obj) {
-            result += `<tr>`;
-            result += `<td>${+item + 1}</td>`;
-            result += `<td class="pd-top-bot-ziro pd-left-10" >`
-            result += `${obj[item]['name']}`
+        let number_tk = obj[item]['number_tk']
+        if (number_tk == null) {
+            number_tk = '——'
+        }
+            result += `<tr class="solid-grey pr-top-5">`;
+            result += `<td class="pr-top-5 pr-left-5">${+item + 1}</td>`;
+            result += `<td class="pr-top-5" >`
             result += `<img onclick="createModalProduct('${item}')" class="icon" width="17" height="17" title="Информиция о блюде" src="{% static "doctor/css/img/info.svg" %}" alt="Информация о блюде">`
+            result += `${obj[item]['name']}, ${obj[item]['id_annotetion']}`
             result += `</td>`;
-            result += `<td>${obj[item]['number_tk']}</td>`;
+            result += `<td class="pr-top-5">${number_tk}</td>`;
     }
 
     tdLeft.insertAdjacentHTML("afterbegin", result);
@@ -207,16 +206,6 @@ function changeDishModalforSearch() {
 }
 
 
-async function addDishAPI(category, product_id, meal) {
-    let res = await addDishForPatient(category, product_id, meal);
-    var obj = JSON.parse(res);
-    document.getElementById('close-modal').click()
-    if (obj['status'] == 'Error') {
-        alert('Server error...')
-    } else {
-        displayInfoPatient()
-    }
-}
 
 function createModalProduct(item) {
     document.getElementById('modal-title-product').innerHTML = result[item]['name'].replace(/"/g, '&quot;');

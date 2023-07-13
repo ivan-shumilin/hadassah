@@ -116,6 +116,7 @@ class ProductsSerializer(serializers.Serializer):
     fiber = serializers.CharField()
     energy = serializers.CharField()
     cooking_method_annotation = serializers.CharField()
+    id_annotetion = serializers.CharField()
 
 
 
