@@ -184,15 +184,15 @@ function addHtmlLeft(obj) {
         if (number_tk == null) {
             number_tk = '——'
         }
-            result += `<tr class="solid-grey pr-top-5">`;
-            result += `<td class="pr-top-5 pr-left-5">${+item + 1}</td>`;
-            result += `<td class="pr-top-5" >`
-            result += `<img onclick="createModalProduct('${item}')" class="icon" width="17" height="17" title="Информиция о блюде" src="{% static "doctor/css/img/info.svg" %}" alt="Информация о блюде">`
-            result += `${obj[item]['name']}, ${obj[item]['id_annotetion']}`
-            result += `</td>`;
-            result += `<td class="pr-top-5">${number_tk}</td>`;
-    }
 
+        result += `<tr class="solid-grey pr-top-5">`;
+        result += `<td class="pr-top-5 pr-left-5">${+item + 1}</td>`;
+        result += `<td class="pr-top-5" >`
+        result += `<img onclick="createModalProduct('${item}')" class="icon" width="17" height="17" title="Информиция о блюде" src="{% static "doctor/css/img/info.svg" %}" alt="Информация о блюде">`
+        result += `${obj[item]['name']}, ${obj[item]['id_annotetion']}`
+        result += `</td>`;
+        result += `<td class="pr-top-5">${number_tk}</td>`;
+    }
     tdLeft.insertAdjacentHTML("afterbegin", result);
 }
 
@@ -206,11 +206,14 @@ function changeDishModalforSearch() {
 }
 
 
-
 function createModalProduct(item) {
     document.getElementById('modal-title-product').innerHTML = result[item]['name'].replace(/"/g, '&quot;');
     document.getElementById('description').innerHTML = result[item]['description_annotation'].toLowerCase().replace(/"/g, '&quot;').replace('состав: ', '');
-    let PFC = `белки - ${result[item]['fiber']} г, жиры - ${result[item]['fat']} г, углеводы - ${result[item]['carbohydrate']} г, ккал - ${result[item]['energy']}.`
+    let fiber = parseFloat(result[item]['fiber']).toFixed(1);
+    let fat = parseFloat(result[item]['fat']).toFixed(1);
+    let carbohydrate = parseFloat(result[item]['carbohydrate']).toFixed(1);
+    let energy = parseFloat(result[item]['energy']).toFixed(1);
+    let PFC = `белки - ${fiber} г, жиры - ${fat} г, углеводы - ${carbohydrate} г, ккал - ${energy}.`
     document.getElementById('PFC').innerHTML = PFC;
     document.getElementById('cooking_method').innerHTML = result[item]['cooking_method_annotation'].replace(/"/g, '&quot;').toLowerCase();
     
