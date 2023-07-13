@@ -797,7 +797,8 @@ def get_category_cafe_2(category):
         "soup": ["Первые блюда"],
         "porridge": ["Каши"],
         "main": ["Завтраки", "Вторые блюда", "Блюда от шефа"],
-        "garnish": ["Гарниры"]
+        "garnish": ["Гарниры"],
+        "dessert": ["Десерты"],
     }
     return categorys.get(category, [])
 

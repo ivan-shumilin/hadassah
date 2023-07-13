@@ -267,6 +267,7 @@ class Product(models.Model):
     fat = models.CharField(max_length=200, null=True)
     fiber = models.CharField(max_length=200, null=True)
     energy = models.CharField(max_length=200, null=True)
+    weight = models.CharField(verbose_name="Вес", max_length=5000, null=True, blank=True)
     image = models.CharField(max_length=2000, null=True)
     vegan = models.BooleanField(null=True)
     allergens = models.BooleanField(null=True)
