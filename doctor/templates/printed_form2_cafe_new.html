@@ -622,17 +622,6 @@
 {% endfor %}
 
 
-<button onclick="printPDF()">Печать PDF</button>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.10.2/jspdf.umd.min.js"></script>
-<script>
-function printPDF() {
-  var doc = new jsPDF();
-  doc.text("Пример текста в PDF-документе", 10, 10);
-  doc.print();
-}
-</script>
-    
         <script src="{% static 'doctor/js/all.js' %}"></script>
     </body>
 </div>
