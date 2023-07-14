@@ -247,6 +247,8 @@
                 <!-- <object id="pdfObject" data="{% static 'stickers.pdf' %}" type="application/pdf" width="100%" height="50px">
                     <p>Ваш браузер не поддерживает отображение PDF. <a href="{% static 'stickers.pdf' %}">Скачать PDF</a> вместо этого.</p>
                   </object>       -->
+                <a class="mr-bm-500" onclick="printPDF1()">Печать PDF</a>   
+                <iframe class="mr-bm-500" id="iframe" src="{% static 'stickers.pdf' %}"></iframe>  
 
             </div>
 
