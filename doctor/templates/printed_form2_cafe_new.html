@@ -621,7 +621,19 @@
     {% endif %}
 {% endfor %}
 
-<iframe src="{% static 'stickers.pdf' %}"></iframe>
+
+    <button onclick="printPDF()">Печать PDF</button>
+
+    <script>
+    function printPDF() {
+      var pdfUrl = "{% static 'stickers.pdf' %}";
+      var printWindow = window.open(pdfUrl, "_blank");
+      printWindow.addEventListener("load", function() {
+        printWindow.print();
+      });
+    }
+    </script>
+    
         <script src="{% static 'doctor/js/all.js' %}"></script>
     </body>
 </div>
