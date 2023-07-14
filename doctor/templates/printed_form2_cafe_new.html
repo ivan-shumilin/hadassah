@@ -622,17 +622,16 @@
 {% endfor %}
 
 
-    <button onclick="printPDF()">Печать PDF</button>
+<button onclick="printPDF()">Печать PDF</button>
 
-    <script>
-    function printPDF() {
-      var pdfUrl = "{% static 'stickers.pdf' %}";
-      var printWindow = window.open(pdfUrl, "_blank");
-      printWindow.addEventListener("load", function() {
-        printWindow.print();
-      });
-    }
-    </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.10.2/jspdf.umd.min.js"></script>
+<script>
+function printPDF() {
+  var doc = new jsPDF();
+  doc.text("Пример текста в PDF-документе", 10, 10);
+  doc.print();
+}
+</script>
     
         <script src="{% static 'doctor/js/all.js' %}"></script>
     </body>
