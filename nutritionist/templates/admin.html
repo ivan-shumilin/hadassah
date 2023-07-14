@@ -336,7 +336,7 @@ function filterStikers() {
 function printPDF (url)
 {
     let pdfFrame = document.body.appendChild(document.createElement('iframe'));
-    pdfFrame.style.display = 'none';
+    // pdfFrame.style.display = 'none';
     pdfFrame.onload = () => (void pdfFrame.contentWindow.print());
     pdfFrame.src = url;
 }
