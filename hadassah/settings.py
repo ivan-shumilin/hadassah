@@ -24,6 +24,10 @@ ALLOWED_HOSTS = [
         '2a3d-178-89-129-243.ngrok-free.app',
 ]
 
+######################
+# CORS HEADERS
+######################
+
 CORS_ALLOWED_ORIGINS = [
     "https://sk.petrushkagroup.com",
     "https://sk.petrushkagroup.ru",
@@ -31,6 +35,12 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "https://b467-146-120-93-183.eu.ngrok.io",
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = ['*']
+CSRF_COOKIE_SECURE = False
+
 
 
 
