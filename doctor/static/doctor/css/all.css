@@ -6493,6 +6493,23 @@ font-weight: 200;
   margin-left: 10px;
 }
 
+.mr-left-24 {
+  margin-left: 24px;
+}
+
 .mr-bm-500 {
   margin-top: 500px;
+}
+
+.pd-left-12 {
+  padding-left: 12px;
+}
+
+.label-print {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.font-black {
+  color: rgb(10, 10, 10)
 }
