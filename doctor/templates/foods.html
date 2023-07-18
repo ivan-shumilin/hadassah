@@ -338,6 +338,9 @@ function addHtmlLeft(obj, obj1) {
                             var description = obj[meal][cat][item]['description']
                         }
                         result += `<tr><td class="pd-top-bot-ziro pd-left-10" ><span class="customdatademo" data-tooltip="${description}">${obj[meal][cat][item]['name']}</span>`
+                        if (obj[meal][cat][item]['is_patient_choice']) {
+                            result += `<img class="icon" width="17" height="17" title="Выбор пациента" src="{% static "doctor/css/img/p_blue.svg" %}" alt="Выбор пациета">`
+                        }
                         result += `<img onclick="changeDish('${cat}', '${meal}', '${obj[meal][cat][item]['id']}', '${obj[meal][cat][item]['name'].replace(/"/g, '&quot;')}')" class="icon" width="17" height="17" title="Заменить блюдо" src="{% static "doctor/css/img/change.svg" %}" alt="Заменить блюдо">`
                         result += `<img onclick="deleteDish('${obj[meal][cat][item]['id']}', '${obj[meal][cat][item]['name'].replace(/"/g, '&quot;')}', '${cat}', '${meal}')" class="icon" width="18" height="19" title="Удалить блюдо" src="{% static "doctor/css/img/delete.svg" %}" alt="Удалить блюдо">`
                         result += `</td></tr>`
