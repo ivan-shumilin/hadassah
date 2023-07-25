@@ -296,7 +296,7 @@ def add_the_patient_emergency_food_to_the_database(user, date_add, meal, extra_b
     ).save()
 
 
-    if UsersReadyOrder.objects.filter(user_id=user.id).exists():
+    if not UsersReadyOrder.objects.filter(user_id=user.id).exists():
         UsersReadyOrder(
                 user_id=user.id,
                 date_create=date.today(),

@@ -46,6 +46,7 @@ import telepot
 from doctor.tasks import send_messang, my_job_create_ready_order_dinner, my_job_send_messang_changes, \
     send_messang_changes
 from .functions.download import get_token, download
+from .functions.helpers import formatting_full_name_mode_full
 from .logic.create_ingredient import create_ingredients
 
 
@@ -609,8 +610,8 @@ class SendPatientProductsAPIView(APIView):
 
 
         messang += f'({user_name})'
-        # send_messang_changes(messang, '-1001913194437')
-        my_job_send_messang_changes.delay(messang, '-1001913194437')
+        # send_messang_changes(messang, settings.BOT_ID_EMERGEBCY_FOOD)
+        my_job_send_messang_changes.delay(messang, settings.BOT_ID_EMERGEBCY_FOOD)
 
         return Response('ok')
 
@@ -757,8 +758,9 @@ class SendEmergencyFoodAPIView(APIView):
                    type_of_diet=patient.type_of_diet).save()
 
         messang += f'({user_name})'
-        # send_messang_changes(messang, '-1001913194437')
-        my_job_send_messang_changes.delay(messang, '-1001913194437')
+        # send_messang_changes(messang, settings.BOT_ID_EMERGEBCY_FOOD)
+        my_job_send_messang_changes.delay(messang, settings.BOT_ID_EMERGEBCY_FOOD)
+
         return Response('ok')
 
 
