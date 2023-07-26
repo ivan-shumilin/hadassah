@@ -742,11 +742,11 @@ class SendEmergencyFoodAPIView(APIView):
             product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal, extra_bouillon=False)
 
         # добавить в отчеты и отправить сообщение
-        meal = ', ' + translate_meal(meal).lower() if data_no_name != 'no_working_hours' else ''
+        meal_mod = ', ' + translate_meal(meal).lower() if data_no_name != 'no_working_hours' else ''
         messang = f'<b>Доп. питание для экстренной госпитализации:</b>\n'
         messang += f'    \n'
         messang += f'{full_name}{room_number}\n'
-        messang += f'{patient.type_of_diet}{meal}\n'
+        messang += f'{patient.type_of_diet}{meal_mod}\n'
         messang += f'Комментарий: {comment}\n' if comment != '' else ''
         messang += f'    \n'
         for product_id in product_add:
@@ -760,6 +760,12 @@ class SendEmergencyFoodAPIView(APIView):
         messang += f'({user_name})'
         # send_messang_changes(messang, settings.BOT_ID_EMERGEBCY_FOOD)
         my_job_send_messang_changes.delay(messang, settings.BOT_ID_EMERGEBCY_FOOD)
+        check_mark = '&#8505;'
+        messang = f'{check_mark} <b>Изменение с {translate_meal(meal).lower() + "а"}</b>\n'
+        messang += f'Экстренное питание для {full_name} {patient.type_of_diet}\n'
+        messang += f'({user_name})'
+        # send_messang_changes(messang, settings.BOT_ID_EMERGEBCY_FOOD)
+        my_job_send_messang_changes.delay(messang)
 
         return Response('ok')
 
