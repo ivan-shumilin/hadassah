@@ -146,7 +146,8 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
                         if cat == 'main':
                             products_cafe[cat_index['main-breakfast']] = []
                     else:
-                        products_cafe[cat_index[cat]] = []
+                        if cat != 'fruit':
+                            products_cafe[cat_index[cat]] = []
                     for id in id_set:
                         if 'cafe' in id:
                             fix_dishes.append(id)
