@@ -1504,7 +1504,30 @@ def internal_report(request):
 
 
     temporary_report.sort(key=operator.itemgetter('category'))
-    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша', 'товар', 'hidden']
+    category_translation = {
+        'завтраки': 'завтрак',
+        'Завтраки': 'завтрак (раздача)',
+        'гарнир': 'гарнир',
+        'Гарниры': 'гарнир (раздача)',
+        'десерт': 'десерт',
+        'Десерты': 'десерт (раздача)',
+        'напиток': 'напиток',
+        'основной': 'основное',
+        'Блюда от шефа': 'основное (раздача)',
+        'Вторые блюда': 'основное (раздача)',
+        'салат': 'салат',
+        'Салаты': 'cалат (раздача)',
+        'суп': 'суп',
+        'Первые блюда': 'суп (раздача)',
+        'фрукты': 'фрукты',
+        'каша': 'каша',
+        'Каши': 'каша (раздача)',
+        'товар': 'товар',
+        'hidden': 'hidden',
+    }
+    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша', 'товар', 'hidden',]
+    category += ['Завтраки', 'Каши', 'Салаты', 'Первые блюда', 'Блюда от шефа', 'Вторые блюда', 'Гарниры',
+                'Десерты',]
     intermediate_option = []
     report = []
     for cat in category:
@@ -1515,7 +1538,7 @@ def internal_report(request):
         report += intermediate_option
         intermediate_option = []
     for index, item in enumerate(report):
-        item['category'] = item['category'] if item['category'] != 'основной' else 'основное'
+        item['category'] = category_translation.get(item['category'], 'нет названия')
         item['number'] = index + 1
     add_try(report) # добавляем суточные пробы
 
