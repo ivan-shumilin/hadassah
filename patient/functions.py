@@ -106,6 +106,7 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
             'soup': 3,
             'porridge': 5,
             'main-breakfast': 4,
+            'dessert': 6,
         }
 
         products_menu_cafe: dict = {}
