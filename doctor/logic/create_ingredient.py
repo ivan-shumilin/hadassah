@@ -1,6 +1,7 @@
 # Получаем по iiko api cloud список всех nomenclature
 # nomenclature  --> Ingredient
 import json
+import time
 
 import requests
 from django.db import transaction
@@ -45,33 +46,41 @@ def create_ingredients(by_api=True):
     token = get_token()
 
     if by_api:
+        print('Обнавление через api')
         nomenclature = get_nomenclature(token)
+        print('Получили номенклатуру')
     else:
+        print('Обнавление из файла')
         with open("doctor/nomenclature.json", "r") as my_file:
             nomenclature = json.load(my_file)
     to_create = []
     Ingredient.objects.all().delete()
-    for product in nomenclature['products']:
+    count_ingredient = len(nomenclature['products'])
+    print("Всего ингредиентов: ", count_ingredient)
+    time.sleep(3)
+    for i, product in enumerate(nomenclature['products']):
+        print("Осталось ", count_ingredient - i + 1)
         to_create.append(Ingredient(
             product_id=product["id"],
             name=product["name"],
-            imageLinks = product["imageLinks"],
-            code = product["code"],
-            description = product["description"],
-            fatAmount = product["fatAmount"],
-            proteinsAmount = product["proteinsAmount"],
-            carbohydratesAmount = product["carbohydratesAmount"],
-            energyAmount = product["energyAmount"],
-            fatFullAmount = product["fatFullAmount"],
-            proteinsFullAmount = product["proteinsFullAmount"],
-            carbohydratesFullAmount = product["carbohydratesFullAmount"],
-            energyFullAmount = product["energyFullAmount"],
-            weight = product["weight"],
-            groupId = product["groupId"],
-            productCategoryId = product["productCategoryId"],
-            type = product["type"],
-            orderItemType = product["orderItemType"],
-            measureUnit = product["measureUnit"],
+            imageLinks=product["imageLinks"],
+            code=product["code"],
+            description=product["description"],
+            fatAmount=product["fatAmount"],
+            proteinsAmount=product["proteinsAmount"],
+            carbohydratesAmount=product["carbohydratesAmount"],
+            energyAmount=product["energyAmount"],
+            fatFullAmount=product["fatFullAmount"],
+            proteinsFullAmount=product["proteinsFullAmount"],
+            carbohydratesFullAmount=product["carbohydratesFullAmount"],
+            energyFullAmount=product["energyFullAmount"],
+            weight=product["weight"],
+            groupId=product["groupId"],
+            productCategoryId=product["productCategoryId"],
+            type=product["type"],
+            orderItemType=product["orderItemType"],
+            measureUnit=product["measureUnit"],
         ))
     Ingredient.objects.bulk_create(to_create)
+    print("Ингредиенты обнавлены")
 
