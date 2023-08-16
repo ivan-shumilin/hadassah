@@ -653,3 +653,23 @@ class IsReportCreate(models.Model):
     is_report_create = models.BooleanField(default=False)
     def __str__(self):
         return f'{self.id} - {self.is_report_create}'
+
+class TTK(models.Model):
+    """
+    Записываем тех. карту. В данном случае ингредиент так же является тех. картой.
+    ТТК - у которой нет потомка это игредиент.
+
+    """
+    measure_unit = models.CharField(max_length=200, null=True)  # единица измерения кг, л.
+    product_id = models.CharField(max_length=200, null=True)
+    name = models.CharField(max_length=500)
+    create_at = models.DateField(default=date.today)
+    parent_ttk = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    amount_in = models.DecimalField(max_digits=5, decimal_places=3, null=True, blank=True)  # общий вес
+    amount_middle = models.DecimalField(max_digits=5, decimal_places=3, null=True, blank=True)
+    amount_out = models.DecimalField(max_digits=5, decimal_places=3, null=True, blank=True)  # выход
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.CharField(max_length=200, choices=STATUS_TTK, null=True, blank=True, default='')
+
+    def __str__(self):
+        return f"TTK {self.product_id} - {self.name}"

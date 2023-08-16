@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-report-page">
+    <head>
+        <meta charset="utf-8">
+        <title>ТК {{ result.name }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        {% load static %}
+
+        <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
+    </head>
+    <style>
+    .text {
+        font-size: 16px;
+    }
+    </style>
+    <body>
+
+        {% if ingredient == "Нет данных" %}
+            <div class="back mr-top-10 mr-left-10">
+                <a href="{% url 'printed_form_two_lp_new' %}">Назад к заявке</a>
+            </div>
+            <div class="mr-top-30 mr-left-10">Нет данных</div>
+        {% else %}
+            <div class="card-header-block">
+                <div class="container inner">
+                    <div class="back">
+                        <a href="{% url 'printed_form_two_lp_new' %}">Назад к заявке</a>
+                    </div>
+                    <div class="name">Список ингредиентов</div>
+                    <div class="text">Заказ на {{ formatted_date_now }}</div>
+                </div>
+            </div>
+
+
+            <div class="card-block">
+                <div class="inner container">
+                    <div class="card-block-left">
+                        <div class="table" data-table>
+                            <div class="thead">
+                                <div class="tr">
+                                    <div class="th name">продукт</div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">ед. изм.</div>
+                                        </div>
+                                    </div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">брутто</div>
+                                            <div class="unit">ед. изм.</div>
+                                        </div>
+                                    </div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">брутто</div>
+                                            <div class="unit">кг</div>
+                                        </div>
+                                    </div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">нетто</div>
+                                            <div class="unit">п/ф, кг</div>
+                                        </div>
+                                    </div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">выход</div>
+                                            <div class="unit">кг</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tbody">
+                                {% for key, product in ingredients.items %}
+                                    <script>
+                                        console.log(float)
+                                    </script>
+                                        <div class="tr">
+                                            <div class="td name">{{ product.name }}</div>
+                                            <div class="td">{{ product.measure_unit }}</div>
+                                            <div class="td weighting">{{ product.amount_in|floatformat:"-3" }}</div>
+                                            <div class="td weighting">{{ product.amount_in|floatformat:"-3" }}</div>
+                                            <div class="td weighting">{{ product.amount_middle|floatformat:"-3" }}</div>
+                                            <div class="td weighting">{{ product.amount_out|floatformat:"-3" }}</div>
+                                            <div class="td weighting-const hide-item">{{ product.amount_in|floatformat:"-3" }}</div>
+                                            <div class="td weighting-const hide-item">{{ product.amount_in|floatformat:"-3" }}</div>
+                                            <div class="td weighting-const hide-item">{{ product.amount_middle|floatformat:"-3" }}</div>
+                                            <div class="td weighting-const hide-item">{{ product.amount_out|floatformat:"-3" }}</div>
+                                        </div>
+                                {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+    {% endif %}
+
+
+    {% load static %}
+    <script src="{% static 'doctor/js/all.js' %}"></script>
+    </body>
+</html>

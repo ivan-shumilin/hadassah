@@ -1,5 +1,5 @@
 """ Модуль по API получает ТТК и из ингридиентов собирает состав блюда. """
-from doctor.functions.download import get_tk, get_name, get_ingredients
+from doctor.functions.download import get_tk, get_name_by_api, get_ingredients
 from nutritionist.models import Ingredient
 from django.db import transaction
 
@@ -15,13 +15,13 @@ def get_ttk(id):
         try:
             item_tk_1['name'] = Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().name
         except:
-            item_tk_1['name'] = get_name(item_tk_1['assembledProductId'])
+            item_tk_1['name'] = get_name_by_api(item_tk_1['assembledProductId'])
 # уровень 2
         for item_tk_2 in item_tk_1['items']:
             try:
                 item_tk_2['name'] = Ingredient.objects.filter(product_id=item_tk_2['productId']).first().name
             except:
-                item_tk_2['name'] = get_name(item_tk_2['productId'])
+                item_tk_2['name'] = get_name_by_api(item_tk_2['productId'])
             # получить список ингридиентов для каждого item_tk_2
             try:
                 item_tk_2['item'] = get_ingredients(item_tk_2['productId'], item_tk_2['name'])
@@ -52,7 +52,7 @@ def get_ttk(id):
                                     ing4['name'] = Ingredient.objects.filter(
                                         product_id=ing4['productId']).first().name
                                 except:
-                                    ing4['name'] = get_name(ing4['productId'])
+                                    ing4['name'] = get_name_by_api(ing4['productId'])
                                 try:
                                     ing4['items'] = get_ingredients(ing4['productId'], ing4['name'])
                                     for ing5 in ing4['items']:
@@ -60,7 +60,7 @@ def get_ttk(id):
                                             ing5['name'] = Ingredient.objects.filter(
                                                 product_id=ing5['productId']).first().name
                                         except:
-                                            ing5['name'] = get_name(ing5['productId'])
+                                            ing5['name'] = get_name_by_api(ing5['productId'])
                                 except:
                                     ing4['items'] = None
                         except:

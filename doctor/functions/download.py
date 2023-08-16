@@ -83,7 +83,7 @@ def get_tk(product_id):
             tk = json.loads(response.text)
         return tk, ''
 
-def get_name(product_id):
+def get_name_by_api(product_id):
     """ Получаем элемент номенклатуры. """
     url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list?includeDeleted=false'
 

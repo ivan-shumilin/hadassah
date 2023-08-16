@@ -20,11 +20,14 @@ from django.core.mail import send_mail
 from django.db.models.functions import Lower
 from django.views.generic import TemplateView
 
-from doctor.functions.download import get_token, get_tk, get_name, get_allergens, get_weight_tk, get_measure_unit
+from doctor.functions.download import get_token, get_tk, get_name_by_api, get_allergens, get_weight_tk, \
+    get_measure_unit
+from .functions.get_ingredients import get_ingredients
 from doctor.tasks import create_report_download
 from .functions.report import create_external_report, create_external_report_detailing, get_report
+from .functions.ttk import create_all_ttk
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday, \
-    UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage, IsReportCreate
+    UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage, IsReportCreate, Ingredient
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import ProductSerializer, DownloadReportSerializer
 from rest_framework import generics
@@ -1341,10 +1344,14 @@ def printed_form_two_cafe_new(request):
     }
     return render(request, 'printed_form2_cafe_new.html', context=data)
 
-def tk(request, id, count):
+
+def get_processed_tk(id: str, count: int):
+    """
+    Получаем тех. карту и обрабатываем ее.
+    Переводим в словарь
+    """
     import operator
     from nutritionist.models import Ingredient
-    count: int = int(count) + 2 if count != '0' else 1  # сутчная проба и бракераж
 
     tk, error = get_tk(id)
 
@@ -1352,10 +1359,10 @@ def tk(request, id, count):
         try:
             item_tk_1['name'] = Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().name
         except:
-            item_tk_1['name'] = get_name(item_tk_1['assembledProductId'])
+            item_tk_1['name'] = get_name_by_api(item_tk_1['assembledProductId'])
 
         try:
-            item_tk_1['weight'] =\
+            item_tk_1['weight'] = \
                 Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().weight * 1000
         except:
             item_tk_1['weight'] = 0
@@ -1366,7 +1373,7 @@ def tk(request, id, count):
             try:
                 item_tk_2['name'] = Ingredient.objects.filter(product_id=item_tk_2['productId']).first().name
             except:
-                item_tk_2['name'] = get_name(item_tk_2['productId'])
+                item_tk_2['name'] = get_name_by_api(item_tk_2['productId'])
 
             # try:
             #     item_tk_2['measure_unit'] = \
@@ -1374,33 +1381,13 @@ def tk(request, id, count):
             # except:
             item_tk_2['measure_unit'] = get_measure_unit(item_tk_2['productId'])
 
-# # Высчитываем вес с учетом того, что некоторые ТК указаны на определенное кол-во порций
+    # # Высчитываем вес с учетом того, что некоторые ТК указаны на определенное кол-во порций
     for item_tk_1 in tk['assemblyCharts']:
         count_por = item_tk_1['assembledAmount']
         for sub_item in item_tk_1['items']:
             sub_item['amountIn'] = sub_item['amountIn'] / count_por
             sub_item['amountMiddle'] = sub_item['amountMiddle'] / count_por
             sub_item['amountOut'] = sub_item['amountOut'] / count_por
-
-
-# Проставляем имена для preparedCharts
-#     for item_tk_1 in tk['preparedCharts']:
-#         try:
-#             item_tk_1['name'] = Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().name
-#         except:
-#             item_tk_1['name'] = None
-#
-#         try:
-#             item_tk_1['weight'] =\
-#                 Ingredient.objects.filter(product_id=item_tk_1['assembledProductId']).first().weight * 1000
-#         except:
-#             item_tk_1['weight'] = 0
-#
-#         for item_tk_2 in item_tk_1['items']:
-#             try:
-#                 item_tk_2['name'] = Ingredient.objects.filter(product_id=item_tk_2['productId']).first().name
-#             except:
-#                 item_tk_2['name'] = None
 
     try:
         result = tk['assemblyCharts'][0]
@@ -1439,7 +1426,35 @@ def tk(request, id, count):
     except:
         img = None
 
+    return result, error, weight
 
+#############################################
+#############################################
+"""
+1. пройти по иерархи ТТК
+2. запитсать первую ТТК
+3. пройти по ее потомкам
+4. повторить с п.1
+5. если закончилить потомки, тогда выход.
+"""
+
+
+def tk(request, id, count):
+    create_all_ttk('3f068548-6130-42e0-85d2-9329034fff4c')
+    # create_all_ttk('15918a36-734e-4f59-820c-1cd6a33d4e77')
+    # create_all_ttk('462db549-a324-4b8f-8316-0ffefbb30d57')
+    """
+    Отображение тех. карты для блюда.
+    """
+    count: int = int(count) + 2 if count != '0' else 1  # сутчная проба и бракераж
+
+    result, error, weight = get_processed_tk(id, count)
+
+
+    try:
+        img = ProductLp.objects.filter(product_id=id).first().image
+    except:
+        img = None
 
     data = {
         'img': img,
@@ -1449,6 +1464,117 @@ def tk(request, id, count):
         'weight': weight,
     }
     return render(request, 'tk.html', context=data)
+
+
+def all_order_by_ingredients(request):
+    """
+    Выводим весь заказ на завтра по ингредиетам, для проверки наличия продуктов.
+    1. составить список всех продуктов
+    2. пройтись по всем продуктам и получить ТК
+    3. составить список п\ф и обьединить их
+    Результат:
+    1. Список блюд, которые не попали в отчет. (нет product_id или др. причины)
+
+    2. Список пф: Пф - 1 уровень, 2 уровень, 3 уровень, 4 уровень.
+
+    3. Все ингредиенты.
+    Проходим по всем блюдам
+    Ингредиент - позиция на которую нет ссылки.
+    locals_without_cinema = Local.objects.exclude(cinema__isnull=False)
+    если у позиции нет ссылки, тогда записываем в словать где ключ это product_id
+    """
+    # получить прием пищи и дату
+    meal: str
+    day: str
+    catalog: dict = {}
+    is_public = False  # выводим технические названия блюд, не публичные
+
+    # какой прием пищи
+    date_create = date.today() + timedelta(days=1)
+    formatted_date_now = dateformat.format(date.fromisoformat(str(date_create)), 'd E, l')
+
+    type_order: str = 'flex-order'
+    users = UsersToday.objects.all()
+
+    # for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+    for meal in ['breakfast',]:
+        catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
+
+    # сформировать список со всеми продуктами
+    # numbers_tk: set = set()
+    # products: list = []
+    # for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+    #     for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink', 'products']:
+    #         for product in catalog[meal][category]:
+    #             if product:
+    #                 if product['product_id'] == '':
+    #                     products.append(product)
+    #                 elif product['product_id'] not in numbers_tk:
+    #                     numbers_tk.add(product['product_id'])
+    #                     products.append(product)
+    #                 else:
+    #                     # если словарь с продуктами (product) уже есть в products, тогда находим этот продукт и
+    #                     # складываем колличество
+    #                     for p in products:
+    #                         if p['product_id'] == product['product_id']:
+    #                             p['count'] += product['count']
+    # count = 0
+    # for product in products[:5]:
+    #     try:
+    #         tk, error = get_tk(product['product_id'])
+    #     except:
+    #         count += 1
+
+    # 1 этап (п/ф)
+    # формула на сколько увеличить вес каждого ингридиета
+    # алгоритм:
+    # 1. составить список со всеми всеми п/ф
+    all_tk: list = []
+    ingredients = get_ingredients(catalog)
+    data = {
+        'ingredients': ingredients,
+        'formatted_date_now': formatted_date_now,
+    }
+    # for product in products[:5]:
+    #     try:
+    #         result, error, _ = get_processed_tk(product['product_id'], product['count'])
+    #         all_tk.append(result)
+    #     except:
+    #         count += 1
+    #
+    # products_id: set = set()
+    # # сейчас работаем только с п\ф, для этого надо все items первого уровня записать в отдельную структуру
+    # all_tk_level_1: list = []
+    #
+    # for tk in all_tk:
+    #     if tk['items'] != None:
+    #         for item in tk['items']:
+    #             all_tk_level_1.append(item)
+    #
+    # # Получаем тк 1 ого уровня. Если на первом уровне есть ТК одинаковые складываем их вес.
+    # for i, tk in enumerate(all_tk_level_1):
+    #     # если первое вхождение п\ф, тогда
+    #     if tk['id'] not in products_id:
+    #         # добавляем в множество id
+    #         products_id.add(tk['id'])
+    #         # создаем глубокую копию
+    #         # tk_working = deepcopy(tk)
+    #         # пройти по всей структуре, если нашли такую тк, тогда копируем все уровни этой тк.
+    #         for ii in range(i + 1, len(all_tk_level_1)):
+    #             if all_tk_level_1[i]['id'] == all_tk_level_1[ii]['id']:
+    #                 all_tk_level_1[i]['amountIn'] += all_tk_level_1[ii]['amountIn']
+    #                 all_tk_level_1[i]['amountMiddle'] += all_tk_level_1[ii]['amountMiddle']
+    #                 all_tk_level_1[i]['amountOut'] += all_tk_level_1[ii]['amountOut']
+    # result: dict = {}
+    # result['items']: list = all_tk_level_1
+    #
+    # print('Кол-во блюд, для которых не удалось получить ТК ===>', count)
+    # # result = "Нет данных"
+    # data = {
+    #     'result': result,
+    # }
+    return render(request, 'all_order.html', context=data)
+
 
 
 

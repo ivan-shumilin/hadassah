@@ -1,6 +1,7 @@
 import re
 
-from nutritionist.models import ProductStorage, CustomUser, Product, MenuByDay
+from doctor.functions.download import get_name_by_api, get_measure_unit
+from nutritionist.models import ProductStorage, CustomUser, Product, MenuByDay, Ingredient, TTK
 from django.db.models import Q
 from datetime import datetime, date, timedelta
 from doctor.functions.bot import formatting_full_name
@@ -268,3 +269,43 @@ def combine_broths(soups):
                     soups[start]['comments'] += deleted_product['comments']
                     soups[start]['diet'] += deleted_product['diet']
     return soups
+
+
+def get_coefficient(weight_pf_main: float, weight_pf_local: float, count: int) -> int:
+    """
+    Расчет коофицента для получения веса ингредиента.
+    """
+    if 0 in (weight_pf_main, weight_pf_local, count):
+        return 0
+    else:
+        return weight_pf_main / weight_pf_local * count
+
+
+def get_name_and_measure_unit(product_id: str) -> (str, str):
+    """
+    Получение имени ингредиенты и единицу измнения
+    """
+    ingredient = Ingredient.objects.filter(product_id=product_id).first()
+    try:
+        return ingredient.name, ingredient.measureUnit
+    except:
+        return get_name_by_api(product_id), get_measure_unit(product_id)
+
+
+def create_ttk(ttk: dict, name_product_id: str, parent_ttk=None):
+    """
+    Записываем ТТК в базу.
+    """
+    ingredient = Ingredient.objects.filter(product_id=ttk[name_product_id]).first()
+    ttk = TTK.objects.create(
+        product_id=ttk[name_product_id],
+        name=ttk.get('name', None),
+        amount_in=ttk.get('amountIn', None),
+        amount_middle=ttk.get('amountMiddle', None),
+        amount_out=ttk.get('amountOut', None),
+        measure_unit=ttk.get('measure_unit', None),
+        parent_ttk=parent_ttk,
+        ingredient=ingredient,
+    )
+
+    return ttk
