@@ -7,7 +7,7 @@ def get_ingredients(catalog):
     """
     ingredients: dict = {}
 
-    for meal in ['breakfast',]:
+    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink', 'products']:
             for product in catalog[meal][category]:
                 if product:

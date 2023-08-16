@@ -1023,21 +1023,145 @@ def printed_form_one(request):
     return render(request, 'printed_form1.html', context=data)
 
 
-def printed_form_two_lp(request):
+def create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public):
+    """
+    Получаем все блюда на прием пищи
+    """
+
+    catalog: dict = {}
+
+    for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink', 'products']:
+        list_whith_unique_products = []
+        for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'ЩД без сахара',
+                     'ОВД веган (пост) без глютена', 'Нулевая диета',
+                     'БД', 'ВБД', 'НБД', 'НКД', 'ВКД', 'БД день 1',
+                     'БД день 2', 'Безйодовая', 'ПЭТ/КТ', 'Без ограничений']:
+            users_with_diet = users.filter(type_of_diet=diet)
+            all_products = [] # стовляем список всех продуктов
+            comment_list = []
+            for user in users_with_diet:
+                if type_order == 'flex-order':
+                    menu_all = MenuByDay.objects.filter(user_id=user.user_id)
+                else:
+                    menu_all = MenuByDayReadyOrder.objects.filter(user_id=user.id)
+                # if category == 'products' or category ==  'drink':
+                #     pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
+                if category == 'soup':
+                    pr = check_value_two(menu_all, str((date_create)), meal, 'soup', user.id, is_public) + \
+                         check_value_two(menu_all, str((date_create)), meal, 'bouillon', user.id, is_public)
+                    try:
+                        pr.remove(None)
+                    except:
+                        pass
+                else:
+                    pr = check_value_two(menu_all, str((date_create)), meal, category, user.id, is_public)
+
+                if pr[0] not in [None, [None]]:
+                    for item in pr:
+                        item['comment'] = add_features(user.comment,
+                             user.is_probe,
+                             user.is_without_salt,
+                             user.is_without_lactose,
+                             user.is_pureed_nutrition)
+                        all_products.append(item)
+
+            # составляем список с уникальными продуктами
+            unique_products = []
+            for product in all_products:
+                flag = True
+                for un_product in unique_products:
+                    if product != None or un_product != None:
+                        if product['id'] == un_product['id']:
+                            flag = False
+                if flag == True:
+                    if product:
+                        if 'cafe' not in product['id']:
+                            unique_products.append(product)
+
+            # добавляем элеметны списока с уникальными продуктами, кол-вом(сколько продуктов всего)
+            # типом диеты
+            for un_product in unique_products:
+                count = 0
+                comment_list = []
+                for product in all_products:
+                    if product['id'] == un_product['id']:
+                        count += 1
+                        comment_list.append(product['comment'])
+                un_product['count'] = str(count)
+                un_product.setdefault('diet', []).append(diet)
+                if '' in comment_list:
+                    comment_list.sort()
+                comment_set = set(comment_list)
+                comment_list_dict = [{'comment': f'{"Без комментария." if item == "" else item}', 'count': comment_list.count(item)} for item in comment_set]
+
+                un_product['comments'] = comment_list_dict
+
+            [list_whith_unique_products.append(item) for item in unique_products]
+        catalog[category] = list_whith_unique_products
+
+    for cat in catalog.values():
+        for i, pr in enumerate(cat):
+            for ii in range(i + 1, len(cat)):
+                if pr != None and cat[ii] != None:
+                    if pr['id'] == cat[ii]['id']:
+                        pr['count'] = str(int(pr['count']) + int(cat[ii]['count']))
+                        for item in cat[ii]['diet']:
+                            pr.setdefault('diet', []).append(item)
+                        pr['comments'] = pr['comments'] + cat[ii]['comments']
+                        cat[ii] = None
+    # обьединяем доп. бульон и бульон и удаляем None
+    soups = [soup for soup in catalog['soup'] if soup]
+    soups = combine_broths(soups)
+    catalog['soup'] = soups
+
+    for item in catalog.values():
+        for product in item:
+            if product != None:
+                catalog_key_set = list(set([item['comment'] for item in product['comments']]))
+                if 'Без комментария.' in catalog_key_set:
+                    catalog_key_set.remove('Без комментария.')
+                    catalog_key_set.insert(0, 'Без комментария.')
+                result = []
+                if 'Без комментария.' in catalog_key_set:
+                    catalog_key_set
+                for key in catalog_key_set:
+                    result.append({'comment': key,
+                                   'count': sum([item['count'] for item in product['comments'] if key == item['comment']])})
+                product['comments'] = result
+
+    number = 0
+    for item in catalog.values():
+        for product in item:
+            if product != None:
+                number += 1
+                product['number'] = number
+                product['diet'] = {
+                    'many': len(product['diet']) > 1,
+                    'diet': [{'name': pr} for pr in product['diet']]
+                }
+
+    return catalog
+
+def printed_form_two_lp_new(request):
+    """ Отчет для цеха лечебного питания.  """
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
-    meal, day = what_meal()  # return 'breakfast', 'tomorrow'
+    meal, day = what_meal() # после return 'breakfast', 'tomorrow'
     type_order = what_type_order()
     date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
+    delta_day = "-1" if day == 'tomorrow' else "0"
     catalog = {}
 
     if type_order == 'flex-order':
         users = UsersToday.objects.all()
     else:
         users = UsersReadyOrder.objects.all()
-    # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
+
+    catalog = create_catalog_all_products_on_meal(
+
+    )
     for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink', 'products']:
         list_whith_unique_products = []
         for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'ЩД без сахара',
@@ -1155,119 +1279,8 @@ def printed_form_two_lp_new(request):
         users = UsersToday.objects.all()
     else:
         users = UsersReadyOrder.objects.all()
-    # users = users.filter(status='patient').filter(receipt_date__lte=date.today())
-    for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink', 'products']:
-        list_whith_unique_products = []
-        for diet in ['ОВД', 'ОВД без сахара', 'ЩД', 'ЩД без сахара',
-                     'ОВД веган (пост) без глютена', 'Нулевая диета',
-                     'БД', 'ВБД', 'НБД', 'НКД', 'ВКД', 'БД день 1',
-                     'БД день 2', 'Безйодовая', 'ПЭТ/КТ', 'Без ограничений']:
-            users_with_diet = users.filter(type_of_diet=diet)
-            all_products = [] # стовляем список всех продуктов
-            comment_list = []
-            for user in users_with_diet:
-                if type_order == 'flex-order':
-                    menu_all = MenuByDay.objects.filter(user_id=user.user_id)
-                else:
-                    menu_all = MenuByDayReadyOrder.objects.filter(user_id=user.id)
-                # if category == 'products' or category ==  'drink':
-                #     pr = check_value_two(menu_all, str((date_create)), meal, category, is_public)
-                if category == 'soup':
-                    pr = check_value_two(menu_all, str((date_create)), meal, 'soup', user.id,  is_public) + \
-                        check_value_two(menu_all, str((date_create)), meal, 'bouillon', user.id,  is_public)
-                    try:
-                        pr.remove(None)
-                    except:
-                        pass
-                else:
-                    pr = check_value_two(menu_all, str((date_create)), meal, category, user.id, is_public)
-                # if pr != None:
-                #     all_products.append(pr)
-                if pr[0] not in [None, [None]]:
-                    for item in pr:
-                        item['comment'] = add_features(user.comment,
-                             user.is_probe,
-                             user.is_without_salt,
-                             user.is_without_lactose,
-                             user.is_pureed_nutrition)
-                        all_products.append(item)
-            # составляем список с уникальными продуктами
-            #
-            unique_products = []
-            for product in all_products:
-                flag = True
-                for un_product in unique_products:
-                    if product != None or un_product != None:
-                        if product['id'] == un_product['id']:
-                            flag = False
-                if flag == True:
-                    if product:
-                        if 'cafe' not in product['id']:
-                            unique_products.append(product)
-            # добавляем элеметны списока с уникальными продуктами, кол-вом(сколько продуктов всего)
-            # типом диеты
-            for un_product in unique_products:
-                count = 0
-                comment_list = []
-                for product in all_products:
-                    if product['id'] == un_product['id']:
-                        count += 1
-                        comment_list.append(product['comment'])
-                un_product['count'] = str(count)
-                # un_product['diet'] = diet
-                un_product.setdefault('diet', []).append(diet)
-                if '' in comment_list:
-                    comment_list.sort()
-                comment_set = set(comment_list)
-                comment_list_dict = [{'comment': f'{"Без комментария." if item == "" else item}', 'count': comment_list.count(item)} for item in comment_set]
 
-                un_product['comments'] = comment_list_dict
-
-            # list_whith_unique_products.append(unique_products)
-            [list_whith_unique_products.append(item) for item in unique_products]
-        catalog[category] = list_whith_unique_products
-
-    for cat in catalog.values():
-        for i, pr in enumerate(cat):
-            for ii in range(i + 1, len(cat)):
-                if pr != None and cat[ii] != None:
-                    if pr['id'] == cat[ii]['id']:
-                        pr['count'] = str(int(pr['count']) + int(cat[ii]['count']))
-                        # pr['diet'] = pr['diet'] + ', ' + cat[ii]['diet']
-                        for item in cat[ii]['diet']:
-                            pr.setdefault('diet', []).append(item)
-                        pr['comments'] = pr['comments'] + cat[ii]['comments']
-                        cat[ii] = None
-    # обьединяем доп. бульон и бульон и удаляем None
-    soups = [soup for soup in catalog['soup'] if soup]
-    soups = combine_broths(soups)
-    catalog['soup'] = soups
-
-    for item in catalog.values():
-        for product in item:
-            if product != None:
-                catalog_key_set = list(set([item['comment'] for item in product['comments']]))
-                if 'Без комментария.' in catalog_key_set:
-                    catalog_key_set.remove('Без комментария.')
-                    catalog_key_set.insert(0, 'Без комментария.')
-                result = []
-                if 'Без комментария.' in catalog_key_set:
-                    catalog_key_set
-                for key in catalog_key_set:
-                    result.append({'comment': key,
-                                   'count': sum([item['count'] for item in product['comments'] if key == item['comment']])})
-                product['comments'] = result
-
-    number = 0
-    for item in catalog.values():
-        for product in item:
-            if product != None:
-                number += 1
-                product['number'] = number
-                product['diet'] = {
-                    'many': len(product['diet']) > 1,
-                    'diet': [{'name': pr} for pr in product['diet']]
-                }
+    catalog = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
 
     data = {
         'type': 'Цех лечебного питания',
@@ -1496,8 +1509,7 @@ def all_order_by_ingredients(request):
     type_order: str = 'flex-order'
     users = UsersToday.objects.all()
 
-    # for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-    for meal in ['breakfast',]:
+    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
 
     # сформировать список со всеми продуктами
