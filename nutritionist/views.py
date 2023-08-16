@@ -1142,16 +1142,14 @@ def create_catalog_all_products_on_meal(users, meal, type_order, date_create, is
 
     return catalog
 
-def printed_form_two_lp_new(request):
-    """ Отчет для цеха лечебного питания.  """
+def printed_form_two_lp(request):
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = str(datetime.today().time().hour) + ':' + str(datetime.today().time().minute)
     # какой прием пищи
-    meal, day = what_meal() # после return 'breakfast', 'tomorrow'
+    meal, day = what_meal()  # return 'breakfast', 'tomorrow'
     type_order = what_type_order()
     date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
-    delta_day = "-1" if day == 'tomorrow' else "0"
     catalog = {}
 
     if type_order == 'flex-order':
