@@ -870,6 +870,7 @@ def edit_user(user_form, type, request):
     user.full_name = formatting_full_name_mode_full(user_form.data['full_name1'])
     if user.receipt_date != datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date():
         changes.append(f"дату поступления <b>{user.receipt_date}</b> изменена на <b>{datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').strftime('%Y-%m-%d')}</b>")
+        flag_change_receipt_date = True
     user.receipt_date = datetime.strptime(user_form.data['receipt_date1'], '%d.%m.%Y').date()
 
     if user.birthdate != datetime.strptime(user_form.data['birthdate1'], '%d.%m.%Y').date():
@@ -878,6 +879,7 @@ def edit_user(user_form, type, request):
 
     if (user.receipt_time).strftime('%H:%M') != user_form.data['receipt_time1']:
         changes.append(f"время поступления <b>{(user.receipt_time).strftime('%H:%M')}</b> изменено на <b>{user_form.data['receipt_time1']}</b>")
+        flag_change_receipt_time = True
     user.receipt_time = parse(user_form.data['receipt_time1']).time()
 
     if user.department != user_form.data['department1']:
@@ -997,7 +999,12 @@ def edit_user(user_form, type, request):
 
     flag_is_change_diet = is_change_diet
 
-    if type == 'restore' or flag_is_change_diet or flag_add_comment or flag_change_bouillon:
+    if (type == 'restore' or
+            flag_is_change_diet or
+            flag_add_comment or
+            flag_change_bouillon or
+            flag_change_receipt_date or
+            flag_change_receipt_time):
         # если добавили коммент переписываем меню для пациента на
         # следующие приемы пищи тк если есть коммент, тогда не могут быть
         # выбранны блюда по меню кафе
@@ -1030,25 +1037,45 @@ def edit_user(user_form, type, request):
     # Сегодня, меньше 19 (для редактирования пациетов из архива)
     elif type == 'edit':
         try:
-            user_today = UsersToday.objects.get(user_id=user.id)
-            user_today.date_create = date.today()
-            user_today.full_name = user.full_name
-            user_today.bed = user.bed
-            user_today.receipt_date = user.receipt_date
-            user_today.receipt_time = user.receipt_time
-            user_today.department = user.department
-            user_today.room_number = user.room_number
-            user_today.floor = user.floor
-            user_today.type_of_diet = user.type_of_diet
-            user_today.comment = user.comment
-            user_today.status = user.status
-            user_today.is_accompanying = user.is_accompanying
-            user_today.is_probe = user.is_probe
-            user_today.is_without_salt = user.is_without_salt
-            user_today.is_without_lactose = user.is_without_lactose
-            user_today.is_pureed_nutrition = user.is_pureed_nutrition
-            user_today.type_pay = user.type_pay
-            user_today.save()
+            try:
+                user_today = UsersToday.objects.get(user_id=user.id)
+                user_today.date_create = date.today()
+                user_today.full_name = user.full_name
+                user_today.bed = user.bed
+                user_today.receipt_date = user.receipt_date
+                user_today.receipt_time = user.receipt_time
+                user_today.department = user.department
+                user_today.room_number = user.room_number
+                user_today.floor = user.floor
+                user_today.type_of_diet = user.type_of_diet
+                user_today.comment = user.comment
+                user_today.status = user.status
+                user_today.is_accompanying = user.is_accompanying
+                user_today.is_probe = user.is_probe
+                user_today.is_without_salt = user.is_without_salt
+                user_today.is_without_lactose = user.is_without_lactose
+                user_today.is_pureed_nutrition = user.is_pureed_nutrition
+                user_today.type_pay = user.type_pay
+                user_today.save()
+            except:
+                UsersToday(user_id=user.id,
+                           date_create=date.today(),
+                           full_name=user.full_name,
+                           bed=user.bed,
+                           receipt_date=user.receipt_date,
+                           receipt_time=user.receipt_time,
+                           department=user.department,
+                           room_number=user.room_number,
+                           type_of_diet=user.type_of_diet,
+                           floor=user.floor,
+                           comment=user.comment,
+                           status=user.status,
+                           is_accompanying=user.is_accompanying,
+                           is_probe=user.is_probe,
+                           is_without_salt=user.is_without_salt,
+                           is_without_lactose=user.is_without_lactose,
+                           is_pureed_nutrition=user.is_pureed_nutrition,
+                           type_pay=user.type_pay).save()
 
             # Проверяем с какого приема пищи мы можем накормить пациента.
             meal_order, _ = check_change('True')
