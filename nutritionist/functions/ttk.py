@@ -270,15 +270,13 @@ def if_none_get_zero(value):
 def add_ingredient(ttk, ingredients):
     if ttk.status == 'ingredient':
         if ttk.product_id in ingredients:
-            try:
-                ingredients[ttk.product_id]['amount_in'] =\
-                    if_none_get_zero(ingredients[ttk.product_id]['amount_in']) + if_none_get_zero(ttk.amount_in)
-                ingredients[ttk.product_id]['amount_middle'] =\
-                    if_none_get_zero(ingredients[ttk.product_id]['amount_middle']) + if_none_get_zero(ttk.amount_middle)
-                ingredients[ttk.product_id]['amount_out'] =\
-                    if_none_get_zero(ingredients[ttk.product_id]['amount_out']) + if_none_get_zero(ttk.amount_out)
-            except:
-                pass
+            ingredients[ttk.product_id]['amount_in'] =\
+                if_none_get_zero(ingredients[ttk.product_id]['amount_in']) + if_none_get_zero(ttk.amount_in)
+            ingredients[ttk.product_id]['amount_middle'] =\
+                if_none_get_zero(ingredients[ttk.product_id]['amount_middle']) + if_none_get_zero(ttk.amount_middle)
+            ingredients[ttk.product_id]['amount_out'] =\
+                if_none_get_zero(ingredients[ttk.product_id]['amount_out']) + if_none_get_zero(ttk.amount_out)
+
         else:
             ingredients[ttk.product_id] = {
                 'measure_unit': ttk.measure_unit,
@@ -291,21 +289,68 @@ def add_ingredient(ttk, ingredients):
 
 def add_ingredient_for_dict(ttk, ingredients):
     product_id, data = ttk
-    try:
-        if product_id in ingredients:
-            ingredients[product_id]['amount_in'] = ingredients[product_id]['amount_in'] + data['amount_in']
-            ingredients[product_id]['amount_middle'] = ingredients[product_id]['amount_middle'] + data['amount_middle']
-            ingredients[product_id]['amount_out'] = ingredients[product_id]['amount_out'] + data['amount_out']
-        else:
-            ingredients[product_id] = {
-                'name': data['name'],
-                'measure_unit': data['measure_unit'],
-                'amount_in': data['amount_in'],
-                'amount_middle': data['amount_middle'],
-                'amount_out': data['amount_out'],
-            }
-    except:
-        pass
+    if product_id in ingredients:
+        ingredients[product_id]['amount_in'] = ingredients[product_id]['amount_in'] + data['amount_in']
+        ingredients[product_id]['amount_middle'] = ingredients[product_id]['amount_middle'] + data['amount_middle']
+        ingredients[product_id]['amount_out'] = ingredients[product_id]['amount_out'] + data['amount_out']
+    else:
+        ingredients[product_id] = {
+            'name': data['name'],
+            'measure_unit': data['measure_unit'],
+            'amount_in': data['amount_in'],
+            'amount_middle': data['amount_middle'],
+            'amount_out': data['amount_out'],
+         }
+
+
+def merger_products(product_main: dict, product_sub: dict) -> dict:
+    """
+    Обьединяет две ТТК, проходит на 5 уровней в глубину.
+    """
+
+    product_main['amount_in'] = \
+        if_none_get_zero(product_main['amount_in']) + if_none_get_zero(product_sub['amount_in'])
+    product_main['amount_middle'] = \
+        if_none_get_zero(product_main['amount_middle']) + if_none_get_zero(product_sub['amount_middle'])
+    product_main['amount_out'] = \
+        if_none_get_zero(product_main['amount_out']) + if_none_get_zero(product_sub['amount_out'])
+# 1
+    level_1 = {
+        'main': product_main.get('items', {}),
+        'sub': product_sub.get('items', {}),
+    }
+    for key1 in level_1['main'].keys():
+        level_1['main'][key1]['amount_in'] = \
+            (if_none_get_zero(level_1['main'][key1]['amount_in']) +
+             if_none_get_zero(level_1['sub'][key1]['amount_in']))
+
+        level_1['main'][key1]['amount_middle'] = \
+            (if_none_get_zero(level_1['main'][key1]['amount_middle']) +
+             if_none_get_zero(level_1['sub'][key1]['amount_middle']))
+
+        level_1['main'][key1]['amount_out'] = \
+            (if_none_get_zero(level_1['main'][key1]['amount_out']) +
+             if_none_get_zero(level_1['sub'][key1]['amount_out']))
+# 2
+        level_2 = {
+            'main': level_1['main'][key1].get('items', {}),
+            'sub': level_1['sub'][key1].get('items', {}),
+        }
+        for key2 in level_2['main'].keys():
+            level_2['main'][key2]['amount_in'] = \
+                (if_none_get_zero(level_2['main'][key2]['amount_in']) +
+                 if_none_get_zero(level_2['sub'][key2]['amount_in']))
+
+            level_2['main'][key2]['amount_middle'] = \
+                (if_none_get_zero(level_2['main'][key2]['amount_middle']) +
+                 if_none_get_zero(level_2['sub'][key2]['amount_middle']))
+
+            level_2['main'][key2]['amount_out'] = \
+                (if_none_get_zero(level_2['main'][key2]['amount_out']) +
+                 if_none_get_zero(level_2['sub'][key2]['amount_out']))
+
+    return product_main
+
 
 
 def enumeration_ingredients(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77'):
@@ -313,6 +358,7 @@ def enumeration_ingredients(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77'):
     ingredients: dict = {}
     ttk_main = TTK.objects.filter(product_id=product_id).first()
     ttk_child = TTK.objects.filter(parent_ttk=ttk_main)
+
     for ttk in ttk_child:
         # print('1- ', ttk.name, ttk.ingredient)
         add_ingredient(ttk, ingredients)
@@ -335,6 +381,91 @@ def enumeration_ingredients(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77'):
     return ingredients
 
 
+def enumeration_semifinisheds(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77', count=1):
+    """
+    Проходим по всем уровням ТТК
+    """
+    ttk_main = TTK.objects.filter(product_id=product_id).first()
+    if not ttk_main:
+        print(f'Для продукта с product_id {product_id} не существует TTK')
+        return None
+
+    ttk_child = TTK.objects.filter(parent_ttk=ttk_main)
+    semifinisheds: dict = {
+            'name': ttk_main.name,
+            'amount_in': if_none_get_zero(ttk_main.amount_in) * count,
+            'amount_middle': if_none_get_zero(ttk_main.amount_middle) * count,
+            'amount_out': if_none_get_zero(ttk_main.amount_out) * count,
+            'status': ttk_main.status,
+            'items': {},
+        }
+    for ttk1 in ttk_child:
+        level1 = semifinisheds['items']
+        if ttk1.status == 'ingredient':
+            continue
+        level1[ttk1.product_id] = {
+                'name': ttk1.name,
+                'amount_in': if_none_get_zero(ttk1.amount_in) * count,
+                'amount_middle': if_none_get_zero(ttk1.amount_middle) * count,
+                'amount_out': if_none_get_zero(ttk1.amount_out) * count,
+                'status': ttk1.status,
+                'items': {},
+        }
+        ttk_child_2 = TTK.objects.filter(parent_ttk=ttk1)
+        for ttk2 in ttk_child_2:
+            level2 = level1[ttk1.product_id]['items']
+            level2[ttk2.product_id] = {
+                'name': ttk2.name,
+                'amount_in': if_none_get_zero(ttk2.amount_in) * count,
+                'amount_middle': if_none_get_zero(ttk2.amount_middle) * count,
+                'amount_out': if_none_get_zero(ttk2.amount_out) * count,
+                'status': ttk2.status,
+                'items': {},
+            }
+            if ttk2.status == 'ingredient':
+                continue
+            ttk_child_3 = TTK.objects.filter(parent_ttk=ttk2)
+            for ttk3 in ttk_child_3:
+                level3 = level2[ttk2.product_id]['items']
+                level3[ttk3.product_id] = {
+                    'name': ttk3.name,
+                    'amount_in': if_none_get_zero(ttk3.amount_in) * count,
+                    'amount_middle': if_none_get_zero(ttk3.amount_middle) * count,
+                    'amount_out': if_none_get_zero(ttk3.amount_out) * count,
+                    'status': ttk3.status,
+                    'items': {},
+                }
+                if ttk3.status == 'ingredient':
+                    continue
+                ttk_child_4 = TTK.objects.filter(parent_ttk=ttk3)
+                for ttk4 in ttk_child_4:
+                    level4 = level3[ttk3.product_id]['items']
+                    level4[ttk3.product_id] = {
+                        'name': ttk4.name,
+                        'amount_in': if_none_get_zero(ttk4.amount_in) * count,
+                        'amount_middle': if_none_get_zero(ttk4.amount_middle) * count,
+                        'amount_out': if_none_get_zero(ttk4.amount_out) * count,
+                        'status': ttk4.status,
+                        'items': {},
+                    }
+                    if ttk4.status == 'ingredient':
+                        continue
+                    ttk_child_5 = TTK.objects.filter(parent_ttk=ttk4)
+                    for ttk5 in ttk_child_5:
+                        level5 = level4[ttk4.product_id]['items']
+                        level5[ttk5.product_id] = {
+                            'name': ttk5.name,
+                            'amount_in': if_none_get_zero(ttk5.amount_in) * count,
+                            'amount_middle': if_none_get_zero(ttk5.amount_middle) * count,
+                            'amount_out': if_none_get_zero(ttk5.amount_out) * count,
+                            'status': ttk5.status,
+                            'items': {},
+                        }
+                        if ttk5.status == 'ingredient':
+                            continue
+    return semifinisheds
+
+
 def write_ttk_in_bd():
     """
     Записывает ТТК в базу данных.
@@ -353,4 +484,3 @@ def write_ttk_in_bd():
             print('Ошибка', product.product_id)
 
     add_status()
-
