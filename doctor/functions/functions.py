@@ -858,6 +858,8 @@ def edit_user(user_form, type, request):
     flag_add_comment = False
     flag_change_bouillon = False
     emergency_food = False
+    flag_change_receipt_date = False
+    flag_change_receipt_time = False
     user = CustomUser.objects.get(id=user_form.data['id_edit_user'])
 
     # если пациента уже восстоновлен из архива
