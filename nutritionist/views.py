@@ -1477,7 +1477,15 @@ def tk(request, id, count):
     return render(request, 'tk.html', context=data)
 
 
-def all_order_by_ingredients(request):
+def custom_sort(ttk, filter):
+    for key, value in ttk.items():
+        ttk[key]['items'] = dict(sorted(
+            value['items'].items(),
+            key=lambda x: x[1][filter['type']],
+            reverse=False if filter['value'] == 'top' else True))
+    return ttk
+
+def all_order_by_ingredients(request, type):
     """
     Выводим весь заказ на завтра по ингредиетам, для проверки наличия продуктов.
     1. составить список всех продуктов
@@ -1494,96 +1502,103 @@ def all_order_by_ingredients(request):
     locals_without_cinema = Local.objects.exclude(cinema__isnull=False)
     если у позиции нет ссылки, тогда записываем в словать где ключ это product_id
     """
+
     # получить прием пищи и дату
+    filter: dict = {}
+    values: tuple = ['top', 'bottom']
+    filter['date'] = request.GET.get('date', 'tomorrow').lower()
+    if filter['date'] == 'tomorrow':
+        day_count = 1
+    elif filter['date'] == 'after-tomorrow':
+        day_count = 2
+    date_create = date.today() + timedelta(days=day_count)
+    formatted_date_now = dateformat.format(date.fromisoformat(str(date_create)), 'd E, l')
+
+    if request.GET.get('alphabet', None) in values:
+        filter['type'] = 'name'
+        filter['alphabet'] = request.GET.get('alphabet').lower()
+        filter['value'] = filter['alphabet']
+        filter['alphabet_status'] = 'action'
+    elif request.GET.get('weight', None) in values:
+        filter['type'] = 'amount_out'
+        filter['weight'] = request.GET.get('weight').lower()
+        filter['value'] = filter['weight']
+        filter['weight_status'] = 'action'
+    else:
+        filter['alphabet'] = 'top'
+        filter['weight'] = 'bottom'
+        filter['weight_status'] = 'action'
+        filter['type'] = 'amount_out'
+        filter['value'] = filter['weight']
+
+    print("#########################################################")
+    print("filter['alphabet'] -> ", filter.get('alphabet', None))
+    print("filter['alphabet_status'] -> ", filter.get('alphabet_status', None))
+    print("filter['weight'] -> ", filter.get('weight', None))
+    print("filter['weight_status'] -> ", filter.get('weight_status', None))
     meal: str
     day: str
     catalog: dict = {}
     is_public = False  # выводим технические названия блюд, не публичные
-
-    # какой прием пищи
-    date_create = date.today() + timedelta(days=1)
-    formatted_date_now = dateformat.format(date.fromisoformat(str(date_create)), 'd E, l')
-
     type_order: str = 'flex-order'
     users = UsersToday.objects.all()
 
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
 
-    # сформировать список со всеми продуктами
-    # numbers_tk: set = set()
-    # products: list = []
-    # for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-    #     for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink', 'products']:
-    #         for product in catalog[meal][category]:
-    #             if product:
-    #                 if product['product_id'] == '':
-    #                     products.append(product)
-    #                 elif product['product_id'] not in numbers_tk:
-    #                     numbers_tk.add(product['product_id'])
-    #                     products.append(product)
-    #                 else:
-    #                     # если словарь с продуктами (product) уже есть в products, тогда находим этот продукт и
-    #                     # складываем колличество
-    #                     for p in products:
-    #                         if p['product_id'] == product['product_id']:
-    #                             p['count'] += product['count']
-    # count = 0
-    # for product in products[:5]:
-    #     try:
-    #         tk, error = get_tk(product['product_id'])
-    #     except:
-    #         count += 1
+    if type == 'ingredients':
+        ingredients = get_ingredients(catalog)
+        data = {
+            'ingredients': ingredients,
+            'formatted_date_now': formatted_date_now,
+        }
 
-    # 1 этап (п/ф)
-    # формула на сколько увеличить вес каждого ингридиета
-    # алгоритм:
-    # 1. составить список со всеми всеми п/ф
-    all_tk: list = []
-    ingredients = get_ingredients(catalog)
-    data = {
-        'ingredients': ingredients,
-        'formatted_date_now': formatted_date_now,
-    }
-    # for product in products[:5]:
-    #     try:
-    #         result, error, _ = get_processed_tk(product['product_id'], product['count'])
-    #         all_tk.append(result)
-    #     except:
-    #         count += 1
-    #
-    # products_id: set = set()
-    # # сейчас работаем только с п\ф, для этого надо все items первого уровня записать в отдельную структуру
-    # all_tk_level_1: list = []
-    #
-    # for tk in all_tk:
-    #     if tk['items'] != None:
-    #         for item in tk['items']:
-    #             all_tk_level_1.append(item)
-    #
-    # # Получаем тк 1 ого уровня. Если на первом уровне есть ТК одинаковые складываем их вес.
-    # for i, tk in enumerate(all_tk_level_1):
-    #     # если первое вхождение п\ф, тогда
-    #     if tk['id'] not in products_id:
-    #         # добавляем в множество id
-    #         products_id.add(tk['id'])
-    #         # создаем глубокую копию
-    #         # tk_working = deepcopy(tk)
-    #         # пройти по всей структуре, если нашли такую тк, тогда копируем все уровни этой тк.
-    #         for ii in range(i + 1, len(all_tk_level_1)):
-    #             if all_tk_level_1[i]['id'] == all_tk_level_1[ii]['id']:
-    #                 all_tk_level_1[i]['amountIn'] += all_tk_level_1[ii]['amountIn']
-    #                 all_tk_level_1[i]['amountMiddle'] += all_tk_level_1[ii]['amountMiddle']
-    #                 all_tk_level_1[i]['amountOut'] += all_tk_level_1[ii]['amountOut']
-    # result: dict = {}
-    # result['items']: list = all_tk_level_1
-    #
-    # print('Кол-во блюд, для которых не удалось получить ТК ===>', count)
-    # # result = "Нет данных"
-    # data = {
-    #     'result': result,
-    # }
-    return render(request, 'all_order.html', context=data)
+        return render(request, 'all_order.html', context=data)
+
+    if type == 'semifinished':
+        semifinished_level_0 = get_semifinished(catalog)
+        semifinished_level_1 = dict(sorted(
+            get_semifinished_level_1(semifinished_level_0).items(),
+            key=lambda x: x[1][filter['type']],
+            reverse=False if filter['value'] == 'top' else True))
+        custom_sort(semifinished_level_1, filter)
+
+        # semifinished_level_2 = get_semifinished_level_1(semifinished_level_1)
+        semifinished_level_2 = dict(sorted(
+            get_semifinished_level_1(semifinished_level_1).items(),
+            key=lambda x: x[1][filter['type']],
+            reverse=False if filter['value'] == 'top' else True))
+        custom_sort(semifinished_level_2, filter)
+
+        semifinished_level_3 = dict(sorted(
+            get_semifinished_level_1(semifinished_level_2).items(),
+            key=lambda x: x[1][filter['type']],
+            reverse=False if filter['value'] == 'top' else True))
+        custom_sort(semifinished_level_3, filter)
+
+        semifinished_level_4 = dict(sorted(
+            get_semifinished_level_1(semifinished_level_3).items(),
+            key=lambda x: x[1][filter['type']],
+            reverse=False if filter['value'] == 'top' else True))
+        custom_sort(semifinished_level_4, filter)
+
+        semifinished_level_5 = dict(sorted(
+            get_semifinished_level_1(semifinished_level_4).items(),
+            key=lambda x: x[1][filter['type']],
+            reverse=False if filter['value'] == 'top' else True))
+        custom_sort(semifinished_level_5, filter)
+        data = {
+            'semifinished_level_0': semifinished_level_0,
+            'semifinished_level_1': semifinished_level_1,
+            'semifinished_level_2': semifinished_level_2,
+            'semifinished_level_3': semifinished_level_3,
+            'semifinished_level_4': semifinished_level_4,
+            'semifinished_level_5': semifinished_level_5,
+            'formatted_date_now': formatted_date_now,
+            'filter': filter,
+        }
+
+        return render(request, 'all_order_semifinished.html', context=data)
 
 
 
