@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-report-page">
+    <head>
+        <meta charset="utf-8">
+        <title>ТК {{ result.name }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+
+        {% load static %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
+    </head>
+    <style>
+        .grey {
+          color: #c9ced1 !important;
+        }
+
+			  .icon-list {
+					position: absolute;
+          padding: 0px !important;
+					
+				}
+
+        .level-name {
+            color: #0e7abc;
+						margin-left: 10px;
+						font-weight: 500;
+        }
+
+        .bottom img {
+            transform: rotate(180deg);
+        }
+
+				.bottom-list {
+            transform: rotate(270deg);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .filter {
+            color: #c9ced1;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .72px;
+            padding: 12px 16px 12px 0;
+            text-transform: uppercase;
+        }
+
+        .filter:hover {
+          color: #0e7abc;
+        }
+
+        .action {
+          color: #0e7abc;
+        }
+
+        .bt {
+            align-items: center;
+            border: 2px solid #0e7abc;
+            color: #0e7abc;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.1;
+            padding: 5px 20px;
+            text-decoration: auto;
+            margin-bottom: 10px;
+        }
+
+				.line {
+              display: inline-block;
+              margin-right: 0px;
+            }
+
+        @media screen and (max-width: 768px) {
+          .filter {
+            display: block;
+                margin-bottom: 0px;
+              }
+            }
+
+            .filter {
+              display: inline-block;
+              margin-right: 0px;
+            }
+
+            .bt {
+              display: inline-block;
+            }
+
+            /* @media screen and (max-width: 768px) {
+              .bt {
+                display: block;
+                margin-top: 0px;
+                width: 68px;
+              } */
+            /* } */
+    </style>
+    <body>
+
+        {% if semifinished_level_1 == "Нет данных" %}
+            <div class="back mr-top-10 mr-left-10">
+                <a href="{% url 'printed_form_two_lp_new' %}">Назад к заявке</a>
+            </div>
+            <div class="mr-top-30 mr-left-10">Нет данных</div>
+        {% else %}
+            <div class="card-header-block">
+                <div class="container inner">
+                    <div class="back">
+                        <a href="{% url 'printed_form_two_lp_new' %}">Назад к заявке</a>
+                    </div>
+                </div>
+            </div>
+
+             
+<div class="card-block">
+  <div class="inner container">
+                    <div>
+											<div class="filter">
+                        <div id="weight" class="{{ filter.weight }} {{ filter.weight_status }}">
+                          <span onclick="changeClass('weight', 'alphabet')" style="cursor: pointer;">по весу
+                              <img class="icon" width="9" height="9" title="по весу" src="{% static 'doctor/css/img/triangle.svg' %}">
+                          </span>
+                        </div>
+											
+                        <div id="alphabet" class="{{ filter.alphabet }} {{ filter.alphabet_status }}">
+                            <span onclick="changeClass('alphabet', 'weight')" style="cursor: pointer;">по алфавиту
+                                <img class="icon" width="9" height="9" title="по алфавиту" src="{% static 'doctor/css/img/triangle.svg' %}">
+                            </span>
+                        </div>
+											</div>
+
+                      <div class="filter">
+                          <span style="cursor: pointer;">выбрать категорию</span>
+                      </div>
+
+											<div class="filter">
+												<div id="tomorrow" class="">
+													<span onclick="changeClass2('tomorrow', 'after-tomorrow')" style="cursor: pointer;">завтра</span>
+											  </div>
+
+												<div id="after-tomorrow" class="">
+													<span onclick="changeClass2('after-tomorrow', 'tomorrow')" style="cursor: pointer;">послезавтра</span>
+												</div>
+											</div>
+
+                      <div class="bt" onclick="reloadPageWithFilter()" style="cursor: pointer;">
+                          <a>Показать</a>
+                      </div>
+											
+                    </div>
+
+                    <div class="card-block-left">
+                        <div class="table" data-table>
+                            <div class="thead">
+                                <div class="tr">
+                                    <div class="th name">продукт</div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">ед. изм.</div>
+                                        </div>
+                                    </div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">брутто</div>
+                                            <div class="unit">ед. изм.</div>
+                                        </div>
+                                    </div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">брутто</div>
+                                            <div class="unit">кг</div>
+                                        </div>
+                                    </div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">нетто</div>
+                                            <div class="unit">п/ф, кг</div>
+                                        </div>
+                                    </div>
+                                    <div class="th">
+                                        <div>
+                                            <div class="value">выход</div>
+                                            <div class="unit">кг</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tbody">                                
+                                    {% if semifinished_level_1.items %}
+                                    <div onclick="toggleHiddenClassByClass('1', 'icon-print1')" class="td name level-name">
+																			1-ый уровень вложенности
+																			<img id="icon-print1" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+																		</div>
+                                    <div class="td"></div>
+                                    <div class="td weighting"></div>
+                                    <div class="td weighting"></div>
+                                    <div class="td weighting"></div>
+                                    <div class="td weighting"></div>
+                                    <div class="td weighting-const hide-item"></div>
+                                    <div class="td weighting-const hide-item"></div>
+                                    <div class="td weighting-const hide-item"></div>
+                                    <div class="td weighting-const hide-item"></div>
+																		<div id="1" class="hidden">
+                                        {% for product_level_1 in semifinished_level_1.values %}
+                                            {% if product_level_1.items %}
+                                                <div class="tr parent">
+                                                    <div class="td name">{{ product_level_1.name }}</div>
+                                                    <div class="td">{{ product_level_1.measure_unit }}</div>
+                                                    <div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                                                    <div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+
+                                                        <div class="children table">
+                                                            <div class="tbody">
+                                                                {% for product_level_2 in product_level_1.items.values %}
+                                                                    <div class="tr">
+                                                                        <div class="td name">{{ product_level_2.name }}</div>
+                                                                        <div class="td">{{ product_level_2.measure_unit }}</div>
+                                                                        <div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                                                        <div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                                                        <div class="td weighting">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                                                        <div class="td weighting">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            {% else %}
+                                                <div class="tr">
+                                                    <div class="td name">{{ product_level_1.name }}</div>
+                                                    <div class="td">{{ product_level_1.measure_unit }}</div>
+                                                    <div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                                                    <div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    </div>
+
+
+                                {% if semifinished_level_2.items %}
+																<div onclick="toggleHiddenClassByClass('2', 'icon-print2')" class="td name level-name">
+																	2-ый уровень вложенности
+																	<img id="icon-print2" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+																</div>
+                                <div class="td"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+
+																<div id="2" class="hidden">
+																	{% for key, product_level_1 in semifinished_level_2.items %}
+																	{% if product_level_1.items %}
+																	<div class="tr parent">
+																			<div class="td name">{{ product_level_1.name }}</div>
+																			<div class="td">{{ product_level_1.measure_unit }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+																			<div class="children table">
+																					<div class="tbody">
+																							{% for product_level_2 in product_level_1.items.values %}
+																							<div class="tr">
+																									<div class="td name">{{ product_level_2.name }}</div>
+																									<div class="td">{{ product_level_2.measure_unit }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
+																							</div>
+																							{% endfor %}
+																					</div>
+																			</div>
+																	</div>
+																	{% endif %}
+																	{% endfor %}
+																	{% endif %}
+																</div>
+
+
+                                {% if semifinished_level_3.items %}
+																<div onclick="toggleHiddenClassByClass('3', 'icon-print3')" class="td name level-name">
+																	3-ый уровень вложенности
+																	<img id="icon-print3" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+																</div> 
+                                <div class="td"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+
+																<div id="3" class="hidden">
+																	{% for key, product_level_1 in semifinished_level_3.items %}
+																	{% if product_level_1.items %}
+																	<div class="tr parent">
+																			<div class="td name">{{ product_level_1.name }}</div>
+																			<div class="td">{{ product_level_1.measure_unit }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+																			<div class="children table">
+																					<div class="tbody">
+																							{% for product_level_2 in product_level_1.items.values %}
+																							<div class="tr">
+																									<div class="td name">{{ product_level_2.name }}</div>
+																									<div class="td">{{ product_level_2.measure_unit }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
+																							</div>
+																							{% endfor %}
+																					</div>
+																			</div>
+																	</div>
+																	{% endif %}
+																	{% endfor %}
+																	{% endif %}
+																</div>
+
+
+                                {% if semifinished_level_4.items %}
+																<div onclick="toggleHiddenClassByClass('4', 'icon-print4')" class="td name level-name">
+																	4-ый уровень вложенности
+																	<img id="icon-print4" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+																</div>
+                                <div class="td"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+
+																<div id="4" class="hidden">
+
+																	{% for key, product_level_1 in semifinished_level_4.items %}
+																	{% if product_level_1.items %}
+																	<div class="tr parent">
+																			<div class="td name">{{ product_level_1.name }}</div>
+																			<div class="td">{{ product_level_1.measure_unit }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+																			<div class="children table">
+																					<div class="tbody">
+																							{% for product_level_2 in product_level_1.items.values %}
+																							<div class="tr">
+																									<div class="td name">{{ product_level_2.name }}</div>
+																									<div class="td">{{ product_level_2.measure_unit }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
+																							</div>
+																							{% endfor %}
+																					</div>
+																			</div>
+																	</div>
+																	{% endif %}
+																	{% endfor %}
+																	{% endif %}
+																</div>
+
+
+
+                                {% if semifinished_level_5.items %}
+
+																<div onclick="toggleHiddenClassByClass('5', 'icon-print5')" class="td name level-name">
+																	5-ый уровень вложенности
+																	<img id="icon-print5" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+																</div>
+                                <div class="td"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+
+																<div id="5" class="hidden">
+																	{% for key, product_level_1 in semifinished_level_5.items %}
+																	{% if product_level_1.items %}
+																	<div class="tr parent">
+																			<div class="td name">{{ product_level_1.name }}</div>
+																			<div class="td">{{ product_level_1.measure_unit }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+																			<div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+																			<div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+																			<div class="children table">
+																					<div class="tbody">
+																							{% for product_level_2 in product_level_1.items.values %}
+																							<div class="tr">
+																									<div class="td name">{{ product_level_2.name }}</div>
+																									<div class="td">{{ product_level_2.measure_unit }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+																									<div class="td weighting">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+																									<div class="td weighting-const hide-item">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
+																							</div>
+																							{% endfor %}
+																					</div>
+																			</div>
+																	</div>
+																	{% endif %}
+																	{% endfor %}
+																	{% endif %}
+
+                                <div id="download-ingredient" onclick="toggleHiddenClassByClass('semifinisheds', 'icon-print6')" class="td name level-name grey">
+                                  Подсчитываем ингредиенты
+                                  <img id="" class="" width="15" height="15" title="Показать/ скрыть" src="{% static 'doctor/css/img/download.svg' %}" alt="Показать/ скрыть">
+
+                                </div>
+
+																<div id="ingredient" onclick="toggleHiddenClassByClass('semifinisheds', 'icon-print6')" class="hidden td name level-name">
+																	Ингредиенты
+																	<img id="icon-print6" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+																</div>
+                                <div class="td"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+                                <div class="td weighting-const hide-item"></div>
+
+																<div id="semifinisheds" class="hidden">
+																	
+
+																</div>
+                              </div>
+                        </div>
+                    </div>
+  </div>
+</div>
+    {% endif %}
+
+
+    {% load static %}
+    <script src="{% static 'doctor/js/all.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    </body>
+</html>
+<script>
+// получаем дату и делаем активным нужный пункт (завтра, послезавтра)
+window.date = '{{ filter.date }}';
+document.getElementById(window.date).classList.add('action')
+
+
+window.item1 = document.getElementById('weight');
+window.item2 = document.getElementById('alphabet');
+window.value = 'top';
+
+// #################
+// ## API запросы ##
+// #################
+
+const getIngredientsAPI = async function() {
+  let url = '/doctor/api/v1/get/ingredients'
+  let body = {
+      "date": window.date,
+      "filter": window.item1.id,
+			"value": window.value,
+  };
+
+  let response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;',
+    },
+    body: JSON.stringify(body)
+  });
+  let result = await response.text();
+  return result
+}
+
+async function getIngredients() {
+    let res = await getIngredientsAPI();
+    var obj = JSON.parse(res);
+    var obj = JSON.parse(obj);
+    console.log('Получили ингредиенты')
+    addSemifinisheds(obj)
+}
+
+// getIngredients()
+    
+// визуальная смена положения указателя по возростанию/ по убыванию
+function changeClass(id1, id2) {
+  window.item1 = document.getElementById(id1);
+  window.item2 = document.getElementById(id2);
+
+  window.item1.classList.add('action');
+  window.item2.classList.remove('action');
+
+  if (window.item1.classList.contains('top')) {
+    window.item1.classList.remove('top');
+    window.item1.classList.add('bottom');
+    window.value = 'bottom'
+  } else {
+    window.item1.classList.add('top');
+    window.item1.classList.remove('bottom');
+    window.value = 'top';
+  }
+}
+
+function changeClass2(id1, id2) {
+  window.item1 = document.getElementById(id1);
+  window.item2 = document.getElementById(id2);
+	window.date = id1;
+
+  window.item1.classList.add('action');
+  window.item2.classList.remove('action');
+}
+
+
+function toggleHiddenClassByClass(id, iconId) {
+  const elements = document.getElementById(id);
+
+  if (elements.classList.contains('hidden')) {
+    document.getElementById(iconId).classList.remove('bottom-list');
+    elements.classList.remove('hidden');
+  } else {
+    elements.classList.add('hidden');
+    document.getElementById(iconId).classList.add('bottom-list');
+  }
+}
+
+// отправляем данные для показа страницы с новым фильтром
+function reloadPageWithFilter() {
+  window.location.href = `{% url 'order' 'semifinished'%}?${window.item1.id}=${window.value}&date=${window.date}`;
+  console.log(`{% url 'order' 'semifinished'%}?${window.item1.id}=${window.value}&date=${window.date}`);
+}
+
+// вывод ингредиентов
+function addSemifinisheds(obj) {
+    let semifinisheds = document.getElementById('semifinisheds');
+    let result = "";
+    result += `<div class="tbody">`;
+    for (var item in obj) {      
+      result += `<div class="tr">`
+      result += `<div class="td name">${obj[item]['name']}</div>`
+      result += `<div class="td">${obj[item]['measure_unit']}</div>`
+      result += `<div class="td weighting">${obj[item]['amount_in'].toFixed(3)}</div>`
+      result += `<div class="td weighting">${obj[item]['amount_in'].toFixed(3)}</div>`
+      result += `<div class="td weighting">${obj[item]['amount_middle'].toFixed(3)}</div>`
+      result += `<div class="td weighting">${obj[item]['amount_out'].toFixed(3)}</div>`
+      result += `<div class="td weighting-const hide-item">${obj[item]['amount_in'].toFixed(3)}</div>`
+      result += `<div class="td weighting-const hide-item">${obj[item]['amount_in'].toFixed(3)}</div>`
+      result += `<div class="td weighting-const hide-item">${obj[item]['amount_middle'].toFixed(3)}</div>`
+      result += `<div class="td weighting-const hide-item">${obj[item]['amount_out'].toFixed(3)}</div>`
+		  result += `</div>`
+    }
+    result += `</div>`
+    semifinisheds.insertAdjacentHTML("afterbegin", result);
+    document.getElementById('download-ingredient').classList.add('hidden');
+    document.getElementById('ingredient').classList.remove('hidden');
+}
+
+</script>
