@@ -9,6 +9,9 @@ from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput, CheckboxInput
 from drf_spectacular.utils import extend_schema_view, extend_schema
 
+from nutritionist.functions.get_ingredients import get_semifinished, get_semifinished_level_1, get_ingredients_for_ttk
+from nutritionist.serializers import GetIngredientsSerializer
+from nutritionist.views import create_catalog_all_products_on_meal, custom_sort
 from scripts.del_product_meny_by_day import delete_or_change_product
 from .forms import PatientRegistrationForm, DietChoiceForm
 from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, BotChatId, СhangesUsersToday, \
@@ -1315,3 +1318,54 @@ class CroppImageAPIView(APIView):
 #             'type': type
 #             }
 #     return render(request, 'menu.html', context=data)
+
+class GetIngredientsAPIView(APIView):
+    def post(self, request):
+        serializer = GetIngredientsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        filter: dict = {}
+        filter['date'] = data['date']
+        filter['filter_field'] = data['filter']
+        filter['value'] = data['value']
+
+        COUNT_DAYS: dict = {
+            'tomorrow': 1,
+            'after-tomorrow': 2,
+        }
+
+        date_create = date.today() + timedelta(days=COUNT_DAYS[filter['date']])
+
+        if filter['filter_field'] == 'alphabet':
+            filter['type'] = 'name'
+            filter['alphabet'] = filter['value'].lower()
+            filter['alphabet_status'] = 'action'
+        elif filter['filter_field'] == 'weight':
+            filter['type'] = 'amount_out'
+            filter['weight'] = filter['value'].lower()
+            filter['weight_status'] = 'action'
+        else:
+            filter['alphabet'] = 'top'
+            filter['weight'] = 'bottom'
+            filter['weight_status'] = 'action'
+            filter['type'] = 'amount_out'
+
+        print("#########################################################")
+        print("filter['alphabet'] -> ", filter.get('alphabet', None))
+        print("filter['alphabet_status'] -> ", filter.get('alphabet_status', None))
+        print("filter['weight'] -> ", filter.get('weight', None))
+        print("filter['weight_status'] -> ", filter.get('weight_status', None))
+        meal: str
+        day: str
+        catalog: dict = {}
+        is_public = False  # выводим технические названия блюд, не публичные
+        type_order: str = 'flex-order'
+        users = UsersToday.objects.all()
+
+        for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+            catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
+
+        ingredients = get_ingredients_for_ttk(catalog)
+        response = json.dumps(ingredients)
+
+        return Response(response)

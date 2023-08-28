@@ -14,3 +14,9 @@ class ProductSerializer(serializers.ModelSerializer):
 class DownloadReportSerializer(serializers.Serializer):
     start = serializers.CharField()
     finish = serializers.CharField()
+
+
+class GetIngredientsSerializer(serializers.Serializer):
+    date = serializers.CharField()
+    filter = serializers.CharField()
+    value = serializers.CharField()

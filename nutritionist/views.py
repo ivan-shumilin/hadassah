@@ -22,7 +22,7 @@ from django.views.generic import TemplateView
 
 from doctor.functions.download import get_token, get_tk, get_name_by_api, get_allergens, get_weight_tk, \
     get_measure_unit
-from .functions.get_ingredients import get_ingredients, get_semifinished, get_semifinished_level_1
+from .functions.get_ingredients import get_ingredients_for_ttk, get_semifinished, get_semifinished_level_1
 from doctor.tasks import create_report_download
 from .functions.report import create_external_report, create_external_report_detailing, get_report
 from .functions.ttk import create_all_ttk
@@ -1547,7 +1547,7 @@ def all_order_by_ingredients(request, type):
         catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
 
     if type == 'ingredients':
-        ingredients = get_ingredients(catalog)
+        ingredients = get_ingredients_for_ttk(catalog)
         data = {
             'ingredients': ingredients,
             'formatted_date_now': formatted_date_now,

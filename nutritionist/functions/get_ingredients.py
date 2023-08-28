@@ -2,7 +2,7 @@ from nutritionist.functions.ttk import enumeration_ingredients, add_ingredient_f
     merger_products
 
 
-def get_ingredients(catalog):
+def get_ingredients_for_ttk(catalog):
     """
     Составляем список всех ингредиетов в заказе.
     """
