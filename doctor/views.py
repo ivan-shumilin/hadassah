@@ -48,7 +48,7 @@ from django.core import management
 import telepot
 from doctor.tasks import send_messang, my_job_create_ready_order_dinner, my_job_send_messang_changes, \
     send_messang_changes
-from .functions.download import get_token, download
+from .functions.download import get_token, download, get_ingredients
 from .functions.helpers import formatting_full_name_mode_full
 from .logic.create_ingredient import create_ingredients
 
@@ -1329,6 +1329,10 @@ class GetIngredientsAPIView(APIView):
         filter['filter_field'] = data['filter']
         filter['value'] = data['value']
 
+        string = data['categories'].replace('&#x27;', '')
+        lst = string[1:-1].split(', ')
+        filter['categories'] = lst
+
         COUNT_DAYS: dict = {
             'tomorrow': 1,
             'after-tomorrow': 2,
@@ -1350,11 +1354,6 @@ class GetIngredientsAPIView(APIView):
             filter['weight_status'] = 'action'
             filter['type'] = 'amount_out'
 
-        print("#########################################################")
-        print("filter['alphabet'] -> ", filter.get('alphabet', None))
-        print("filter['alphabet_status'] -> ", filter.get('alphabet_status', None))
-        print("filter['weight'] -> ", filter.get('weight', None))
-        print("filter['weight_status'] -> ", filter.get('weight_status', None))
         meal: str
         day: str
         catalog: dict = {}
@@ -1365,7 +1364,15 @@ class GetIngredientsAPIView(APIView):
         for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
             catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
 
-        ingredients = get_ingredients_for_ttk(catalog)
-        response = json.dumps(ingredients)
+        ingredients = get_ingredients_for_ttk(catalog, filter['categories'])
+
+        ids = ingredients.keys()
+        Ingredient.objects.filter(product_id__in=ids)
+        categories = Ingredient.objects.filter(
+            product_id__in=ids
+        ).order_by('category').distinct('category').values('category')
+        categories = [cat['category'] for cat in categories]
+
+        response = json.dumps({'categories': categories, 'ingredients': ingredients})
 
         return Response(response)

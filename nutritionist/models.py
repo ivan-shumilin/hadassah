@@ -622,6 +622,7 @@ class Ingredient(models.Model):
     type = models.CharField(max_length=10000, null=True, blank=True)
     orderItemType = models.CharField(max_length=10000, null=True, blank=True)
     measureUnit = models.CharField(max_length=10000, null=True, blank=True)
+    category = models.CharField(max_length=10000, null=True, blank=True)
 
     def __str__(self):
         return f'name: {self.name}, product_id: {self.product_id}'

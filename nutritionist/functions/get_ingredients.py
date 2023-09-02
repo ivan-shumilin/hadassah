@@ -2,7 +2,7 @@ from nutritionist.functions.ttk import enumeration_ingredients, add_ingredient_f
     merger_products
 
 
-def get_ingredients_for_ttk(catalog):
+def get_ingredients_for_ttk(catalog, categories=[]):
     """
     Составляем список всех ингредиетов в заказе.
     """
@@ -13,7 +13,10 @@ def get_ingredients_for_ttk(catalog):
             for product in catalog[meal][category]:
                 if product:
                     if product.get('product_id', None):
-                        sub_ingredients: dict = enumeration_ingredients(product['product_id'])
+                        sub_ingredients: dict = enumeration_ingredients(
+                            product['product_id'],
+                            categories,
+                        )
                     else:
                         print(f'нет product_id, {product["name"]}')
                     # добавляем sub_ingredients в ingredients
@@ -22,7 +25,7 @@ def get_ingredients_for_ttk(catalog):
     return ingredients
 
 
-def get_semifinished(catalog: dict) -> dict:
+def get_semifinished(catalog: dict, categories_all: set) -> dict:
     """
     Составляем список всех п/ф в заказе.
     """
@@ -33,19 +36,20 @@ def get_semifinished(catalog: dict) -> dict:
             for product in catalog[meal][category]:
                 if product:
                     if product.get('product_id', None):
-                        semifinisheds[product['product_id']]: dict = enumeration_semifinisheds(
+                        semifinisheds[product['product_id']], categories_all = enumeration_semifinisheds(
                             product['product_id'],
                             int(product['count']),
+                            categories_all,
                         )
                     else:
                         try:
                             print(f'нет product_id, {product["name"]}')
                         except:
                             print(f'нет product_id и name {product}')
-    return semifinisheds
+    return semifinisheds, categories_all
 
 
-def get_semifinished_level_1(semifinished_level_0: dict) -> dict:
+def get_semifinished_level_1(semifinished_level_0: dict, filter_categories=[]) -> dict:
     """
     Возвращает ТТК второго уровня.
     """
@@ -59,24 +63,3 @@ def get_semifinished_level_1(semifinished_level_0: dict) -> dict:
                     else:
                         merger_products(semifinished_level_1[key], product)
     return semifinished_level_1
-
-dict = {
-    'level1': [
-        {
-            'product_id': {
-                'name': 'name',
-                'more': 'more',
-                'items': [
-                    {
-                        'product_id': {
-                            'name': 'name',
-                            'more': 'more',
-                            'items': [],
-                        }
-                    },
-                ]
-            }
-        },
-    ],
-    'no_ttk': []
-}

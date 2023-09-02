@@ -15,497 +15,893 @@
         <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
     </head>
     <style>
-        .grey {
-          color: #c9ced1 !important;
-        }
+      .padding-0 {
+        padding: 0px !important;
+      }
 
-			  .icon-list {
-					position: absolute;
-          padding: 0px !important;
-					
-				}
 
-        .level-name {
-            color: #0e7abc;
-						margin-left: 10px;
-						font-weight: 500;
-        }
+      .grey {
+        color: #c9ced1 !important;
+      }
 
-        .bottom img {
-            transform: rotate(180deg);
-        }
+			.icon-list {
+				position: absolute;
+        padding: 0px !important;
+				
+			}
 
-				.bottom-list {
-            transform: rotate(270deg);
-        }
+      .icon-cat {
+        position: relative !important;
+        top: 6px !important;
+      }
 
-        .hidden {
-            display: none !important;
-        }
+      .level-name {
+          color: #0e7abc;
+					margin-left: 10px;
+					font-weight: 500;
+      }
 
+      .bottom img {
+          transform: rotate(180deg);
+      }
+
+			.bottom-list {
+          transform: rotate(270deg);
+      }
+
+      .hidden {
+          display: none !important;
+      }
+
+      .filter {
+        display: inline-block;
+        color: #c9ced1;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: .72px;
+        padding: 12px 16px 12px 0;
+        text-transform: uppercase;
+        vertical-align: middle;
+      }
+
+      .filter-item:hover {
+        color: #0e7abc;
+      }
+
+      .action {
+        color: #0e7abc;
+      }
+
+      .bt {
+          align-items: center;
+          border: 2px solid #0e7abc;
+          color: #0e7abc;
+          border-radius: 8px;
+          font-size: 12px;
+          font-weight: 600;
+          line-height: 1.1;
+          padding: 5px 20px;
+          text-decoration: auto;
+          display: inline-block;
+          vertical-align: middle;
+      }
+
+			.line {
+            display: inline-block;
+            margin-right: 0px;
+      }
+
+      @media screen and (max-width: 768px) {
         .filter {
-            color: #c9ced1;
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: .72px;
-            padding: 12px 16px 12px 0;
-            text-transform: uppercase;
+          display: block;
+          margin-bottom: 0px;
         }
+      }
+      .filter {
+        display: inline-block;
+        margin-right: 0px;
+        vertical-align: middle;
+      }
+      .bt {
+        display: inline-block;
+        vertical-align: middle;
+          }
+</style>
+<body>
 
-        .filter:hover {
-          color: #0e7abc;
-        }
-
-        .action {
-          color: #0e7abc;
-        }
-
-        .bt {
-            align-items: center;
-            border: 2px solid #0e7abc;
-            color: #0e7abc;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            line-height: 1.1;
-            padding: 5px 20px;
-            text-decoration: auto;
-            margin-bottom: 10px;
-        }
-
-				.line {
-              display: inline-block;
-              margin-right: 0px;
-            }
-
-        @media screen and (max-width: 768px) {
-          .filter {
-            display: block;
-                margin-bottom: 0px;
-              }
-            }
-
-            .filter {
-              display: inline-block;
-              margin-right: 0px;
-            }
-
-            .bt {
-              display: inline-block;
-            }
-
-            /* @media screen and (max-width: 768px) {
-              .bt {
-                display: block;
-                margin-top: 0px;
-                width: 68px;
-              } */
-            /* } */
-    </style>
-    <body>
-
-        {% if semifinished_level_1 == "Нет данных" %}
-            <div class="back mr-top-10 mr-left-10">
-                <a href="{% url 'printed_form_two_lp_new' %}">Назад к заявке</a>
+  {% if semifinished_level_1 == "Нет данных" %}
+    <div class="back mr-top-10 mr-left-10">
+        <a href="{% url 'printed_form_one_new' %}">Назад к заявке</a>
+    </div>
+    <div class="mr-top-30 mr-left-10">Нет данных</div>
+  {% else %}
+    <div class="card-header-block">
+        <div class="container inner">
+            <div class="back">
+                <a href="{% url 'printed_form_one_new' %}">Назад к заявке</a>
             </div>
-            <div class="mr-top-30 mr-left-10">Нет данных</div>
-        {% else %}
-            <div class="card-header-block">
-                <div class="container inner">
-                    <div class="back">
-                        <a href="{% url 'printed_form_two_lp_new' %}">Назад к заявке</a>
+        </div>
+    </div>
+             
+  <div class="card-block">
+     <div class="inner container">
+        <div class="mr-bm-10">
+          <div class="filter">
+            <div id="weight" class="{{ filter.weight }} {{ filter.weight_status }}">
+              <span class="filter-item" onclick="changeClass('weight', 'alphabet')" style="cursor: pointer;">по весу
+                  <img class="icon" width="9" height="9" title="по весу" src="{% static 'doctor/css/img/triangle.svg' %}">
+              </span>
+            </div>
+                                  
+            <div id="alphabet" class="{{ filter.alphabet }} {{ filter.alphabet_status }}">
+                <span class="filter-item" onclick="changeClass('alphabet', 'weight')" style="cursor: pointer;">по алфавиту
+                    <img class="icon" width="9" height="9" title="по алфавиту" src="{% static 'doctor/css/img/triangle.svg' %}">
+                </span>
+            </div>
+          </div>
+            
+          <div class="filter">
+              <span class="filter-item" style="cursor: pointer;" onclick="showCategories()">выбрать категорию<img id="icon-cat" class="icon-list icon-cat bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть"></span>
+                                        
+
+              <div id="category-menu" style="display: none;">
+                <ul class="action">
+                  <li id="all" class="one" onclick="allFilterCategory()">cнять все</li>
+                  {% for cat in categories_all %}
+                    <li>
+                      <label class="custom-checkbox">
+                        <input id="{{ cat.id }}" class="custom-checkbox cat" type="checkbox" name="{{ cat.id }}"
+                        {% if cat.id in filter.categories %}
+                          checked="True"
+                        {% endif %}
+                        >
+                        <span>{{ cat.name }}</span>
+                      </label>
+                    </li>
+                  {% endfor %}                                        
+                </ul>
+              </div>
+          </div>
+            
+          <div class="filter">
+            <div id="tomorrow" class="">
+              <span class="filter-item" onclick="changeClass2('tomorrow', 'after-tomorrow')" style="cursor: pointer;">завтра</span>
+            </div>
+            
+            <div id="after-tomorrow" class="">
+              <span class="filter-item" onclick="changeClass2('after-tomorrow', 'tomorrow')" style="cursor: pointer;">послезавтра</span>
+            </div>
+          </div>
+            
+          <div class="bt" onclick="reloadPageWithFilter()" style="cursor: pointer;">
+              <a>Показать</a>
+          </div>                                  
+        </div>
+
+        <div class="card-block-left">
+          <div class="table" data-table>
+            <div class="thead">
+                <div class="tr">
+                    <div class="th name">продукт</div>
+                    <div class="th">
+                        <div>
+                            <div class="value">ед. изм.</div>
+                        </div>
+                    </div>
+                    <div class="th">
+                        <div>
+                            <div class="value">брутто</div>
+                            <div class="unit">ед. изм.</div>
+                        </div>
+                    </div>
+                    <div class="th">
+                        <div>
+                            <div class="value">брутто</div>
+                            <div class="unit">кг</div>
+                        </div>
+                    </div>
+                    <div class="th">
+                        <div>
+                            <div class="value">нетто</div>
+                            <div class="unit">п/ф, кг</div>
+                        </div>
+                    </div>
+                    <div class="th">
+                        <div>
+                            <div class="value">выход</div>
+                            <div class="unit">кг</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-             
-<div class="card-block">
-  <div class="inner container">
-                    <div>
-											<div class="filter">
-                        <div id="weight" class="{{ filter.weight }} {{ filter.weight_status }}">
-                          <span onclick="changeClass('weight', 'alphabet')" style="cursor: pointer;">по весу
-                              <img class="icon" width="9" height="9" title="по весу" src="{% static 'doctor/css/img/triangle.svg' %}">
-                          </span>
-                        </div>
-											
-                        <div id="alphabet" class="{{ filter.alphabet }} {{ filter.alphabet_status }}">
-                            <span onclick="changeClass('alphabet', 'weight')" style="cursor: pointer;">по алфавиту
-                                <img class="icon" width="9" height="9" title="по алфавиту" src="{% static 'doctor/css/img/triangle.svg' %}">
-                            </span>
-                        </div>
-											</div>
 
-                      <div class="filter">
-                          <span style="cursor: pointer;">выбрать категорию</span>
-                      </div>
-
-											<div class="filter">
-												<div id="tomorrow" class="">
-													<span onclick="changeClass2('tomorrow', 'after-tomorrow')" style="cursor: pointer;">завтра</span>
-											  </div>
-
-												<div id="after-tomorrow" class="">
-													<span onclick="changeClass2('after-tomorrow', 'tomorrow')" style="cursor: pointer;">послезавтра</span>
-												</div>
-											</div>
-
-                      <div class="bt" onclick="reloadPageWithFilter()" style="cursor: pointer;">
-                          <a>Показать</a>
-                      </div>
-											
-                    </div>
-
-                    <div class="card-block-left">
-                        <div class="table" data-table>
-                            <div class="thead">
-                                <div class="tr">
-                                    <div class="th name">продукт</div>
-                                    <div class="th">
-                                        <div>
-                                            <div class="value">ед. изм.</div>
-                                        </div>
-                                    </div>
-                                    <div class="th">
-                                        <div>
-                                            <div class="value">брутто</div>
-                                            <div class="unit">ед. изм.</div>
-                                        </div>
-                                    </div>
-                                    <div class="th">
-                                        <div>
-                                            <div class="value">брутто</div>
-                                            <div class="unit">кг</div>
-                                        </div>
-                                    </div>
-                                    <div class="th">
-                                        <div>
-                                            <div class="value">нетто</div>
-                                            <div class="unit">п/ф, кг</div>
-                                        </div>
-                                    </div>
-                                    <div class="th">
-                                        <div>
-                                            <div class="value">выход</div>
-                                            <div class="unit">кг</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tbody">                                
-                                    {% if semifinished_level_1.items %}
-                                    <div onclick="toggleHiddenClassByClass('1', 'icon-print1')" class="td name level-name">
-																			1-ый уровень вложенности
-																			<img id="icon-print1" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
-																		</div>
-                                    <div class="td"></div>
-                                    <div class="td weighting"></div>
-                                    <div class="td weighting"></div>
-                                    <div class="td weighting"></div>
-                                    <div class="td weighting"></div>
-                                    <div class="td weighting-const hide-item"></div>
-                                    <div class="td weighting-const hide-item"></div>
-                                    <div class="td weighting-const hide-item"></div>
-                                    <div class="td weighting-const hide-item"></div>
-																		<div id="1" class="hidden">
-                                        {% for product_level_1 in semifinished_level_1.values %}
-                                            {% if product_level_1.items %}
-                                                <div class="tr parent">
-                                                    <div class="td name">{{ product_level_1.name }}</div>
-                                                    <div class="td">{{ product_level_1.measure_unit }}</div>
-                                                    <div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-                                                    <div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-                                                    <div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-                                                    <div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-
-                                                        <div class="children table">
-                                                            <div class="tbody">
-                                                                {% for product_level_2 in product_level_1.items.values %}
-                                                                    <div class="tr">
-                                                                        <div class="td name">{{ product_level_2.name }}</div>
-                                                                        <div class="td">{{ product_level_2.measure_unit }}</div>
-                                                                        <div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-                                                                        <div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-                                                                        <div class="td weighting">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
-                                                                        <div class="td weighting">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
-                                                                        <div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-                                                                        <div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-                                                                        <div class="td weighting-const hide-item">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
-                                                                        <div class="td weighting-const hide-item">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
-                                                                    </div>
-                                                                {% endfor %}
+            <div class="tbody">
+              {% if is_have %}                                
+                {% if semifinished_level_1 %}
+                  <div onclick="toggleHiddenClassByClass('1', 'icon-print1')" class="td name level-name">
+							    	1-ый уровень вложенности
+							    	<img id="icon-print1" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+							    </div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+							    <div id="1" class="hidden">
+                    {% for product_level_1 in semifinished_level_1.values %}
+                      {% if product_level_1.category.id in filter.categories %}
+                        {% if product_level_1.items %}
+                            <div class="tr parent">
+                              <div class="td name">{{ product_level_1.name }}</div>
+                              <div class="td">{{ product_level_1.measure_unit }}</div>
+                              <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                              <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                              <div class="td">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                              <div class="td">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                              <div class="children table">
+                                <div class="tbody">
+                                    {% for product_level_2 in product_level_1.items.values %}
+                                      {% if product_level_2.items %}
+                                        <div class="tr parent">
+                                          <div class="td name">{{ product_level_2.name }}</div>
+                                          <div class="td">{{ product_level_2.measure_unit }}</div>
+                                          <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                          <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                          <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                          <div class="children table">
+                                            <div class="tbody">
+                                              {% for product_level_3 in product_level_2.items.values %}
+                                                {% if product_level_3.items %}
+                                                  <div class="tr parent">
+                                                    <div class="td name">{{ product_level_3.name }}</div>
+                                                    <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                    <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                    <div class="children table">
+                                                      <div class="tbody">
+                                                        {% for product_level_4 in product_level_3.items.values %}
+                                                          {% if product_level_4.items %}
+                                                            <div class="tr parent">
+                                                              <div class="td name">{{ product_level_4.name }}</div>
+                                                              <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                              <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                              <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                              <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                              <div class="children table">
+                                                                <div class="tbody">
+                                                                  {% for product_level_5 in product_level_4.items.values %}
+                                                                    {% if product_level_5.items %}
+                                                                      <div class="tr">
+                                                                        <div class="td name">{{ product_level_5.name }}</div>
+                                                                        <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                        <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                        <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                        <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                      </div>
+                                                                    {% else %}
+                                                                      <div class="tr">
+                                                                        <div class="td name">{{ product_level_5.name }}</div>
+                                                                        <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                        <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                        <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                        <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                      </div>
+                                                                    {% endif %}
+                                                                  {% endfor %}
+                                                                </div>
+                                                              </div>                                                    
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                            {% else %}
-                                                <div class="tr">
-                                                    <div class="td name">{{ product_level_1.name }}</div>
-                                                    <div class="td">{{ product_level_1.measure_unit }}</div>
-                                                    <div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-                                                    <div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-                                                    <div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-                                                    <div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-                                                    <div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-                                                </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
-                                    </div>
-
-
-                                {% if semifinished_level_2.items %}
-																<div onclick="toggleHiddenClassByClass('2', 'icon-print2')" class="td name level-name">
-																	2-ый уровень вложенности
-																	<img id="icon-print2" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
-																</div>
-                                <div class="td"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-
-																<div id="2" class="hidden">
-																	{% for key, product_level_1 in semifinished_level_2.items %}
-																	{% if product_level_1.items %}
-																	<div class="tr parent">
-																			<div class="td name">{{ product_level_1.name }}</div>
-																			<div class="td">{{ product_level_1.measure_unit }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-																			<div class="children table">
-																					<div class="tbody">
-																							{% for product_level_2 in product_level_1.items.values %}
-																							<div class="tr">
-																									<div class="td name">{{ product_level_2.name }}</div>
-																									<div class="td">{{ product_level_2.measure_unit }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
-																							</div>
-																							{% endfor %}
-																					</div>
-																			</div>
-																	</div>
-																	{% endif %}
-																	{% endfor %}
-																	{% endif %}
-																</div>
-
-
-                                {% if semifinished_level_3.items %}
-																<div onclick="toggleHiddenClassByClass('3', 'icon-print3')" class="td name level-name">
-																	3-ый уровень вложенности
-																	<img id="icon-print3" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
-																</div> 
-                                <div class="td"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-
-																<div id="3" class="hidden">
-																	{% for key, product_level_1 in semifinished_level_3.items %}
-																	{% if product_level_1.items %}
-																	<div class="tr parent">
-																			<div class="td name">{{ product_level_1.name }}</div>
-																			<div class="td">{{ product_level_1.measure_unit }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-																			<div class="children table">
-																					<div class="tbody">
-																							{% for product_level_2 in product_level_1.items.values %}
-																							<div class="tr">
-																									<div class="td name">{{ product_level_2.name }}</div>
-																									<div class="td">{{ product_level_2.measure_unit }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
-																							</div>
-																							{% endfor %}
-																					</div>
-																			</div>
-																	</div>
-																	{% endif %}
-																	{% endfor %}
-																	{% endif %}
-																</div>
-
-
-                                {% if semifinished_level_4.items %}
-																<div onclick="toggleHiddenClassByClass('4', 'icon-print4')" class="td name level-name">
-																	4-ый уровень вложенности
-																	<img id="icon-print4" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
-																</div>
-                                <div class="td"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-
-																<div id="4" class="hidden">
-
-																	{% for key, product_level_1 in semifinished_level_4.items %}
-																	{% if product_level_1.items %}
-																	<div class="tr parent">
-																			<div class="td name">{{ product_level_1.name }}</div>
-																			<div class="td">{{ product_level_1.measure_unit }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-																			<div class="children table">
-																					<div class="tbody">
-																							{% for product_level_2 in product_level_1.items.values %}
-																							<div class="tr">
-																									<div class="td name">{{ product_level_2.name }}</div>
-																									<div class="td">{{ product_level_2.measure_unit }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
-																							</div>
-																							{% endfor %}
-																					</div>
-																			</div>
-																	</div>
-																	{% endif %}
-																	{% endfor %}
-																	{% endif %}
-																</div>
-
-
-
-                                {% if semifinished_level_5.items %}
-
-																<div onclick="toggleHiddenClassByClass('5', 'icon-print5')" class="td name level-name">
-																	5-ый уровень вложенности
-																	<img id="icon-print5" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
-																</div>
-                                <div class="td"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-
-																<div id="5" class="hidden">
-																	{% for key, product_level_1 in semifinished_level_5.items %}
-																	{% if product_level_1.items %}
-																	<div class="tr parent">
-																			<div class="td name">{{ product_level_1.name }}</div>
-																			<div class="td">{{ product_level_1.measure_unit }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-																			<div class="td weighting">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
-																			<div class="td weighting-const hide-item">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
-																			<div class="children table">
-																					<div class="tbody">
-																							{% for product_level_2 in product_level_1.items.values %}
-																							<div class="tr">
-																									<div class="td name">{{ product_level_2.name }}</div>
-																									<div class="td">{{ product_level_2.measure_unit }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
-																									<div class="td weighting">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
-																									<div class="td weighting-const hide-item">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
-																							</div>
-																							{% endfor %}
-																					</div>
-																			</div>
-																	</div>
-																	{% endif %}
-																	{% endfor %}
-																	{% endif %}
-
-                                <div id="download-ingredient" onclick="toggleHiddenClassByClass('semifinisheds', 'icon-print6')" class="td name level-name grey">
-                                  Подсчитываем ингредиенты
-                                  <img id="" class="" width="15" height="15" title="Показать/ скрыть" src="{% static 'doctor/css/img/download.svg' %}" alt="Показать/ скрыть">
-
+                                                          {% else %}
+                                                            <div class="tr">
+                                                              <div class="td name">{{ product_level_4.name }}</div>
+                                                              <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                              <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                              <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                              <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                            </div>
+                                                          {% endif %}
+                                                        {% endfor %}
+                                                      </div>
+                                                    </div>                                                    
+                                                  </div>
+                                                {% else %}
+                                                  <div class="tr">
+                                                    <div class="td name">{{ product_level_3.name }}</div>
+                                                    <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                    <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                    <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                  </div>
+                                                {% endif %}
+                                              {% endfor %}
+                                            </div>
+                                          </div>                                                    
+                                        </div>
+                                      {% else %}
+                                        <div class="tr">
+                                          <div class="td name">{{ product_level_2.name }}</div>
+                                          <div class="td">{{ product_level_2.measure_unit }}</div>
+                                          <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                          <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                          <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                        </div>
+                                      {% endif %}
+                                    {% endfor %}
                                 </div>
-
-																<div id="ingredient" onclick="toggleHiddenClassByClass('semifinisheds', 'icon-print6')" class="hidden td name level-name">
-																	Ингредиенты
-																	<img id="icon-print6" class="icon-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
-																</div>
-                                <div class="td"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-                                <div class="td weighting-const hide-item"></div>
-
-																<div id="semifinisheds" class="hidden">
-																	
-
-																</div>
                               </div>
-                        </div>
-                    </div>
+                            </div>
+                          {% else %}
+                            <div class="tr">
+                              <div class="td name">{{ product_level_1.name }}</div>
+                              <div class="td">{{ product_level_1.measure_unit }}</div>
+                              <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                              <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                              <div class="td">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                              <div class="td">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                            </div>
+                          {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                {% if semifinished_level_2 %}
+                  <div onclick="toggleHiddenClassByClass('2', 'icon-print2')" class="td name level-name">
+                    2-ый уровень вложенности
+                    <img id="icon-print2" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+                  </div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div id="2" class="hidden">
+                  {% for product_level_1 in semifinished_level_2.values %}
+                    {% if product_level_1.category.id in filter.categories %}
+                      {% if product_level_1.items %}
+                          <div class="tr parent">
+                            <div class="td name">{{ product_level_1.name }}</div>
+                            <div class="td">{{ product_level_1.measure_unit }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                            <div class="children table">
+                              <div class="tbody">
+                                  {% for product_level_2 in product_level_1.items.values %}
+                                    {% if product_level_2.items %}
+                                      <div class="tr parent">
+                                        <div class="td name">{{ product_level_2.name }}</div>
+                                        <div class="td">{{ product_level_2.measure_unit }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                        <div class="children table">
+                                          <div class="tbody">
+                                            {% for product_level_3 in product_level_2.items.values %}
+                                              {% if product_level_3.items %}
+                                                <div class="tr parent">
+                                                  <div class="td name">{{ product_level_3.name }}</div>
+                                                  <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                  <div class="children table">
+                                                    <div class="tbody">
+                                                      {% for product_level_4 in product_level_3.items.values %}
+                                                        {% if product_level_4.items %}
+                                                          <div class="tr parent">
+                                                            <div class="td name">{{ product_level_4.name }}</div>
+                                                            <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                            <div class="children table">
+                                                              <div class="tbody">
+                                                                {% for product_level_5 in product_level_4.items.values %}
+                                                                  {% if product_level_5.items %}
+                                                                    <div class="tr">
+                                                                      <div class="td name">{{ product_level_5.name }}</div>
+                                                                      <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                    </div>
+                                                                  {% else %}
+                                                                    <div class="tr">
+                                                                      <div class="td name">{{ product_level_5.name }}</div>
+                                                                      <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                    </div>
+                                                                  {% endif %}
+                                                                {% endfor %}
+                                                              </div>
+                                                            </div>                                                    
+                                                          </div>
+                                                        {% else %}
+                                                          <div class="tr">
+                                                            <div class="td name">{{ product_level_4.name }}</div>
+                                                            <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                          </div>
+                                                        {% endif %}
+                                                      {% endfor %}
+                                                    </div>
+                                                  </div>                                                    
+                                                </div>
+                                              {% else %}
+                                                <div class="tr">
+                                                  <div class="td name">{{ product_level_3.name }}</div>
+                                                  <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                </div>
+                                              {% endif %}
+                                            {% endfor %}
+                                          </div>
+                                        </div>                                                    
+                                      </div>
+                                    {% else %}
+                                      <div class="tr">
+                                        <div class="td name">{{ product_level_2.name }}</div>
+                                        <div class="td">{{ product_level_2.measure_unit }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                      </div>
+                                    {% endif %}
+                                  {% endfor %}
+                              </div>
+                            </div>
+                          </div>
+                        {% else %}
+                          <div class="tr">
+                            <div class="td name">{{ product_level_1.name }}</div>
+                            <div class="td">{{ product_level_1.measure_unit }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                  {% endfor %}
+                </div>
+
+							  {% endif %}
+
+                {% if semifinished_level_3 %}
+                  <div onclick="toggleHiddenClassByClass('3', 'icon-print3')" class="td name level-name">
+                    3-ый уровень вложенности
+                    <img id="icon-print3" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+                  </div> 
+                  <div class="td"></div>
+                  <div class="td weighting"></div>
+                  <div class="td weighting"></div>
+                  <div class="td weighting"></div>
+                  <div class="td weighting"></div>
+                  <div class="td weighting-const hide-item"></div>
+                  <div class="td weighting-const hide-item"></div>
+                  <div class="td weighting-const hide-item"></div>
+                  <div class="td weighting-const hide-item"></div>
+
+							    <div id="3" class="hidden">
+                  {% for product_level_1 in semifinished_level_3.values %}
+                    {% if product_level_1.category.id in filter.categories %}
+                      {% if product_level_1.items %}
+                          <div class="tr parent">
+                            <div class="td name">{{ product_level_1.name }}</div>
+                            <div class="td">{{ product_level_1.measure_unit }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                            <div class="children table">
+                              <div class="tbody">
+                                  {% for product_level_2 in product_level_1.items.values %}
+                                    {% if product_level_2.items %}
+                                      <div class="tr parent">
+                                        <div class="td name">{{ product_level_2.name }}</div>
+                                        <div class="td">{{ product_level_2.measure_unit }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                        <div class="children table">
+                                          <div class="tbody">
+                                            {% for product_level_3 in product_level_2.items.values %}
+                                              {% if product_level_3.items %}
+                                                <div class="tr parent">
+                                                  <div class="td name">{{ product_level_3.name }}</div>
+                                                  <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                  <div class="children table">
+                                                    <div class="tbody">
+                                                      {% for product_level_4 in product_level_3.items.values %}
+                                                        {% if product_level_4.items %}
+                                                          <div class="tr parent">
+                                                            <div class="td name">{{ product_level_4.name }}</div>
+                                                            <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                            <div class="children table">
+                                                              <div class="tbody">
+                                                                {% for product_level_5 in product_level_4.items.values %}
+                                                                  {% if product_level_5.items %}
+                                                                    <div class="tr">
+                                                                      <div class="td name">{{ product_level_5.name }}</div>
+                                                                      <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                    </div>
+                                                                  {% else %}
+                                                                    <div class="tr">
+                                                                      <div class="td name">{{ product_level_5.name }}</div>
+                                                                      <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                    </div>
+                                                                  {% endif %}
+                                                                {% endfor %}
+                                                              </div>
+                                                            </div>                                                    
+                                                          </div>
+                                                        {% else %}
+                                                          <div class="tr">
+                                                            <div class="td name">{{ product_level_4.name }}</div>
+                                                            <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                          </div>
+                                                        {% endif %}
+                                                      {% endfor %}
+                                                    </div>
+                                                  </div>                                                    
+                                                </div>
+                                              {% else %}
+                                                <div class="tr">
+                                                  <div class="td name">{{ product_level_3.name }}</div>
+                                                  <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                </div>
+                                              {% endif %}
+                                            {% endfor %}
+                                          </div>
+                                        </div>                                                    
+                                      </div>
+                                    {% else %}
+                                      <div class="tr">
+                                        <div class="td name">{{ product_level_2.name }}</div>
+                                        <div class="td">{{ product_level_2.measure_unit }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                      </div>
+                                    {% endif %}
+                                  {% endfor %}
+                              </div>
+                            </div>
+                          </div>
+                        {% else %}
+                          <div class="tr">
+                            <div class="td name">{{ product_level_1.name }}</div>
+                            <div class="td">{{ product_level_1.measure_unit }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                  {% endfor %}
+                </div>
+							  {% endif %}
+
+                {% if semifinished_level_4 %}
+                  <div onclick="toggleHiddenClassByClass('4', 'icon-print4')" class="td name level-name">
+                    4-ый уровень вложенности
+                    <img id="icon-print4" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+                  </div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div id="4" class="hidden">
+                  {% for product_level_1 in semifinished_level_4.values %}
+                    {% if product_level_1.category.id in filter.categories %}
+                      {% if product_level_1.items %}
+                          <div class="tr parent">
+                            <div class="td name">{{ product_level_1.name }}</div>
+                            <div class="td">{{ product_level_1.measure_unit }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                            <div class="children table">
+                              <div class="tbody">
+                                  {% for product_level_2 in product_level_1.items.values %}
+                                    {% if product_level_2.items %}
+                                      <div class="tr parent">
+                                        <div class="td name">{{ product_level_2.name }}</div>
+                                        <div class="td">{{ product_level_2.measure_unit }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                        <div class="children table">
+                                          <div class="tbody">
+                                            {% for product_level_3 in product_level_2.items.values %}
+                                              {% if product_level_3.items %}
+                                                <div class="tr parent">
+                                                  <div class="td name">{{ product_level_3.name }}</div>
+                                                  <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                  <div class="children table">
+                                                    <div class="tbody">
+                                                      {% for product_level_4 in product_level_3.items.values %}
+                                                        {% if product_level_4.items %}
+                                                          <div class="tr parent">
+                                                            <div class="td name">{{ product_level_4.name }}</div>
+                                                            <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                            <div class="children table">
+                                                              <div class="tbody">
+                                                                {% for product_level_5 in product_level_4.items.values %}
+                                                                  {% if product_level_5.items %}
+                                                                    <div class="tr">
+                                                                      <div class="td name">{{ product_level_5.name }}</div>
+                                                                      <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                    </div>
+                                                                  {% else %}
+                                                                    <div class="tr">
+                                                                      <div class="td name">{{ product_level_5.name }}</div>
+                                                                      <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                    </div>
+                                                                  {% endif %}
+                                                                {% endfor %}
+                                                              </div>
+                                                            </div>                                                    
+                                                          </div>
+                                                        {% else %}
+                                                          <div class="tr">
+                                                            <div class="td name">{{ product_level_4.name }}</div>
+                                                            <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                          </div>
+                                                        {% endif %}
+                                                      {% endfor %}
+                                                    </div>
+                                                  </div>                                                    
+                                                </div>
+                                              {% else %}
+                                                <div class="tr">
+                                                  <div class="td name">{{ product_level_3.name }}</div>
+                                                  <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                </div>
+                                              {% endif %}
+                                            {% endfor %}
+                                          </div>
+                                        </div>                                                    
+                                      </div>
+                                    {% else %}
+                                      <div class="tr">
+                                        <div class="td name">{{ product_level_2.name }}</div>
+                                        <div class="td">{{ product_level_2.measure_unit }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                      </div>
+                                    {% endif %}
+                                  {% endfor %}
+                              </div>
+                            </div>
+                          </div>
+                        {% else %}
+                          <div class="tr">
+                            <div class="td name">{{ product_level_1.name }}</div>
+                            <div class="td">{{ product_level_1.measure_unit }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                  {% endfor %}
+                </div>
+
+
+							  {% endif %}
+
+                {% if semifinished_level_5 %}
+                  <div onclick="toggleHiddenClassByClass('5', 'icon-print5')" class="td name level-name">
+                    5-ый уровень вложенности
+                    <img id="icon-print5" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+                  </div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+                  <div class="td"></div>
+
+                  <div id="5" class="hidden">
+                  {% for product_level_1 in semifinished_level_5.values %}
+                    {% if product_level_1.category.id in filter.categories %}
+                      {% if product_level_1.items %}
+                          <div class="tr parent">
+                            <div class="td name">{{ product_level_1.name }}</div>
+                            <div class="td">{{ product_level_1.measure_unit }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                            <div class="children table">
+                              <div class="tbody">
+                                  {% for product_level_2 in product_level_1.items.values %}
+                                    {% if product_level_2.items %}
+                                      <div class="tr parent">
+                                        <div class="td name">{{ product_level_2.name }}</div>
+                                        <div class="td">{{ product_level_2.measure_unit }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                        <div class="children table">
+                                          <div class="tbody">
+                                            {% for product_level_3 in product_level_2.items.values %}
+                                              {% if product_level_3.items %}
+                                                <div class="tr parent">
+                                                  <div class="td name">{{ product_level_3.name }}</div>
+                                                  <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                  <div class="children table">
+                                                    <div class="tbody">
+                                                      {% for product_level_4 in product_level_3.items.values %}
+                                                        {% if product_level_4.items %}
+                                                          <div class="tr parent">
+                                                            <div class="td name">{{ product_level_4.name }}</div>
+                                                            <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                            <div class="children table">
+                                                              <div class="tbody">
+                                                                {% for product_level_5 in product_level_4.items.values %}
+                                                                  {% if product_level_5.items %}
+                                                                    <div class="tr">
+                                                                      <div class="td name">{{ product_level_5.name }}</div>
+                                                                      <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                    </div>
+                                                                  {% else %}
+                                                                    <div class="tr">
+                                                                      <div class="td name">{{ product_level_5.name }}</div>
+                                                                      <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
+                                                                      <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                    </div>
+                                                                  {% endif %}
+                                                                {% endfor %}
+                                                              </div>
+                                                            </div>                                                    
+                                                          </div>
+                                                        {% else %}
+                                                          <div class="tr">
+                                                            <div class="td name">{{ product_level_4.name }}</div>
+                                                            <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
+                                                            <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                          </div>
+                                                        {% endif %}
+                                                      {% endfor %}
+                                                    </div>
+                                                  </div>                                                    
+                                                </div>
+                                              {% else %}
+                                                <div class="tr">
+                                                  <div class="td name">{{ product_level_3.name }}</div>
+                                                  <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
+                                                  <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                </div>
+                                              {% endif %}
+                                            {% endfor %}
+                                          </div>
+                                        </div>                                                    
+                                      </div>
+                                    {% else %}
+                                      <div class="tr">
+                                        <div class="td name">{{ product_level_2.name }}</div>
+                                        <div class="td">{{ product_level_2.measure_unit }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
+                                        <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                      </div>
+                                    {% endif %}
+                                  {% endfor %}
+                              </div>
+                            </div>
+                          </div>
+                        {% else %}
+                          <div class="tr">
+                            <div class="td name">{{ product_level_1.name }}</div>
+                            <div class="td">{{ product_level_1.measure_unit }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
+                            <div class="td">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                  {% endfor %}
+                  </div>
+
+
+  							{% endif %}
+              {% else %}
+                <div class="td name level-name grey">Нет п/ф по выбранному фильтру</div>
+                <div class="td"></div>
+                <div class="td"></div>
+                <div class="td"></div>
+                <div class="td"></div>
+              {% endif %}
+              
+
+              <div id="download-ingredient" onclick="toggleHiddenClassByClass('semifinisheds', 'icon-print6')" class="td name level-name grey">
+                Подсчитываем ингредиенты
+                <img id="" class="padding-0" width="15" height="15" title="Показать/ скрыть" src="{% static 'doctor/css/img/download.svg' %}" alt="Показать/ скрыть">
+              </div>
+
+							<div id="ingredient" onclick="toggleHiddenClassByClass('semifinisheds', 'icon-print6')" class="hidden td name level-name">
+								Ингредиенты
+								<img id="icon-print6" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+							</div>
+              <div class="td"></div>
+              <div class="td"></div>
+              <div class="td"></div>
+              <div class="td"></div>
+							<div id="semifinisheds" class="hidden">
+							</div>
+            </div>
+          </div>
+        </div>
+    </div>
   </div>
-</div>
     {% endif %}
 
 
@@ -535,6 +931,7 @@ const getIngredientsAPI = async function() {
       "date": window.date,
       "filter": window.item1.id,
 			"value": window.value,
+      "categories": "{{ filter.categories }}",
   };
 
   let response = await fetch(url, {
@@ -601,8 +998,19 @@ function toggleHiddenClassByClass(id, iconId) {
 
 // отправляем данные для показа страницы с новым фильтром
 function reloadPageWithFilter() {
-  window.location.href = `{% url 'order' 'semifinished'%}?${window.item1.id}=${window.value}&date=${window.date}`;
-  console.log(`{% url 'order' 'semifinished'%}?${window.item1.id}=${window.value}&date=${window.date}`);
+  var catSet = "";
+
+  const catElements = document.querySelectorAll('.cat'); // получаем все элементы с классом cat
+
+  catElements.forEach(catElement => {    
+    if (catElement && catElement.checked) { // добавить проверку наличия input
+      const name = catElement.getAttribute('name');
+      catSet += name + ';';
+      } 
+  });
+  console.log(catSet);
+  window.location.href = `{% url 'order' %}?${window.item1.id}=${window.value}&date=${window.date}&categories=${catSet}`;
+  console.log(`{% url 'order' %}?${window.item1.id}=${window.value}&date=${window.date}&categories=${catSet}`);
 }
 
 // вывод ингредиентов
@@ -610,24 +1018,79 @@ function addSemifinisheds(obj) {
     let semifinisheds = document.getElementById('semifinisheds');
     let result = "";
     result += `<div class="tbody">`;
-    for (var item in obj) {      
+    var count = 0
+    for (var item in obj['ingredients']) { 
+      count = 1
+    }
+    if (count > 0) {
+      for (var item in obj['ingredients']) {      
+        result += `<div class="tr">`
+        result += `<div class="td name">${obj['ingredients'][item]['name']}</div>`
+        result += `<div class="td">${obj['ingredients'][item]['measure_unit']}</div>`
+        result += `<div class="td">${obj['ingredients'][item]['amount_in'].toFixed(3)}</div>`
+        result += `<div class="td">${obj['ingredients'][item]['amount_in'].toFixed(3)}</div>`
+        result += `<div class="td">${obj['ingredients'][item]['amount_middle'].toFixed(3)}</div>`
+        result += `<div class="td">${obj['ingredients'][item]['amount_out'].toFixed(3)}</div>`
+        result += `</div>`
+      }
+    } else {
       result += `<div class="tr">`
-      result += `<div class="td name">${obj[item]['name']}</div>`
-      result += `<div class="td">${obj[item]['measure_unit']}</div>`
-      result += `<div class="td weighting">${obj[item]['amount_in'].toFixed(3)}</div>`
-      result += `<div class="td weighting">${obj[item]['amount_in'].toFixed(3)}</div>`
-      result += `<div class="td weighting">${obj[item]['amount_middle'].toFixed(3)}</div>`
-      result += `<div class="td weighting">${obj[item]['amount_out'].toFixed(3)}</div>`
-      result += `<div class="td weighting-const hide-item">${obj[item]['amount_in'].toFixed(3)}</div>`
-      result += `<div class="td weighting-const hide-item">${obj[item]['amount_in'].toFixed(3)}</div>`
-      result += `<div class="td weighting-const hide-item">${obj[item]['amount_middle'].toFixed(3)}</div>`
-      result += `<div class="td weighting-const hide-item">${obj[item]['amount_out'].toFixed(3)}</div>`
-		  result += `</div>`
+      result += `<div class="td name">Нет ингредиентов по выбранному фильтру</div>`
+      result += `<div class="td"></div>`
+      result += `<div class="td"></div>`
+      result += `<div class="td"></div>`
+      result += `<div class="td"></div>`
+      result += `<div class="td"></div>`
+      result += `</div>`
     }
     result += `</div>`
     semifinisheds.insertAdjacentHTML("afterbegin", result);
     document.getElementById('download-ingredient').classList.add('hidden');
     document.getElementById('ingredient').classList.remove('hidden');
+}
+
+
+function showCategories() {
+  var elements = document.getElementById("category-menu");
+
+  // if (elements.classList.contains('hidden')) {
+  //   document.getElementById('icon-cat').classList.remove('bottom-list');
+  //   elements.classList.remove('hidden');
+  // } else {
+  //   elements.classList.add('hidden');
+  //   document.getElementById('icon-cat').classList.add('bottom-list');
+  // }
+  
+  
+  if (elements.style.display === "none") {
+    document.getElementById('icon-cat').classList.remove('bottom-list');
+    elements.style.display = "block";
+  } else {
+    elements.style.display = "none";
+    document.getElementById('icon-cat').classList.add('bottom-list');
+  }
+}
+
+function allFilterCategory() {
+  var value = document.getElementById('all');
+  const catElements = document.querySelectorAll('.cat'); // получаем все элементы с классом cat
+  if (value.classList.contains('one')) {
+    catElements.forEach(catElement => {   
+      if (catElement && catElement.checked) { // добавить проверку наличия input
+          catElement.checked = false
+        } 
+    });
+    value.innerHTML = 'выделить все'
+    value.classList.remove('one')
+  } else {
+    catElements.forEach(catElement => {   
+      if (catElement && catElement.checked == false) { // добавить проверку наличия input
+          catElement.checked = true
+        } 
+    });
+    value.innerHTML = 'снять все'
+    value.classList.add('one')
+  }
 }
 
 </script>

@@ -1,6 +1,7 @@
 # получаем по api список всех тех. карт и сохраняем в базу в json
 import datetime
 import json
+import logging
 
 import requests
 
@@ -43,6 +44,34 @@ def logout_token(token):
     if respons.status_code == 200:
         return respons.text
     return 'Error'
+
+
+def get_category_from_iiko() -> dict:
+    """
+    Получаем все категории по API и создаем словарь где:
+    key - id категории, value - имя категории
+    """
+    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/group/list?includeDeleted=false'
+
+    for attempt in [1, 2]:
+        token = get_token(attempt)
+        headers = {
+            'Cookie': f'key={token}'
+        }
+        response = requests.get(url=url, headers=headers)
+        if response.status_code != 200:
+            continue
+        else:
+            received_categories: list = json.loads(response.text)
+            categories: dict = {}
+            for category in received_categories:
+                categories[category['id']] = category['name']
+            return categories
+    logging.error(f'Ошибка в получении данных по категориям - {response}')
+
+
+
+
 
 def download():
     """ Присвоить всем ProductLp id для обращения за тех. картой по api. """

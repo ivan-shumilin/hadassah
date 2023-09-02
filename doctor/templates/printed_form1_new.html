@@ -99,6 +99,35 @@
         .hidden-t {
             display: none;
         }
+
+        .filter {
+        margin-left: 20px;
+        display: inline-block;
+        color: #c9ced1;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: .72px;
+        padding: 12px 16px 12px 0;
+        vertical-align: middle;
+      }
+
+      .filter-item:hover {
+        color: #0e7abc;
+      }
+      @media screen and (max-width: 768px) {
+        .filter {
+          display: block;
+          margin-bottom: 0px;
+        }
+      }
+      .filter {
+        display: inline-block;
+        margin-right: 0px;
+        vertical-align: middle;
+      }
+      .order {
+        margin-top: 20px;
+      }
     </style>
 <div class="screen">
     <body>
@@ -136,23 +165,28 @@
                 </div>
             </div>
 
-            <div class="container-flex">
-                <div class="div-order">
+      
+                <div class="filter">
                     <div class="order">
                         <a href="{% url 'printed_form_two_lp_new' %}">Заявка для цеха ЛП</a>
                     </div>
-                </div>
-                <div class="div-order">
+
+
                     <div class="order">
                         <a href="{% url 'printed_form_cafe_new' %}">Заявка по блюдам раздачи</a>
                     </div>
                 </div>
-                <div class="div-order">
+                <div class="filter">
                     <div class="order">
                         <a href="{% url 'menu_lp_for_staff' %}">Меню на неделю</a>
                     </div>
+
+
+                    <div class="order">
+                        <a href="{% url 'order' %}">Раскладка ингредиентов</a>
+                    </div>
                 </div>
-            </div>
+
             <div class="title-20 mr-top-35 mr-left-24 pd-left-12">
                 <h3 onclick="toggleHiddenClassByClass('print-stick', 'icon-print')">Печать стикеров
                         <img id="icon-print" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть комментарии">

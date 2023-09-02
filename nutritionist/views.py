@@ -21,15 +21,16 @@ from django.db.models.functions import Lower
 from django.views.generic import TemplateView
 
 from doctor.functions.download import get_token, get_tk, get_name_by_api, get_allergens, get_weight_tk, \
-    get_measure_unit
+    get_measure_unit, get_category_from_iiko
 from .functions.get_ingredients import get_ingredients_for_ttk, get_semifinished, get_semifinished_level_1
 from doctor.tasks import create_report_download
+from scripts.view_report_fot_patient import view_report_for_patient
 from .functions.report import create_external_report, create_external_report_detailing, get_report
 from .functions.ttk import create_all_ttk
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, BotChatId, СhangesUsersToday, \
     UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage, IsReportCreate, Ingredient
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
-from .serializers import ProductSerializer, DownloadReportSerializer
+from .serializers import ProductSerializer, DownloadReportSerializer, GetIngredientsSerializer
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -51,6 +52,7 @@ from doctor.functions.bot import formatting_full_name
 from doctor.functions.translator import get_day_of_the_week, translate_diet
 import random, calendar, datetime, logging, json
 from datetime import datetime, date, timedelta
+from copy import deepcopy
 from django.utils import dateformat
 from nutritionist.functions.functions import create_products_list_category, complete_catalog, \
     checking_is_ready_meal, create_category_dict, create_stickers_pdf, add_try, cleaning_null, combine_broths
@@ -1485,7 +1487,17 @@ def custom_sort(ttk, filter):
             reverse=False if filter['value'] == 'top' else True))
     return ttk
 
-def all_order_by_ingredients(request, type):
+def report(request):
+    return render(request, 'report.html', {})
+
+
+def check_by_categories(semifinished, filter):
+    for item in semifinished.values():
+        if item.get('category', {}).get('id', None) in filter.get('categories', []):
+            return semifinished
+    return False
+
+def all_order_by_ingredients(request):
     """
     Выводим весь заказ на завтра по ингредиетам, для проверки наличия продуктов.
     1. составить список всех продуктов
@@ -1507,6 +1519,8 @@ def all_order_by_ingredients(request, type):
     filter: dict = {}
     values: tuple = ['top', 'bottom']
     filter['date'] = request.GET.get('date', 'tomorrow').lower()
+    filter['categories'] = request.GET.get('categories', '').strip(';').split(';')
+    print('==========================', filter['categories'])
     if filter['date'] == 'tomorrow':
         day_count = 1
     elif filter['date'] == 'after-tomorrow':
@@ -1531,11 +1545,6 @@ def all_order_by_ingredients(request, type):
         filter['type'] = 'amount_out'
         filter['value'] = filter['weight']
 
-    print("#########################################################")
-    print("filter['alphabet'] -> ", filter.get('alphabet', None))
-    print("filter['alphabet_status'] -> ", filter.get('alphabet_status', None))
-    print("filter['weight'] -> ", filter.get('weight', None))
-    print("filter['weight_status'] -> ", filter.get('weight_status', None))
     meal: str
     day: str
     catalog: dict = {}
@@ -1546,65 +1555,75 @@ def all_order_by_ingredients(request, type):
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
 
-    if type == 'ingredients':
-        ingredients = get_ingredients_for_ttk(catalog)
-        data = {
-            'ingredients': ingredients,
-            'formatted_date_now': formatted_date_now,
-        }
+    categories_all: list = []
+    semifinished_level_0, categories_all = get_semifinished(
+        catalog,
+        categories_all,
+    )
 
-        return render(request, 'all_order.html', context=data)
+    semifinished_level_1 = dict(sorted(
+        get_semifinished_level_1(semifinished_level_0, filter['categories']).items(),
+        key=lambda x: x[1][filter['type']],
+        reverse=False if filter['value'] == 'top' else True))
+    custom_sort(semifinished_level_1, filter)
 
-    if type == 'semifinished':
-        semifinished_level_0 = get_semifinished(catalog)
-        semifinished_level_1 = dict(sorted(
-            get_semifinished_level_1(semifinished_level_0).items(),
-            key=lambda x: x[1][filter['type']],
-            reverse=False if filter['value'] == 'top' else True))
-        custom_sort(semifinished_level_1, filter)
+    semifinished_level_2 = dict(sorted(
+        get_semifinished_level_1(semifinished_level_1).items(),
+        key=lambda x: x[1][filter['type']],
+        reverse=False if filter['value'] == 'top' else True))
+    custom_sort(semifinished_level_2, filter)
 
-        # semifinished_level_2 = get_semifinished_level_1(semifinished_level_1)
-        semifinished_level_2 = dict(sorted(
-            get_semifinished_level_1(semifinished_level_1).items(),
-            key=lambda x: x[1][filter['type']],
-            reverse=False if filter['value'] == 'top' else True))
-        custom_sort(semifinished_level_2, filter)
+    semifinished_level_3 = dict(sorted(
+        get_semifinished_level_1(semifinished_level_2).items(),
+        key=lambda x: x[1][filter['type']],
+        reverse=False if filter['value'] == 'top' else True))
+    custom_sort(semifinished_level_3, filter)
 
-        semifinished_level_3 = dict(sorted(
-            get_semifinished_level_1(semifinished_level_2).items(),
-            key=lambda x: x[1][filter['type']],
-            reverse=False if filter['value'] == 'top' else True))
-        custom_sort(semifinished_level_3, filter)
+    semifinished_level_4 = dict(sorted(
+        get_semifinished_level_1(semifinished_level_3).items(),
+        key=lambda x: x[1][filter['type']],
+        reverse=False if filter['value'] == 'top' else True))
+    custom_sort(semifinished_level_4, filter)
 
-        semifinished_level_4 = dict(sorted(
-            get_semifinished_level_1(semifinished_level_3).items(),
-            key=lambda x: x[1][filter['type']],
-            reverse=False if filter['value'] == 'top' else True))
-        custom_sort(semifinished_level_4, filter)
+    semifinished_level_5 = dict(sorted(
+        get_semifinished_level_1(semifinished_level_4).items(),
+        key=lambda x: x[1][filter['type']],
+        reverse=False if filter['value'] == 'top' else True))
+    custom_sort(semifinished_level_5, filter)
 
-        semifinished_level_5 = dict(sorted(
-            get_semifinished_level_1(semifinished_level_4).items(),
-            key=lambda x: x[1][filter['type']],
-            reverse=False if filter['value'] == 'top' else True))
-        custom_sort(semifinished_level_5, filter)
-        data = {
-            'semifinished_level_0': semifinished_level_0,
-            'semifinished_level_1': semifinished_level_1,
-            'semifinished_level_2': semifinished_level_2,
-            'semifinished_level_3': semifinished_level_3,
-            'semifinished_level_4': semifinished_level_4,
-            'semifinished_level_5': semifinished_level_5,
-            'formatted_date_now': formatted_date_now,
-            'filter': filter,
-        }
+    categories_all = sorted(categories_all, key=lambda item: item['name'])
 
-        return render(request, 'all_order_semifinished.html', context=data)
+    if filter['categories'] == ['']:
+        filter['categories'] = [cat['id'] for cat in categories_all]
 
+    semifinished_level_1 = check_by_categories(semifinished_level_1, filter)
+    semifinished_level_2 = check_by_categories(semifinished_level_2, filter)
+    semifinished_level_3 = check_by_categories(semifinished_level_3, filter)
+    semifinished_level_4 = check_by_categories(semifinished_level_4, filter)
+    semifinished_level_5 = check_by_categories(semifinished_level_5, filter)
 
+    is_have = any([
+        semifinished_level_1,
+        semifinished_level_2,
+        semifinished_level_3,
+        semifinished_level_4,
+        semifinished_level_5,
+    ])
 
+    data = {
+        'is_have': is_have,
+        'semifinished_level_0': semifinished_level_0,
+        'semifinished_level_1': semifinished_level_1,
+        'semifinished_level_2': semifinished_level_2,
+        'semifinished_level_3': semifinished_level_3,
+        'semifinished_level_4': semifinished_level_4,
+        'semifinished_level_5': semifinished_level_5,
+        'formatted_date_now': formatted_date_now,
+        'filter': filter,
+        'categories_all': categories_all,
+    }
 
-def report(request):
-    return render(request, 'report.html', {})
+    return render(request, 'all_order_semifinished.html', context=data)
 
 
 def internal_report(request):

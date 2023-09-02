@@ -267,8 +267,14 @@ def view_ttk(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77'):
 def if_none_get_zero(value):
     return float(value) if value is not None else 0
 
-def add_ingredient(ttk, ingredients):
-    if ttk.status == 'ingredient':
+def is_categories(ttk, categories):
+    if ttk.ingredient:
+        return ttk.ingredient.groupId in categories
+    return False
+
+
+def add_ingredient(ttk, ingredients, categories):
+    if ttk.status == 'ingredient' and is_categories(ttk, categories):
         if ttk.product_id in ingredients:
             ingredients[ttk.product_id]['amount_in'] =\
                 if_none_get_zero(ingredients[ttk.product_id]['amount_in']) + if_none_get_zero(ttk.amount_in)
@@ -352,8 +358,7 @@ def merger_products(product_main: dict, product_sub: dict) -> dict:
     return product_main
 
 
-
-def enumeration_ingredients(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77'):
+def enumeration_ingredients(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77', categories=[]):
     """ Перебор всех инредиентов. """
     ingredients: dict = {}
     ttk_main = TTK.objects.filter(product_id=product_id).first()
@@ -361,109 +366,158 @@ def enumeration_ingredients(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77'):
 
     for ttk in ttk_child:
         # print('1- ', ttk.name, ttk.ingredient)
-        add_ingredient(ttk, ingredients)
+        add_ingredient(ttk, ingredients, categories)
         ttk_child_2 = TTK.objects.filter(parent_ttk=ttk)
         for ttk in ttk_child_2:
             # print('2-- ', ttk.name, ttk.ingredient)
-            add_ingredient(ttk, ingredients)
+            add_ingredient(ttk, ingredients, categories)
             ttk_child_3 = TTK.objects.filter(parent_ttk=ttk)
             for ttk in ttk_child_3:
                 # print('3--- ', ttk.name, ttk.ingredient)
-                add_ingredient(ttk, ingredients)
+                add_ingredient(ttk, ingredients, categories)
                 ttk_child_4 = TTK.objects.filter(parent_ttk=ttk)
                 for ttk in ttk_child_4:
                     # print('4---- ', ttk.name, ttk.ingredient)
-                    add_ingredient(ttk, ingredients)
+                    add_ingredient(ttk, ingredients, categories)
                     ttk_child_5 = TTK.objects.filter(parent_ttk=ttk)
                     for ttk in ttk_child_5:
-                        add_ingredient(ttk, ingredients)
+                        add_ingredient(ttk, ingredients, categories)
                         # print('5----- ', ttk.name, ttk.ingredient)
     return ingredients
 
 
-def enumeration_semifinisheds(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77', count=1):
+def get_ingredient_category(ttk):
+    try:
+        category: dict = {
+            'id': ttk.ingredient.groupId,
+            'name': ttk.ingredient.category,
+        }
+    except Exception as e:
+        category: dict = {
+            'id': '0',
+            'name': 'Отсутствует',
+        }
+        print(f'Ошибка {e}')
+    return category
+
+def enumeration_semifinisheds(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77', count=1, categories_all=None):
     """
     Проходим по всем уровням ТТК
     """
     ttk_main = TTK.objects.filter(product_id=product_id).first()
     if not ttk_main:
         print(f'Для продукта с product_id {product_id} не существует TTK')
-        return None
+        return None, categories_all
 
     ttk_child = TTK.objects.filter(parent_ttk=ttk_main)
+
     semifinisheds: dict = {
             'name': ttk_main.name,
+            'measure_unit': ttk_main.measure_unit,
             'amount_in': if_none_get_zero(ttk_main.amount_in) * count,
             'amount_middle': if_none_get_zero(ttk_main.amount_middle) * count,
             'amount_out': if_none_get_zero(ttk_main.amount_out) * count,
             'status': ttk_main.status,
             'items': {},
-        }
+
+    }
+
     for ttk1 in ttk_child:
+        category = get_ingredient_category(ttk1)
+        if category not in categories_all:
+            categories_all.append(category)
+
         level1 = semifinisheds['items']
         if ttk1.status == 'ingredient':
             continue
+
         level1[ttk1.product_id] = {
                 'name': ttk1.name,
+                'measure_unit': ttk1.measure_unit,
                 'amount_in': if_none_get_zero(ttk1.amount_in) * count,
                 'amount_middle': if_none_get_zero(ttk1.amount_middle) * count,
                 'amount_out': if_none_get_zero(ttk1.amount_out) * count,
                 'status': ttk1.status,
                 'items': {},
+                'category': category,
         }
         ttk_child_2 = TTK.objects.filter(parent_ttk=ttk1)
         for ttk2 in ttk_child_2:
+            category = get_ingredient_category(ttk2)
+            if category not in categories_all:
+                categories_all.append(category)
+
             level2 = level1[ttk1.product_id]['items']
             level2[ttk2.product_id] = {
                 'name': ttk2.name,
+                'measure_unit': ttk2.measure_unit,
                 'amount_in': if_none_get_zero(ttk2.amount_in) * count,
                 'amount_middle': if_none_get_zero(ttk2.amount_middle) * count,
                 'amount_out': if_none_get_zero(ttk2.amount_out) * count,
                 'status': ttk2.status,
                 'items': {},
+                'category': category,
             }
             if ttk2.status == 'ingredient':
                 continue
             ttk_child_3 = TTK.objects.filter(parent_ttk=ttk2)
             for ttk3 in ttk_child_3:
+                category = get_ingredient_category(ttk3)
+                if category not in categories_all:
+                    categories_all.append(category)
+
                 level3 = level2[ttk2.product_id]['items']
                 level3[ttk3.product_id] = {
                     'name': ttk3.name,
+                    'measure_unit': ttk3.measure_unit,
                     'amount_in': if_none_get_zero(ttk3.amount_in) * count,
                     'amount_middle': if_none_get_zero(ttk3.amount_middle) * count,
                     'amount_out': if_none_get_zero(ttk3.amount_out) * count,
                     'status': ttk3.status,
                     'items': {},
+                    'category': category,
                 }
                 if ttk3.status == 'ingredient':
                     continue
                 ttk_child_4 = TTK.objects.filter(parent_ttk=ttk3)
                 for ttk4 in ttk_child_4:
+                    category = get_ingredient_category(ttk4)
+                    if category not in categories_all:
+                        categories_all.append(category)
+
                     level4 = level3[ttk3.product_id]['items']
                     level4[ttk3.product_id] = {
                         'name': ttk4.name,
+                        'measure_unit': ttk4.measure_unit,
                         'amount_in': if_none_get_zero(ttk4.amount_in) * count,
                         'amount_middle': if_none_get_zero(ttk4.amount_middle) * count,
                         'amount_out': if_none_get_zero(ttk4.amount_out) * count,
                         'status': ttk4.status,
                         'items': {},
+                        'category': category,
                     }
                     if ttk4.status == 'ingredient':
                         continue
                     ttk_child_5 = TTK.objects.filter(parent_ttk=ttk4)
                     for ttk5 in ttk_child_5:
+                        category = get_ingredient_category(ttk5)
+                        if category not in categories_all:
+                            categories_all.append(category)
+
                         level5 = level4[ttk4.product_id]['items']
                         level5[ttk5.product_id] = {
                             'name': ttk5.name,
+                            'measure_unit': ttk5.measure_unit,
                             'amount_in': if_none_get_zero(ttk5.amount_in) * count,
                             'amount_middle': if_none_get_zero(ttk5.amount_middle) * count,
                             'amount_out': if_none_get_zero(ttk5.amount_out) * count,
                             'status': ttk5.status,
                             'items': {},
+                            'category': category,
                         }
                         if ttk5.status == 'ingredient':
                             continue
-    return semifinisheds
+    return semifinisheds, categories_all
 
 
 def write_ttk_in_bd():
