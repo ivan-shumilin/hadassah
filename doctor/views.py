@@ -447,7 +447,7 @@ def menu(request):
     else:
         products_cafe: tuple = ([], [], [], [], [], [])
     queryset_main_dishes, queryset_garnish, queryset_salad, \
-    queryset_soup, queryset_breakfast, queryset_porridge = products_cafe
+    queryset_soup, queryset_breakfast, queryset_porridge, [] = products_cafe
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
 
