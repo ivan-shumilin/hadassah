@@ -582,7 +582,7 @@ def creating_meal_menu_cafe(date_get, diet, meal):
                        queryset_breakfast,
                        queryset_porridge)
 
-    return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup, queryset_breakfast, queryset_porridge
+    return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup, queryset_breakfast, queryset_porridge, []
 
 def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
     products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
