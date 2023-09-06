@@ -87,6 +87,11 @@ app.conf.beat_schedule = {
         'task': 'doctor.tasks.my_job_create_report_dinner',
         'schedule': crontab(minute=54, hour='18'),
     },
+# Обновление ТТК
+    'my_job_updata_ttk': {
+        'task': 'doctor.tasks.my_job_updata_ttk',
+        'schedule': crontab(minute=1, hour='1'),
+    },
 }
 app.conf.timezone = 'Europe/Moscow'
 app.autodiscover_tasks()

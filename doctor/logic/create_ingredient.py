@@ -93,15 +93,16 @@ def create_ingredients(by_api=True):
         print("Ингредиенты обнавлены")
     except Exception as e:
         print(f'Ошибка {e}')
-    time.sleep(1)
-    # print("Обнавление ингредиентов в ТТК")
-    # try:
-    #     ttk_all = TTK.objects.all()
-    #     for ttk in ttk_all:
-    #         ttk.ingredient = Ingredient.objects.filter(product_id=ttk.product_id).first()
-    #         123 / 0
-    #         ttk.save()
-    #     print('обнавление ингредиентов в ТТК - Успешно')
-    # except Exception as e:
-    #     print(f'обнавление ингредиентов в ТТК - Ошибка {e}')
+
+
+def add_ingredient_in_tkk():
+    try:
+        ttk_all = TTK.objects.all()
+        for ttk in ttk_all:
+            ttk.ingredient = Ingredient.objects.filter(product_id=ttk.product_id).first()
+            ttk.save()
+        print('обнавление ингредиентов в ТТК - Успешно')
+    except Exception as e:
+        print(f'обнавление ингредиентов в ТТК - Ошибка {e}')
+
 

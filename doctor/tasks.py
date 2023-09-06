@@ -10,6 +10,7 @@ from doctor.functions.diet_formation import add_menu_three_days_ahead, update_di
 from doctor.functions.for_print_forms import create_user_today, applies_changes, create_user_tomorrow,\
     create_ready_order, create_report, create_product_storage
 from doctor.functions.bot import check_change, formatting_full_name
+from scripts.updata_ttk import update_ttk
 
 
 def send_messang(messang):
@@ -168,3 +169,8 @@ def create_report_download(date_start, date_finish, id):
     item.save()
 
     return
+
+
+@shared_task()
+def my_job_updata_ttk():
+    update_ttk()
