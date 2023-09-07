@@ -1326,12 +1326,19 @@ class GetIngredientsAPIView(APIView):
         data = serializer.validated_data
         filter: dict = {}
         filter['date'] = data['date']
-        filter['filter_field'] = data['filter']
+        if data['filter'] == 'name':
+            filter['filter_field'] = 'name'
+        else:
+            filter['filter_field'] = 'amount_out'
         filter['value'] = data['value']
 
         string = data['categories'].replace('&#x27;', '')
         lst = string[1:-1].split(', ')
         filter['categories'] = lst
+
+        print(" get_ingredients ")
+        print("filter['filter_field'] ========> ", filter['filter_field'])
+        print("filter['value'] ========> ", filter['value'])
 
         COUNT_DAYS: dict = {
             'tomorrow': 1,
@@ -1353,6 +1360,19 @@ class GetIngredientsAPIView(APIView):
             filter['weight'] = 'bottom'
             filter['weight_status'] = 'action'
             filter['type'] = 'amount_out'
+        # if filter['filter_field'] == 'alphabet':
+        #     filter['type'] = 'name'
+        #     filter['alphabet'] = filter['value'].lower()
+        #     filter['alphabet_status'] = 'action'
+        # elif filter['filter_field'] == 'weight':
+        #     filter['type'] = 'amount_out'
+        #     filter['weight'] = filter['value'].lower()
+        #     filter['weight_status'] = 'action'
+        # else:
+        #     filter['alphabet'] = 'top'
+        #     filter['weight'] = 'bottom'
+        #     filter['weight_status'] = 'action'
+        #     filter['type'] = 'amount_out'
 
         meal: str
         day: str
@@ -1365,12 +1385,18 @@ class GetIngredientsAPIView(APIView):
             catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
 
         ingredients = get_ingredients_for_ttk(catalog, filter['categories'])
+        is_reverse = False if filter['value'] == 'top' else True
+        ingredients = dict(sorted(
+            ingredients.items(),
+            key=lambda x: x[1][filter['filter_field']],
+            reverse=is_reverse,
+        ))
 
         ids = ingredients.keys()
         Ingredient.objects.filter(product_id__in=ids)
         categories = Ingredient.objects.filter(
             product_id__in=ids
-        ).order_by('category').distinct('category').values('category')
+        ).order_by('category').distinct('category').values('category').order_by('category')
         categories = [cat['category'] for cat in categories]
 
         response = json.dumps({'categories': categories, 'ingredients': ingredients})
