@@ -249,6 +249,7 @@
                                           <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
                                           <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
                                           <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                          <div class="td">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
                                           <div class="children table">
                                             <div class="tbody">
                                               {% for product_level_3 in product_level_2.items.values %}
@@ -259,6 +260,7 @@
                                                     <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
                                                     <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
                                                     <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                    <div class="td">{{ product_level_3.amount_out|floatformat:"-3" }}</div>
                                                     <div class="children table">
                                                       <div class="tbody">
                                                         {% for product_level_4 in product_level_3.items.values %}
@@ -269,6 +271,7 @@
                                                               <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
                                                               <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
                                                               <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                              <div class="td">{{ product_level_4.amount_out|floatformat:"-3" }}</div>
                                                               <div class="children table">
                                                                 <div class="tbody">
                                                                   {% for product_level_5 in product_level_4.items.values %}
@@ -279,6 +282,7 @@
                                                                         <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
                                                                         <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
                                                                         <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                        <div class="td">{{ product_level_5.amount_out|floatformat:"-3" }}</div>
                                                                       </div>
                                                                     {% else %}
                                                                       <div class="tr">
@@ -287,6 +291,7 @@
                                                                         <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
                                                                         <div class="td">{{ product_level_5.amount_in|floatformat:"-3" }}</div>
                                                                         <div class="td">{{ product_level_5.amount_middle|floatformat:"-3" }}</div>
+                                                                        <div class="td">{{ product_level_5.amount_out|floatformat:"-3" }}</div>
                                                                       </div>
                                                                     {% endif %}
                                                                   {% endfor %}
@@ -300,6 +305,7 @@
                                                               <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
                                                               <div class="td">{{ product_level_4.amount_in|floatformat:"-3" }}</div>
                                                               <div class="td">{{ product_level_4.amount_middle|floatformat:"-3" }}</div>
+                                                              <div class="td">{{ product_level_4.amount_out|floatformat:"-3" }}</div>
                                                             </div>
                                                           {% endif %}
                                                         {% endfor %}
@@ -313,6 +319,7 @@
                                                     <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
                                                     <div class="td">{{ product_level_3.amount_in|floatformat:"-3" }}</div>
                                                     <div class="td">{{ product_level_3.amount_middle|floatformat:"-3" }}</div>
+                                                    <div class="td">{{ product_level_3.amount_out|floatformat:"-3" }}</div>
                                                   </div>
                                                 {% endif %}
                                               {% endfor %}
@@ -326,6 +333,7 @@
                                           <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
                                           <div class="td">{{ product_level_2.amount_in|floatformat:"-3" }}</div>
                                           <div class="td">{{ product_level_2.amount_middle|floatformat:"-3" }}</div>
+                                          <div class="td">{{ product_level_2.amount_out|floatformat:"-3" }}</div>
                                         </div>
                                       {% endif %}
                                     {% endfor %}
@@ -340,6 +348,7 @@
                               <div class="td">{{ product_level_1.amount_in|floatformat:"-3" }}</div>
                               <div class="td">{{ product_level_1.amount_middle|floatformat:"-3" }}</div>
                               <div class="td">{{ product_level_1.amount_out|floatformat:"-3" }}</div>
+                              
                             </div>
                           {% endif %}
                         {% endif %}
