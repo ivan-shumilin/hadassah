@@ -273,8 +273,8 @@ def is_categories(ttk, categories):
     return False
 
 
-def add_ingredient(ttk, ingredients, categories):
-    if ttk.status == 'ingredient' and is_categories(ttk, categories):
+def add_ingredient(ttk, ingredients):
+    if ttk.status == 'ingredient':
         if ttk.product_id in ingredients:
             ingredients[ttk.product_id]['amount_in'] =\
                 if_none_get_zero(ingredients[ttk.product_id]['amount_in']) + if_none_get_zero(ttk.amount_in)
@@ -358,31 +358,26 @@ def merger_products(product_main: dict, product_sub: dict) -> dict:
     return product_main
 
 
-def enumeration_ingredients(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77', categories=[]):
+def enumeration_ingredients(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77'):
     """ Перебор всех инредиентов. """
     ingredients: dict = {}
     ttk_main = TTK.objects.filter(product_id=product_id).first()
     ttk_child = TTK.objects.filter(parent_ttk=ttk_main)
 
     for ttk in ttk_child:
-        # print('1- ', ttk.name, ttk.ingredient)
-        add_ingredient(ttk, ingredients, categories)
+        add_ingredient(ttk, ingredients)
         ttk_child_2 = TTK.objects.filter(parent_ttk=ttk)
         for ttk in ttk_child_2:
-            # print('2-- ', ttk.name, ttk.ingredient)
-            add_ingredient(ttk, ingredients, categories)
+            add_ingredient(ttk, ingredients)
             ttk_child_3 = TTK.objects.filter(parent_ttk=ttk)
             for ttk in ttk_child_3:
-                # print('3--- ', ttk.name, ttk.ingredient)
-                add_ingredient(ttk, ingredients, categories)
+                add_ingredient(ttk, ingredients)
                 ttk_child_4 = TTK.objects.filter(parent_ttk=ttk)
                 for ttk in ttk_child_4:
-                    # print('4---- ', ttk.name, ttk.ingredient)
-                    add_ingredient(ttk, ingredients, categories)
+                    add_ingredient(ttk, ingredients)
                     ttk_child_5 = TTK.objects.filter(parent_ttk=ttk)
                     for ttk in ttk_child_5:
-                        add_ingredient(ttk, ingredients, categories)
-                        # print('5----- ', ttk.name, ttk.ingredient)
+                        add_ingredient(ttk, ingredients)
     return ingredients
 
 

@@ -147,8 +147,12 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
                         if cat == 'main':
                             products_cafe[cat_index['main-breakfast']] = []
                     else:
-                        if cat != 'fruit':
-                            products_cafe[cat_index[cat]] = []
+                        try:
+                            if cat != 'fruit':
+                                    products_cafe[cat_index[cat]] = []
+                        except:
+                            pass
+                            print('asdf')
                     for id in id_set:
                         if 'cafe' in id:
                             fix_dishes.append(id)
@@ -159,8 +163,12 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
             else:
             # если в этой категории нет блюд, тогда нужно исключить ее
             # из products_lp и products_cafe
-                excluded_categories_for_lp.append(category_translation[cat])
-                excluded_categories_for_cafe.append(cat)
+                try:
+                    excluded_categories_for_lp.append(category_translation[cat])
+                    excluded_categories_for_cafe.append(cat)
+                except:
+                    pass
+                    print('asdf')
 
         # products_lp = ProductLp.objects.filter(id__in=products_lp)
 

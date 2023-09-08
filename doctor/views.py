@@ -11,11 +11,9 @@ from drf_spectacular.utils import extend_schema_view, extend_schema
 
 from nutritionist.functions.get_ingredients import get_semifinished, get_semifinished_level_1, get_ingredients_for_ttk
 from nutritionist.serializers import GetIngredientsSerializer
-from nutritionist.views import create_catalog_all_products_on_meal, custom_sort
-from scripts.del_product_meny_by_day import delete_or_change_product
 from .forms import PatientRegistrationForm, DietChoiceForm
 from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, BotChatId, СhangesUsersToday, \
-    UsersToday, TimetableLp, Ingredient, MenuByDayReadyOrder, UsersReadyOrder, ModifiedDish, Report
+    UsersToday, TimetableLp, Ingredient, MenuByDayReadyOrder, UsersReadyOrder, ModifiedDish, Report, IngredientСache
 from nutritionist.forms import TimetableForm
 import random, calendar, datetime, logging, json
 from datetime import datetime, date, timedelta
@@ -1347,19 +1345,6 @@ class GetIngredientsAPIView(APIView):
 
         date_create = date.today() + timedelta(days=COUNT_DAYS[filter['date']])
 
-        if filter['filter_field'] == 'alphabet':
-            filter['type'] = 'name'
-            filter['alphabet'] = filter['value'].lower()
-            filter['alphabet_status'] = 'action'
-        elif filter['filter_field'] == 'weight':
-            filter['type'] = 'amount_out'
-            filter['weight'] = filter['value'].lower()
-            filter['weight_status'] = 'action'
-        else:
-            filter['alphabet'] = 'top'
-            filter['weight'] = 'bottom'
-            filter['weight_status'] = 'action'
-            filter['type'] = 'amount_out'
         # if filter['filter_field'] == 'alphabet':
         #     filter['type'] = 'name'
         #     filter['alphabet'] = filter['value'].lower()
@@ -1381,10 +1366,11 @@ class GetIngredientsAPIView(APIView):
         type_order: str = 'flex-order'
         users = UsersToday.objects.all()
 
-        for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-            catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
-
-        ingredients = get_ingredients_for_ttk(catalog, filter['categories'])
+        # for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+        #     catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
+        #
+        # ingredients = get_ingredients_for_ttk(catalog, filter['categories'])
+        ingredients = IngredientСache.objects.filter(day=filter['date']).order_by('create_at').last().ingredient
         is_reverse = False if filter['value'] == 'top' else True
         ingredients = dict(sorted(
             ingredients.items(),

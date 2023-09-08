@@ -15,6 +15,10 @@
         <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
     </head>
     <style>
+      /* .table>:not(caption)>*>* {
+        padding: 0px !important;
+      }
+       */
       .padding-0 {
         padding: 0px !important;
       }
@@ -127,6 +131,26 @@
      <div class="inner container">
         <div class="mr-bm-10">
           <div class="filter">
+            <div id="semifinisheds-button" class="">
+              <span class="filter-item" onclick="changeCategory(
+                'semifinisheds-button',
+                 'ingredients-button',
+                  'ingredients',
+                  'semifinisheds',
+                  )" style="cursor: pointer;">полуфабрикаты</span>
+            </div>
+                                  
+            <div id="ingredients-button" class="">
+                <span class="filter-item" onclick="changeCategory(
+                  'ingredients-button',
+                   'semifinisheds-button',
+                   'semifinisheds',
+                   'ingredients',
+                   )" style="cursor: pointer;">ингредиенты<span>
+            </div>
+          </div>
+
+          <div class="filter">
             <div id="weight" class="{{ filter.weight }} {{ filter.weight_status }}">
               <span class="filter-item" onclick="changeClass('weight', 'alphabet')" style="cursor: pointer;">по весу
                   <img class="icon" width="9" height="9" title="по весу" src="{% static 'doctor/css/img/triangle.svg' %}">
@@ -139,7 +163,7 @@
                 </span>
             </div>
           </div>
-            
+
           <div class="filter">
               <span class="filter-item" style="cursor: pointer;" onclick="showCategories()">выбрать категорию<img id="icon-cat" class="icon-list icon-cat bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть"></span>
                                         
@@ -217,17 +241,14 @@
 
 
             <div class="tbody">
+              <div id='semifinisheds' class="hidden">
               {% if is_have %}                                
                 {% if semifinished_level_1 %}
                   <div onclick="toggleHiddenClassByClass('1', 'icon-print1')" class="td name level-name">
 							    	1-ый уровень вложенности
 							    	<img id="icon-print1" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
 							    </div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
+
 							    <div id="1" class="hidden">
                     {% for product_level_1 in semifinished_level_1.values %}
                       {% if product_level_1.category.id in filter.categories %}
@@ -361,11 +382,6 @@
                     2-ый уровень вложенности
                     <img id="icon-print2" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
                   </div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
                   <div id="2" class="hidden">
                   {% for product_level_1 in semifinished_level_2.values %}
                     {% if product_level_1.category.id in filter.categories %}
@@ -499,15 +515,8 @@
                     3-ый уровень вложенности
                     <img id="icon-print3" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
                   </div> 
-                  <div class="td"></div>
-                  <div class="td weighting"></div>
-                  <div class="td weighting"></div>
-                  <div class="td weighting"></div>
-                  <div class="td weighting"></div>
-                  <div class="td weighting-const hide-item"></div>
-                  <div class="td weighting-const hide-item"></div>
-                  <div class="td weighting-const hide-item"></div>
-                  <div class="td weighting-const hide-item"></div>
+
+
 
 							    <div id="3" class="hidden">
                   {% for product_level_1 in semifinished_level_3.values %}
@@ -641,11 +650,7 @@
                     4-ый уровень вложенности
                     <img id="icon-print4" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
                   </div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
+
                   <div id="4" class="hidden">
                   {% for product_level_1 in semifinished_level_4.values %}
                     {% if product_level_1.category.id in filter.categories %}
@@ -780,11 +785,7 @@
                     5-ый уровень вложенности
                     <img id="icon-print5" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
                   </div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
-                  <div class="td"></div>
+
 
                   <div id="5" class="hidden">
                   {% for product_level_1 in semifinished_level_5.values %}
@@ -916,28 +917,24 @@
   							{% endif %}
               {% else %}
                 <div class="td name level-name grey">Нет п/ф по выбранному фильтру</div>
-                <div class="td"></div>
-                <div class="td"></div>
-                <div class="td"></div>
-                <div class="td"></div>
+
               {% endif %}
-              
-
-              <div id="download-ingredient" onclick="toggleHiddenClassByClass('semifinisheds', 'icon-print6')" class="td name level-name grey">
-                Подсчитываем ингредиенты
-                <img id="" class="padding-0" width="15" height="15" title="Показать/ скрыть" src="{% static 'doctor/css/img/download.svg' %}" alt="Показать/ скрыть">
               </div>
+              
+              <div id="ingredients" class="hidden">
+                <div id="download-ingredient" onclick="toggleHiddenClassByClass('ingredient-list', 'icon-print6')" class="td name level-name grey">
+                  Подсчитываем ингредиенты
+                  <img id="" class="padding-0" width="15" height="15" title="Показать/ скрыть" src="{% static 'doctor/css/img/download.svg' %}" alt="Показать/ скрыть">
+                </div>
 
-							<div id="ingredient" onclick="toggleHiddenClassByClass('semifinisheds', 'icon-print6')" class="hidden td name level-name">
-								Ингредиенты
-								<img id="icon-print6" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
-							</div>
-              <div class="td"></div>
-              <div class="td"></div>
-              <div class="td"></div>
-              <div class="td"></div>
-							<div id="semifinisheds" class="hidden">
-							</div>
+                <div id="ingredient" onclick="toggleHiddenClassByClass('ingredient-list', 'icon-print6')" class="hidden td name level-name">
+                  Ингредиенты
+                  <img id="icon-print6" class="icon-list bottom-list" width="20" height="20" title="Показать/ скрыть" src="{% static 'doctor/css/img/arrow.svg' %}" alt="Показать/ скрыть">
+                </div>
+
+                <div id="ingredient-list" class="hidden">
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -961,7 +958,11 @@ document.getElementById(window.date).classList.add('action')
 window.item1 = document.getElementById('weight');
 window.item2 = document.getElementById('alphabet');
 window.value = '{{ filter.value }}';
-window.type = '{{ filter.type }}'
+window.type = '{{ filter.type }}';
+window.productType = '{{ filter.product_type }}';
+
+document.getElementById(`${window.productType}-button`).classList.add('action')
+document.getElementById(window.productType).classList.remove('hidden')
 
 // #################
 // ## API запросы ##
@@ -992,7 +993,7 @@ async function getIngredients() {
     var obj = JSON.parse(res);
     var obj = JSON.parse(obj);
     console.log('Получили ингредиенты')
-    addSemifinisheds(obj)
+    addIngredientList(obj)
 }
 
 getIngredients()
@@ -1015,6 +1016,20 @@ function changeClass(id1, id2) {
     window.item1.classList.remove('bottom');
     window.value = 'top';
   }
+}
+
+
+function changeCategory(id1, id2, show, noShow) {
+  window.item3 = document.getElementById(id1);
+  window.item4 = document.getElementById(id2);
+
+  window.item3.classList.add('action');
+  window.item4.classList.remove('action');
+
+  window.productType = noShow
+
+  document.getElementById(show).classList.add('hidden');
+  document.getElementById(noShow).classList.remove('hidden');
 }
 
 function changeClass2(id1, id2) {
@@ -1052,13 +1067,13 @@ function reloadPageWithFilter() {
       } 
   });
   console.log(catSet);
-  window.location.href = `{% url 'order' %}?${window.item1.id}=${window.value}&date=${window.date}&categories=${catSet}`;
-  console.log(`{% url 'order' %}?${window.item1.id}=${window.value}&date=${window.date}&categories=${catSet}`);
+  window.location.href = `{% url 'order' %}?product_type=${window.productType}&${window.item1.id}=${window.value}&date=${window.date}&categories=${catSet}`;
+  console.log(`{% url 'order' %}?product_type=${window.productType}&${window.item1.id}=${window.value}&date=${window.date}&categories=${catSet}`);
 }
 
 // вывод ингредиентов
-function addSemifinisheds(obj) {
-    let semifinisheds = document.getElementById('semifinisheds');
+function addIngredientList(obj) {
+    let ingredientList = document.getElementById('ingredient-list');
     let result = "";
     result += `<div class="tbody">`;
     var count = 0
@@ -1087,7 +1102,7 @@ function addSemifinisheds(obj) {
       result += `</div>`
     }
     result += `</div>`
-    semifinisheds.insertAdjacentHTML("afterbegin", result);
+    ingredientList.insertAdjacentHTML("afterbegin", result);
     document.getElementById('download-ingredient').classList.add('hidden');
     document.getElementById('ingredient').classList.remove('hidden');
 }

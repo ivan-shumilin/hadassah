@@ -4,12 +4,14 @@ from celery import shared_task
 import telepot
 from datetime import datetime
 
+from nutritionist.functions.get_ingredients import caching_ingredients
 from nutritionist.functions.report import create_external_report, create_external_report_detailing, get_report
 from nutritionist.models import BotChatId, CustomUser, MenuByDay, UsersReadyOrder, Report, IsReportCreate
 from doctor.functions.diet_formation import add_menu_three_days_ahead, update_diet_bd
 from doctor.functions.for_print_forms import create_user_today, applies_changes, create_user_tomorrow,\
     create_ready_order, create_report, create_product_storage
 from doctor.functions.bot import check_change, formatting_full_name
+# from scripts.caching_ttk_and_ingredients import caching_ingredients
 from scripts.updata_ttk import update_ttk
 
 
@@ -174,3 +176,7 @@ def create_report_download(date_start, date_finish, id):
 @shared_task()
 def my_job_updata_ttk():
     update_ttk()
+
+@shared_task()
+def may_job_updata_cache():
+    caching_ingredients()

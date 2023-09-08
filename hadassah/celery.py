@@ -92,6 +92,11 @@ app.conf.beat_schedule = {
         'task': 'doctor.tasks.my_job_updata_ttk',
         'schedule': crontab(minute=1, hour='1'),
     },
+# кеширеум ингредиеты и ттк
+    'my_job_updata_ttk': {
+        'task': 'doctor.tasks.may_job_updata_cache',
+        'schedule': crontab(minute='*/15'),
+    },
 }
 app.conf.timezone = 'Europe/Moscow'
 app.autodiscover_tasks()

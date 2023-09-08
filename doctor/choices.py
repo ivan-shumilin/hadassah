@@ -151,3 +151,8 @@ MEALS = (
     ('afternoon', 'afternoon'),
     ('dinner', 'dinner'),
 )
+
+DAYS = (
+    ('tomorrow', 'tomorrow'),
+    ('after-tomorrow', 'after-tomorrow'),
+)

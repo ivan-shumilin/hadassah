@@ -126,7 +126,6 @@ def create_composition_from_ttk(ttk):
 
 def description_parsing(id):
     """ По product_id парсим состав блюда """
-    # получаем ТТК до 5ого уровня.
     try:
         ttk = get_ttk(id)
         compileall = create_composition_from_ttk(ttk)
