@@ -18,8 +18,9 @@ from doctor.functions.download import get_tk, get_name_by_api, get_allergens, ge
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal
 from doctor.tasks import create_report_download
 from .functions.ttk import create_all_ttk
-from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, UsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, \
-    IsReportCreate
+from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, UsersToday, UsersReadyOrder, \
+    MenuByDayReadyOrder, Report, \
+    IsReportCreate, AllProductСache
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import DownloadReportSerializer
 from rest_framework.response import Response
@@ -1497,7 +1498,7 @@ def all_order_by_ingredients(request):
     values: tuple = ['top', 'bottom']
     filter['date'] = request.GET.get('date', 'tomorrow').lower()
     filter['categories'] = request.GET.get('categories', '').strip(';').split(';')
-    print('==========================', filter['categories'])
+
     if filter['date'] == 'tomorrow':
         day_count = 1
     elif filter['date'] == 'after-tomorrow':
@@ -1524,21 +1525,7 @@ def all_order_by_ingredients(request):
 
     filter['product_type'] = request.GET.get('product_type', 'semifinisheds')
 
-    print("filter['type'] ========> ", filter['type'])
-    print("filter['value'] ========> ", filter['value'])
-
-
-
-    meal: str
-    day: str
-    catalog: dict = {}
-    is_public = False  # выводим технические названия блюд, не публичные
-    type_order: str = 'flex-order'
-    users = UsersToday.objects.all()
-
-    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-        catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
-
+    catalog = AllProductСache.objects.filter(day=filter['date']).order_by('create_at').last().all_product
     categories_all: list = []
     semifinished_level_0, categories_all = get_semifinished(
         catalog,

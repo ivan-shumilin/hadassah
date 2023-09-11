@@ -689,3 +689,15 @@ class IngredientСache(models.Model):
 
     def __str__(self):
         return f"IngredientСache {self.create_at} {self.day}"
+
+
+class AllProductСache(models.Model):
+    all_product = models.JSONField()
+    create_at = models.DateTimeField(auto_now_add=True, blank=True)
+    day = models.CharField(max_length=30,
+                              choices=DAYS,
+                              blank=True,
+                              default='',)
+
+    def __str__(self):
+        return f"All products {self.create_at} {self.day}"

@@ -1,6 +1,6 @@
 from nutritionist.functions.ttk import enumeration_ingredients, add_ingredient_for_dict, enumeration_semifinisheds, \
     merger_products
-from nutritionist.models import UsersToday, IngredientСache
+from nutritionist.models import UsersToday, IngredientСache, AllProductСache
 
 
 def get_ingredients_for_ttk(catalog):
@@ -97,6 +97,10 @@ def caching_ingredients():
             )
         except:
             logging.error(f'Ошибка в записи ингредиетов в КЕШ')
+        AllProductСache.objects.create(
+            all_product=catalog,
+            day=day,
+        )
 
 
 from doctor.functions.functions import check_value_two, add_features
