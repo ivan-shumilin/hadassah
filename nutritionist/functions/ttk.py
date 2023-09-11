@@ -284,12 +284,14 @@ def add_ingredient(ttk, ingredients):
                 if_none_get_zero(ingredients[ttk.product_id]['amount_out']) + if_none_get_zero(ttk.amount_out)
 
         else:
+            category = get_ingredient_category(ttk)
             ingredients[ttk.product_id] = {
                 'measure_unit': ttk.measure_unit,
                 'name': ttk.name,
                 'amount_in': if_none_get_zero(ttk.amount_in),
                 'amount_middle': if_none_get_zero(ttk.amount_middle),
                 'amount_out': if_none_get_zero(ttk.amount_out),
+                'category': category.get('id', '0')
             }
 
 
@@ -306,6 +308,7 @@ def add_ingredient_for_dict(ttk, ingredients):
             'amount_in': data['amount_in'],
             'amount_middle': data['amount_middle'],
             'amount_out': data['amount_out'],
+            'category': data['category'],
          }
 
 

@@ -1334,57 +1334,20 @@ class GetIngredientsAPIView(APIView):
         lst = string[1:-1].split(', ')
         filter['categories'] = lst
 
-        print(" get_ingredients ")
-        print("filter['filter_field'] ========> ", filter['filter_field'])
-        print("filter['value'] ========> ", filter['value'])
-
-        COUNT_DAYS: dict = {
-            'tomorrow': 1,
-            'after-tomorrow': 2,
-        }
-
-        date_create = date.today() + timedelta(days=COUNT_DAYS[filter['date']])
-
-        # if filter['filter_field'] == 'alphabet':
-        #     filter['type'] = 'name'
-        #     filter['alphabet'] = filter['value'].lower()
-        #     filter['alphabet_status'] = 'action'
-        # elif filter['filter_field'] == 'weight':
-        #     filter['type'] = 'amount_out'
-        #     filter['weight'] = filter['value'].lower()
-        #     filter['weight_status'] = 'action'
-        # else:
-        #     filter['alphabet'] = 'top'
-        #     filter['weight'] = 'bottom'
-        #     filter['weight_status'] = 'action'
-        #     filter['type'] = 'amount_out'
-
-        meal: str
-        day: str
-        catalog: dict = {}
-        is_public = False  # выводим технические названия блюд, не публичные
-        type_order: str = 'flex-order'
-        users = UsersToday.objects.all()
-
-        # for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-        #     catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
-        #
-        # ingredients = get_ingredients_for_ttk(catalog, filter['categories'])
-        ingredients = IngredientСache.objects.filter(day=filter['date']).order_by('create_at').last().ingredient
+        ingredients_all = IngredientСache.objects.filter(day=filter['date']).order_by('create_at').last().ingredient
+        ingredients: dict = {}
         is_reverse = False if filter['value'] == 'top' else True
+        for key, value in ingredients_all.items():
+            if value['category'] in filter['categories']:
+                ingredients[key] = value
+
         ingredients = dict(sorted(
             ingredients.items(),
             key=lambda x: x[1][filter['filter_field']],
             reverse=is_reverse,
         ))
 
-        ids = ingredients.keys()
-        Ingredient.objects.filter(product_id__in=ids)
-        categories = Ingredient.objects.filter(
-            product_id__in=ids
-        ).order_by('category').distinct('category').values('category').order_by('category')
-        categories = [cat['category'] for cat in categories]
-
+        categories = None
         response = json.dumps({'categories': categories, 'ingredients': ingredients})
 
         return Response(response)
