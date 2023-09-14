@@ -365,6 +365,8 @@ def enumeration_ingredients(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77'):
     """ Перебор всех инредиентов. """
     ingredients: dict = {}
     ttk_main = TTK.objects.filter(product_id=product_id).first()
+    if ttk_main == None:
+        return {}
     ttk_child = TTK.objects.filter(parent_ttk=ttk_main)
 
     for ttk in ttk_child:

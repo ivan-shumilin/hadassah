@@ -9,7 +9,8 @@ from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput, CheckboxInput
 from drf_spectacular.utils import extend_schema_view, extend_schema
 
-from nutritionist.functions.get_ingredients import get_semifinished, get_semifinished_level_1, get_ingredients_for_ttk
+from nutritionist.functions.get_ingredients import get_semifinished, get_semifinished_level_1, get_ingredients_for_ttk, \
+    caching_ingredients
 from nutritionist.serializers import GetIngredientsSerializer
 from .forms import PatientRegistrationForm, DietChoiceForm
 from nutritionist.models import CustomUser, Product, Timetable, ProductLp, MenuByDay, BotChatId, СhangesUsersToday, \
@@ -1351,3 +1352,9 @@ class GetIngredientsAPIView(APIView):
         response = json.dumps({'categories': categories, 'ingredients': ingredients})
 
         return Response(response)
+
+
+class testAPIView(APIView):
+    def get(self, request):
+        caching_ingredients()
+        return Response({'status': 'OK'})

@@ -3,6 +3,27 @@ from nutritionist.functions.ttk import enumeration_ingredients, add_ingredient_f
 from nutritionist.models import UsersToday, IngredientСache, AllProductСache
 
 
+def multiply_by_quantity(ingredients, count):
+    """
+    Умножаем ингредиенты на вес.
+    """
+    for ingredient in ingredients.values():
+        ingredient['amount_in'] *= count
+        ingredient['amount_middle'] *= count
+        ingredient['amount_out'] *= count
+    return ingredients
+
+
+def get_count(product=None) -> int:
+    if product is None:
+        product = {}
+    try:
+        count: int = int(product.get('count', 0))
+    except:
+        count: int = 0
+    return count
+
+
 def get_ingredients_for_ttk(catalog):
     """
     Составляем список всех ингредиетов в заказе.
@@ -12,13 +33,22 @@ def get_ingredients_for_ttk(catalog):
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink', 'products']:
             for product in catalog[meal][category]:
-                if product:
+                if product and product.get('category', None) != 'товар':
                     if product.get('product_id', None):
+                        # делаем иерархию ТТК плоской
                         sub_ingredients: dict = enumeration_ingredients(
                             product['product_id'],
                         )
+                        # увеличиваем вес с учетом кол-ва блюд
+                        count: int = get_count(product)
+                        sub_ingredients = multiply_by_quantity(sub_ingredients, count)
+                        # обьединяем ингредиеты
+                        for sub_ingredient in sub_ingredients.items():
+                            add_ingredient_for_dict(sub_ingredient, ingredients)
+
                     else:
                         print(f'нет product_id, {product["name"]}')
+
                     # добавляем sub_ingredients в ingredients
                     for sub_ingredient in sub_ingredients.items():
                         add_ingredient_for_dict(sub_ingredient, ingredients)
@@ -34,7 +64,7 @@ def get_semifinished(catalog: dict, categories_all: set) -> dict:
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         for category in ['porridge', 'salad', 'soup', 'main', 'garnish', 'dessert', 'fruit', 'drink', 'products']:
             for product in catalog[meal][category]:
-                if product:
+                if product and product.get('category', None) != 'товар':
                     if product.get('product_id', None):
                         semifinisheds[product['product_id']], categories_all = enumeration_semifinisheds(
                             product['product_id'],
