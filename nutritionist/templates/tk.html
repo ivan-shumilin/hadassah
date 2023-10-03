@@ -84,53 +84,168 @@
                                 </div>
                             </div>
                             <div class="tbody">
-                                {% for ing1 in result.items %}
-                                    {% if ing1.items %}
-                                        <div class="tr parent">
-                                            <div class="td name">{{ ing1.name }}</div>
-                                            <div class="td">{{ ing1.measure_unit }}</div>
-                                            <div class="td weighting">{{ ing1.amountIn }}</div>
-                                            <div class="td weighting">{{ ing1.amountIn }}</div>
-                                            <div class="td weighting">{{ ing1.amountMiddle }}</div>
-                                            <div class="td weighting">{{ ing1.amountOut }}</div>
-                                            <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
-                                            <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
-                                            <div class="td weighting-const hide-item">{{ ing1.amountMiddle }}</div>
-                                            <div class="td weighting-const hide-item">{{ ing1.amountOut }}</div>
-                                                <div class="children table">
-                                                    <div class="tbody">
-                                                        {% for ing2 in ing1.items %}
-                                                            <div class="tr">
-                                                                <div class="td name">{{ ing2.name }}</div>
-                                                                <div class="td">{{ ing2.measure_unit }}</div>
-                                                                <div class="td weighting">{{ ing2.amountIn }}</div>
-                                                                <div class="td weighting">{{ ing2.amountIn }}</div>
-                                                                <div class="td weighting">{{ ing2.amountMiddle }}</div>
-                                                                <div class="td weighting">{{ ing2.amountOut }}</div>
-                                                                <div class="td weighting-const hide-item">{{ ing2.amountIn }}</div>
-                                                                <div class="td weighting-const hide-item">{{ ing2.amountIn }}</div>
-                                                                <div class="td weighting-const hide-item">{{ ing2.amountMiddle }}</div>
-                                                                <div class="td weighting-const hide-item">{{ ing2.amountOut }}</div>
+                                {% for product_level_1 in result.items.values %}
+                                  {% if product_level_1.items %}
+                                      <div class="tr parent">
+                                        <div class="td name">{{ product_level_1.name }}</div>
+                                        <div class="td">{{ product_level_1.measure_unit }}</div>
+                                        <div class="td weighting">{{ product_level_1.amount_in }}</div>
+                                        <div class="td weighting">{{ product_level_1.amount_in }}</div>
+                                        <div class="td weighting">{{ product_level_1.amount_middle }}</div>
+                                        <div class="td weighting">{{ product_level_1.amount_out }}</div>
+                                        <div class="td weighting-const hide-item">{{ product_level_1.amount_in }}</div>
+                                        <div class="td weighting-const hide-item">{{ product_level_1.amount_in }}</div>
+                                        <div class="td weighting-const hide-item">{{ product_level_1.amount_middle }}</div>
+                                        <div class="td weighting-const hide-item">{{ product_level_1.amount_out }}</div>
+                                        <div class="children table">
+                                          <div class="tbody">
+                                              {% for product_level_2 in product_level_1.items.values %}
+                                                {% if product_level_2.items %}
+                                                  <div class="tr parent">
+                                                    <div class="td name">{{ product_level_2.name }}</div>
+                                                    <div class="td">{{ product_level_2.measure_unit }}</div>
+                                                    <div class="td weighting">{{ product_level_2.amount_in }}</div>
+                                                    <div class="td weighting">{{ product_level_2.amount_in }}</div>
+                                                    <div class="td weighting">{{ product_level_2.amount_middle }}</div>
+                                                    <div class="td weighting">{{ product_level_2.amount_out }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_2.amount_in }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_2.amount_in }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_2.amount_middle }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_2.amount_out }}</div>
+                                                    <div class="children table">
+                                                      <div class="tbody">
+                                                        {% for product_level_3 in product_level_2.items.values %}
+                                                          {% if product_level_3.items %}
+                                                            <div class="tr parent">
+                                                              <div class="td name">{{ product_level_3.name }}</div>
+                                                              <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                              <div class="td weighting">{{ product_level_3.amount_in }}</div>
+                                                              <div class="td weighting">{{ product_level_3.amount_in }}</div>
+                                                              <div class="td weighting">{{ product_level_3.amount_middle }}</div>
+                                                              <div class="td weighting">{{ product_level_3.amount_out }}</div>
+                                                              <div class="td weighting-const hide-item">{{ product_level_3.amount_in }}</div>
+                                                              <div class="td weighting-const hide-item">{{ product_level_3.amount_in }}</div>
+                                                              <div class="td weighting-const hide-item">{{ product_level_3.amount_middle }}</div>
+                                                              <div class="td weighting-const hide-item">{{ product_level_3.amount_out }}</div>
+                                                              <div class="children table">
+                                                                <div class="tbody">
+                                                                  {% for product_level_4 in product_level_3.items.values %}
+                                                                    {% if product_level_4.items %}
+                                                                      <div class="tr parent">
+                                                                        <div class="td name">{{ product_level_4.name }}</div>
+                                                                        <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                                        <div class="td weighting">{{ product_level_4.amount_in }}</div>
+                                                                        <div class="td weighting">{{ product_level_4.amount_in }}</div>
+                                                                        <div class="td weighting">{{ product_level_4.amount_middle }}</div>
+                                                                        <div class="td weighting">{{ product_level_4.amount_out }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_4.amount_in }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_4.amount_in }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_4.amount_middle }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_4.amount_out }}</div>
+                                                                        <div class="children table">
+                                                                          <div class="tbody">
+                                                                            {% for product_level_5 in product_level_4.items.values %}
+                                                                              {% if product_level_5.items %}
+                                                                                <div class="tr">
+                                                                                  <div class="td name">{{ product_level_5.name }}</div>
+                                                                                  <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                                  <div class="td weighting">{{ product_level_5.amount_in }}</div>
+                                                                                  <div class="td weighting">{{ product_level_5.amount_in }}</div>
+                                                                                  <div class="td weighting">{{ product_level_5.amount_middle }}</div>
+                                                                                  <div class="td weighting">{{ product_level_5.amount_out }}</div>
+                                                                                  <div class="td weighting-const hide-item">{{ product_level_5.amount_in }}</div>
+                                                                                  <div class="td weighting-const hide-item">{{ product_level_5.amount_in }}</div>
+                                                                                  <div class="td weighting-const hide-item">{{ product_level_5.amount_middle }}</div>
+                                                                                  <div class="td weighting-const hide-item">{{ product_level_5.amount_out }}</div>
+                                                                                </div>
+                                                                              {% else %}
+                                                                                <div class="tr">
+                                                                                  <div class="td name">{{ product_level_5.name }}</div>
+                                                                                  <div class="td">{{ product_level_5.measure_unit }}</div>
+                                                                                  <div class="td weighting">{{ product_level_5.amount_in }}</div>
+                                                                                  <div class="td weighting">{{ product_level_5.amount_in }}</div>
+                                                                                  <div class="td weighting">{{ product_level_5.amount_middle }}</div>
+                                                                                  <div class="td weighting">{{ product_level_5.amount_out }}</div>
+                                                                                  <div class="td weighting-const hide-item">{{ product_level_5.amount_in }}</div>
+                                                                                  <div class="td weighting-const hide-item">{{ product_level_5.amount_in }}</div>
+                                                                                  <div class="td weighting-const hide-item">{{ product_level_5.amount_middle }}</div>
+                                                                                  <div class="td weighting-const hide-item">{{ product_level_5.amount_out }}</div>
+                                                                                </div>
+                                                                              {% endif %}
+                                                                            {% endfor %}
+                                                                          </div>
+                                                                        </div>                                                    
+                                                                      </div>
+                                                                    {% else %}
+                                                                      <div class="tr">
+                                                                        <div class="td name">{{ product_level_4.name }}</div>
+                                                                        <div class="td">{{ product_level_4.measure_unit }}</div>
+                                                                        <div class="td weighting">{{ product_level_4.amount_in }}</div>
+                                                                        <div class="td weighting">{{ product_level_4.amount_in }}</div>
+                                                                        <div class="td weighting">{{ product_level_4.amount_middle }}</div>
+                                                                        <div class="td weighting">{{ product_level_4.amount_out }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_4.amount_in }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_4.amount_in }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_4.amount_middle }}</div>
+                                                                        <div class="td weighting-const hide-item">{{ product_level_4.amount_out }}</div>
+                                                                      </div>
+                                                                    {% endif %}
+                                                                  {% endfor %}
+                                                                </div>
+                                                              </div>                                                    
                                                             </div>
+                                                          {% else %}
+                                                            <div class="tr">
+                                                              <div class="td name">{{ product_level_3.name }}</div>
+                                                              <div class="td">{{ product_level_3.measure_unit }}</div>
+                                                              <div class="td weighting">{{ product_level_3.amount_in }}</div>
+                                                              <div class="td weighting">{{ product_level_3.amount_in }}</div>
+                                                              <div class="td weighting">{{ product_level_3.amount_middle }}</div>
+                                                              <div class="td weighting">{{ product_level_3.amount_out }}</div>
+                                                              <div class="td weighting-const hide-item">{{ product_level_3.amount_in }}</div>
+                                                              <div class="td weighting-const hide-item">{{ product_level_3.amount_in }}</div>
+                                                              <div class="td weighting-const hide-item">{{ product_level_3.amount_middle }}</div>
+                                                              <div class="td weighting-const hide-item">{{ product_level_3.amount_out }}</div>
+                                                            </div>
+                                                          {% endif %}
                                                         {% endfor %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                    {% else %}
-                                        <div class="tr">
-                                            <div class="td name">{{ ing1.name }}</div>
-                                            <div class="td">{{ ing1.measure_unit }}</div>
-                                            <div class="td weighting">{{ ing1.amountIn }}</div>
-                                            <div class="td weighting">{{ ing1.amountIn }}</div>
-                                            <div class="td weighting">{{ ing1.amountMiddle }}</div>
-                                            <div class="td weighting">{{ ing1.amountOut }}</div>
-                                            <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
-                                            <div class="td weighting-const hide-item">{{ ing1.amountIn }}</div>
-                                            <div class="td weighting-const hide-item">{{ ing1.amountMiddle }}</div>
-                                            <div class="td weighting-const hide-item">{{ ing1.amountOut }}</div>
+                                                      </div>
+                                                    </div>                                                    
+                                                  </div>
+                                                {% else %}
+                                                  <div class="tr">
+                                                    <div class="td name">{{ product_level_2.name }}</div>
+                                                    <div class="td">{{ product_level_2.measure_unit }}</div>
+                                                    <div class="td weighting">{{ product_level_2.amount_in }}</div>
+                                                    <div class="td weighting">{{ product_level_2.amount_in }}</div>
+                                                    <div class="td weighting">{{ product_level_2.amount_middle }}</div>
+                                                    <div class="td weighting">{{ product_level_2.amount_out }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_2.amount_in }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_2.amount_in }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_2.amount_middle }}</div>
+                                                    <div class="td weighting-const hide-item">{{ product_level_2.amount_out }}</div>
+                                                  </div>
+                                                {% endif %}
+                                              {% endfor %}
+                                          </div>
                                         </div>
+                                      </div>
+                                    {% else %}
+                                      <div class="tr">
+                                        <div class="td name">{{ product_level_1.name }}</div>
+                                        <div class="td">{{ product_level_1.measure_unit }}</div>
+                                        <div class="td weighting">{{ product_level_1.amount_in }}</div>
+                                        <div class="td weighting">{{ product_level_1.amount_in }}</div>
+                                        <div class="td weighting">{{ product_level_1.amount_middle }}</div>
+                                        <div class="td weighting">{{ product_level_1.amount_out }}</div>
+                                        <div class="td weighting-const hide-item">{{ product_level_1.amount_in }}</div>
+                                        <div class="td weighting-const hide-item">{{ product_level_1.amount_in }}</div>
+                                        <div class="td weighting-const hide-item">{{ product_level_1.amount_middle }}</div>
+                                        <div class="td weighting-const hide-item">{{ product_level_1.amount_out }}</div>
+                                        
+                                      </div>
                                     {% endif %}
-                                {% endfor %}
+                              {% endfor %}
                             
                         </div>
                     </div>
@@ -189,7 +304,7 @@ for (var iiiiii = 0; iiiiii < listWeight.length; iiiiii++) {
 function inputEnter() {
     let count = document.getElementById('count').value
     let weight = document.getElementById('weight-const').value
-    document.getElementById('weight').value = weight * count
+    document.getElementById('weight').value = weight * count * 1000
     let listWeight = document.querySelectorAll('.weighting')
     let listWeightConst = document.querySelectorAll('.weighting-const')
     for (var iiiiii = 0; iiiiii < listWeight.length; iiiiii++) {

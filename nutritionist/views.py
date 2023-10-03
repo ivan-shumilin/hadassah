@@ -17,10 +17,10 @@ from doctor.functions.download import get_tk, get_name_by_api, get_allergens, ge
     get_measure_unit
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal
 from doctor.tasks import create_report_download
-from .functions.ttk import create_all_ttk
+from .functions.ttk import create_all_ttk, enumeration_semifinisheds, get_tree_ttk
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, UsersToday, UsersReadyOrder, \
     MenuByDayReadyOrder, Report, \
-    IsReportCreate, AllProductСache
+    IsReportCreate, AllProductСache, Ingredient
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import DownloadReportSerializer
 from rest_framework.response import Response
@@ -1338,6 +1338,7 @@ def printed_form_two_cafe_new(request):
 
 def get_processed_tk(id: str, count: int):
     """
+    По API.
     Получаем тех. карту и обрабатываем ее.
     Переводим в словарь
     """
@@ -1431,21 +1432,38 @@ def get_processed_tk(id: str, count: int):
 
 
 def tk(request, id, count):
-    create_all_ttk('3f068548-6130-42e0-85d2-9329034fff4c')
-    # create_all_ttk('15918a36-734e-4f59-820c-1cd6a33d4e77')
-    # create_all_ttk('462db549-a324-4b8f-8316-0ffefbb30d57')
     """
     Отображение тех. карты для блюда.
     """
     count: int = int(count) + 2 if count != '0' else 1  # сутчная проба и бракераж
 
-    result, error, weight = get_processed_tk(id, count)
-
-
+    # по апи
+    # result, error, weight = get_processed_tk(id, count)
+    
+    # из базы
     try:
-        img = ProductLp.objects.filter(product_id=id).first().image
+        result, error = get_tree_ttk(id, count, [])
     except:
+        result = "Нет данных"
+
+    if result != "Нет данных":
+        # получаем итоговый вес
+        i = Ingredient.objects.filter(product_id=id).first()
+        weight = getattr(i, 'weight', 0)
+        result['weight'] = weight
+        weight = count * weight * 1000
+
+        result['technologyDescription'] = getattr(i, 'technologyDescription', "Отсутствует")
+
+        try:
+            img = ProductLp.objects.filter(product_id=id).first().image
+        except:
+            img = None
+    else:
+        weight = 0
         img = None
+        error = "Нет данных"
+
 
     data = {
         'img': img,

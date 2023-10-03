@@ -520,6 +520,90 @@ def enumeration_semifinisheds(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77',
     return semifinisheds, categories_all
 
 
+def get_tree_ttk(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77', count=1, categories_all=[]):
+    """
+    Проходим по всем уровням ТТК
+    """
+    ttk_main = TTK.objects.filter(product_id=product_id).first()
+    if not ttk_main:
+        print(f'Для продукта с product_id {product_id} не существует TTK')
+        return None, categories_all
+
+    ttk_child = TTK.objects.filter(parent_ttk=ttk_main)
+
+    semifinisheds: dict = {
+            'name': ttk_main.name,
+            'measure_unit': ttk_main.measure_unit,
+            'amount_in': if_none_get_zero(ttk_main.amount_in),
+            'amount_middle': if_none_get_zero(ttk_main.amount_middle),
+            'amount_out': if_none_get_zero(ttk_main.amount_out),
+            'status': ttk_main.status,
+            'items': {},
+
+    }
+
+    for ttk1 in ttk_child:
+        level1 = semifinisheds['items']
+        level1[ttk1.product_id] = {
+                'name': ttk1.name,
+                'measure_unit': ttk1.measure_unit,
+                'amount_in': if_none_get_zero(ttk1.amount_in),
+                'amount_middle': if_none_get_zero(ttk1.amount_middle),
+                'amount_out': if_none_get_zero(ttk1.amount_out),
+                'status': ttk1.status,
+                'items': {},
+        }
+        ttk_child_2 = TTK.objects.filter(parent_ttk=ttk1)
+        for ttk2 in ttk_child_2:
+            level2 = level1[ttk1.product_id]['items']
+            level2[ttk2.product_id] = {
+                'name': ttk2.name,
+                'measure_unit': ttk2.measure_unit,
+                'amount_in': if_none_get_zero(ttk2.amount_in),
+                'amount_middle': if_none_get_zero(ttk2.amount_middle),
+                'amount_out': if_none_get_zero(ttk2.amount_out),
+                'status': ttk2.status,
+                'items': {},
+            }
+            ttk_child_3 = TTK.objects.filter(parent_ttk=ttk2)
+            for ttk3 in ttk_child_3:
+                level3 = level2[ttk2.product_id]['items']
+                level3[ttk3.product_id] = {
+                    'name': ttk3.name,
+                    'measure_unit': ttk3.measure_unit,
+                    'amount_in': if_none_get_zero(ttk3.amount_in),
+                    'amount_middle': if_none_get_zero(ttk3.amount_middle),
+                    'amount_out': if_none_get_zero(ttk3.amount_out),
+                    'status': ttk3.status,
+                    'items': {},
+                }
+                ttk_child_4 = TTK.objects.filter(parent_ttk=ttk3)
+                for ttk4 in ttk_child_4:
+                    level4 = level3[ttk3.product_id]['items']
+                    level4[ttk3.product_id] = {
+                        'name': ttk4.name,
+                        'measure_unit': ttk4.measure_unit,
+                        'amount_in': if_none_get_zero(ttk4.amount_in),
+                        'amount_middle': if_none_get_zero(ttk4.amount_middle) * c,
+                        'amount_out': if_none_get_zero(ttk4.amount_out),
+                        'status': ttk4.status,
+                        'items': {},
+                    }
+                    ttk_child_5 = TTK.objects.filter(parent_ttk=ttk4)
+                    for ttk5 in ttk_child_5:
+                        level5 = level4[ttk4.product_id]['items']
+                        level5[ttk5.product_id] = {
+                            'name': ttk5.name,
+                            'measure_unit': ttk5.measure_unit,
+                            'amount_in': if_none_get_zero(ttk5.amount_in),
+                            'amount_middle': if_none_get_zero(ttk5.amount_middle),
+                            'amount_out': if_none_get_zero(ttk5.amount_out),
+                            'status': ttk5.status,
+                            'items': {},
+                        }
+    return semifinisheds, categories_all
+
+
 def write_ttk_in_bd():
     """
     Записывает ТТК в базу данных.
