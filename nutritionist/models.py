@@ -694,7 +694,7 @@ class IngredientСache(models.Model):
 class AllProductСache(models.Model):
     all_product = models.JSONField()
     create_at = models.DateTimeField(auto_now_add=True, blank=True)
-    day = models.CharField(max_length=30,
+    day = models.CharField(max_length=31,
                               choices=DAYS,
                               blank=True,
                               default='',)

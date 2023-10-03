@@ -37,6 +37,11 @@ def create_backup():
                                 'nutritionist.report',
                                 'nutritionist.productstorage',
                                 'nutritionist.ingredient',
+                                'nutritionist.allproductcache',
+                                'nutritionist.ingredientcache',
+                                'nutritionist.ttk',
+                                'nutritionist.isreportcreate',
+                                'nutritionist.token',
                                 'auth.group',
                                 stdout=outfile)
 
