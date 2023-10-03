@@ -23,27 +23,29 @@ headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Au
 def create_backup():
     name = str(date.today()) + '.json'
     with open(name, 'w', encoding='utf-8') as outfile:
-        management.call_command('dumpdata',
-                                'nutritionist.product',
-                                'nutritionist.timetable',
-                                'nutritionist.productlp',
-                                'nutritionist.timetablelp',
-                                'nutritionist.customuser',
-                                'nutritionist.userstoday',
-                                'nutritionist.menubyday',
-                                'nutritionist.usersreadyorder',
-                                'nutritionist.menubydayreadyorder',
-                                'nutritionist.commentproduct',
-                                'nutritionist.report',
-                                'nutritionist.productstorage',
-                                'nutritionist.ingredient',
-                                'nutritionist.allproductcache',
-                                'nutritionist.ingredientcache',
-                                'nutritionist.ttk',
-                                'nutritionist.isreportcreate',
-                                'nutritionist.token',
-                                'auth.group',
-                                stdout=outfile)
+        pass
+    management.call_command('dumpdata',
+                            'nutritionist.product',
+                            'nutritionist.timetable',
+                            'nutritionist.productlp',
+                            'nutritionist.timetablelp',
+                            'nutritionist.customuser',
+                            'nutritionist.userstoday',
+                            'nutritionist.menubyday',
+                            'nutritionist.usersreadyorder',
+                            'nutritionist.menubydayreadyorder',
+                            'nutritionist.commentproduct',
+                            'nutritionist.report',
+                            'nutritionist.productstorage',
+                            'nutritionist.ingredient',
+                            'nutritionist.token',
+                            'nutritionist.modifieddish',
+                            'nutritionist.isreportcreate',
+                            'nutritionist.ttk',
+                            'nutritionist.ingredientcache',
+                            'nutritionist.allproductcache',
+                            'auth.group',
+                            stdout=outfile)
 
 
 def create_folder(path):
