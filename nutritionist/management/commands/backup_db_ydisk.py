@@ -37,6 +37,7 @@ def create_backup():
                                 'nutritionist.report',
                                 'nutritionist.productstorage',
                                 'nutritionist.ingredient',
+                                'nutritionist.ttk',
                                 'auth.group',
                                 stdout=outfile)
 
