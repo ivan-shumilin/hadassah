@@ -11,7 +11,7 @@ from django.utils.safestring import mark_safe
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp, MenuByDay, Barcodes, CommentProduct, \
     BotChatId, UsersToday, СhangesUsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage, Ingredient, \
-    ModifiedDish
+    ModifiedDish, TTK
 
 admin.site.register(Base)
 
@@ -197,4 +197,11 @@ admin.site.register(CustomUser, CustomUserAdmin)
 class ModifiedDishAdmin(admin.ModelAdmin):
     list_display = ('product_id', 'date', 'meal', 'user_id', 'status')
     fields = ('product_id', 'date', 'meal', 'user_id', 'status')
+    list_per_page = 600
+
+
+@admin.register(TTK)
+class TTKAdmin(admin.ModelAdmin):
+    list_display = ('measure_unit', 'product_id', 'name', 'create_at', 'parent_ttk', 'amount_in', 'amount_middle', 'amount_out', 'ingredient', 'status')
+    fields = ('measure_unit', 'product_id', 'name', 'create_at', 'parent_ttk', 'amount_in', 'amount_middle', 'amount_out', 'ingredient', 'status')
     list_per_page = 600
