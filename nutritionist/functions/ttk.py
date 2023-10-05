@@ -584,7 +584,7 @@ def get_tree_ttk(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77', count=1, cat
                         'name': ttk4.name,
                         'measure_unit': ttk4.measure_unit,
                         'amount_in': if_none_get_zero(ttk4.amount_in),
-                        'amount_middle': if_none_get_zero(ttk4.amount_middle) * c,
+                        'amount_middle': if_none_get_zero(ttk4.amount_middle),
                         'amount_out': if_none_get_zero(ttk4.amount_out),
                         'status': ttk4.status,
                         'items': {},
