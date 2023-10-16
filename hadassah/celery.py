@@ -100,7 +100,7 @@ app.conf.beat_schedule = {
 # проверяем базу данных ПО учета времени
     'may_job_ping_db': {
         'task': 'doctor.tasks.may_job_ping_db',
-        'schedule': crontab(minute='30'),
+        'schedule': crontab(minute='*'),
     },
 }
 app.conf.timezone = 'Europe/Moscow'

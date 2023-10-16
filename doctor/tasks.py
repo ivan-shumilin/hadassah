@@ -185,8 +185,3 @@ def may_job_ping_db() -> None:
     url = "https://hr.petrushkagroup.ru/user/?user_id=bcc9d80f-565e-4b51-ac19-6085eace0cd0"
 
     response = requests.get(url)
-
-    if response.status_code == 200:
-        user_data = response.json()
-    else:
-        my_job_send_messang_changes.delay("Ошибка базы")
