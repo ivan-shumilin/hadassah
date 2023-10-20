@@ -36,6 +36,22 @@
                         <option value="Без ограничений">Без ограничений</option>
                     </select>
 
+                    <div class="form-group checkbox order">
+                        <label class="custom-checkbox mr-r-10">
+                            <input onclick="formSubmit()" class="custom-checkbox" id="input_none" type="radio" name="sing" value="none">
+                            <span>Без признака</span>
+                        </label>
+                        <label class="custom-checkbox mr-r-10">
+                            <input onclick="formSubmit()" class="custom-checkbox" id="input_is_probe" type="radio" name="sing" value="is_probe">
+                            <span>Энтеральное</span>
+                        </label>
+                        <label class="custom-checkbox">
+                            <input onclick="formSubmit()" class="custom-checkbox" id="input_is_pureed_nutrition" type="radio" name="sing" value="is_pureed_nutrition">
+                            <span>Протертое</span>
+                        </label>
+                    </div>
+                    
+
                     <select id="select-day" onchange="formSubmit()" class="form-select mg-top-bottom form-select-sm" name="day">
                         <option value="вся неделя">вся неделя</option>
                         <option value="понедельник">понедельник</option>
@@ -56,7 +72,7 @@
             
         </div>
     </form>
-<table id='table2'>
+<table id='table2' style="margin-top: 10px;">
     <tr>
         <td class="pd-left-right">День недели</td>
         <td class="pd-left-right">Прием пищи</td>
@@ -105,6 +121,9 @@
     {% endfor %}
 </table>
 <script>
+
+document.getElementById('input_{{ sing }}').setAttribute('checked', 'true');
+
 function formSubmit() {
     var form = document.getElementById('form');
     form.submit();

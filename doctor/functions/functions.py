@@ -582,7 +582,7 @@ def creating_meal_menu_cafe(date_get, diet, meal):
                        queryset_breakfast,
                        queryset_porridge)
 
-    return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup, queryset_breakfast, queryset_porridge, []
+    return queryset_main_dishes, queryset_garnish, queryset_salad, queryset_soup, queryset_breakfast, queryset_porridge
 
 def creating_meal_menu_lp(day_of_the_week, translated_diet, meal):
     products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
@@ -711,7 +711,8 @@ def create_user(user_form, request):
         is_probe,
         is_without_salt,
         is_without_lactose,
-        is_pureed_nutrition)
+        is_pureed_nutrition,
+    )
     if is_user:
         return None, None
 
@@ -735,6 +736,12 @@ def create_user(user_form, request):
     user.room_number = user_form.data['room_number'] if user_form.data['room_number'] != '' else 'Не выбрано'
     user.bed = user_form.data['bed'] if user_form.data['bed'] != '' else 'Не выбрано'
     user.type_of_diet = user_form.data['type_of_diet']
+
+    if is_probe:
+        user.type_of_diet = f'{user.type_of_diet} (Э)'
+    if is_pureed_nutrition:
+        user.type_of_diet = f'{user.type_of_diet} (П)'
+
     user.comment = comment_formatting(user_form.data['comment'])
     user.is_accompanying = is_accompanying
     user.type_pay = type_pay
@@ -788,7 +795,8 @@ def create_user(user_form, request):
                  user.is_probe,
                  user.is_without_salt,
                  user.is_without_lactose,
-                 user.is_pureed_nutrition)
+                 user.is_pureed_nutrition,
+    )
     if comment:
         messang += f'Комментарий: "{comment}"'
     messang += f'({user_name})'
@@ -901,12 +909,24 @@ def edit_user(user_form, type, request):
             changes.append(f"номер койко-места <b>{user.bed if user.bed != 'Не выбрано' else 'не выбран'}</b> изменен на <b>{user_form.data['bed1'] if user_form.data['bed1'] != 'Не выбрано' else 'не выбран'}</b>")
     user.bed = 'Не выбрано' if user_form.data['bed1'] == '' or user_form.data['room_number1'] == 'Не выбрано' else user_form.data['bed1']
 
-    if user.type_of_diet != user_form.data['type_of_diet1']:
-        changes.append(f"тип диеты <b>{user.type_of_diet}</b> изменен на <b>{user_form.data['type_of_diet1']}</b>")
+
+    is_probe = False if request.POST['edit_is_probe'] == 'False' else True
+    is_without_salt = False if request.POST['edit_is_without_salt'] == 'False' else True
+    is_without_lactose = False if request.POST['edit_is_without_lactose'] == 'False' else True
+    is_pureed_nutrition = False if request.POST['edit_is_pureed_nutrition'] == 'False' else True
+
+    type_of_diet = user_form.data['type_of_diet1']
+    if is_probe:
+        type_of_diet = f'{type_of_diet} (Э)'
+    if is_pureed_nutrition:
+        type_of_diet = f'{type_of_diet} (П)'
+
+    if user.type_of_diet != type_of_diet:
+        changes.append(f"тип диеты <b>{user.type_of_diet}</b> изменен на <b>{type_of_diet}</b>")
         if type == 'edit':
             is_change_diet = True
         # проверяем, нужно ли чередовать диету в 19 00
-        if user_form.data['type_of_diet1'] in ["БД день 1", "БД день 2"]:
+        if type_of_diet in ["БД день 1", "БД день 2"]:
             get_is_change_diet(user)
         else:
             user.is_change_diet = True
@@ -914,13 +934,7 @@ def edit_user(user_form, type, request):
         if user.type_of_diet == "Нулевая диета":
             emergency_food = True
 
-    user.type_of_diet = user_form.data['type_of_diet1']
-
-    is_probe = False if request.POST['edit_is_probe'] == 'False' else True
-    is_without_salt = False if request.POST['edit_is_without_salt'] == 'False' else True
-    is_without_lactose = False if request.POST['edit_is_without_lactose'] == 'False' else True
-    is_pureed_nutrition = False if request.POST['edit_is_pureed_nutrition'] == 'False' else True
-
+    user.type_of_diet = type_of_diet
 
     comment_formated = comment_formatting(user_form.data["comment1"])
     comment_old = add_features(
@@ -928,14 +942,14 @@ def edit_user(user_form, type, request):
         user.is_probe,
         user.is_without_salt,
         user.is_without_lactose,
-        user.is_pureed_nutrition
+        user.is_pureed_nutrition,
     )
     comment_new = add_features(
         comment_formated,
         is_probe,
         is_without_salt,
         is_without_lactose,
-        is_pureed_nutrition
+        is_pureed_nutrition,
     )
 
 
@@ -1003,7 +1017,6 @@ def edit_user(user_form, type, request):
 
     if (type == 'restore' or
             flag_is_change_diet or
-            flag_add_comment or
             flag_change_bouillon or
             flag_change_receipt_date or
             flag_change_receipt_time):
@@ -1113,6 +1126,7 @@ def archiving_user(user, request):
     if user.status == 'patient_archive':
         return
     user.status = 'patient_archive'
+    user.type_of_diet = user.type_of_diet.replace(" (Э)", "").replace(" (П)", "")
     user.save()
     if user.type_of_diet in ["БД день 1", "БД день 2"]:
         get_is_change_diet(user)

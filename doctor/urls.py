@@ -23,5 +23,6 @@ urlpatterns = [
     path('api/v1/update-search', views.UpdateSearchAPIView.as_view()),
     path('api/v1/get/ingredients', views.GetIngredientsAPIView.as_view()),
     path('api/v1/cropp_image', views.CroppImageAPIView.as_view()),
+    path('api/v1/check-is-have-patient', views.CheckIsHavePatientAPIView.as_view()),
     path('api/v1/test', views.testAPIView.as_view()),
 ]

@@ -113,7 +113,8 @@ def doctor(request):
                                                  'full_name', 'birthdate', 'receipt_date', 'receipt_time', 'department',
                                                  'floor', 'room_number', 'bed', 'type_of_diet', 'comment', 'id',
                                                  'is_accompanying', 'is_probe', 'is_without_salt',
-                                                 'is_pureed_nutrition', 'is_without_lactose', 'type_pay', 'extra_bouillon'),
+                                                 'is_pureed_nutrition', 'is_without_lactose', 'type_pay',
+                                                 'extra_bouillon'),
                                              widgets={
                                                  'full_name': TextInput(attrs={'required': "True"}),
                                                  'birthdate': TextInput(),
@@ -407,6 +408,7 @@ def archive(request):
 def menu(request):
     import datetime
     page = 'menu-menu'
+    diet_form: None = None
     date_menu = {
         'today': str(date.today()),
         'tomorrow': str(date.today() + datetime.timedelta(days=1)),
@@ -414,15 +416,19 @@ def menu(request):
     }
 
     if request.GET == {} or request.method == 'POST':
-        diet_form = DietChoiceForm({'type_of_diet': 'ovd'})
-        diet = 'ovd'
+        # diet_form = DietChoiceForm({'type_of_diet': 'ОВД'})
+        diet = 'ОВД'
         date_get = str(date.today())
         meal = 'breakfast'
+        sing = 'none'  # признак
     else:
         diet = request.GET['input_type_of_diet']
         date_get = request.GET['date']
-        diet_form = DietChoiceForm(request.GET)
+        # diet_form = DietChoiceForm(request.GET)
         meal = request.GET['meal']
+        sing = request.GET.get('sing', 'none')
+
+    diet = diet.replace(" (Э)", "").replace(" (П)", "")
 
     if diet == 'БД':
         if date_get == date_menu['today']:
@@ -433,20 +439,29 @@ def menu(request):
     else:
         day_of_the_week = get_day_of_the_week(date_get)
 
-    translated_diet = translate_diet(diet)
+    if sing == 'is_probe':
+        diet += " (Э)"
 
-    products_lp: tuple = creating_meal_menu_lp(day_of_the_week, translated_diet, meal)
+    if sing == 'is_pureed_nutrition':
+        diet += " (П)"
+
+
+
+    products_lp: tuple = creating_meal_menu_lp(day_of_the_week, diet, meal)
 
     products_main, products_garnish, products_salad, \
     products_soup, products_porridge, products_dessert, \
     products_fruit, products_drink = products_lp
 
-    if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'БД', 'Безйодовая', 'ПЭТ/КТ']:
-        products_cafe: tuple = creating_meal_menu_cafe(date_get, diet, meal)
+    if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'БД', 'Безйодовая', 'ПЭТ/КТ']\
+            and diet == diet.replace(" (Э)", "").replace(" (П)", ""):
+        # для поиска блюд раздачи нужна диета на лат-ом ("ovd", ..)
+        translated_diet = translate_diet(diet)
+        products_cafe: tuple = creating_meal_menu_cafe(date_get, translated_diet, meal)
     else:
         products_cafe: tuple = ([], [], [], [], [], [])
     queryset_main_dishes, queryset_garnish, queryset_salad, \
-    queryset_soup, queryset_breakfast, queryset_porridge, [] = products_cafe
+    queryset_soup, queryset_breakfast, queryset_porridge = products_cafe
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
 
@@ -454,8 +469,6 @@ def menu(request):
         products_main += queryset_breakfast
     else:
         products_main += queryset_main_dishes
-
-
 
     if request.method == 'POST' and 'change-email' in request.POST:
         # сhange_password(request.POST['changed-email'], request)
@@ -481,7 +494,7 @@ def menu(request):
             'formatted_date': formatted_date,
             'meal': meal,
             'modal': 'profile-edited',
-
+            'sing': sing,
         }
         return render(request, 'menu.html', context=data)
 
@@ -506,6 +519,7 @@ def menu(request):
             'formatted_date': formatted_date,
             'meal': meal,
             'modal': 'password-edited',
+            'sing': sing,
 
         }
         return render(request, 'menu.html', context=data)
@@ -525,6 +539,7 @@ def menu(request):
             'formatted_date': formatted_date,
             'meal': meal,
             'diet': diet,
+            'sing': sing,
             }
     return render(request, 'menu.html', context=data)
 
@@ -733,6 +748,7 @@ class SendEmergencyFoodAPIView(APIView):
                 product_add.append(self.MENU['without_sugar'])
             else:
                 product_add.append(self.MENU['standard'])
+
 
             if not patient.is_probe and not patient.is_pureed_nutrition:
                 product_add.append(self.MENU['snack'])
@@ -1076,6 +1092,31 @@ class DeleteDishAPIView(APIView):
 
             return Response({'status':'OK'})
 
+
+class CheckIsHavePatientAPIView(APIView):
+    """
+    Проверяет, есть ли пациент с указаными ФИО и датой рожения.
+    Если есть, то в архиве или в активных пациентах.
+    """
+    def post(self, request):
+        serializer = CheckIsHavePatientSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        full_name: str = serializer.validated_data['full_name']
+        birthdate: datetime = serializer.validated_data['birthdate']
+
+        full_name = formatting_full_name_mode_full(full_name)
+        qs: Q = CustomUser.objects.filter(
+            full_name=full_name,
+            birthdate=birthdate,
+        )
+
+        if qs.filte(status='patient').exists():
+            response = {'status': 'patient'}
+        elif qs.filte(status='patient_archive').exists():
+            response = {'status': 'patient_archive'}
+        else:
+            response = {'status': 'None'}
+        return Response(response)
 
 class AddDishAPIView(APIView):
     def post(self, request):

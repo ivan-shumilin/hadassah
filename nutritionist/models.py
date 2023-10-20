@@ -63,7 +63,7 @@ class CustomUser(AbstractUser):
     is_probe = models.BooleanField(
         blank=True,
         default=False,
-        help_text='Питание через зонд')
+        help_text='Энтеральное питание (зонд)')
 
     is_without_salt = models.BooleanField(
         blank=True,
@@ -178,7 +178,7 @@ class UsersToday(models.Model):
         blank=True,
         default=False,
         help_text='Протертое питание')
-
+    
     type_pay = models.CharField(
         max_length=100,
         choices=TYPE_PAY,
@@ -413,7 +413,7 @@ class UsersReadyOrder(models.Model):
         blank=True,
         default=False,
         help_text='Протертое питание')
-
+    
     type_pay = models.CharField(
         max_length=100,
         choices=TYPE_PAY,

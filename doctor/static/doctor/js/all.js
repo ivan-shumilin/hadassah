@@ -15158,6 +15158,7 @@ function addHtmlDinner() {
   }
   result += '</div>'
   item.insertAdjacentHTML("beforeend", result);
+  
 }
 
 function addHtmlLunch() {
@@ -15173,6 +15174,8 @@ function addHtmlLunch() {
   }
   result += '</div>'
   item.insertAdjacentHTML("beforeend", result);
+ 
+
 }
 
 // inputCount = document.getElementById('count')

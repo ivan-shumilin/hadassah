@@ -7,7 +7,6 @@ asgiref==3.5.2
 asn1crypto==1.5.1
 async-timeout==4.0.2
 attrs==21.4.0
-backports.zoneinfo==0.2.1
 beautifulsoup4==4.10.0
 billiard==3.6.4.0
 bs4==0.0.1
@@ -73,6 +72,7 @@ pyhanko-certvalidator==0.19.5
 PyJWT==2.3.0
 pyparsing==3.0.9
 PyPDF3==1.0.6
+pypng==0.20220715.0
 pyrsistent==0.19.3
 pyTelegramBotAPI==4.7.0
 python-barcode==0.14.0
@@ -97,6 +97,7 @@ svglib==1.4.1
 telepot==12.7
 tinycss2==1.1.1
 tqdm==4.64.1
+typing_extensions==4.5.0
 tzdata==2022.5
 tzlocal==4.2
 uritemplate==4.1.1

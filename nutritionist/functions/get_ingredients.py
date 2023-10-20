@@ -50,8 +50,6 @@ def get_ingredients_for_ttk(catalog):
                         print(f'нет product_id, {product["name"]}')
 
                     # добавляем sub_ingredients в ingredients
-                    for sub_ingredient in sub_ingredients.items():
-                        add_ingredient_for_dict(sub_ingredient, ingredients)
     return ingredients
 
 

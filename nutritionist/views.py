@@ -640,6 +640,117 @@ def catalog_side_dishes(request, page):
     return render(request, 'side_dishes.html', context=data)
 
 
+@login_required
+@user_passes_test(group_nutritionists_check, login_url='login')
+def catalog_desserts(request, page):
+    ProductFormSet = get_modelformset()
+    MEALS: tuple = ('Десерты',)
+    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
+
+    page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
+    q = Product.objects.filter(category__in=MEALS).order_by(Lower('name'))[page_start:page_finish + 1]
+    queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
+    queryset = queryset.order_by(Lower('name'))
+
+    if request.method == 'POST' and 'save' in request.POST:
+        formset = \
+            ProductFormSet(request.POST, request.FILES, queryset=queryset, prefix='desserts')
+        if not formset.is_valid():
+            return render(request,
+                          'desserts.html',
+                          {'formset': formset,
+                           'count_prosucts': count_prosucts,
+                           'count_prosucts_labeled': count_prosucts_labeled,
+                           'count_prosucts_not_labeled': count_prosucts_not_labeled,
+                           'progress': progress,
+                           })
+        else:
+            formset.save()
+            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
+            data = {
+                'page': page,
+                'page_prev': page_prev,
+                'page_next': page_next,
+                'page_dict': page_dict,
+                'formset': formset,
+                'count_prosucts': count_prosucts,
+                'count_prosucts_labeled': count_prosucts_labeled,
+                'count_prosucts_not_labeled': count_prosucts_not_labeled,
+                'progress': progress,
+            }
+            return render(request, 'desserts.html', context=data)
+    else:
+        formset = ProductFormSet(queryset=queryset, prefix='desserts')
+        data = {
+            'page': page,
+            'page_prev': page_prev,
+            'page_next': page_next,
+            'page_dict': page_dict,
+            'formset': formset,
+            'count_prosucts': count_prosucts,
+            'count_prosucts_labeled': count_prosucts_labeled,
+            'count_prosucts_not_labeled': count_prosucts_not_labeled,
+            'progress': progress,
+        }
+    return render(request, 'desserts.html', context=data)
+
+
+@login_required
+@user_passes_test(group_nutritionists_check, login_url='login')
+def catalog_drinks(request, page):
+    ProductFormSet = get_modelformset()
+    MEALS: tuple = ('Напитки',)
+    count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
+
+    page_start, page_finish, page_prev, page_next, page_dict = page_calc(page, count_prosucts)
+    q = Product.objects.filter(category__in=MEALS).order_by(Lower('name'))[page_start:page_finish + 1]
+    queryset = Product.objects.filter(id__in=[item_q.id for item_q in q])
+    queryset = queryset.order_by(Lower('name'))
+
+    if request.method == 'POST' and 'save' in request.POST:
+        formset = \
+            ProductFormSet(request.POST, request.FILES, queryset=queryset, prefix='drinks')
+        if not formset.is_valid():
+            return render(request,
+                          'drinks.html',
+                          {'formset': formset,
+                           'count_prosucts': count_prosucts,
+                           'count_prosucts_labeled': count_prosucts_labeled,
+                           'count_prosucts_not_labeled': count_prosucts_not_labeled,
+                           'progress': progress,
+                           })
+        else:
+            formset.save()
+            count_prosucts, count_prosucts_labeled, count_prosucts_not_labeled, progress = get_stat(MEALS)
+            data = {
+                'page': page,
+                'page_prev': page_prev,
+                'page_next': page_next,
+                'page_dict': page_dict,
+                'formset': formset,
+                'count_prosucts': count_prosucts,
+                'count_prosucts_labeled': count_prosucts_labeled,
+                'count_prosucts_not_labeled': count_prosucts_not_labeled,
+                'progress': progress,
+            }
+            return render(request, 'drinks.html', context=data)
+    else:
+        formset = ProductFormSet(queryset=queryset, prefix='drinks')
+        data = {
+            'page': page,
+            'page_prev': page_prev,
+            'page_next': page_next,
+            'page_dict': page_dict,
+            'formset': formset,
+            'count_prosucts': count_prosucts,
+            'count_prosucts_labeled': count_prosucts_labeled,
+            'count_prosucts_not_labeled': count_prosucts_not_labeled,
+            'progress': progress,
+        }
+    return render(request, 'drinks.html', context=data)
+
+
+
 class BaseAPIView(APIView):
     def post(self, request):
         data = request.data
@@ -1926,6 +2037,7 @@ def menu_lp_for_staff(request):
     try:
         diet =request.GET['diet']
         day_of_the_week = request.GET['day']
+        sing = request.GET.get('sing', 'none')
         if day_of_the_week == 'вся неделя':
             DAY_OF_THE_WEEK = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
         else:
@@ -1933,7 +2045,16 @@ def menu_lp_for_staff(request):
     except:
         diet = 'ОВД'
         day_of_the_week = 'вся неделя'
+        sing = 'none'
         DAY_OF_THE_WEEK = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
+
+    diet = diet.replace(" (Э)", "").replace(" (П)", "")
+
+    if sing == 'is_probe':
+        diet += " (Э)"
+
+    if sing == 'is_pureed_nutrition':
+        diet += " (П)"
 
     MEALS = ['breakfast', 'lunch', 'afternoon', 'dinner']
     if diet == 'БД':
@@ -1945,7 +2066,14 @@ def menu_lp_for_staff(request):
             meal_in_russian = translate_meal(meal)
             menu[day.capitalize()][meal_in_russian] = creating_meal_menu_lp_new(day, diet, meal)
         menu[day.capitalize()]['Общий КБЖУ'] = get_total_energy_value(day, diet)
-    data = {'menu': menu, 'diet': diet, 'day_of_the_week': day_of_the_week}
+
+    diet = diet.replace(" (Э)", "").replace(" (П)", "")
+    data = {
+        'menu': menu,
+        'diet': diet,
+        'day_of_the_week': day_of_the_week,
+        'sing': sing,
+    }
 
     return render(request, 'menu_lp_for_staff.html', context=data)
 

@@ -377,6 +377,10 @@ label {
 .mr-top-30 {
     margin-top: 30px;
 }
+
+.mr-r-10 {
+    margin-right: 10px;
+}
   
   .container-flex {
     display: flex;

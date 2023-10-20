@@ -28,6 +28,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from doctor.tasks import my_job_send_messang_changes
 from doctor.functions.bot import formatting_full_name
+from scripts.statistic import get_statistic
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -52,6 +53,15 @@ def patient(request, id):
     is_public = True  # используем публичные названия блюд
     is_have = 'ok'
     user = CustomUser.objects.get(id=id)
+
+    if user.type_of_diet in ['Нулевая диета'] or user.is_probe or user.is_pureed_nutrition:
+        is_have = 'BD'  # выводим сообщение об ошибке
+        return render(
+            request,
+            'patient.html',
+            context={
+                'is_have': is_have,
+                'error_message': f'Для диеты {user.type_of_diet} выбор блюд недоступен'})
 
     date_menu = {
         'today': str(date.today()),
@@ -81,9 +91,7 @@ def patient(request, id):
     translated_diet = user.type_of_diet
 
 
-    if user.type_of_diet in ['Нулевая диета']:
-        is_have = 'BD'  # выводим сообщение об ошибке
-        return render(request, 'patient.html', context={'is_have': is_have})
+
 
     if user.type_of_diet in ['БД день 1', 'БД день 2']:
         day_of_the_week = day_of_the_week_bd[date_get]
@@ -236,6 +244,7 @@ def patient_logout(request):
 
 
 def patient_history_test(request):
+    get_statistic()
     return render(request, 'patient_history_test.html', {})
 
 

@@ -112,7 +112,7 @@
 {% endif %}
 {% if is_have == 'BD' %}
     <div>
-        <p>Сервис временно недоступен</p>
+        <p>{{ error_message }}</p>
     </div>
 {% else %}
 {% load random %}
@@ -1621,7 +1621,7 @@ function submitForm() {
 // Берём элемент для вывода таймера
 let timer_show = document.getElementById("timer");
 let timer_end = document.getElementById("timer_end");
-let confirmationOrder = document.getElementById("confirmationOrder");
+// let confirmationOrder = document.getElementById("confirmationOrder");
  
 // Функция для вычисления разности времени
 function diffSubtract(date1, date2) {
@@ -1657,8 +1657,8 @@ timer = setInterval(function () {
         clearInterval(timer);
         // Выводим сообщение об окончание
         timer_end.innerHTML = '<div>Этот заказ уже сформирован</div>';
-        confirmationOrder.innerHTML = 'Заказ подтверждён';
-        confirmationOrder.classList.add('disabled');
+        // confirmationOrder.innerHTML = 'Заказ подтверждён';
+        // confirmationOrder.classList.add('disabled');
         
     } else { // Иначе
         // Получаем время зависимую от разницы

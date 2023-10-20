@@ -99,7 +99,7 @@ WSGI_APPLICATION = 'hadassah.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hadassah1',
+        'NAME': 'hadassah',
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
         'HOST': 'localhost',
@@ -137,14 +137,17 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
 
 TIME_ZONE = 'Europe/Moscow'
-# TIME_ZONE = 'Europe/Riga' # минус 1 часа от московского
-# TIME_ZONE = 'Europe/Berlin' # минус 2 часа от московского
-# TIME_ZONE = 'Europe/London'  # минус 3 часа от московского
+# TIME_ZONE = 'Europe/Berlin' # минус 1 часа от московского
+# TIME_ZONE  = 'Europe/London'  # минус 2 часа от московского
+
+# TIME_ZONE = 'America/New_York'
 # TIME_ZONE = 'America/Noronha' # минус 5 часа от московского
 # TIME_ZONE = 'America/Miquelon' # минус 6 часа от московского
 # TIME_ZONE = 'Australia/Sydney'
+# TIME_ZONE = 'Europe/Samara' # плюс 1 часов от московского
 # TIME_ZONE = 'Asia/Shanghai' # плюс 5 часов от московского
-
+# TIME_ZONE = 'Asia/Tokyo' # плюс 6 часов от московского
+# TIME_ZONE = 'Asia/Kamchatka' # плюс 9 часов от московского
 USE_I18N = True
 USE_L10N = False
 
@@ -264,7 +267,7 @@ CORS_ALLOW_HEADERS = ['*']
 CSRF_COOKIE_SECURE = False
 
 # основной сервер
-BOT_ID_EMERGEBCY_FOOD = '-1001913194437'
+# BOT_ID_EMERGEBCY_FOOD = '-1001913194437'
 
 # dev-сервер
-# BOT_ID_EMERGEBCY_FOOD = '-916594793'
+BOT_ID_EMERGEBCY_FOOD = '-916594793'
