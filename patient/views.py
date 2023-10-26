@@ -28,7 +28,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from doctor.tasks import my_job_send_messang_changes
 from doctor.functions.bot import formatting_full_name
-from scripts.statistic import get_statistic
+
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -244,7 +244,6 @@ def patient_logout(request):
 
 
 def patient_history_test(request):
-    get_statistic()
     return render(request, 'patient_history_test.html', {})
 
 
