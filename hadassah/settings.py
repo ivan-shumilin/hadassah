@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'nutritionist',
     'doctor',
     'patient',
+    'report',
     'rest_framework',
     'djoser',
     'corsheaders',
