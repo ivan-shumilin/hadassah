@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-report-page">
+    <head>
+        <meta charset="utf-8">
+        <title>Сводный отчет</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <!-- Add additional CSS in static file -->
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{% static 'doctor/select/css/select2.min.css' %}">
+        <script src="{% static 'doctor/select/js/select2.min.js' %}"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    </head>
+    <style>
+        .flip {
+            transform: rotate(180deg);
+        }
+
+        @media screen {
+            .print {
+                display: none;
+            }
+        }
+
+        @media print{
+            .print {
+                display: block;
+            }
+            .screen {
+                display: none;
+            }
+        }
+
+        a {
+            color: var(--color-main);
+            text-decoration: none;
+        }
+        a:hover {
+            color: var(--color-main);
+            text-decoration: none;
+        }
+        .all-show {
+            border: 2px solid #a7bbc7 !important;
+            color: #a7bbc7 !important;
+            cursor: pointer;
+        }
+        .toast {
+            background: #0e7abc;
+            color: #f6f8f9;
+            font-size: 16px;
+        }
+        .button-order {
+            position: relative;
+            bottom: 2px;
+            margin-top: 10px !important;
+        }
+        .table input[type="radio"] {
+            display: none;
+        }
+        .links {
+            color: #1a1b1c;
+            font-family: Montserrat, Arial, sans-serif;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.62;
+            min-width: 320px;
+            padding: 0;
+        }
+        .download {
+            color: #fff;
+            background-color: #0e7abc;
+            border-color: #0e7abc;
+        }
+
+        .download:hover {
+            color: #fff;
+            background-color: #156a9f;
+            border-color: #2d556d;
+        }
+
+        .select2 .select2-selection .select2-selection__arrow {
+            background-image: none;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            font-size: 15px !important;
+        }
+
+        .select2-container {
+            z-index: 99999; /* Задайте достаточно большое значение для индекса слоя */
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .hidden-t {
+            display: none;
+        }
+
+        .filter {
+        margin-left: 20px;
+        display: inline-block;
+        color: #c9ced1;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: .72px;
+        padding: 12px 16px 12px 0;
+        vertical-align: middle;
+      }
+
+      .filter-item:hover {
+        color: #0e7abc;
+      }
+      @media screen and (max-width: 768px) {
+        .filter {
+          display: block;
+          margin-bottom: 0px;
+        }
+      }
+      .filter {
+        display: inline-block;
+        margin-right: 0px;
+        vertical-align: middle;
+      }
+      .order {
+        margin-top: 20px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .fs-20 {
+        font-size: 13px;
+      }
+    </style>
+<div class="screen">
+    <body>
+        <div class="toast-container position-fixed bottom-0 end-0 p-3 top-0">
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div id="toast-text" class="toast-body">
+
+                   </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+                  </div>
+                </div>
+          </div>
+
+        <div class="report-header-block" style="margin-bottom: 5px;">
+            <div class="container inner">
+                <h1>
+                    Отчет для комплектации блюд
+                </h1>
+
+                <div class="item item-eat">
+                    <div class="text">{% if day == 'tomorrow' %}<span>(Отчет на завтра, {{ date_create }})</span> {% endif %}</div>
+                </div>
+                <div class="item item-date">
+                    <div class="text">{{ formatted_date }}</div>
+                </div>
+                <div class="item item-time">
+                    <div class="time">{{ time_now }}</div>
+                </div>
+            </div>
+
+
+                <div class="filter">
+                    <div class="order">
+                        <a href="{% url 'printed_form_two_lp_new' %}">Заявка для цеха ЛП</a>
+                    </div>
+
+
+                    <div class="order">
+                        <a href="{% url 'printed_form_cafe_new' %}">Заявка по блюдам раздачи</a>
+                    </div>
+                </div>
+                <div class="filter">
+                    <div class="order">
+                        <a href="{% url 'menu_lp_for_staff' %}">Меню на неделю</a>
+                    </div>
+
+
+                    <div class="order">
+                        <a href="{% url 'order' %}">Раскладка ингредиентов</a>
+                    </div>
+                </div>
+        </div>
+
+
+
+
+
+
+
+
+
+        <div class="report-block">
+
+            <div class="report main">
+                <div class="container inner">
+                    <div class="head">
+                        <div class="tr">
+                            <div class="th">блюда</div>
+                            <div class="th value total">Всего</div>
+                            <div class="th value">этаж 2</div>
+                            <div class="th value">этаж 3</div>
+                            <div class="th value">этаж 4</div>
+                            <div class="th value">
+                                <div class="only-desktop">
+                                    не выбран
+                                </div>
+                                <div class="only-tablet-or-mobile">
+                                    —
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="head">
+                        <div class="tr">
+                            <div class="th" onclick="toggleHiddenClassByClass('breakfast', 'icon-breakfast')">
+                                <img id="icon-breakfast" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                завтрак
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body breakfast hidden">
+                        {% for cat, products in result.breakfast.items %}
+                                {% for name, data in products.items %}
+                                    <div class="tr group">
+                                        <div class="td inline" onclick="toggleHiddenClassByClass('{{ data.id }}', 'icon-{{ data.id }}')">
+                                            <img id="icon-{{ data.id }}" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                            {{ name }}
+                                        </div>
+                                        <div class="td value total">{{ data.all_floor }}</div>
+                                        <div class="td value">{{ data.2nd_floor }}</div>
+                                        <div class="td value">{{ data.3nd_floor }}</div>
+                                        <div class="td value">{{ data.4nd_floor }}</div>
+                                        <div class="td value">{{ data.0nd_floor }}</div>                                        
+                                    </div>
+
+                                    {% for name in data.patient_name %}
+                                        <div class="tr dashed hidden {{ data.id }}">
+                                            <div class="td">
+                                                <div class="mr-left-24 fs-20" data-tooltip="{{ data.id }}">{{ forloop.counter }}. {{ name }}</div>
+                                            </div>
+                                            <div class="td value total"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="head">
+                        <div class="tr">
+                            <div class="th" onclick="toggleHiddenClassByClass('lunch', 'icon-lunch')">
+                                <img id="icon-lunch" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                обед
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body lunch hidden">
+                        {% for cat, products in result.lunch.items %}
+                                {% for name, data in products.items %}
+                                    <div class="tr group">
+                                        <div onclick="toggleHiddenClassByClass('{{ data.id }}', 'icon-{{ data.id }}')" class="td inline">
+                                            <img id="icon-{{ data.id }}" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                            {{ name }}
+                                        </div>
+                                                                  <div class="td value total">{{ data.all_floor }}</div>
+                                        <div class="td value">{{ data.2nd_floor }}</div>
+                                        <div class="td value">{{ data.3nd_floor }}</div>
+                                        <div class="td value">{{ data.4nd_floor }}</div>
+                                        <div class="td value">{{ data.0nd_floor }}</div>                                        
+                                    </div>
+
+                                    {% for name in data.patient_name %}
+                                        <div class="tr dashed hidden {{ data.id }}">
+                                            <div class="td">
+                                                <div class="mr-left-24 fs-20" data-tooltip="{{ data.id }}">{{ forloop.counter }}. {{ name }}</div>
+                                            </div>
+                                            <div class="td value total"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="head">
+                        <div class="tr">
+                            <div class="th" onclick="toggleHiddenClassByClass('afternoon', 'icon-afternoon')">
+                                <img id="icon-afternoon" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                полдник
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body afternoon hidden">
+                        {% for cat, products in result.afternoon.items %}
+                                {% for name, data in products.items %}
+                                    <div class="tr group">
+                                        <div class="td inline">
+                                            <img id="icon-{{ data.id }}" onclick="toggleHiddenClassByClass('{{ data.id }}', 'icon-{{ data.id }}')" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                            {{ name }}
+                                        </div>
+                                        <div class="td value total">{{ data.all_floor }}</div>
+                                        <div class="td value">{{ data.2nd_floor }}</div>
+                                        <div class="td value">{{ data.3nd_floor }}</div>
+                                        <div class="td value">{{ data.4nd_floor }}</div>
+                                        <div class="td value">{{ data.0nd_floor }}</div>                                        
+                                    </div>
+
+                                    {% for name in data.patient_name %}
+                                        <div class="tr dashed hidden {{ data.id }}">
+                                            <div class="td">
+                                                <div class="mr-left-24 fs-20" data-tooltip="{{ data.id }}">{{ forloop.counter }}. {{ name }}</div>
+                                            </div>
+                                            <div class="td value total"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="head">
+                        <div class="tr">
+                            <div class="th" onclick="toggleHiddenClassByClass('dinner', 'icon-dinner')">
+                                <img id="icon-dinner" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                ужин
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body dinner hidden">
+                        {% for cat, products in result.dinner.items %}
+                                {% for name, data in products.items %}
+                                    <div class="tr group">
+                                        <div onclick="toggleHiddenClassByClass('{{ data.id }}', 'icon-{{ data.id }}')" class="td inline">
+                                            <img id="icon-{{ data.id }}" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
+                                            {{ name }}
+                                        </div>
+                                        <div class="td value total">{{ data.all_floor }}</div>
+                                        <div class="td value">{{ data.2nd_floor }}</div>
+                                        <div class="td value">{{ data.3nd_floor }}</div>
+                                        <div class="td value">{{ data.4nd_floor }}</div>
+                                        <div class="td value">{{ data.0nd_floor }}</div>                                        
+                                    </div>
+
+                                    {% for name in data.patient_name %}
+                                        <div class="tr dashed hidden {{ data.id }}">
+                                            <div class="td">
+                                                <div class="mr-left-24 fs-20" data-tooltip="{{ data.id }}">{{ forloop.counter }}. {{ name }}</div>
+                                            </div>
+                                            <div class="td value total"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                            <div class="td value"></div>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script>
+function toggleHiddenClassByClass(className, iconId) {
+  const elements = document.getElementsByClassName(className);
+
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+
+    if (element.classList.contains('hidden')) {
+      document.getElementById(iconId).classList.add('flip');
+      element.classList.remove('hidden');
+    } else {
+      element.classList.add('hidden');
+      document.getElementById(iconId).classList.remove('flip');
+    }
+  }
+}
+
+
+function showHiddenComment() {
+    classNow = document.getElementById('show-comment');
+    const elements = document.getElementsByClassName('without_comment');
+    let toastText = document.getElementById('toast-text');
+    if (classNow.classList.contains('all-show')) {
+        classNow.classList.remove('all-show')
+        classNow.classList.add('comment-show')
+        toastText.innerHTML = 'Показаны пациенты только с комментариями'
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i];
+            element.classList.add('hidden');
+        }
+        
+    } else {
+        classNow.classList.remove('comment-show')
+        classNow.classList.add('all-show')
+        toastText.innerHTML = 'Показаны все пациенты'
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i];
+            element.classList.remove('hidden');
+        }
+    }
+
+}
+
+const toastTrigger = document.getElementById('show-comment')
+const toastLiveExample = document.getElementById('liveToast')
+
+if (toastTrigger) {
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+  toastTrigger.addEventListener('click', () => {
+    toastBootstrap.show()
+  })
+}
+</script>
+</html>
+

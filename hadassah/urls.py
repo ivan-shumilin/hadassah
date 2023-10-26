@@ -14,6 +14,7 @@ urlpatterns = [
     path('nutritionist/', include('nutritionist.urls')),
     path('doctor/', include('doctor.urls')),
     path('patient/', include('patient.urls')),
+    path('report/', include('report.urls')),
     path('', views.redirect, name='redirect'),
     # path('', include('pwa.urls')),
     # path('nutritionist/', include('pwa.urls')),
