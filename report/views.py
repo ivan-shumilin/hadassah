@@ -29,6 +29,15 @@ def get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status):
         'order_status': order_status,
     }
 
+    # если основное блюдо с гарниром и тогда:
+    # берем первое блюдо основное и прибавляем к нему все гарниры, которые есть
+    try:
+        if menu['main'][0]['with_garnish'] == False:
+            for garnish in menu['garnish']:
+                menu['main'][0]['name'] += f' + {garnish["name"]}'
+            menu['garnish'] = [None]
+    except:
+        pass
     return menu
 
 
@@ -66,14 +75,12 @@ def creates_dict_with_menu_patients_dish_assembly_report(date_show: datetime) ->
     CATEGOTYS = ['salad', 'soup', 'bouillon', 'main', 'garnish', 'porridge', 'dessert', 'fruit', 'drink', 'products',
                   'hidden']
 
+    # инициализируем словарь
     result: dict = {}
     for meal in MEALS:
         result[meal] = {}
         for cat in CATEGOTYS:
             result[meal][cat] = {}
-
-    # Пока не будем выводить блюда, на прием пищи который уже отдали.
-    # Тк эти блюда надо брать из Report
 
     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
         menu[meal] = {}
@@ -85,15 +92,14 @@ def creates_dict_with_menu_patients_dish_assembly_report(date_show: datetime) ->
         if order_status in ['flex-order', 'done']:
             menu_qs = MenuByDay.objects.all()
             users_qs = UsersToday.objects.all()
-        # if order_status == 'done':
-        #     continue
 
         for user in users_qs:
-            key = (user.user_id, user.floor)
+            key = user.user_id
             menu[meal][key] = {}
             menu_all = menu_qs.filter(user_id=user.user_id)
             menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status)
             result[meal] = combine_result(result[meal], menu[meal][key], user)
+
     return result
 
 

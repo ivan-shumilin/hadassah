@@ -330,6 +330,7 @@ def check_value_two(menu_all, date_str, meal, category, user_id, is_public):
                 'category': product.category,
                 'product_id': product_id,
                 'is_patient_choice': True if 'change' in id else False,
+                'with_garnish': product.with_garnish,
             })
     except Exception:
         value = [None]
