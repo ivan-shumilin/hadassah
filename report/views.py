@@ -124,6 +124,10 @@ def dish_assembly_report(request):
 
     result = creates_dict_with_menu_patients_dish_assembly_report(date_create)
 
+    # сортируем result по алфавиту
+    for meal_key in result.keys():
+        for cat_key in result[meal_key].keys():
+            result[meal_key][cat_key] = dict(sorted(result[meal_key][cat_key].items()))
 
     data = {
         'result': result,
