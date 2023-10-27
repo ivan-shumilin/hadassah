@@ -41,14 +41,14 @@
                 <div class="title">Меню</div>
             </div>
             <div class="menu">
-                {% if diet == 'БД' %}
+                {% if diet == 'БД' or diet == 'БД (Э)' or diet == 'БД (П)'  %}
                     <div class="switch">
                         <a id='{{ date_menu.today }}'
                            onclick="data_function('input_{{ date_menu.today }}')" style="
                                     padding-left: 30px;
                                     padding-right: 30px;">День 1</a>
                         <a id='{{ date_menu.tomorrow }}'
-                           onclick="data_function('input_{{ date_menu.tomorrow }}')">  День 2  </a>
+                           onclick="data_function('input_{{ date_menu.tomorrow }}')"> День 2  </a>
                     </div>
                 {% else %}
                     <div class="switch">
