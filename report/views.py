@@ -89,16 +89,24 @@ def creates_dict_with_menu_patients_dish_assembly_report(date_show: datetime) ->
         if order_status == 'fix-order':
             menu_qs = MenuByDayReadyOrder.objects.all()
             users_qs = UsersReadyOrder.objects.all()
+
+            for user in users_qs:
+                key = user.user_id
+                menu[meal][key] = {}
+                menu_all = menu_qs.filter(user_id=user)
+                menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status)
+                result[meal] = combine_result(result[meal], menu[meal][key], user)
+
         if order_status in ['flex-order', 'done']:
             menu_qs = MenuByDay.objects.all()
             users_qs = UsersToday.objects.all()
 
-        for user in users_qs:
-            key = user.user_id
-            menu[meal][key] = {}
-            menu_all = menu_qs.filter(user_id=user.user_id)
-            menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status)
-            result[meal] = combine_result(result[meal], menu[meal][key], user)
+            for user in users_qs:
+                key = user.user_id
+                menu[meal][key] = {}
+                menu_all = menu_qs.filter(user_id=user.user_id)
+                menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status)
+                result[meal] = combine_result(result[meal], menu[meal][key], user)
 
     return result
 
