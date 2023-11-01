@@ -779,7 +779,7 @@ def create_user(user_form, request):
     user.bed = user_form.data['bed'] if user_form.data['bed'] != '' else 'Не выбрано'
     user.type_of_diet = user_form.data['type_of_diet']
 
-    if user.type_of_diet not in ('БД день 1', 'БД день 2'):
+    if user_form.data['type_of_diet'] not in ('БД день 1', 'БД день 2'):
         if is_probe:
             user.type_of_diet = f'{user.type_of_diet} (Э)'
         if is_pureed_nutrition:
@@ -959,7 +959,7 @@ def edit_user(user_form, type, request):
     is_pureed_nutrition = False if request.POST['edit_is_pureed_nutrition'] == 'False' else True
 
     type_of_diet = user_form.data['type_of_diet1']
-    if user.type_of_diet not in ('БД', 'БД день 1', 'БД день 2'):
+    if type_of_diet not in ('БД', 'БД день 1', 'БД день 2'):
         if is_probe:
             type_of_diet = f'{type_of_diet} (Э)'
         if is_pureed_nutrition:
