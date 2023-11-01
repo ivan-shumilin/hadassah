@@ -739,9 +739,17 @@ class SendEmergencyFoodAPIView(APIView):
                                patient.is_pureed_nutrition)
 
         room_number = ', ' + patient.room_number if patient.room_number != 'Не выбрано' else ''
+        diet_without_sugar = [
+            'ШД без сахара',
+            'ОВД без сахара',
+            'ШД без сахара (П)',
+            'ОВД без сахара (Э)',
+            'ШД без сахара (П)',
+            'ОВД без сахара (Э)',
+        ]
         # если нерабочие часы
         if data_no_name == 'no_working_hours':
-            type_diet = 'without_sugar' if patient.type_of_diet in ['ШД без сахара', 'ОВД без сахара'] else 'without_sugar'
+            type_diet = 'without_sugar' if patient.type_of_diet in diet_without_sugar else 'without_sugar'
             # получаем рацион для пациента
             product_add: list = []
             if type_diet == 'without_sugar':
