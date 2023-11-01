@@ -337,6 +337,47 @@ def check_value_two(menu_all, date_str, meal, category, user_id, is_public):
     return value
 
 
+def check_value_two_not_cafe(menu_all, date_str, meal, category, user_id, is_public):
+    try:
+        value: list = []
+        item = menu_all.filter(date=date_str).get(meal=meal)
+        id_set = getattr(item, category, "").split(',')
+
+        if len(id_set) == 0:
+            return [None]
+        for id in id_set:
+            if 'cafe' in id:
+                continue
+            else:
+                type: str = 'lp'
+                product = ProductLp.objects.get(id=id)
+            try:
+                product_id = product.product_id
+            except:
+                product_id = None
+
+
+            value.append({
+                'id': id,
+                'name': product.public_name if is_public else product.name,
+                'carbohydrate': round(float(0 if product.carbohydrate == None else product.carbohydrate), 1),
+                'fat': round(float(0 if product.fat == None else product.fat), 1),
+                'fiber': round(float(0 if product.fiber == None else product.fiber), 1),
+                'energy': round(float(0 if product.energy == None else product.energy), 1),
+                'type': type,
+                'image': get_image_url(product),
+                'image_full': get_image_full_url(product),
+                'description': product.description,
+                'category': product.category,
+                'product_id': product_id,
+                'is_patient_choice': True if 'change' in id else False,
+                'with_garnish': product.with_garnish,
+            })
+    except Exception:
+        value = [None]
+    return value
+
+
 def check_value_tree(menu_all, date_str, meal, category, user_id, is_public):
     try:
         value: list = []

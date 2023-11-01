@@ -8,26 +8,40 @@ import random
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
 
-from doctor.functions.functions import get_order_status, check_value_two, formatting_full_name
+from doctor.functions.functions import get_order_status, check_value_two, formatting_full_name, check_value_two_not_cafe
 from doctor.views import group_doctors_check
 from nutritionist.models import UsersReadyOrder, MenuByDayReadyOrder, MenuByDay, UsersToday
 
 
-def get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status):
-    menu = {
-        'main': check_value_two(menu_all, date_show, meal, "main", id, is_public=False),
-        'garnish': check_value_two(menu_all, date_show, meal, "garnish", id, is_public=False),
-        'porridge': check_value_two(menu_all, date_show, meal, "porridge", id, is_public=False),
-        'soup': check_value_two(menu_all, date_show, meal, "soup", id, is_public=False),
-        'dessert': check_value_two(menu_all, date_show, meal, "dessert", id, is_public=False),
-        'fruit': check_value_two(menu_all, date_show, meal, "fruit", id, is_public=False),
-        'drink': check_value_two(menu_all, date_show, meal, "drink", id, is_public=False),
-        'salad': check_value_two(menu_all, date_show, meal, "salad", id, is_public=False),
-        'products': check_value_two(menu_all, date_show, meal, "products", id, is_public=False),
-        'hidden': check_value_two(menu_all, date_show, meal, "hidden", id, is_public=False),
-        'bouillon': check_value_two(menu_all, date_show, meal, "bouillon", id, is_public=False),
-        'order_status': order_status,
-    }
+def get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status, type):
+    if type == 'with_cafe':
+        menu = {
+            'main': check_value_two(menu_all, date_show, meal, "main", id, is_public=False),
+            'garnish': check_value_two(menu_all, date_show, meal, "garnish", id, is_public=False),
+            'porridge': check_value_two(menu_all, date_show, meal, "porridge", id, is_public=False),
+            'soup': check_value_two(menu_all, date_show, meal, "soup", id, is_public=False),
+            'dessert': check_value_two(menu_all, date_show, meal, "dessert", id, is_public=False),
+            'fruit': check_value_two(menu_all, date_show, meal, "fruit", id, is_public=False),
+            'drink': check_value_two(menu_all, date_show, meal, "drink", id, is_public=False),
+            'salad': check_value_two(menu_all, date_show, meal, "salad", id, is_public=False),
+            'products': check_value_two(menu_all, date_show, meal, "products", id, is_public=False),
+            'bouillon': check_value_two(menu_all, date_show, meal, "bouillon", id, is_public=False),
+            'order_status': order_status,
+        }
+    elif type == 'without_cafe':
+        menu = {
+            'main': check_value_two_not_cafe(menu_all, date_show, meal, "main", id, is_public=False),
+            'garnish': check_value_two_not_cafe(menu_all, date_show, meal, "garnish", id, is_public=False),
+            'porridge': check_value_two_not_cafe(menu_all, date_show, meal, "porridge", id, is_public=False),
+            'soup': check_value_two_not_cafe(menu_all, date_show, meal, "soup", id, is_public=False),
+            'dessert': check_value_two_not_cafe(menu_all, date_show, meal, "dessert", id, is_public=False),
+            'fruit': check_value_two_not_cafe(menu_all, date_show, meal, "fruit", id, is_public=False),
+            'drink': check_value_two_not_cafe(menu_all, date_show, meal, "drink", id, is_public=False),
+            'salad': check_value_two_not_cafe(menu_all, date_show, meal, "salad", id, is_public=False),
+            'products': check_value_two_not_cafe(menu_all, date_show, meal, "products", id, is_public=False),
+            'bouillon': check_value_two_not_cafe(menu_all, date_show, meal, "bouillon", id, is_public=False),
+            'order_status': order_status,
+        }
 
     # если основное блюдо с гарниром и тогда:
     # берем первое блюдо основное и прибавляем к нему все гарниры, которые есть
@@ -44,8 +58,7 @@ def get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status):
 def combine_result(res: dict, intermediate_result: dict, patient) -> dict:
     """Обьединяет полученный результат (промежуточный) с основным."""
     floor = '0' if patient.floor == 'Не выбрано' else patient.floor
-    CATEGOTYS = ['salad', 'soup', 'bouillon', 'main', 'garnish', 'porridge', 'dessert', 'fruit', 'drink', 'products',
-                 'hidden']
+    CATEGOTYS = ['salad', 'soup', 'bouillon', 'main', 'garnish', 'porridge', 'dessert', 'fruit', 'drink', 'products',]
     patient_data = f'{formatting_full_name(patient.full_name)}, {patient.type_of_diet}, {patient.floor} этаж'
     for cat in CATEGOTYS:
         for product in intermediate_result[cat]:
@@ -72,41 +85,45 @@ def creates_dict_with_menu_patients_dish_assembly_report(date_show: datetime) ->
     menu: dict = {}
 
     MEALS = ['breakfast', 'lunch', 'afternoon', 'dinner']
-    CATEGOTYS = ['salad', 'soup', 'bouillon', 'main', 'garnish', 'porridge', 'dessert', 'fruit', 'drink', 'products',
-                  'hidden']
+    CATEGOTYS = ['salad', 'soup', 'bouillon', 'main', 'garnish', 'porridge', 'dessert', 'fruit', 'drink', 'products']
 
     # инициализируем словарь
     result: dict = {}
     for meal in MEALS:
         result[meal] = {}
+        result[meal]['with_cafe'] = {}
+        result[meal]['without_cafe'] = {}
         for cat in CATEGOTYS:
-            result[meal][cat] = {}
+            result[meal]['with_cafe'][cat] = {}
+            result[meal]['without_cafe'][cat] = {}
 
-    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-        menu[meal] = {}
-        order_status: str = get_order_status(meal, date_show)
+    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:        
+            menu[meal] = {}
+            order_status: str = get_order_status(meal, date_show)
 
-        if order_status == 'fix-order':
-            menu_qs = MenuByDayReadyOrder.objects.all()
-            users_qs = UsersReadyOrder.objects.all()
+            for type in ('with_cafe', 'without_cafe'):
 
-            for user in users_qs:
-                key = user.user_id
-                menu[meal][key] = {}
-                menu_all = menu_qs.filter(user_id=user)
-                menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status)
-                result[meal] = combine_result(result[meal], menu[meal][key], user)
-
-        if order_status in ['flex-order', 'done']:
-            menu_qs = MenuByDay.objects.all()
-            users_qs = UsersToday.objects.all()
-
-            for user in users_qs:
-                key = user.user_id
-                menu[meal][key] = {}
-                menu_all = menu_qs.filter(user_id=user.user_id)
-                menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status)
-                result[meal] = combine_result(result[meal], menu[meal][key], user)
+                if order_status == 'fix-order':
+                    menu_qs = MenuByDayReadyOrder.objects.all()
+                    users_qs = UsersReadyOrder.objects.all()
+    
+                    for user in users_qs:
+                        key = user.user_id
+                        menu[meal][key] = {}
+                        menu_all = menu_qs.filter(user_id=user)
+                        menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status, type)
+                        result[meal] = combine_result(result[meal], menu[meal][key], user)
+    
+                if order_status in ['flex-order', 'done']:
+                    menu_qs = MenuByDay.objects.all()
+                    users_qs = UsersToday.objects.all()
+    
+                    for user in users_qs:
+                        key = user.user_id
+                        menu[meal][key] = {}
+                        menu_all = menu_qs.filter(user_id=user.user_id)
+                        menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status, type)
+                        result[meal][type] = combine_result(result[meal][type], menu[meal][key], user)
 
     return result
 
@@ -118,16 +135,16 @@ def dish_assembly_report(request):
     time_now = datetime.today().time().strftime("%H:%M")
     day = 'tomorrow' if datetime.now().time().hour >= 19 else 'today'
     date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
-    CATEGOTYS = ['salad', 'soup', 'bouillon', 'main', 'garnish', 'porridge', 'dessert', 'fruit', 'drink', 'products',
-                  'hidden']
+    CATEGOTYS = ['salad', 'soup', 'bouillon', 'main', 'garnish', 'porridge', 'dessert', 'fruit', 'drink', 'products']
     # нужно для каждого приема пищи определить type_order
 
     result = creates_dict_with_menu_patients_dish_assembly_report(date_create)
 
     # сортируем result по алфавиту
-    for meal_key in result.keys():
-        for cat_key in result[meal_key].keys():
-            result[meal_key][cat_key] = dict(sorted(result[meal_key][cat_key].items()))
+    for type in ('with_cafe', 'without_cafe'):
+        for meal_key in result.keys():
+            for cat_key in result[meal_key][type].keys():
+                result[meal_key][type][cat_key] = dict(sorted(result[meal_key][type][cat_key].items()))
 
     data = {
         'result': result,
