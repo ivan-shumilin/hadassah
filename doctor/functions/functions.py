@@ -779,10 +779,11 @@ def create_user(user_form, request):
     user.bed = user_form.data['bed'] if user_form.data['bed'] != '' else 'Не выбрано'
     user.type_of_diet = user_form.data['type_of_diet']
 
-    if is_probe:
-        user.type_of_diet = f'{user.type_of_diet} (Э)'
-    if is_pureed_nutrition:
-        user.type_of_diet = f'{user.type_of_diet} (П)'
+    if user.type_of_diet not in ('БД день 1', 'БД день 2'):
+        if is_probe:
+            user.type_of_diet = f'{user.type_of_diet} (Э)'
+        if is_pureed_nutrition:
+            user.type_of_diet = f'{user.type_of_diet} (П)'
 
     user.comment = comment_formatting(user_form.data['comment'])
     user.is_accompanying = is_accompanying
@@ -958,10 +959,11 @@ def edit_user(user_form, type, request):
     is_pureed_nutrition = False if request.POST['edit_is_pureed_nutrition'] == 'False' else True
 
     type_of_diet = user_form.data['type_of_diet1']
-    if is_probe:
-        type_of_diet = f'{type_of_diet} (Э)'
-    if is_pureed_nutrition:
-        type_of_diet = f'{type_of_diet} (П)'
+    if user.type_of_diet not in ('БД', 'БД день 1', 'БД день 2'):
+        if is_probe:
+            type_of_diet = f'{type_of_diet} (Э)'
+        if is_pureed_nutrition:
+            type_of_diet = f'{type_of_diet} (П)'
 
     if user.type_of_diet != type_of_diet:
         changes.append(f"тип диеты <b>{user.type_of_diet}</b> изменен на <b>{type_of_diet}</b>")
