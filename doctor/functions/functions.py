@@ -738,9 +738,9 @@ def create_user(user_form, request):
     is_pureed_nutrition = False if request.POST['is_pureed_nutrition'] == 'False' else True
     extra_bouillon = []
     if request.POST['is_bouillon_add'] == 'True':
-        for meal in [('breakfast', 'breakfast_add'),\
-                     ('lunch', 'lunch_add'), \
-                     ('afternoon','afternoon_add'), \
+        for meal in [('breakfast', 'breakfast_add'),
+                     ('lunch', 'lunch_add'),
+                     ('afternoon','afternoon_add'),
                      ('dinner', 'dinner_add')]:
             if request.POST[meal[1]] == 'True':
                 extra_bouillon.append(meal[0])
