@@ -141,9 +141,12 @@ TIME_ZONE = 'Europe/Moscow'
 # TIME_ZONE = 'Europe/Berlin' # минус 1 часа от московского
 # TIME_ZONE  = 'Europe/London'  # минус 2 часа от московского
 
-# TIME_ZONE = 'America/New_York'
+# TIME_ZONE = 'America/Sao_Paulo'
 # TIME_ZONE = 'America/Noronha' # минус 5 часа от московского
 # TIME_ZONE = 'America/Miquelon' # минус 6 часа от московского
+# TIME_ZONE = 'America/New_York' # минус 7 часа от московского
+
+# TIME_ZONE = 'America/Los_Angeles' # минус 10 часа от московского
 # TIME_ZONE = 'Australia/Sydney'
 # TIME_ZONE = 'Europe/Samara' # плюс 1 часов от московского
 # TIME_ZONE = 'Asia/Shanghai' # плюс 5 часов от московского

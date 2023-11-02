@@ -128,8 +128,8 @@ def creates_dict_with_menu_patients_dish_assembly_report(date_show: datetime) ->
     return result
 
 
-@login_required(login_url='login')
-@user_passes_test(group_doctors_check, login_url='login')
+# @login_required(login_url='login')
+# @user_passes_test(group_doctors_check, login_url='login')
 def dish_assembly_report(request):
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = datetime.today().time().strftime("%H:%M")
