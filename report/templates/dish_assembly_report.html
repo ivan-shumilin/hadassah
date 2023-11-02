@@ -198,6 +198,9 @@
             border-color: #a7bbc7;
             background-color: #a7bbc7;
         }
+        .checked {
+            color: #677f8d;
+        }
     </style>
 <div class="screen">
     <body>
@@ -290,11 +293,11 @@
                                     <div class="filters">
                                         <label class="custom-checkbox">
                                             <input id="breakfast-input" onclick="showHiddenCategory('товар', 'breakfast-input')" class="custom-checkbox" id="" type="checkbox" name="">
-                                            <span>товары</span>
+                                            <span id="breakfast-span">товары</span>
                                         </label>
                                         <label class="custom-checkbox">
                                             <input id="input-cafe" onclick="showHiddenCafeProducts('input-cafe')" class="custom-checkbox" id="" type="checkbox" name="">
-                                            <span class="mr-b-0">блюда раздачи</span>
+                                            <span id="span-cafe" class="mr-b-0">блюда раздачи</span>
                                         </label>
 
                                     </div>
@@ -531,19 +534,21 @@ for (let i = 0; i < catElements.length; i++) {
             const element = catElements[i];
             element.classList.add('hidden');
         }
+
 var withCommentElement = document.getElementsByClassName('with_cafe');
-for (let i = 0; i < catElements.length; i++) {
-            const element = withCommentElement[i];
-            element.classList.add('hidden');
+for (let i = 0; i < withCommentElement.length; i++) {
+            withCommentElement[i].classList.add('hidden');
         }
 
 
 
 function showHiddenCategory(cat, input_id) {
+    var span = document.getElementById('breakfast-span')
     var input = document.getElementById(input_id)
     catElements = document.getElementsByClassName(cat)
     let toastText = document.getElementById('toast-text2');
     if (input.checked) {
+        span.classList.add('checked')
         toastText.innerHTML = 'Показаны блюда из категории "Товары"'
         for (let i = 0; i < catElements.length; i++) {
             const element = catElements[i];
@@ -551,6 +556,7 @@ function showHiddenCategory(cat, input_id) {
         }
     } else {
         toastText.innerHTML = 'Скрыты блюда из категории "Товары"'
+        span.classList.remove('checked')
         for (let i = 0; i < catElements.length; i++) {
             const element = catElements[i];
             element.classList.add('hidden');
@@ -559,11 +565,13 @@ function showHiddenCategory(cat, input_id) {
 }
 
 function showHiddenCafeProducts(input_id) {
+    var span = document.getElementById('span-cafe')
     var input = document.getElementById(input_id)
     catElementsWithCafe = document.getElementsByClassName('with_cafe')
     catElementsWithOutCafe = document.getElementsByClassName('without_cafe')
     let toastText = document.getElementById('toast-text');
     if (input.checked) {
+        span.classList.add('checked')
         toastText.innerHTML = 'Показаны блюда раздачи'
         for (let i = 0; i < catElementsWithCafe.length; i++) {
             const element = catElementsWithCafe[i];
@@ -574,6 +582,7 @@ function showHiddenCafeProducts(input_id) {
             element.classList.add('hidden');
         }
     } else {
+        span.classList.remove('checked')
         toastText.innerHTML = 'Скрыты блюда раздачи'
         for (let i = 0; i < catElementsWithCafe.length; i++) {
             const element = catElementsWithCafe[i];
