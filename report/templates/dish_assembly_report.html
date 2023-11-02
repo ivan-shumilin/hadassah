@@ -366,6 +366,9 @@
                                             <div onclick="toggleHiddenClassByClass('{{ data.id }}', 'icon-{{ data.id }}')" class="td inline">
                                                 <img id="icon-{{ data.id }}" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
                                                 {{ name }}
+                                                {% if data.type == 'cafe' %}
+                                                <img class="mr-left-10" width="13" height="13" title="Блюдо линии раздачи" src="{% static 'doctor/css/img/p.svg' %}" alt="Блюдо линии раздачи">
+                                                {% endif %}
                                             </div>
                                             <div class="td value total blue">{{ data.all_floor }}</div>
                                             <div class="td value">{{ data.2nd_floor }}</div>
@@ -409,6 +412,9 @@
                                             <div class="td inline">
                                                 <img id="icon-{{ data.id }}" onclick="toggleHiddenClassByClass('{{ data.id }}', 'icon-{{ data.id }}')" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
                                                 {{ name }}
+                                                {% if data.type == 'cafe' %}
+                                                <img class="mr-left-10" width="13" height="13" title="Блюдо линии раздачи" src="{% static 'doctor/css/img/p.svg' %}" alt="Блюдо линии раздачи">
+                                                {% endif %}
                                             </div>
                                             <div class="td value total blue">{{ data.all_floor }}</div>
                                             <div class="td value">{{ data.2nd_floor }}</div>
@@ -452,6 +458,9 @@
                                             <div onclick="toggleHiddenClassByClass('{{ data.id }}', 'icon-{{ data.id }}')" class="td inline">
                                                 <img id="icon-{{ data.id }}" class="" width="20" height="20" title="Показать/ скрыть комментарии" src="{% static 'doctor/css/img/arrow-gray.svg' %}" alt="Показать/ скрыть комментарии">
                                                 {{ name }}
+                                                {% if data.type == 'cafe' %}
+                                                <img class="mr-left-10" width="13" height="13" title="Блюдо линии раздачи" src="{% static 'doctor/css/img/p.svg' %}" alt="Блюдо линии раздачи">
+                                                {% endif %}
                                             </div>
                                             <div class="td value total blue">{{ data.all_floor }}</div>
                                             <div class="td value">{{ data.2nd_floor }}</div>
