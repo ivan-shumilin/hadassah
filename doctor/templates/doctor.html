@@ -210,7 +210,6 @@
                                             <option value="ВБД">ВБД</option>
                                             <option value="НКД">НКД</option>
                                             <option value="НБД">НБД</option>
-                                            <option value="ВКД">ВКД</option>
                                             <option value="Безйодовая">Безйодовая</option>
                                             <option value="ПЭТ/КТ">ПЭТ/КТ</option>
                                             <option value="Без ограничений">Без ограничений</option>
@@ -1414,6 +1413,9 @@ const list1 = document.querySelectorAll('.tag')
         if (item1.innerHTML == 'ПЭТ/КТ (П)') {
             item1.classList.add('pink')
         }
+        if (item1.innerHTML == 'Нулевая диета') {
+            item1.classList.add('green')
+        }
 
 // ЭНТЕРАЛЬНОЕ
         if (item1.innerHTML == 'ОВД (Э)') {
@@ -1463,6 +1465,10 @@ const list1 = document.querySelectorAll('.tag')
         if (item1.innerHTML == 'ПЭТ/КТ (Э)') {
             item1.classList.add('pink')
         }
+        if (item1.innerHTML == 'Нулевая диета') {
+            item1.classList.add('green')
+        }
+
 })
 // фильтрация/сортировка страницы
 function check_function(value) {

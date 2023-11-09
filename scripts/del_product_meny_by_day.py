@@ -46,7 +46,7 @@ from nutritionist.models import MenuByDay
 all_menu = MenuByDay.objects.filter(
     Q(date__range=["2023-06-22", "2023-06-22"]),
     Q(meal__in=['afternoon',]),
-    Q(type_of_diet__in=["ОВД", "ЩД", "ВБД", "ВКД"]),
+    Q(type_of_diet__in=["ОВД", "ЩД", "ВБД"]),
 )
 for menu in all_menu:
     product_set = menu.dessert.split(',')
@@ -62,7 +62,7 @@ from nutritionist.models import MenuByDay
 all_menu = MenuByDay.objects.filter(
     Q(date__range=["2023-06-22", "2023-06-22"]),
     Q(meal__in=['afternoon',]),
-    Q(type_of_diet__in=["ОВД", "ЩД", "ВБД", "ВКД"]),
+    Q(type_of_diet__in=["ОВД", "ЩД", "ВБД"]),
 )
 for menu in all_menu:
     menu.dessert = '573'

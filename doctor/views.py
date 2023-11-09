@@ -912,9 +912,7 @@ class GetAllDishesByCategoryAPIView(APIView):
             'НБД',
             'ВБД',
             'НКД',
-            'ВКД',
             'Безйодовая',
-            'ВКД',
             'ПЭТ/КТ',
             'Без ограничений'
         }
