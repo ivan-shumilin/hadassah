@@ -2,6 +2,10 @@
 
 import os
 
+from envparse import Env
+
+env = Env()
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -97,10 +101,11 @@ WSGI_APPLICATION = 'hadassah.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hadassah1',
+        'NAME': env.str("DB_NAME", default="hadassah1"),
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
         'HOST': 'localhost',
