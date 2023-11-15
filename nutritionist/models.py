@@ -686,9 +686,12 @@ class IngredientСache(models.Model):
                               choices=DAYS,
                               blank=True,
                               default='',)
+    # дополнительно укажим дату стратка и финиша
+    start = models.DateField(blank=True, null=True)
+    end = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return f"IngredientСache {self.create_at} {self.day}"
+        return f"IngredientСache {self.create_at} {self.start} {self.end}"
 
 
 class AllProductСache(models.Model):
@@ -698,6 +701,9 @@ class AllProductСache(models.Model):
                               choices=DAYS,
                               blank=True,
                               default='',)
+    # дополнительно укажим дату стратка и финиша
+    start = models.DateField(blank=True, null=True)
+    end = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return f"All products {self.create_at} {self.day}"
+        return f"All products {self.create_at} {self.start} {self.end}"
