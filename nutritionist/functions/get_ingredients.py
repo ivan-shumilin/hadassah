@@ -1,6 +1,8 @@
+from doctor.functions.diet_formation import add_default_menu_on_one_day
 from nutritionist.functions.ttk import enumeration_ingredients, add_ingredient_for_dict, enumeration_semifinisheds, \
     merger_products
-from nutritionist.models import UsersToday, IngredientСache, AllProductСache
+from nutritionist.models import UsersToday, IngredientСache, AllProductСache, CustomUser
+from django.db import transaction
 
 
 def multiply_by_quantity(ingredients, count):
@@ -95,41 +97,132 @@ def get_semifinished_level_1(semifinished_level_0: dict, filter_categories=[]) -
 
 import logging
 
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
+
+
+def get_range_date(start: str, end: str):
+    range: list = []
+
+    start_date = datetime.strptime(start, '%d.%m.%Y')
+    end_date = datetime.strptime(end, '%d.%m.%Y')
+
+    current_date = start_date
+    while current_date < end_date + timedelta(days=1):
+        temp_date = current_date
+        while temp_date < end_date + timedelta(days=1):
+
+            range.append((current_date, temp_date))
+            temp_date += timedelta(days=1)
+        current_date += timedelta(days=1)
+    return range
+
+
+def join_catalog(catalog_set):
+    import copy
+    if len(catalog_set) == 1:
+        return catalog_set[0]
+
+    result = copy.deepcopy(catalog_set[0])
+    for catalog in catalog_set[1:]:
+        for meal_name, meal_products in catalog.items():
+            for category_name, category_products in meal_products.items():
+                for product in category_products:
+                    if product:
+                        # поверяем в result если есть такой продукт - обьединяем,
+                        # если нет - добавляем
+                        for product_from_result in result[meal_name][category_name]:
+                            if product_from_result:
+                                if product.get('id', None) == product_from_result.get('id', None):
+                                    # обьединяем продукты
+                                    product_from_result['count'] = str(int(product_from_result['count']) + int(product['count']))
+                                    break
+                        else:
+                            result[meal_name][category_name].append(product)
+    return result
+
+
+def add_menu_three_days_ahead_from_caching():
+    """
+    Добовляем меню на 4-ый и 5-ый день.
+    """
+    users = CustomUser.objects.filter(status='patient')
+    days = [date.today() + timedelta(days=delta) for delta in [3, 4, 5, 6]]
+    for user in users:
+        menu_all = MenuByDay.objects.filter(user_id=user.id)
+        # порядок дней для формирования меню (БД)
+        if user.type_of_diet == 'БД день 1':
+            days_for_bd = ['понедельник', 'понедельник', 'понедельник', 'понедельник', 'понедельник', 'понедельник', 'понедельник']
+        elif user.type_of_diet == 'БД день 2':
+            days_for_bd = ['вторник', 'вторник', 'вторник', 'вторник', 'вторник', 'вторник', 'вторник']
+        else:
+            days_for_bd = []
+        for index, day in enumerate(days):
+            if len(menu_all.filter(date=str(day))) == 0 and (day >= user.receipt_date):
+                for change_day in days[index:]:
+                    add_default_menu_on_one_day(change_day, user, index, days_for_bd)
+    return
+
+
+def del_menu_three_days_ahead_from_caching():
+    MenuByDay.objects.filter(date__in=[date.today() + timedelta(days=delta) for delta in [3, 4, 5, 6]]).delete()
+
 
 
 def caching_ingredients():
     """
     Расчитываем иггредиеты на два дня вперед.
     """
+    # реализоано кешировани. Там есть какая-то ошибка, надо будет пофиксить. Отрпавить на сервер. Добавить блюда.
+    # и накатить все обнавления
+    # добавляем данные в MenuByDay на 4-ый и 5-ый день для расчетов
+    add_menu_three_days_ahead_from_caching()
+    # start = date.today().strftime('%d.%m.%Y')
+    # end = (date.today() + timedelta(days=1)).strftime('%d.%m.%Y')
 
-    COUNT_DAYS: dict = {
-        'tomorrow': 1,
-        'after-tomorrow': 2,
-    }
+    start = date.today().strftime('%d.%m.%Y')
+    end = (date.today() + timedelta(days=6)).strftime('%d.%m.%Y')
+    
+    range = get_range_date(start, end)
+
     meal: str
     day: str
-    catalog: dict = {}
     is_public = False  # выводим технические названия блюд, не публичные
     type_order: str = 'flex-order'
     users = UsersToday.objects.all()
-    for day in COUNT_DAYS.keys():
-        date_create = date.today() + timedelta(days=COUNT_DAYS[day])
-        for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-            catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
+    for start, end in range:
+        print('***********************************************************')
+        print('***********************************************************')
+        print('***********************************************************')
+        print(f"{start.strftime('%d.%m.%Y')} - {end.strftime('%d.%m.%Y')}")
+        print('***********************************************************')
+        print('***********************************************************')
+        print('***********************************************************')
 
+        i = 0
+        catalog_set: list = []
+        while start + timedelta(days=i) <= end:
+            date_create = (start + timedelta(days=i)).strftime('%Y-%m-%d')
+            i += 1
+            catalog: dict = {}
+            for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+                catalog[meal] = create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public)
+            catalog_set.append(catalog)
+
+        catalog = join_catalog(catalog_set)
         try:
             IngredientСache.objects.create(
                 ingredient=get_ingredients_for_ttk(catalog),
-                day=day,
+                start=start,
+                end=end,
             )
         except:
             logging.error(f'Ошибка в записи ингредиетов в КЕШ')
         AllProductСache.objects.create(
             all_product=catalog,
-            day=day,
+            start=start,
+            end=end,
         )
-
+    del_menu_three_days_ahead_from_caching()
 
 from doctor.functions.functions import check_value_two, add_features
 from nutritionist.functions.functions import combine_broths

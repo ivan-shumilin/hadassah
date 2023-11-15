@@ -11,7 +11,7 @@ from django.utils.safestring import mark_safe
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import Base, Product, Timetable, CustomUser, ProductLp, TimetableLp, MenuByDay, Barcodes, CommentProduct, \
     BotChatId, UsersToday, СhangesUsersToday, UsersReadyOrder, MenuByDayReadyOrder, Report, ProductStorage, Ingredient, \
-    ModifiedDish, TTK
+    ModifiedDish, TTK, AllProductСache, IngredientСache
 
 admin.site.register(Base)
 
@@ -205,3 +205,16 @@ class TTKAdmin(admin.ModelAdmin):
     list_display = ('measure_unit', 'product_id', 'name', 'create_at', 'parent_ttk', 'amount_in', 'amount_middle', 'amount_out', 'ingredient', 'status')
     fields = ('measure_unit', 'product_id', 'name', 'create_at', 'parent_ttk', 'amount_in', 'amount_middle', 'amount_out', 'ingredient', 'status')
     list_per_page = 600
+
+
+@admin.register(AllProductСache)
+class AllProductСacheAdmin(admin.ModelAdmin):
+    pass
+    # list_display = ('date_create', 'meal', 'category', 'products_id')
+    # fields = ('date_create', 'meal', 'category', 'products_id')
+    # list_per_page = 600
+
+
+@admin.register(IngredientСache)
+class IngredientСacheAdmin(admin.ModelAdmin):
+    pass
