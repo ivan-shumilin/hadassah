@@ -1371,7 +1371,7 @@ class GetIngredientsAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         filter: dict = {}
-        filter['date'] = data['date']
+
         if data['filter'] == 'name':
             filter['filter_field'] = 'name'
         else:
@@ -1382,7 +1382,7 @@ class GetIngredientsAPIView(APIView):
         lst = string[1:-1].split(', ')
         filter['categories'] = lst
 
-        ingredients_all = IngredientСache.objects.filter(day=filter['date']).order_by('create_at').last().ingredient
+        ingredients_all = IngredientСache.objects.filter(start=data['start'], end=data['end']).order_by('create_at').last().ingredient
         ingredients: dict = {}
         is_reverse = False if filter['value'] == 'top' else True
         for key, value in ingredients_all.items():

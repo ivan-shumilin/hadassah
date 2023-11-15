@@ -15,7 +15,8 @@ from django.views.generic import TemplateView
 
 from doctor.functions.download import get_tk, get_name_by_api, get_allergens, get_weight_tk, \
     get_measure_unit
-from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal
+from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal, \
+    caching_ingredients
 from doctor.tasks import create_report_download
 from .functions.ttk import create_all_ttk, enumeration_semifinisheds, get_tree_ttk
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, UsersToday, UsersReadyOrder, \
@@ -1604,6 +1605,7 @@ def check_by_categories(semifinished, filter):
             return semifinished
     return False
 
+
 def all_order_by_ingredients(request):
     """
     Выводим весь заказ на завтра по ингредиетам, для проверки наличия продуктов.
@@ -1621,19 +1623,25 @@ def all_order_by_ingredients(request):
     locals_without_cinema = Local.objects.exclude(cinema__isnull=False)
     если у позиции нет ссылки, тогда записываем в словать где ключ это product_id
     """
-
+    # caching_ingredients()
     # получить прием пищи и дату
     filter: dict = {}
     values: tuple = ['top', 'bottom']
     filter['date'] = request.GET.get('date', 'tomorrow').lower()
     filter['categories'] = request.GET.get('categories', '').strip(';').split(';')
 
-    if filter['date'] == 'tomorrow':
-        day_count = 1
-    elif filter['date'] == 'after-tomorrow':
-        day_count = 2
-    date_create = date.today() + timedelta(days=day_count)
-    formatted_date_now = dateformat.format(date.fromisoformat(str(date_create)), 'd E, l')
+    # получить дату start и end
+    received_date = request.GET.get('range', None)
+    if received_date:
+        start, end = received_date.split(' - ')
+        start = datetime.strptime(start, '%d.%m.%Y')
+        end = datetime.strptime(end, '%d.%m.%Y')
+        start = start.strftime('%Y-%m-%d')
+        end = end.strftime('%Y-%m-%d')
+    else:
+        start = datetime.now().strftime('%Y-%m-%d')
+        end = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')
+
 
     if request.GET.get('alphabet', None) in values:
         filter['type'] = 'name'
@@ -1654,7 +1662,7 @@ def all_order_by_ingredients(request):
 
     filter['product_type'] = request.GET.get('product_type', 'semifinisheds')
 
-    catalog = AllProductСache.objects.filter(day=filter['date']).order_by('create_at').last().all_product
+    catalog = AllProductСache.objects.filter(start=start, end=end).order_by('create_at').last().all_product
     categories_all: list = []
     semifinished_level_0, categories_all = get_semifinished(
         catalog,
@@ -1718,9 +1726,9 @@ def all_order_by_ingredients(request):
         'semifinished_level_3': semifinished_level_3,
         'semifinished_level_4': semifinished_level_4,
         'semifinished_level_5': semifinished_level_5,
-        'formatted_date_now': formatted_date_now,
         'filter': filter,
         'categories_all': categories_all,
+        'range': {'start': start, 'end': end},
     }
 
     return render(request, 'all_order_semifinished.html', context=data)
