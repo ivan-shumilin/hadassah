@@ -95,7 +95,7 @@ app.conf.beat_schedule = {
 # кеширеум ингредиеты и ттк
     'may_job_updata_cache': {
         'task': 'doctor.tasks.may_job_updata_cache',
-        'schedule': crontab(minute='*/15'),
+        'schedule': crontab(minute=30, hour='0'),
     },
 # проверяем базу данных ПО учета времени
     'may_job_ping_db': {
