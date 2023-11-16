@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <title>Детализация</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
+</head>
+<body>
+<h1>Печать отчетов</h1>
+<p class="bold">{{ formatted_date_now }}, {{ time_now }} </p>
+<h2>Этаж 2</h2>
+<iframe id="printableIframe" src="{% url 'detailing_reports' 'breakfast' '2' %}"  width="100%" height="150px"></iframe>
+<button onclick="printIframe()">Напечатать</button>
+
+<h2>Этаж 3</h2>
+<iframe id="printableIframe" src="{% url 'detailing_reports' 'breakfast' '3' %}"  width="100%" height="150px"></iframe>
+<button onclick="printIframe()">Напечатать</button>
+
+<h2>Этаж 4</h2>
+<iframe id="printableIframe" src="{% url 'detailing_reports' 'breakfast' '4' %}"  width="100%" height="150px"></iframe>
+<button onclick="printIframe()">Напечатать</button>
+
+
+
+</body>
+</html>
+
+<script>
+    function printIframe() {
+        var iframe = document.getElementById('printableIframe');
+        iframe.contentWindow.print();
+    }
+</script>

@@ -18,6 +18,7 @@ from doctor.functions.download import get_tk, get_name_by_api, get_allergens, ge
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal, \
     caching_ingredients
 from doctor.tasks import create_report_download
+from .functions.report import create_external_report, create_external_report_detailing
 from .functions.ttk import create_all_ttk, enumeration_semifinisheds, get_tree_ttk
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, UsersToday, UsersReadyOrder, \
     MenuByDayReadyOrder, Report, \
@@ -1113,6 +1114,68 @@ def printed_form_one(request):
     }
 
     return render(request, 'printed_form1.html', context=data)
+
+
+def create_detailing_report(date_start = date.today(), date_finish = date.today(),):
+
+    filtered_report = Report.objects.filter(date_create__gte=date_start,
+        date_create__lte=date_finish,
+    )
+    report_detailing = create_external_report_detailing(filtered_report)
+
+    return report_detailing
+
+
+def detailing_reports(request, meal, floor):
+    formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, Y')
+    date_start = date.today()
+    date_finish = date.today()
+    rus_meal = translate_meal(meal)
+    reports = create_detailing_report(date_start, date_finish)
+    data_str = date_start.isoformat()
+    reports = reports[date_start.isoformat()][meal]
+    result = []
+
+    for diet, items in reports.items():
+        for name, room in items.items():
+            if floor == room[0]:
+                result.append({
+                    'date': data_str,
+                    'meal': meal,
+                    'diet': diet,
+                    'full_name': name,
+                    'room': room,
+                    })
+
+    try:
+        result.sort(key=lambda x: int(x['room'].split('-')[1]))
+    except:
+        pass
+
+    count_patients = len(result)
+    count_diet_0 = len([p for p in result if 'нулевая диета'.lower() in p['diet'].lower()])
+    other_diet = count_patients - count_diet_0
+
+    data = {
+        'formatted_date_now': formatted_date_now,
+        'count_patients': count_patients,
+        'count_diet_0': count_diet_0,
+        'other_diet': other_diet,
+        'meal': rus_meal.lower(),
+        'result': result,
+        'floor': floor,
+    }
+    return render(request, 'detailing-reports.html', context=data)
+
+def detailing(request):
+    """ Отчеты с детализацией. """
+    formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
+    time_now = datetime.today().time().strftime("%H:%M")
+    data = {
+        'formatted_date_now': formatted_date_now,
+        'time_now': time_now,
+    }
+    return render(request, 'detaling.html', context=data)
 
 
 # def create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public):

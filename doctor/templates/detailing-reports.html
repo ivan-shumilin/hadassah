@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <title>Детализация</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
+</head>
+<body>
+<h1>Детализация</h1>
+<h2>Круглосуточный стационар, Госпиталь, Hadassah Medical Moscow</h2>
+<h2>Этаж {{ floor }}</h2>
+<p>{{ formatted_date_now }} г., {{ meal}} - {{ count_patients }} пациентов</p>
+
+<table id='table2' width="100%">
+    <tr>
+        <td>№</td>
+        <td>Учетный день</td>
+        <td>Прием пищи</td>
+        <td>Рацион</td>
+        <td>ФИО</td>
+        <td>№ палаты</td>
+    </tr>
+    {% for patient in result %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ patient.date }}</td>
+            <td>{{ patient.meal }}</td>
+            <td>{{ patient.diet }}</td>
+            <td>{{ patient.full_name }}</td>
+            <td>{{ patient.room }}</td>
+        </tr>
+    {% endfor %}
+ 
+</table>
+
+<p>Всего пациентов {{ count_patients }}</p>
+<p>— Нулевая диета {{ count_diet_0 }}</p>
+<p>— Прочие диета {{ other_diet }}</p>
+
+</body>
+</html>
