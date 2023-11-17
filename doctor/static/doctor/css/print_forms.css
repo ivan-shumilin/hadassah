@@ -436,3 +436,27 @@ label {
     width: 50%;
 
 }
+
+.mr-l-5 {
+    margin-left: 5px;
+}
+
+.mr-l-50 {
+    margin-left: 50px;
+}
+
+.pd-l-3 {
+    padding-left: 3px;
+}
+
+.font-weight-600 {
+    font-weight: 600;
+}
+
+.font-weight-800 {
+    font-weight: 800;
+}
+
+.mr-t-30 {
+    margin-top: 30px !important;
+}

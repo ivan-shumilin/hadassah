@@ -12,37 +12,52 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
 </head>
+<style>
+h3 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.report-footer {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+</style>
 <body>
-<h1>Детализация</h1>
-<h2>Круглосуточный стационар, Госпиталь, Hadassah Medical Moscow</h2>
-<h2>Этаж {{ floor }}</h2>
-<p>{{ formatted_date_now }} г., {{ meal}} - {{ count_patients }} пациентов</p>
+{% if error %}
+    <h3>{{ error }}</h3>
+{% else %}
+    <h3>Детализация</h3>
+    <h3>Круглосуточный стационар, Госпиталь, Hadassah Medical Moscow</h3>
+    <h3>Этаж {{ floor }}</h3>
+    <p class="font-weight-600">{{ formatted_date_now }} г., {{ meal}} - {{ count_patients }} пациентов</p>
 
-<table id='table2' width="100%">
-    <tr>
-        <td>№</td>
-        <td>Учетный день</td>
-        <td>Прием пищи</td>
-        <td>Рацион</td>
-        <td>ФИО</td>
-        <td>№ палаты</td>
-    </tr>
-    {% for patient in result %}
+    <table id='table2' width="100%">
         <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ patient.date }}</td>
-            <td>{{ patient.meal }}</td>
-            <td>{{ patient.diet }}</td>
-            <td>{{ patient.full_name }}</td>
-            <td>{{ patient.room }}</td>
+            <td>№</td>
+            <td>Учетный день</td>
+            <td>Прием пищи</td>
+            <td>Рацион</td>
+            <td>ФИО</td>
+            <td>№ палаты</td>
         </tr>
-    {% endfor %}
- 
-</table>
+        {% for patient in result %}
+            <tr>
+                <td class="pd-l-3">{{ forloop.counter }}</td>
+                <td class="pd-l-3">{{ patient.date }}</td>
+                <td class="pd-l-3">{{ patient.meal }}</td>
+                <td class="pd-l-3">{{ patient.diet }}</td>
+                <td class="pd-l-3">{{ patient.full_name }}</td>
+                <td class="pd-l-3">{{ patient.room }}</td>
+            </tr>
+        {% endfor %}
+    
+    </table>
 
-<p>Всего пациентов {{ count_patients }}</p>
-<p>— Нулевая диета {{ count_diet_0 }}</p>
-<p>— Прочие диета {{ other_diet }}</p>
-
+    <p class="font-weight-600 report-footer mr-t-30">Всего пациентов <span class="mr-l-50">{{ count_patients }}</span></p>
+    <p class="font-weight-600 report-footer">— Нулевая диета <span class="mr-l-50">{{ count_diet_0 }}</span></p>
+    <p class="font-weight-600 report-footer">— Прочие диеты <span class="mr-l-50">{{ other_diet }}</span></p>
+{% endif %}
 </body>
 </html>
