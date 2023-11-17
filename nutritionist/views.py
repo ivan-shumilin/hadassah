@@ -1116,7 +1116,7 @@ def printed_form_one(request):
     return render(request, 'printed_form1.html', context=data)
 
 
-def create_detailing_report(date_start = date.today(), date_finish = date.today(),):
+def create_detailing_report(date_start=date.today(), date_finish=date.today(),):
 
     filtered_report = Report.objects.filter(date_create__gte=date_start,
         date_create__lte=date_finish,
@@ -1127,53 +1127,64 @@ def create_detailing_report(date_start = date.today(), date_finish = date.today(
 
 
 def detailing_reports(request, meal, floor):
+    floor = 'Не выбрано' if floor == '0' else floor
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, Y')
     date_start = date.today()
     date_finish = date.today()
     rus_meal = translate_meal(meal)
     reports = create_detailing_report(date_start, date_finish)
     data_str = date_start.isoformat()
-    reports = reports[date_start.isoformat()][meal]
-    result = []
+    reports = reports[date_start.isoformat()].get(meal, None)
+    if reports:
+        result = []
 
-    for diet, items in reports.items():
-        for name, room in items.items():
-            if floor == room[0]:
-                result.append({
-                    'date': data_str,
-                    'meal': meal,
-                    'diet': diet,
-                    'full_name': name,
-                    'room': room,
-                    })
+        for diet, items in reports.items():
+            for name, room in items.items():
+                if floor == room[1]:
+                    result.append({
+                        'date': data_str,
+                        'meal': rus_meal,
+                        'diet': diet,
+                        'full_name': name,
+                        'room': room[0],
+                        })
 
-    try:
-        result.sort(key=lambda x: int(x['room'].split('-')[1]))
-    except:
-        pass
+        try:
+            result.sort(key=lambda x: int(x['room'].split('-')[1]))
+        except:
+            pass
 
-    count_patients = len(result)
-    count_diet_0 = len([p for p in result if 'нулевая диета'.lower() in p['diet'].lower()])
-    other_diet = count_patients - count_diet_0
+        count_patients = len(result)
+        count_diet_0 = len([p for p in result if 'нулевая диета'.lower() in p['diet'].lower()])
+        other_diet = count_patients - count_diet_0
 
-    data = {
-        'formatted_date_now': formatted_date_now,
-        'count_patients': count_patients,
-        'count_diet_0': count_diet_0,
-        'other_diet': other_diet,
-        'meal': rus_meal.lower(),
-        'result': result,
-        'floor': floor,
-    }
+        data = {
+            'formatted_date_now': formatted_date_now,
+            'count_patients': count_patients,
+            'count_diet_0': count_diet_0,
+            'other_diet': other_diet,
+            'meal': rus_meal.lower(),
+            'result': result,
+            'floor': floor,
+            'error': None
+        }
+    elif not reports:
+        data = {
+            'error': "Отчет еще не готов или нет пациентов"
+        }
+
     return render(request, 'detailing-reports.html', context=data)
 
-def detailing(request):
+def detailing(request, meal):
     """ Отчеты с детализацией. """
+
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = datetime.today().time().strftime("%H:%M")
     data = {
         'formatted_date_now': formatted_date_now,
         'time_now': time_now,
+        'meal': meal,
+        'ru_meal': translate_meal(meal),
     }
     return render(request, 'detaling.html', context=data)
 
