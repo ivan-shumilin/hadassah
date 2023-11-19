@@ -73,19 +73,19 @@ app.conf.beat_schedule = {
 # Создание записей для отчета
     'my_job_create_report_breakfast': {
         'task': 'doctor.tasks.my_job_create_report_breakfast',
-        'schedule': crontab(minute=54, hour='8'),
+        'schedule': crontab(minute=30, hour='8'),
     },
     'my_job_create_report_lunch': {
         'task': 'doctor.tasks.my_job_create_report_lunch',
-        'schedule': crontab(minute=54, hour='12'),
+        'schedule': crontab(minute=00, hour='12'),
     },
     'my_job_create_report_afternoon': {
         'task': 'doctor.tasks.my_job_create_report_afternoon',
-        'schedule': crontab(minute=54, hour='15'),
+        'schedule': crontab(minute=30, hour='15'),
     },
     'my_job_create_report_dinner': {
         'task': 'doctor.tasks.my_job_create_report_dinner',
-        'schedule': crontab(minute=54, hour='18'),
+        'schedule': crontab(minute=00, hour='18'),
     },
 # Обновление ТТК
     'my_job_updata_ttk': {
