@@ -50,6 +50,13 @@
     color: #0e7abc;
 }
 
+@media (max-width: 768px) {
+    .nav-link {
+        padding: 4px;
+    }
+}
+
+
 .nav-link:hover {
     color: #0e7abc;
 }
@@ -84,6 +91,13 @@ h1 span {
     color: #212529;
     font-size: 13px;
 }
+
+.list-unstyled {
+    text-align: left;
+    margin-left: 20px;
+}
+
+
 </style>
 <body>
 <div class="m-4">
@@ -124,6 +138,9 @@ h1 span {
                 <li class="nav-item">
                     <a id="0" href="#none" class="nav-link font-weight-600" data-bs-toggle="tab">Не выбран</a>
                 </li>
+                <li class="nav-item">
+                    <a id="0" href="#faq" class="nav-link font-weight-600" data-bs-toggle="tab">Справка</a>
+                </li>
         </div>
         <div class="card-body">
             <div class="tab-content">
@@ -138,6 +155,20 @@ h1 span {
                 </div>
                 <div class="tab-pane fade" id="none">
                     <div class="card-text"><iframe id="iframe-0" src="{% url 'detailing_reports' meal '0' %}"  width="100%" height="650px"></iframe></div>
+                </div>
+                <div class="tab-pane fade" id="faq">
+                    <div class="card-text">
+                        <ul class="list-unstyled mr-top-30">
+                            <li><span class="font-weight-600">Время формирования отчетов:</span>
+                              <ul>
+                                <li>завтрак - 8:30</li>
+                                <li>обед - 12:00</li>
+                                <li>полдник - 15:30</li>
+                                <li>ужин - 18:00</li>
+                              </ul>
+                            </li>
+                        </ul>
+                    <div>
                 </div>
             </div>
         </div>
@@ -160,6 +191,5 @@ function printIframe() {
     var iframe = document.getElementById(id);
     iframe.contentWindow.print();
 }
-
 
 </script>

@@ -23,6 +23,10 @@ h3 {
     margin-bottom: 3px;
 }
 
+.gray-border {
+   border-bottom: 1px solid #a7bbc7;
+}
+
 </style>
 <body>
 {% if error %}
@@ -43,7 +47,7 @@ h3 {
             <td>№ палаты</td>
         </tr>
         {% for patient in result %}
-            <tr>
+            <tr class="gray-border">
                 <td class="pd-l-3">{{ forloop.counter }}</td>
                 <td class="pd-l-3">{{ patient.date }}</td>
                 <td class="pd-l-3">{{ patient.meal }}</td>
