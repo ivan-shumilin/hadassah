@@ -1132,7 +1132,10 @@ def detailing_reports(request, meal, floor):
     date_start = date.today()
     date_finish = date.today()
     rus_meal = translate_meal(meal)
-    reports = create_detailing_report(date_start, date_finish)
+    try:
+        reports = create_detailing_report(date_start, date_finish)
+    except:
+        reports = []
     data_str = date_start.isoformat()
     reports = reports[date_start.isoformat()].get(meal, None)
     if reports:
