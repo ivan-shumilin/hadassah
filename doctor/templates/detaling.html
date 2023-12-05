@@ -139,7 +139,10 @@ h1 span {
                     <a id="0" href="#none" class="nav-link font-weight-600" data-bs-toggle="tab">Не выбран</a>
                 </li>
                 <li class="nav-item">
-                    <a id="0" href="#faq" class="nav-link font-weight-600" data-bs-toggle="tab">Справка</a>
+                    <a id="5" href="#test" class="nav-link font-weight-600" data-bs-toggle="tab">Реанимация</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#faq" class="nav-link font-weight-600" data-bs-toggle="tab">Справка</a>
                 </li>
         </div>
         <div class="card-body">
@@ -155,6 +158,9 @@ h1 span {
                 </div>
                 <div class="tab-pane fade" id="none">
                     <div class="card-text"><iframe id="iframe-0" src="{% url 'detailing_reports' meal '0' %}"  width="100%" height="650px"></iframe></div>
+                </div>
+                <div class="tab-pane fade" id="test">
+                    <div class="card-text"><iframe id="iframe-5" src="{% url 'detailing_reports' meal 'resuscitation' %}"  width="100%" height="650px"></iframe></div>
                 </div>
                 <div class="tab-pane fade" id="faq">
                     <div class="card-text">

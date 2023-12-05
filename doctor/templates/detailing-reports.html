@@ -38,7 +38,13 @@ h3 {
 {% else %}
     <h3>Детализация</h3>
     <h3>Круглосуточный стационар, Госпиталь, Hadassah Medical Moscow</h3>
-    <h3>Этаж {{ floor }}</h3>
+    <h3>
+        {% if floor != "resuscitation" %}
+            Этаж {{ floor }}
+        {% else %}
+            Реанимация
+        {% endif %}
+    </h3>
     <p class="font-weight-600">{{ formatted_date_now }} г., {{ meal}} - {{ count_patients }} пациентов</p>
 
     <table id='table2' width="100%">
@@ -63,9 +69,24 @@ h3 {
     
     </table>
 
-    <p class="font-weight-600 report-footer mr-t-30">Всего пациентов <span class="mr-l-50">{{ count_patients }}</span></p>
-    <p class="font-weight-600 report-footer">— Нулевая диета <span class="mr-l-50">{{ count_diet_0 }}</span></p>
-    <p class="font-weight-600 report-footer">— Прочие диеты <span class="mr-l-50">{{ other_diet }}</span></p>
+    <table class="mr-t-30">
+        <tr class="gray-border">
+            <td class="font-weight-600">Всего пациентов</td>
+            <td class="font-weight-600">{{ count_patients }}</td>
+        </tr>
+        {% if count_diet_0 != 0 %}
+            <tr class="gray-border">
+                <td class="font-weight-600">— Нулевая диета</td>
+                <td class="font-weight-600">{{ count_diet_0 }}</td>
+            </tr>
+        {% endif %}
+        {% for name, count in diets_count.items %}
+        <tr class="gray-border">
+            <td class="font-weight-600">— {{ name }}</td>
+            <td class="font-weight-600">{{ count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 {% endif %}
 </body>
 </html>

@@ -1,3 +1,4 @@
+import collections
 import math, operator
 from dateutil.parser import parse
 from django.shortcuts import render
@@ -1138,20 +1139,30 @@ def detailing_reports(request, meal, floor):
         reports = []
     data_str = date_start.isoformat()
     reports = reports[date_start.isoformat()].get(meal, None)
+    result = []
     if reports:
-        result = []
-
-        for diet, items in reports.items():
-            for name, room in items.items():
-                if floor == room[1]:
-                    result.append({
-                        'date': data_str,
-                        'meal': rus_meal,
-                        'diet': diet,
-                        'full_name': name,
-                        'room': room[0],
-                        })
-
+        if floor != "resuscitation":
+            for diet, items in reports.items():
+                for name, room in items.items():
+                    if floor == room[1]:
+                        result.append({
+                            'date': data_str,
+                            'meal': rus_meal,
+                            'diet': diet,
+                            'full_name': name,
+                            'room': room[0],
+                            })
+        else:
+            for diet, items in reports.items():
+                for name, room in items.items():
+                    if 'реанимация' == room[2].lower():
+                        result.append({
+                            'date': data_str,
+                            'meal': rus_meal,
+                            'diet': diet,
+                            'full_name': name,
+                            'room': room[0],
+                            })
         try:
             result.sort(key=lambda x: int(x['room'].split('-')[1]))
         except:
@@ -1161,6 +1172,15 @@ def detailing_reports(request, meal, floor):
         count_diet_0 = len([p for p in result if 'нулевая диета'.lower() in p['diet'].lower()])
         other_diet = count_patients - count_diet_0
 
+
+
+        diets = [item['diet'] for item in result]
+        diets_count = collections.Counter(diets)
+        diets_count = dict(diets_count)
+        diets_count = dict(sorted(diets_count.items(), key=lambda x: x[0]))
+        if "Нулевая диета" in diets_count:
+            del diets_count["Нулевая диета"]
+
         data = {
             'formatted_date_now': formatted_date_now,
             'count_patients': count_patients,
@@ -1169,7 +1189,8 @@ def detailing_reports(request, meal, floor):
             'meal': rus_meal.lower(),
             'result': result,
             'floor': floor,
-            'error': None
+            'error': None,
+            'diets_count': diets_count
         }
     elif not reports:
         data = {
