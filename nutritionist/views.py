@@ -1145,13 +1145,14 @@ def detailing_reports(request, meal, floor):
             for diet, items in reports.items():
                 for name, room in items.items():
                     if floor == room[1]:
-                        result.append({
-                            'date': data_str,
-                            'meal': rus_meal,
-                            'diet': diet,
-                            'full_name': name,
-                            'room': room[0],
-                            })
+                        if room[2].lower() != "реанимация":
+                            result.append({
+                                'date': data_str,
+                                'meal': rus_meal,
+                                'diet': diet,
+                                'full_name': name,
+                                'room': room[0],
+                                })
         else:
             for diet, items in reports.items():
                 for name, room in items.items():
