@@ -1205,11 +1205,17 @@ def detailing(request, meal):
 
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = datetime.today().time().strftime("%H:%M")
+    is_none_floor = Report.objects.filter(
+        date_create=date.today(),
+        meal=meal,
+        user_id__floor="Не выбрано"
+    ).exists()
     data = {
         'formatted_date_now': formatted_date_now,
         'time_now': time_now,
         'meal': meal,
         'ru_meal': translate_meal(meal),
+        'is_none_floor': is_none_floor,
     }
     return render(request, 'detaling.html', context=data)
 
