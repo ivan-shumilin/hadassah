@@ -70,10 +70,10 @@ def create_external_report(filtered_report):
                 count_emergency_food = \
                     len(set([user.user_id for user in (report[date_key][meal_key][diet_key])
                                 if user.product_id in ['569', '568', '570']]))
-                if diet_key == 'Нулевая диета':
+                if diet_key in ['Нулевая диета', 'Нулевая диета (Э)', 'Нулевая диета (П)']:
                     price = price_just_wather
                     count_just_wather += count_items
-                elif diet_key == 'Нулевая диета + бульон':
+                elif diet_key in ['Нулевая диета + бульон', 'Нулевая диета (Э) + бульон', 'Нулевая диета (П) + бульон']:
                     price = price_just_wather
                     count_just_wather += count_items
                 elif diet_key == 'БД день 2' and meal_key == 'afternoon':
