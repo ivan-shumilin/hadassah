@@ -571,6 +571,11 @@ class Report(models.Model):
         blank=True,
         null=True,
         help_text='Категория')
+    type = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text='Тип: экстренное питание, стандартное')
 
 
 

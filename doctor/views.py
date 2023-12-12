@@ -775,13 +775,15 @@ class SendEmergencyFoodAPIView(APIView):
         messang += f'{patient.type_of_diet}{meal_mod}\n'
         messang += f'Комментарий: {comment}\n' if comment != '' else ''
         messang += f'    \n'
+        type_report = 'emergency-night' if data_no_name == 'no_working_hours' else 'emergency-day'
         for product_id in product_add:
             messang += f'– {ProductLp.objects.get(id=product_id).name}\n'
             Report(user_id=patient,
                    date_create=patient.receipt_date,
                    meal=first_meal,
                    product_id=product_id,
-                   type_of_diet=patient.type_of_diet).save()
+                   type_of_diet=patient.type_of_diet,
+                   type=type_report).save()
 
         messang += f'({user_name})'
         # send_messang_changes(messang, settings.BOT_ID_EMERGEBCY_FOOD)
