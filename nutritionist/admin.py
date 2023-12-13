@@ -169,7 +169,7 @@ class UsersReadyOrderAdmin(admin.ModelAdmin):
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'product_id', 'date_create', 'meal', 'type_of_diet')
-    fields = ('user_id', 'product_id', 'date_create', 'meal', 'type_of_diet')
+    fields = ('user_id', 'product_id', 'date_create', 'meal', 'type_of_diet', 'type')
     list_per_page = 600
 
 @admin.register(Ingredient)

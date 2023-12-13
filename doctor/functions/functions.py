@@ -206,6 +206,15 @@ def translate_first_meal(meal):
     }
     return MEALS[meal.lower()]
 
+def next_meal(meal):
+    MEALS = {
+        'breakfast': 'lunch',
+        'lunch': 'afternoon',
+        'afternoon': 'dinner',
+        'dinner': 'dinner'
+    }
+    return MEALS[meal.lower()]
+
 def сhange_password(email, request):
     user = CustomUser.objects.get(id=request.user.id)
     user.email = email

@@ -1117,7 +1117,7 @@ def printed_form_one(request):
     return render(request, 'printed_form1.html', context=data)
 
 
-def create_detailing_report(date_start=date.today(), date_finish=date.today(),):
+def create_detailing_report(date_start=date.today(), date_finish=date.today()):
 
     filtered_report = Report.objects.filter(date_create__gte=date_start,
         date_create__lte=date_finish,
@@ -1133,11 +1133,14 @@ def detailing_reports(request, meal, floor):
     date_start = date.today()
     date_finish = date.today()
     rus_meal = translate_meal(meal)
+
     try:
         reports = create_detailing_report(date_start, date_finish)
     except:
         reports = []
+
     data_str = date_start.isoformat()
+    # for reports, type in ((reports, 'standart'), (reports_extra, 'extra')):
     reports = reports[date_start.isoformat()].get(meal, None)
     result = []
     if reports:
@@ -1152,6 +1155,7 @@ def detailing_reports(request, meal, floor):
                                 'diet': diet,
                                 'full_name': name,
                                 'room': room[0],
+                                'type': room[3],
                                 })
         else:
             for diet, items in reports.items():
@@ -1163,18 +1167,15 @@ def detailing_reports(request, meal, floor):
                             'diet': diet,
                             'full_name': name,
                             'room': room[0],
+                            'type': room[3],
                             })
         try:
             result.sort(key=lambda x: int(x['room'].split('-')[1]))
         except:
             pass
-
         count_patients = len(result)
         count_diet_0 = len([p for p in result if 'нулевая диета'.lower() in p['diet'].lower()])
         other_diet = count_patients - count_diet_0
-
-
-
         diets = [item['diet'] for item in result]
         diets_count = collections.Counter(diets)
         diets_count = dict(diets_count)
@@ -1182,10 +1183,15 @@ def detailing_reports(request, meal, floor):
         if "Нулевая диета" in diets_count:
             del diets_count["Нулевая диета"]
 
+        count_extr = len([item for item in result if item['type'] in ('emergency-night', 'emergency-day')])
+
+
+
         data = {
             'formatted_date_now': formatted_date_now,
             'count_patients': count_patients,
             'count_diet_0': count_diet_0,
+            'count_extr': count_extr,
             'other_diet': other_diet,
             'meal': rus_meal.lower(),
             'result': result,
@@ -1197,7 +1203,6 @@ def detailing_reports(request, meal, floor):
         data = {
             'error': "Отчет еще не готов или нет пациентов"
         }
-
     return render(request, 'detailing-reports.html', context=data)
 
 def detailing(request, meal):

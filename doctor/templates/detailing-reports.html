@@ -57,17 +57,48 @@ h3 {
             <td>№ палаты</td>
         </tr>
         {% for patient in result %}
-            <tr class="gray-border">
-                <td class="pd-l-3">{{ forloop.counter }}</td>
-                <td class="pd-l-3">{{ patient.date }}</td>
-                <td class="pd-l-3">{{ patient.meal }}</td>
-                <td class="pd-l-3">{{ patient.diet }}</td>
-                <td class="pd-l-3">{{ patient.full_name }}</td>
-                <td class="pd-l-3">{{ patient.room }}</td>
-            </tr>
-        {% endfor %}
-    
+            {% if patient.type != 'emergency-night' and patient.type != 'emergency-day' %}
+                <tr class="gray-border">
+                    <td class="pd-l-3">{{ forloop.counter }}</td>
+                    <td class="pd-l-3">{{ patient.date }}</td>
+                    <td class="pd-l-3">{{ patient.meal }}</td>
+                    <td class="pd-l-3">{{ patient.diet }}</td>
+                    <td class="pd-l-3" style="width: 450px;">{{ patient.full_name }}</td>
+                    <td class="pd-l-3">{{ patient.room }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}    
     </table>
+
+    {% if count_extr != 0 %}
+        <p class="font-weight-600">Экстренное питание</p>
+        <table id='table2' width="100%">
+            <tr>
+                <td>№</td>
+                <td>Учетный день</td>
+                <td>Прием пищи</td>
+                <td>Рацион</td>
+                <td>ФИО</td>
+                <td>№ палаты</td>
+            </tr>
+            {% for patient in result %}
+                {% if patient.type == 'emergency-night' or patient.type == 'emergency-day' %}
+                    <tr class="gray-border">
+                        <td class="pd-l-3">{{ forloop.counter }}</td>
+                        <td class="pd-l-3">{{ patient.date }}</td>
+                        <td class="pd-l-3">{{ patient.meal }}</td>
+                        {% if patient.type == 'emergency-night' %}
+                            <td class="pd-l-3">Сухпаек</td>
+                        {% else %}
+                            <td class="pd-l-3">{{ patient.diet }}</td>
+                        {% endif %}
+                        <td class="pd-l-3" style="width: 450px;">{{ patient.full_name }}</td>
+                        <td class="pd-l-3">{{ patient.room }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}    
+        </table>
+    {% endif %}
 
     <table class="mr-t-30">
         <tr class="gray-border">
@@ -86,6 +117,12 @@ h3 {
             <td class="font-weight-600">{{ count }}</td>
         </tr>
         {% endfor %}
+        {% if count_extr != 0 %}
+        <tr class="gray-border">
+            <td class="font-weight-600">— Экстренное питание</td>
+            <td class="font-weight-600">{{ count_extr }}</td>
+        </tr>
+        {% endif %}
     </table>
 {% endif %}
 </body>
