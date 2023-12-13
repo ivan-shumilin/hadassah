@@ -760,12 +760,21 @@ class SendEmergencyFoodAPIView(APIView):
 
             if not patient.is_probe and not patient.is_pureed_nutrition:
                 product_add.append(self.MENU['snack'])
+
+            # записываем отчет на завтра
+            time = datetime.today().time()
+            if time.hour >= 18 or time.hour == 0:
+                date_create = date.today() + timedelta(days=1)
+            else:
+                date_create = date.today()
+
         # если рабочие часы
         else:
             meal = data_no_name
             # добавить прием пищи в MenuByDayReadyOrder и в MenuByDay
             date_today = str(date.today())
             product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal, extra_bouillon=False)
+            date_create = patient.receipt_date
 
         # добавить в отчеты и отправить сообщение
         meal_mod = ', ' + translate_meal(meal).lower() if data_no_name != 'no_working_hours' else ''
@@ -777,10 +786,12 @@ class SendEmergencyFoodAPIView(APIView):
         messang += f'    \n'
         type_report = 'emergency-night' if data_no_name == 'no_working_hours' else 'emergency-day'
         first_meal = next_meal(first_meal) if type_report == 'emergency-day' else first_meal
+
+
         for product_id in product_add:
             messang += f'– {ProductLp.objects.get(id=product_id).name}\n'
             Report(user_id=patient,
-                   date_create=patient.receipt_date,
+                   date_create=date_create,
                    meal=first_meal,
                    product_id=product_id,
                    type_of_diet=patient.type_of_diet,
