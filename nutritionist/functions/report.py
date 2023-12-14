@@ -372,6 +372,8 @@ def create_external_report_detailing(filtered_report):
         for key2, value2 in value1.items():
             report[key1][key2] = {}
             for index, item in enumerate(value2):
+                if item.type == 'emergency-night':
+                    item.type_of_diet = 'Сухпаек'
                 report[key1][key2].setdefault(str(item.type_of_diet), []).append(item)
             for key3, value3 in report[key1][key2].items():
                 test = {}
