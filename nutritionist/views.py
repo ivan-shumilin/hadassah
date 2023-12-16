@@ -1706,6 +1706,8 @@ def custom_sort(ttk, filter):
     return ttk
 
 def report(request):
+    # from scripts.updata_ttk import update_ttk
+    # update_ttk()
     return render(request, 'report.html', {})
 
 

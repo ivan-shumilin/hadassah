@@ -19,8 +19,8 @@ def get_token(attempt):
         url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/auth'
 
         params = {
-            'login': 'Admin',
-            'pass': '601f1889667efaebb33b8c12572835da3f027f78',
+            'login': 'Skolkovo',
+            'pass': 'bc53b5813c49642762c251319405523e399e6176',
         }
 
         respons = requests.get(url=url, params=params)
