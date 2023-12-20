@@ -88,20 +88,20 @@ app.conf.beat_schedule = {
         'schedule': crontab(minute=5, hour='18'),
     },
 # Обновление ТТК
-    'my_job_updata_ttk': {
-        'task': 'doctor.tasks.my_job_updata_ttk',
-        'schedule': crontab(minute=1, hour='1'),
-    },
+#     'my_job_updata_ttk': {
+#         'task': 'doctor.tasks.my_job_updata_ttk',
+#         'schedule': crontab(minute=1, hour='1'),
+#     },
 # кеширеум ингредиеты и ттк
     'may_job_updata_cache': {
         'task': 'doctor.tasks.may_job_updata_cache',
         'schedule': crontab(minute=30, hour='0'),
     },
 # проверяем базу данных ПО учета времени
-    'may_job_ping_db': {
-        'task': 'doctor.tasks.may_job_ping_db',
-        'schedule': crontab(minute='*'),
-    },
+#     'may_job_ping_db': {
+#         'task': 'doctor.tasks.may_job_ping_db',
+#         'schedule': crontab(minute='*'),
+#     },
 }
 app.conf.timezone = 'Europe/Moscow'
 app.autodiscover_tasks()
