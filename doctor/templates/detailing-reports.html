@@ -85,14 +85,14 @@ h3 {
                 {% if patient.type == 'emergency-night' or patient.type == 'emergency-day' %}
                     <tr class="gray-border">
                         <td class="pd-l-3">{{ forloop.counter }}</td>
-                        <td class="pd-l-3">{{ patient.date }}</td>
+                        <td class="pd-l-3" style="width: 100px;">{{ patient.date }}</td>
                         <td class="pd-l-3">{{ patient.meal }}</td>
                         {% if patient.type == 'emergency-night' %}
                             <td class="pd-l-3">Сухпаек</td>
                         {% else %}
                             <td class="pd-l-3">{{ patient.diet }}</td>
                         {% endif %}
-                        <td class="pd-l-3" style="width: 450px;">{{ patient.full_name }}</td>
+                        <td class="pd-l-3" style="width: 400px;">{{ patient.full_name }}</td>
                         <td class="pd-l-3">{{ patient.room }}</td>
                     </tr>
                 {% endif %}
