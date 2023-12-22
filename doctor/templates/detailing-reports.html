@@ -60,7 +60,7 @@ h3 {
             {% if patient.type != 'emergency-night' and patient.type != 'emergency-day' %}
                 <tr class="gray-border">
                     <td class="pd-l-3">{{ forloop.counter }}</td>
-                    <td class="pd-l-3">{{ patient.date }}</td>
+                    <td class="pd-l-3" style="width: 100px;">{{ patient.date }}</td>
                     <td class="pd-l-3">{{ patient.meal }}</td>
                     <td class="pd-l-3">{{ patient.diet }}</td>
                     <td class="pd-l-3" style="width: 400px;">{{ patient.full_name }}</td>
