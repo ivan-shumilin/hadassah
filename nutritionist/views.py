@@ -1857,43 +1857,49 @@ def internal_report(request):
 
     report = {}
     for index, item in enumerate(filtered_report):
-        if 'cafe' in item.product_id:
-            try:
-                product = Product.objects.get(id=item.product_id.split('-')[2])
-                report.setdefault(item.product_id, []).append(
-                    {'category': product.category,
-                     'name': product.name,
-                     })
-            except ValueError:
-                pass
-        else:
-            if ',' in item.product_id:
-                for id in item.product_id.split(','):
+        if item.product_id:
+            if 'cafe' in item.product_id:
+                try:
+                    product = Product.objects.get(id=item.product_id.split('-')[2])
+                    report.setdefault(item.product_id, []).append(
+                        {'category': product.category,
+                         'name': product.name,
+                         })
+                except ValueError:
+                    pass
+            else:
+                if ',' in item.product_id:
+                    for id in item.product_id.split(','):
+                        try:
+                            product = ProductLp.objects.get(id=id)
+                            report.setdefault(id, []).append(
+                                {'category': product.category,
+                                 'name': product.name,
+                                 })
+                        except:
+                            pass
+                else:
                     try:
-                        product = ProductLp.objects.get(id=id)
-                        report.setdefault(id, []).append(
+                        product = ProductLp.objects.get(id=item.product_id)
+                        report.setdefault(item.product_id, []).append(
                             {'category': product.category,
                              'name': product.name,
                              })
                     except:
                         pass
-            else:
-                try:
-                    product = ProductLp.objects.get(id=item.product_id)
-                    report.setdefault(item.product_id, []).append(
-                        {'category': product.category,
-                         'name': product.name,
-                         })
-                except:
-                    pass
 
     temporary_report = []
     for item in report.values():
         item[0]['count'] = len(item)
+
         temporary_report.append(item[0])
 
+    for item in temporary_report:
+        if not item['category']:
+            item['category'] = 'Нет категории'
 
     temporary_report.sort(key=operator.itemgetter('category'))
+
     category_translation = {
         'завтраки': 'завтрак',
         'Завтраки': 'завтрак (раздача)',
@@ -1914,6 +1920,7 @@ def internal_report(request):
         'Каши': 'каша (раздача)',
         'товар': 'товар',
         'hidden': 'hidden',
+        'Нет категории': 'Нет категории',
     }
     category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша', 'товар', 'hidden',]
     category += ['Завтраки', 'Каши', 'Салаты', 'Первые блюда', 'Блюда от шефа', 'Вторые блюда', 'Гарниры',
@@ -1961,8 +1968,8 @@ class DownloadReportAPIView(APIView):
         logging.info(f'пользователь ({date_start})')
         # создать запись что пошел поцесс создания отчета
         id = IsReportCreate.objects.create(is_report_create=False).id
-        create_report_download.delay(date_start, date_finish, id)
-        # create_report_download(date_start, date_finish, id)
+        # create_report_download.delay(date_start, date_finish, id)
+        create_report_download(date_start, date_finish, id)
 
         response = {"response": str(id)}
         response = json.dumps(response)
