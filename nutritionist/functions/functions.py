@@ -146,7 +146,18 @@ def create_stickers_pdf(catalog):
         res_list.append(res) if res[0] == st_ch2 else res_list.append('' + res)
         return res_list
 
+    # рассчет, сколько строк нужно будет скипнуть, чтобы напечатать в конце страницы + печать времени
+    def print_date(cell_height):
+        height = pdf.h
+        current_y = pdf.get_y()
+        skip_height = int(height - current_y - cell_height - 10)
+        pdf.ln(skip_height)
+        now = datetime.now()
+        current_time = now.strftime("%H:%M")
+        pdf.cell(200, cell_height, txt=current_time, ln=True, align="R")
+
     pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=10) # установила фиксированный оступ снизу 10
     for floor in ['users_not_floor', 'users_2nd_floor', 'users_3nd_floor', 'users_4nd_floor']:
         for item in catalog[floor]:
             item['diet'] = item['diet'].replace('*', '')
@@ -222,6 +233,12 @@ def create_stickers_pdf(catalog):
                 else:
                     pdf.cell(50, 10, txt=f'- {product["name"]}', ln=index + ln, align="L")
                 pdf.cell(50, 3, txt=f'', ln=index + 1 + ln, align="L")
+
+            # проверка, что время вместиться на страницу, иначе не печатаю
+            # 10 - отступ снизу, 10 - высота клетки
+            if pdf.h - pdf.get_y() >= (10 + 10):
+                print_date(10)
+
     pdf.output("static/stickers.pdf")
     return
 
