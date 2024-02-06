@@ -150,11 +150,11 @@ def create_stickers_pdf(catalog):
     def print_date(cell_height):
         height = pdf.h
         current_y = pdf.get_y()
-        skip_height = int(height - current_y - cell_height - 10)
+        skip_height = int(height - current_y - cell_height - 10 * 2) # оставляю еще строчку снизу
         pdf.ln(skip_height)
         now = datetime.now()
         current_time = now.strftime("%H:%M")
-        pdf.cell(200, cell_height, txt=current_time, ln=True, align="R")
+        pdf.cell(200, cell_height, txt="Время приготовления: " + current_time, ln=True, align="R")
 
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=10) # установила фиксированный оступ снизу 10
