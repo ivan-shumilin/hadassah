@@ -381,10 +381,10 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
         for column in columns:
             ws.write(row, column, text, style)
 
-    def field_fill_white(ws: Worksheet, row_to_fill: int) -> None:
-        """ Заливает все поле с 0 по указанную строку листа белым"""
-        for row in range(row_to_fill):
-            for col in range(50):
+    def field_fill_white(ws: Worksheet, row_start: int, row_end: int, col_start: int, col_end: int) -> None:
+        """ Заливает все поле на указанный квадрат листа белым"""
+        for row in range(row_start, row_end + 1):
+            for col in range(col_start, col_end + 1):
                 ws.write(row, col, "", wb.add_format({"bg_color": "white"}))
 
     ws = wb.add_worksheet("Отчет")
@@ -465,7 +465,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
     #                       страница "Отчёт"
     # -------------------------------------------------------------------
 
-    field_fill_white(ws, 300)
+    field_fill_white(ws, 0, 300, 0, 50)
 
     ws.merge_range("A1:E1", "Отчет по лечебному питанию", font_first_title)
     ws.merge_range("A2:E2", "Круглосуточный стационар, Hadassah Medical Moscow", font_16_bold)
@@ -503,24 +503,31 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
                     for diet, diet_info in type_of_diet.items():
                         style = font_table_cell
-                        if row == first_row and meal != "breakfast":
-                            style = font_dotted_border
+                        if row == first_row:
+                            if meal != "breakfast":
+                                style = font_dotted_border
+                        # убирает границы для столбцов 0 1 если там не надо писать прием пищи
+                        else :
+                            add_font_style(style, "", row, 0, 1)
                         ws.write(row, 2, diet, style)
                         ws.write(row, 3, diet_info["count"], style)
                         ws.write(row, 4, f'{diet_info["money"]}.00', style)
                         row += 1
         row += 1
 
-    ws.write(row, 1, "Нулевая диета", font_total_format)
-    ws.write(row, 4, f'{report["Нулевая диета"]}', font_total_format)
-    add_font_style(font_total_format, "", row, 0, 2, 3)
+    ws.write(row - 1, 1, "Нулевая диета", font_total_format)
+    ws.write(row - 1, 4, f'{report["Нулевая диета"]}', font_total_format)
+    add_font_style(font_total_format, "", row - 1, 0, 2, 3)
 
-    ws.write(row + 1, 1, "Остальные диеты ", font_total_format)
-    ws.write(row + 1, 4, f'{report["Итого"]["Всего за период"]["money"] - report["Нулевая диета"]}', font_total_format)
-    add_font_style(font_total_format, "", row + 1, 0, 2, 3)
+    ws.write(row, 1, "Остальные диеты ", font_total_format)
+    ws.write(row, 4, f'{report["Итого"]["Всего за период"]["money"] - report["Нулевая диета"]}', font_total_format)
+    add_font_style(font_total_format, "", row, 0, 2, 3)
 
     ws.set_row(4, 35)
     ws.set_column("A:E", 19)  # 4.87 cm
+
+    field_fill_white(ws, 0, row, 5, 50)
+    field_fill_white(ws, row + 1, row + 5, 0, 50)
 
     # -------------------------------------------------------------------
     #                       страница "Детальный"
@@ -528,8 +535,6 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
     ws_detail = wb.add_worksheet("Детальный")
     ws_detail.set_default_row(20)
-
-    field_fill_white(ws_detail, 620)
 
     ws_detail.merge_range("A1:E1", "Детализация к отчету по лечебному питанию", font_first_title)
     ws_detail.merge_range("A2:E2", "Круглосуточный стационар, Hadassah Medical Moscow", font_16_bold)
@@ -561,6 +566,9 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
     ws_detail.set_row(4, 35)
     ws_detail.set_column("A:E", 19)  # 4.87 cm
+
+    field_fill_white(ws_detail, 0, row + 5, 5, 50)
+    field_fill_white(ws_detail, row, row + 5, 0, 50)
 
     wb.close()
     return
