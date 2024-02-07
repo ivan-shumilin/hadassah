@@ -157,7 +157,8 @@ def create_report_download(date_start, date_finish, id):
         date_create__lte=date_finish,
     ).exclude(
         user_id__type_pay='petrushka'
-    )
+    ).order_by('date_create')
+
     date_start = datetime.strptime(date_start, "%Y-%m-%d").date()
     date_finish = datetime.strptime(date_finish, "%Y-%m-%d").date()
     report = create_external_report(filtered_report)
