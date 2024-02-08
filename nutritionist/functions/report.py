@@ -312,6 +312,8 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
     for col, header in enumerate(headers):
         ws_detail.write(4, col, header, font_title_format)
 
+    field_fill_white(ws_detail, 3, 3, 0, 5)
+
     row = 5
     for date, date_info in report_detailing.items():
         for meal, meal_info in date_info.items():
@@ -341,7 +343,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
     return
 
 
-def create_external_report_detailing(filtered_report):
+def create_external_report_detailing(filtered_report: Report) -> Dict:
     report = {}
     report_ = {}
     for index, item in enumerate(filtered_report):
@@ -360,6 +362,8 @@ def create_external_report_detailing(filtered_report):
             for index, item in enumerate(value2):
                 if item.type == 'emergency-night':
                     item.type_of_diet = 'Сухпаек'
+                elif item.type == 'emergency-day':
+                    item.type_of_diet += ' + экстренное питание'
                 report[key1][key2].setdefault(str(item.type_of_diet), []).append(item)
             for key3, value3 in report[key1][key2].items():
                 test = {}
