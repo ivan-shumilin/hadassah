@@ -30,7 +30,7 @@ def change_str_in_date(date_str):
 
 
 def create_external_report(filtered_report: Report) -> Dict:
-    """ Отчет для Hadassah. Создает словарь с отчетом по дням и диетам, в котором содержаться цена, сухпаек и кол-во"""
+    """ Отчет для Hadassah. Создает словарь с отчетом по дням и диетам, в котором содержаться цена, сухпаек и кол-во """
     report = sort_by_date(filtered_report)
     report_ = sort_by_meal(report)
 
@@ -80,16 +80,15 @@ def create_external_report(filtered_report: Report) -> Dict:
                 count_emergency_food = \
                     len(set([user.user_id for user in (report[date_key][meal_key][diet_key])
                                 if user.product_id in ['569', '568', '570']]))
-                if (diet_key in ['Нулевая диета', 'Нулевая диета (Э)', 'Нулевая диета (П)'] +
-                        ['Нулевая диета + бульон', 'Нулевая диета (Э) + бульон', 'Нулевая диета (П) + бульон']):
-                    price = price_just_wather
-                    count_just_wather += count_items
 
+                if "нулевая диета" in diet_key.lower():
+                    price = PRICE_JUST_WATHER
+                    count_just_wather += count_items
                 elif diet_key == 'БД день 2' and meal_key == 'afternoon':
-                    price = price_count_bd_2
+                    price = PRICE_COUNT_BD_2
                     count_bd_2 += count_items
                 else:
-                    price = price_all
+                    price = PRICE_ALL
 
                 count_all += count_items
                 count_emergency_food_all += count_emergency_food
@@ -98,25 +97,25 @@ def create_external_report(filtered_report: Report) -> Dict:
                     {'count': count_items,
                      'count_bouillon': count_bouillon,
                      'count_emergency_food': count_emergency_food,
-                     'money': (count_items * price) + (count_bouillon * price_bouillon) + (count_emergency_food * price_emergency_food)}
+                     'money': (count_items * price) + (count_bouillon * price_bouillon) + (count_emergency_food * PRICE_EMERGENCY_FOOD)}
 
                 # считает отдельно цену и количество нулевых диет
-                if "Нулевая диета" in diet_key:
+                if "нулевая диета" in diet_key.lower():
                     money_zero_diet_total += (count_items * price) + (count_bouillon * price_bouillon) + (
-                            count_emergency_food * price_emergency_food)
+                            count_emergency_food * PRICE_EMERGENCY_FOOD)
                     count_zero_diet_total += count_items
 
-        money = (count_all - count_just_wather - count_bd_2) * price_all + \
-                (count_just_wather * price_just_wather) + \
-                (count_bd_2 * price_count_bd_2) + \
+        money = (count_all - count_just_wather - count_bd_2) * PRICE_ALL + \
+                (count_just_wather * PRICE_JUST_WATHER) + \
+                (count_bd_2 * PRICE_COUNT_BD_2) + \
                 (count_bouillon * price_bouillon) + \
-                (count_emergency_food_all * price_emergency_food)
+                (count_emergency_food_all * PRICE_EMERGENCY_FOOD)
         report[date_key]['Всего'] = {'count': count_all,
                                      'money': money}
         money_total += money
         count_total += count_all
         count_emergency_food_total += count_emergency_food_all
-        money_emergency_food_total += count_emergency_food_all * price_emergency_food
+        money_emergency_food_total += count_emergency_food_all * PRICE_EMERGENCY_FOOD
 
     report['Итого'] = {'Всего за период': {'count': count_total, 'money': money_total}}
     report['Нулевая диета'] = {'count': count_zero_diet_total, 'money': money_zero_diet_total}
@@ -126,7 +125,7 @@ def create_external_report(filtered_report: Report) -> Dict:
 
 
 def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date_finish: datetime) -> None:
-    """Создаёт excel файл с отчетом по блюдам"""
+    """ Создаёт excel файл с отчетом по блюдам """
 
     wb = xlsxwriter.Workbook("static/report.xlsx")
 
@@ -136,7 +135,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
             ws.write(row, column, text, style)
 
     def field_fill_white(ws: Worksheet, row_start: int, row_end: int, col_start: int, col_end: int) -> None:
-        """ Заливает все поле на указанный квадрат листа белым"""
+        """ Заливает все поле на указанный квадрат листа белым """
         for row in range(row_start, row_end + 1):
             for col in range(col_start, col_end + 1):
                 ws.write(row, col, "", wb.add_format({"bg_color": "white"}))
@@ -183,7 +182,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
         }
     )
 
-    font_16_bold = wb.add_format(
+    font_14_bold = wb.add_format(
         {
             "font_name": "Arial",
             "font_size": 14,
@@ -218,8 +217,15 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
     font_group_diet = wb.add_format({
         "fg_color": "white",
-        "italic": False,
+        "italic": True,
         "align": "left",
+    })
+
+    font_end_of_table = wb.add_format({
+        "fg_color": "white",
+        "italic": True,
+        "bottom": 1,
+        "bottom_color": "000000",
     })
 
     # -------------------------------------------------------------------
@@ -229,9 +235,9 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
     field_fill_white(ws, 0, 300, 0, 50)
 
     ws.merge_range("A1:E1", "Отчет по лечебному питанию", font_first_title)
-    ws.merge_range("A2:E2", "Круглосуточный стационар, Hadassah Medical Moscow", font_16_bold)
+    ws.merge_range("A2:E2", "Круглосуточный стационар, Hadassah Medical Moscow", font_14_bold)
     ws.merge_range("A3:E3", f'{date_start.day}.{date_start.month}.{date_start.year} - {date_finish.day}.{date_finish.month}.{date_finish.year}',
-                   font_16_bold)
+                   font_14_bold)
 
     headers = ["Учетный день", "Прием пищи", "Рацион", "Количество", "Сумма, руб."]
     for col, header in enumerate(headers):
@@ -239,8 +245,8 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
     row = 5
     for date, meal_info in report.items():
-        if date != "Нулевая диета" and date != "Сухпаек":
-            if date != "Итого":
+        if date.lower() != "нулевая диета" and date.lower() != "сухпаек":
+            if date.lower() != "итого":
                 ws.write(row, 0, date, font_table_cell)
             for meal, type_of_diet in meal_info.items():
                 first_row = row
@@ -285,10 +291,10 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
     ws.write(row - 1, 4, f'{report["Итого"]["Всего за период"]["money"] - report["Нулевая диета"]["money"]}.00', font_group_diet)
     add_font_style(font_group_diet, "", row - 1, 0, 2)
 
-    ws.write(row, 1, "Сухпаек", font_total_format)
-    ws.write(row, 3, f'{report["Сухпаек"]["count"]}', font_total_format)
-    ws.write(row, 4, f'{report["Сухпаек"]["money"]}.00', font_total_format)
-    add_font_style(font_total_format, "", row, 0, 2)
+    ws.write(row, 1, "Сухпаек", font_end_of_table)
+    ws.write(row, 3, f'{report["Сухпаек"]["count"]}', font_end_of_table)
+    ws.write(row, 4, f'{report["Сухпаек"]["money"]}.00', font_end_of_table)
+    add_font_style(font_end_of_table, "", row, 0, 2)
 
     ws.set_row(4, 35)
     ws.set_column("A:E", 19)  # 4.87 cm
@@ -304,9 +310,9 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
     ws_detail.set_default_row(20)
 
     ws_detail.merge_range("A1:E1", "Детализация к отчету по лечебному питанию", font_first_title)
-    ws_detail.merge_range("A2:E2", "Круглосуточный стационар, Hadassah Medical Moscow", font_16_bold)
+    ws_detail.merge_range("A2:E2", "Круглосуточный стационар, Hadassah Medical Moscow", font_14_bold)
     ws_detail.merge_range("A3:E3", f'{date_start.day}.{date_start.month}.{date_start.year}'
-                                   f' - {date_finish.day}.{date_finish.month}.{date_finish.year}', font_16_bold)
+                                   f' - {date_finish.day}.{date_finish.month}.{date_finish.year}', font_14_bold)
 
     headers = ["Учетный день", "Прием пищи", "Рацион", "ФИО", "№ палаты"]
     for col, header in enumerate(headers):
@@ -368,6 +374,6 @@ def create_external_report_detailing(filtered_report: Report) -> Dict:
             for key3, value3 in report[key1][key2].items():
                 test = {}
                 for item in report[key1][key2][key3]:
-                    test[item.user_id.full_name] = item.user_id.room_number
+                    test[item.user_id.full_name] = (item.user_id.room_number, item.user_id.floor, item.user_id.department, item.type)[0]
                 report[key1][key2][key3] = test
     return report
