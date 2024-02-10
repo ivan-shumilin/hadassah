@@ -9,6 +9,9 @@ from unittest.mock import patch
 
 
 class MyTestCase(unittest.TestCase):
+    """ Полное тестирование функции edit_user.
+     Warning!!! Для корректной работы тестов на данном этапе необходимо закомментировать импорт и
+     все использования функции from doctor.tasks import my_job_send_messang_changes """
 
     def setUp(self):
         self.type = 'edit'

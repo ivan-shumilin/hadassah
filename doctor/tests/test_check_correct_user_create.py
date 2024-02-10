@@ -1,14 +1,17 @@
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from django.test import RequestFactory
 
 from doctor.forms import PatientRegistrationForm
 from nutritionist.models import CustomUser
-from doctor.functions.functions import create_user, get_user_name
+from doctor.functions.functions import create_user
 
 
 class CustomUserCreateTests(unittest.TestCase):
+    """ Полное тестирование функции create_user со всеми внутренними функциями.
+     Warning!!! Для корректной работы тестов на данном этапе необходимо закомментировать импорт и
+     все использования функции from doctor.tasks import my_job_send_messang_changes """
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -70,7 +73,6 @@ class CustomUserCreateTests(unittest.TestCase):
         mock_logging.info.return_value = None
         mock_add_the_patient_menu.return_value = None
         mock_update_users_today.return_value = None
-        # mock_check_meal_user.return_value = "завтрака", 0
         mock_get_now_show_meal.return_value = "ужина"
         mock_do_messang_send.return_value = True
         mock_formatting_full_name.return_value = "Егорова Антонина Степановна"
@@ -78,7 +80,6 @@ class CustomUserCreateTests(unittest.TestCase):
         mock_check_change.return_value = 'завтрака', 0
 
         mock_get_user_name.return_value = ""
-
         count_after_add_user = CustomUser.objects.count()
 
         request = self.factory.post("/doctor/", data=data)

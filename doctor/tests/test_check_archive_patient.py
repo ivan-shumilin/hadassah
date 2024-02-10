@@ -9,6 +9,9 @@ from nutritionist.models import CustomUser
 
 
 class MyTestCase(unittest.TestCase):
+    """ Полное тестирование функции archieve_user.
+     Warning!!! Для корректной работы тестов на данном этапе необходимо закомментировать импорт и
+     все использования функции from doctor.tasks import my_job_send_messang_changes """
 
     def setUp(self):
         self.factory = RequestFactory()
