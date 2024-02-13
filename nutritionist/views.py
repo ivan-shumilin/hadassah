@@ -1141,7 +1141,7 @@ def detailing_reports(request, meal, floor):
 
     data_str = date_start.isoformat()
     # for reports, type in ((reports, 'standart'), (reports_extra, 'extra')):
-    reports = reports[date_start.isoformat()].get(meal, None)
+    reports = reports.get(date_start.isoformat(), {}).get(meal, None)
     result = []
     if reports:
         if floor != "resuscitation":
