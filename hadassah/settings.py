@@ -23,9 +23,10 @@ ALLOWED_HOSTS = [
         'petrushkagroup.ru',
         '158.160.15.85',
         '127.0.0.1',
-        'loclhost',
+        'localhost',
         'https://2a3d-178-89-129-243.ngrok-free.app',
         '2a3d-178-89-129-243.ngrok-free.app',
+        '130.193.55.25'
 ]
 
 
@@ -35,9 +36,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8000",
     "https://b467-146-120-93-183.eu.ngrok.io",
+    "http://130.193.55.25",
 ]
-
-
 
 
 # Application definition
@@ -115,7 +115,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -171,6 +170,10 @@ DATE_FORMAT = 'd E Y'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "doctor", "static"),
+    os.path.join(BASE_DIR, "nutritionist", "static"),
+]
 # Основной url для управления медиафайлами
 MEDIA_URL = '/media/'
 
@@ -218,11 +221,6 @@ EMAIL_HOST_USER = 'info@petrushkagroup.ru'
 EMAIL_HOST_PASSWORD = 'sswmlhpfnbooozkb'
 
 AUTH_USER_MODEL = 'nutritionist.CustomUser'
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'doctor/static'),
-]
-
 # PWA_APP_DEBUG_MODE = True
 
 PWA_APP_NAME = 'ЛК врача'
@@ -267,6 +265,33 @@ PWA_APP_LANG = 'en-US'
 #         }
 #     }
 # }
+
+LOGGING = {
+    'version': 1,
+
+    'formatters': {
+        'main': {
+            'format': "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s - %(pathname)s"
+        },
+    },
+
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'formatter': 'main',
+            'filename': 'doctor/nutrition_logging.log',
+            'encoding': 'utf-8'
+        }
+    },
+
+    'loggers': {
+        'main_logger': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True
+        }
+    }
+}
 
 ######################
 # CORS HEADERS

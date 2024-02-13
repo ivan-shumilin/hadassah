@@ -35,7 +35,7 @@ from doctor.functions.functions import sorting_dishes, parsing, \
     translate_first_meal, add_features, next_meal
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
-    applies_changes, create_user_tomorrow, create_ready_order, create_report, create_products_lp, add_products_lp,\
+    applies_changes, create_user_tomorrow, create_ready_order, create_report, create_products_lp, add_products_lp, \
     add_products_lp, create_product_storage
 from doctor.functions.diet_formation import add_menu_three_days_ahead, update_diet_bd, \
     add_the_patient_emergency_food_to_the_database, get_meal_emergency_food
@@ -51,13 +51,12 @@ from .functions.download import get_token, download, get_ingredients
 from .functions.helpers import formatting_full_name_mode_full
 from .logic.create_ingredient import create_ingredients
 
-
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from .serializer import DishesSerializer, PatientsSerializer, InfoPatientSerializer, InputDataSerializer, \
     AddDishSerializer, ChangeDishSerializer, CroppImageSerializer, SendPatientProductsAPIViewSerializer, \
-    UpdateSearchAPIViewSerializer, ProductsSerializer
+    UpdateSearchAPIViewSerializer, ProductsSerializer, CheckIsHavePatientSerializer
 
 
 class ServiceWorkerView(TemplateView):
@@ -76,31 +75,31 @@ def load_nomenclature():
         to_create.append(Ingredient(
             product_id=product["id"],
             name=product["name"],
-            imageLinks = product["imageLinks"],
-            code = product["code"],
-            description = product["description"],
-            fatAmount = product["fatAmount"],
-            proteinsAmount = product["proteinsAmount"],
-            carbohydratesAmount = product["carbohydratesAmount"],
-            energyAmount = product["energyAmount"],
-            fatFullAmount = product["fatFullAmount"],
-            proteinsFullAmount = product["proteinsFullAmount"],
-            carbohydratesFullAmount = product["carbohydratesFullAmount"],
-            energyFullAmount = product["energyFullAmount"],
-            weight = product["weight"],
-            groupId = product["groupId"],
-            productCategoryId = product["productCategoryId"],
-            type = product["type"],
-            orderItemType = product["orderItemType"],
-            measureUnit = product["measureUnit"],
+            imageLinks=product["imageLinks"],
+            code=product["code"],
+            description=product["description"],
+            fatAmount=product["fatAmount"],
+            proteinsAmount=product["proteinsAmount"],
+            carbohydratesAmount=product["carbohydratesAmount"],
+            energyAmount=product["energyAmount"],
+            fatFullAmount=product["fatFullAmount"],
+            proteinsFullAmount=product["proteinsFullAmount"],
+            carbohydratesFullAmount=product["carbohydratesFullAmount"],
+            energyFullAmount=product["energyFullAmount"],
+            weight=product["weight"],
+            groupId=product["groupId"],
+            productCategoryId=product["productCategoryId"],
+            type=product["type"],
+            orderItemType=product["orderItemType"],
+            measureUnit=product["measureUnit"],
         ))
     Ingredient.objects.bulk_create(to_create)
 
 
-
-
 def group_doctors_check(user):
     return user.groups.filter(name='doctors').exists()
+
+
 def group_doctors_check_guest(user):
     return user.groups.filter(name='guest').exists() or user.groups.filter(name='doctors').exists()
 
@@ -135,7 +134,7 @@ def doctor(request):
                                                  'is_without_lactose': TextInput(attrs={'required': "True"}),
                                                  'extra_bouillon': TextInput(attrs={'required': "True"}),
                                              },
-                                             extra=0,)
+                                             extra=0, )
 
     not_active_users_set = get_not_active_users_set()
     CustomUserFormSet = delete_choices(CustomUserFormSet)
@@ -157,7 +156,7 @@ def doctor(request):
                 sorting = 'top'
         else:
             queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
-# 11
+    # 11
     if request.method == 'POST' and 'add_patient' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
         first_meal_user, data, patient_receipt_date, patient_receipt_time, meal_order = create_user(user_form, request)
@@ -187,7 +186,8 @@ def doctor(request):
 
     if request.method == 'POST' and 'edit_patient_flag' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        first_meal_user, data, patient_receipt_date, patient_receipt_time, is_edited, emergency_food = edit_user(user_form, 'edit', request)
+        first_meal_user, data, patient_receipt_date, patient_receipt_time, is_edited, emergency_food = edit_user(
+            user_form, 'edit', request)
         # если нужно экстренное питание добавим в эту переменную
         need_emergency_food = ""
         if is_edited:
@@ -279,13 +279,13 @@ def doctor(request):
 def archive(request):
     CustomUserFormSet = modelformset_factory(CustomUser,
                                              fields=(
-                                                 'full_name','birthdate', 'receipt_date', 'receipt_time', 'department',
+                                                 'full_name', 'birthdate', 'receipt_date', 'receipt_time', 'department',
                                                  'floor', 'room_number', 'bed', 'type_of_diet', 'comment', 'id'),
                                              widgets={
                                                  'full_name': TextInput(attrs={'class': 'form-control'}),
                                                  'birthdate': DateInput(format='%Y-%m-%d',
-                                                                           attrs={'class': 'form-control',
-                                                                                  'type': 'date'}),
+                                                                        attrs={'class': 'form-control',
+                                                                               'type': 'date'}),
                                                  'room_number': Select(attrs={'class': 'form-control'}),
                                                  'bed': Select(attrs={'class': 'form-control'}),
                                                  'department': Select(attrs={'class': 'form-control'}),
@@ -329,10 +329,10 @@ def archive(request):
                 queryset = queryset.order_by(filter_by)
                 sorting = 'top'
 
-
     if request.method == 'POST' and 'archive' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        first_meal_user, data, patient_receipt_date, patient_receipt_time, is_archive, emergency_food = edit_user(user_form, 'restore', request)
+        first_meal_user, data, patient_receipt_date, patient_receipt_time, is_archive, emergency_food = edit_user(
+            user_form, 'restore', request)
         if is_archive:
             # нерабочие часы
             time = datetime.today().time()
@@ -445,15 +445,13 @@ def menu(request):
     if sing == 'is_pureed_nutrition':
         diet += " (П)"
 
-
-
     products_lp: tuple = creating_meal_menu_lp(day_of_the_week, diet, meal)
 
     products_main, products_garnish, products_salad, \
-    products_soup, products_porridge, products_dessert, \
-    products_fruit, products_drink = products_lp
+        products_soup, products_porridge, products_dessert, \
+        products_fruit, products_drink = products_lp
 
-    if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'БД', 'Безйодовая', 'ПЭТ/КТ']\
+    if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'БД', 'Безйодовая', 'ПЭТ/КТ'] \
             and diet == diet.replace(" (Э)", "").replace(" (П)", ""):
         # для поиска блюд раздачи нужна диета на лат-ом ("ovd", ..)
         translated_diet = translate_diet(diet)
@@ -461,7 +459,7 @@ def menu(request):
     else:
         products_cafe: tuple = ([], [], [], [], [], [])
     queryset_main_dishes, queryset_garnish, queryset_salad, \
-    queryset_soup, queryset_breakfast, queryset_porridge = products_cafe
+        queryset_soup, queryset_breakfast, queryset_porridge = products_cafe
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
 
@@ -543,6 +541,7 @@ def menu(request):
             }
     return render(request, 'menu.html', context=data)
 
+
 class VerifyPasswordAPIView(APIView):
     def post(self, request):
         data = request.data
@@ -556,6 +555,7 @@ class VerifyPasswordAPIView(APIView):
 
 class GetPatientMenuAPIView(APIView):
     """Возвращает выбранные блюда пациента. ЛК врача, карточка пациента."""
+
     def post(self, request):
         data = request.data
         response = creates_dict_with_menu_patients(data['id_user'])
@@ -597,6 +597,7 @@ class GetPatientMenuDayTestAPIView(APIView):
         response = json.dumps(response)
         return Response(response)
 
+
 # 333
 class SendPatientProductsAPIView(APIView):
     def post(self, request):
@@ -624,7 +625,6 @@ class SendPatientProductsAPIView(APIView):
         messang += f'   \n'
         for product_name in products.strip('&?&').split('&?&'):
             messang += f'– {product_name}\n'
-
 
         messang += f'({user_name})'
         # send_messang_changes(messang, settings.BOT_ID_EMERGEBCY_FOOD)
@@ -669,7 +669,6 @@ class UpdateSearchAPIView(APIView):
                 'id_annotetion',
             ))
 
-
         if type_menu in ['cafe', 'all']:
             filter: Q = Q(category__in=get_category_cafe_2(category)) if category != 'all' else Q()
 
@@ -706,7 +705,6 @@ class UpdateSearchAPIView(APIView):
                 p['id'] = f'cafe-cat-{p["id"]}'
 
         products = product_lp + product_cafe
-
 
         serializer = ProductsSerializer(products, many=True)
         return Response(serializer.data)
@@ -757,7 +755,6 @@ class SendEmergencyFoodAPIView(APIView):
             else:
                 product_add.append(self.MENU['standard'])
 
-
             if not patient.is_probe and not patient.is_pureed_nutrition:
                 product_add.append(self.MENU['snack'])
 
@@ -773,7 +770,8 @@ class SendEmergencyFoodAPIView(APIView):
             meal = data_no_name
             # добавить прием пищи в MenuByDayReadyOrder и в MenuByDay
             date_today = str(date.today())
-            product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal, extra_bouillon=False)
+            product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal,
+                                                                               extra_bouillon=False)
             date_create = patient.receipt_date
 
         # добавить в отчеты и отправить сообщение
@@ -786,7 +784,6 @@ class SendEmergencyFoodAPIView(APIView):
         messang += f'    \n'
         type_report = 'emergency-night' if data_no_name == 'no_working_hours' else 'emergency-day'
         first_meal = next_meal(first_meal) if type_report == 'emergency-day' else first_meal
-
 
         for product_id in product_add:
             messang += f'– {ProductLp.objects.get(id=product_id).name}\n'
@@ -812,16 +809,17 @@ class SendEmergencyFoodAPIView(APIView):
 
 def get_day_of_the_week(date):
     number_day_of_the_week = {
-    '1': 'понедельник',
-    '2': 'вторник',
-    '3': 'среда',
-    '4': 'четверг',
-    '5': 'пятница',
-    '6': 'суббота',
-    '7': 'воскресенье',
+        '1': 'понедельник',
+        '2': 'вторник',
+        '3': 'среда',
+        '4': 'четверг',
+        '5': 'пятница',
+        '6': 'суббота',
+        '7': 'воскресенье',
     }
     date = datetime.strptime(date, '%Y-%m-%d')
     return number_day_of_the_week[str(date.isoweekday())]
+
 
 def get_category(category):
     categorys = {
@@ -839,6 +837,7 @@ def get_category(category):
     }
     return categorys[category]
 
+
 def get_category_cafe_2(category):
     categorys = {
         "salad": ["Салаты"],
@@ -850,12 +849,15 @@ def get_category_cafe_2(category):
     }
     return categorys.get(category, [])
 
+
 def get_category_by_id(id_product):
     if 'cafe' in id_product:
         category_name = Product.objects.get(id=id_product.split('-')[2]).category
     else:
         category_name = ProductLp.objects.get(id=id_product).category
     return get_category_product(category_name)
+
+
 def get_category_product(category_name):
     category_mapping = {
         'salad': ["салат", "Салаты"],
@@ -911,6 +913,7 @@ class GetInfoPatientAPIView(APIView):
         serializer = InfoPatientSerializer(patient)
         return Response(serializer.data)
 
+
 class GetAllDishesByCategoryAPIView(APIView):
     def get(self, request):
         all_diet = {
@@ -940,17 +943,17 @@ class GetAllDishesByCategoryAPIView(APIView):
 
         # Другие приемы пищи по другим активным диетам
         dishes_all = TimetableLp.objects.filter(day_of_the_week=day_of_the_week,
-                                            item__category__in=category,
-                                            type_of_diet__in=active_diet
-                                            ).distinct('item__name')
+                                                item__category__in=category,
+                                                type_of_diet__in=active_diet
+                                                ).distinct('item__name')
 
         # Аналогичный прием пищи по другим активным диетам
         dishes_meal = dishes_all.filter(meals=meal)
 
         # Блюда линни раздачи
         dishes_cafe = Timetable.objects.filter(datetime=date,
-                                            item__category__in=get_category_cafe(category),
-                                            ).distinct('item__name')
+                                               item__category__in=get_category_cafe(category),
+                                               ).distinct('item__name')
 
         # Аналогичный прием пищи по неактивным диетам
         no_active_diet = all_diet - set(active_diet)
@@ -993,7 +996,8 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('name', 'Митбол с кабачком 100 гр'),
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 563),
-                ('description', 'Кабачки/цукини, масло  подсолнечное, фарш курица/говядина( говядина, курица, молоко3,2 % , хлеб, чеснок, соль)')
+                ('description',
+                 'Кабачки/цукини, масло  подсолнечное, фарш курица/говядина( говядина, курица, молоко3,2 % , хлеб, чеснок, соль)')
             ]),
             OrderedDict([
                 ('name', 'Куриная грудка 200 гр.'),
@@ -1005,7 +1009,8 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('name', 'Котлета из трески 100 гр'),
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 566),
-                ('description', 'Фарш рыбный ( филе трески , филе минтая, соль, перец, хлеб, яйцо куриное, зелень), мука пшеничная, масло подсолнечное.')
+                ('description',
+                 'Фарш рыбный ( филе трески , филе минтая, соль, перец, хлеб, яйцо куриное, зелень), мука пшеничная, масло подсолнечное.')
             ]),
             OrderedDict([
                 ('name', 'Кабачки запеченные 150 гр.'),
@@ -1047,7 +1052,8 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('name', 'Блин 2 шт.'),
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 579),
-                ('description', 'Масло подсолнечное, тесто для блинов (молоко 3,2%, яйцо куриное, масло подсолнечное, сахар песок, соль, мука пшеничная)')
+                ('description',
+                 'Масло подсолнечное, тесто для блинов (молоко 3,2%, яйцо куриное, масло подсолнечное, сахар песок, соль, мука пшеничная)')
             ]),
             OrderedDict([
                 ('name', 'Кефир 200 мл'),
@@ -1068,6 +1074,8 @@ class GetAllDishesByCategoryAPIView(APIView):
 
 
 class DeleteDishAPIView(APIView):
+    logger = logging.getLogger('main_logger')
+
     def delete(self, request):
         serializer = AddDishSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -1076,41 +1084,68 @@ class DeleteDishAPIView(APIView):
         product_id: str = serializer.validated_data['product_id']
         category: str = serializer.validated_data['category']
         meal: str = serializer.validated_data['meal']
+        doctor: str = serializer.validated_data['doctor']
 
         changes: list = []  # список с меню в который надо внести изменения
+        product_name = get_product_by_id(product_id)
 
         # Проверка времани, если заказ уже сформирован (менее 2х часов до приема пищи)
         # вносить изменения в MenuByDayReadyOrder
         order_status: str = get_order_status(meal, date)
         menu = MenuByDay.objects.all()
         changes.append((menu, id_user))
+
+        table = "MenuByDay"
+        patient = CustomUser.objects.get(id=id_user)
+
         if order_status == 'fix-order':
             menu = MenuByDayReadyOrder.objects.all()
             patient = UsersReadyOrder.objects.filter(user_id=id_user).first()
             changes.append((menu, patient))
+            table = "MenuByDayReadyOrder"
         with transaction.atomic():
             for menu, id in changes:
                 try:
                     item_menu = menu.get(user_id=id, date=date, meal=meal)
                 except:
+                    message = logging_delete_dish_api('Cant find menu',
+                                                      table, order_status, product_name, product_id,
+                                                      meal, patient, category, date, doctor
+                                                      )
+                    self.logger.error(message)
                     return Response({'status': 'Error'})
-    
+
                 products = getattr(item_menu, category)
                 products = products.split(',')
                 products.remove(product_id)
                 products = ','.join(products)
                 setattr(item_menu, category, products)
                 item_menu.save()
-            
+                message = logging_delete_dish_api('Save',
+                                                  table, order_status, product_name, product_id,
+                                                  meal, patient, category, date, doctor
+                                                  )
+                self.logger.info(message)
             # удалить из ModifiedDish если есть
             patient = CustomUser.objects.filter(id=id_user).first()
             try:
-                ModifiedDish.objects\
+                ModifiedDish.objects \
                     .filter(product_id=product_id, date=date, meal=meal, user_id=patient).first().delete()
             except:
+                message = logging_delete_dish_api('Cant delete',
+                                                  table, order_status, product_name, product_id,
+                                                  meal, patient, category, date, doctor
+                                                  )
+                self.logger.error(message)
                 pass
 
-            return Response({'status':'OK'})
+            message = logging_delete_dish_api('Delete ',
+                                              table, order_status, product_name, product_id,
+                                              meal, patient, category, date, doctor
+                                              )
+            self.logger.info(message)
+
+            return Response({'status': 'OK'})
 
 
 class CheckIsHavePatientAPIView(APIView):
@@ -1118,6 +1153,7 @@ class CheckIsHavePatientAPIView(APIView):
     Проверяет, есть ли пациент с указаными ФИО и датой рожения.
     Если есть, то в архиве или в активных пациентах.
     """
+
     def post(self, request):
         serializer = CheckIsHavePatientSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -1138,7 +1174,18 @@ class CheckIsHavePatientAPIView(APIView):
             response = {'status': 'None'}
         return Response(response)
 
+
+def get_product_by_id(string_id: [str, int]) -> str:
+    """ Возвращает название продукта по его id """
+    if 'cafe-cat' in string_id:
+        id = string_id.split('-')[-1]
+        return Product.objects.get(id=id).name
+    return ProductLp.objects.get(id=string_id).name
+
+
 class AddDishAPIView(APIView):
+    logger = logging.getLogger('main_logger')
+
     def post(self, request):
         serializer = AddDishSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -1147,7 +1194,9 @@ class AddDishAPIView(APIView):
         product_id: str = serializer.validated_data['product_id']
         category: str = serializer.validated_data['category']
         meal: str = serializer.validated_data['meal']
+        doctor: str = serializer.validated_data['doctor']
 
+        product_name = get_product_by_id(product_id)
         changes: list = []  # список с меню в который надо внести изменения
 
         # Проверка времани, если заказ уже сформирован (менее 2х часов до приема пищи)
@@ -1155,16 +1204,25 @@ class AddDishAPIView(APIView):
         # type_order = what_type_order()
         order_status: str = get_order_status(meal, date)
         menu = MenuByDay.objects.all()
+        table = "MenuByDay"
         changes.append((menu, id_user))
+        patient = CustomUser.objects.get(id=id_user)
+
         if order_status == 'fix-order':
             menu = MenuByDayReadyOrder.objects.all()
             patient = UsersReadyOrder.objects.filter(user_id=id_user).first()
             changes.append((menu, patient))
+            table = "MenuByDayReadyOrder"
         with transaction.atomic():
             for menu, id in changes:
                 try:
                     item_menu = menu.get(user_id=id, date=date, meal=meal)
                 except:
+                    message = logging_add_dish_api('Cant find menu',
+                                                   table, order_status, product_name,
+                                                   product_id, meal, patient, category, date,
+                                                   doctor)
+                    self.logger.error(message)
                     return Response({'status': 'Error'})
 
                 products = getattr(item_menu, category)
@@ -1176,14 +1234,27 @@ class AddDishAPIView(APIView):
                     products = ','.join(products)
                 setattr(item_menu, category, products)
                 item_menu.save()
+
+                message = logging_add_dish_api('Save ',
+                                               table, order_status, product_name,
+                                               product_id, meal, patient, category, date,
+                                               doctor)
+                self.logger.info(message)
             # добавить изменения в ModifiedDish
             user = CustomUser.objects.get(id=id_user)
             ModifiedDish(product_id=product_id, date=date, meal=meal, user_id=user, status="add").save()
-
-        return Response({'status':'OK'})
+            table = "ModifiedDish"
+            message = logging_add_dish_api('Save',
+                                           table, order_status, product_name,
+                                           product_id, meal, patient, category, date,
+                                           doctor)
+            self.logger.info(message)
+        return Response({'status': 'OK'})
 
 
 class ChangeDishAPIView(APIView):
+    logger = logging.getLogger('main_logger')
+
     def put(self, request):
         serializer = ChangeDishSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -1194,17 +1265,27 @@ class ChangeDishAPIView(APIView):
         product_id_add: str = serializer.validated_data['product_id_add']
         product_id_del: str = serializer.validated_data['product_id_del']
         changes: list = []  # список с меню в который надо внести изменения
+        doctor: str = serializer.validated_data['doctor']
+
+        message = ''
 
         # Проверка времани, если заказ уже сформирован (менее 2х часов до приема пищи)
         # вносить изменения в MenuByDayReadyOrder
         order_status: str = get_order_status(meal, date)
         menu = MenuByDay.objects.all()
         changes.append((menu, id_user))
+
+        product_name_add = get_product_by_id(product_id_add)
+        product_name_del = get_product_by_id(product_id_del)
+
+        table = "MenuByDay"
         if order_status == 'fix-order':
             menu = MenuByDayReadyOrder.objects.all()
             patient = UsersReadyOrder.objects.filter(user_id=id_user).first()
             changes.append((menu, patient))
+            table = "MenuByDayReadyOrder"
         with transaction.atomic():
+            patient = CustomUser.objects.filter(id=id_user).first()
             for menu, id in changes:
                 try:
                     with transaction.atomic():
@@ -1230,17 +1311,38 @@ class ChangeDishAPIView(APIView):
                         item_menu.save()
 
                 except:
+                    category_add = get_category_by_id(product_id_add)
+                    message = logging_change_dish_api('Cant change dish', table, order_status,
+                                                      product_name_add,
+                                                      product_id_add, product_name_del, product_id_del, meal, patient,
+                                                      category_add,
+                                                      category, date, doctor)
+                    self.logger.error(message)
+
                     return Response({'status': 'Error'})
             # удалить из ModifiedDish если есть
             patient = CustomUser.objects.filter(id=id_user).first()
             try:
-                ModifiedDish.objects\
+                ModifiedDish.objects \
                     .filter(product_id=product_id_del, date=date, meal=meal, user_id=patient).first().delete()
             except:
+                message = logging_change_dish_api('Cant delete', table, order_status, product_name_add,
+                                                  product_id_add, product_name_del, product_id_del, meal, patient,
+                                                  category_add,
+                                                  category, date, doctor)
+                self.logger.error(message)
                 pass
             # добавить изменения в ModifiedDish
             user = CustomUser.objects.get(id=id_user)
             ModifiedDish(product_id=product_id_add, date=date, meal=meal, user_id=user, status="change").save()
+            table = "ModifiedDish"
+
+            message = logging_change_dish_api('Save', table, order_status, product_name_add,
+                                              product_id_add, product_name_del, product_id_del, meal, patient,
+                                              category_add,
+                                              category, date, doctor)
+            self.logger.info(message)
+
         return Response({'status': 'OK'})
 
 
@@ -1396,7 +1498,8 @@ class GetIngredientsAPIView(APIView):
         lst = string[1:-1].split(', ')
         filter['categories'] = lst
 
-        ingredients_all = IngredientСache.objects.filter(start=data['start'], end=data['end']).order_by('create_at').last().ingredient
+        ingredients_all = IngredientСache.objects.filter(start=data['start'], end=data['end']).order_by(
+            'create_at').last().ingredient
         ingredients: dict = {}
         is_reverse = False if filter['value'] == 'top' else True
         for key, value in ingredients_all.items():
@@ -1419,3 +1522,58 @@ class testAPIView(APIView):
     def get(self, request):
         caching_ingredients()
         return Response({'status': 'OK'})
+
+
+def logging_add_dish_api(info, table, order_status, product_name, product_id,
+                         meal, patient, category, date, author) -> str:
+    """ Сообщение для логирования функции AddDishAPIView """
+
+    message = (f'ADD DISH | {info} | '
+               f'table: {table} | '
+               f'status: {order_status} | '
+               f'product: {product_name} (id: {product_id}) | '
+               f'meal: {meal} | '
+               f'patient: {patient.full_name} | '
+               f'category: {category} | '
+               f'date: {date} | '
+               f'author: {author}')
+
+    return message
+
+
+def logging_change_dish_api(info, table, order_status, product_name_add, product_id_add,
+                            product_name_del, product_id_del, meal, patient, category_add,
+                            category, date, author) -> str:
+    """ Сообщение для логирования ChangeDishAPIView """
+
+    message = (f'CHANGE DISH | {info} | '
+               f'table: {table} | '
+               f'status: {order_status} | '
+               f'product add: {product_name_add} (id: {product_id_add}) | '
+               f'product delete: {product_name_del} (id: {product_id_del}) | '
+               f'meal: {meal} | '
+               f'patient: {patient.full_name} | '
+               f'category add product: {category_add} | '
+               f'category delete product: {category} | '
+               f'date: {date} | '
+               f'author: {author}')
+
+    return message
+
+
+def logging_delete_dish_api(info, table, order_status, product_name, product_id,
+                            meal, patient, category, date, author) -> str:
+    """ Сообщение для логирования DeleteDishAPIView """
+
+    message = (f'DELETE DISH | {info} | '
+               f'table: {table} | '
+               f'status: {order_status} | '
+               f'product: {product_name} (id: {product_id}) | '
+               f'meal: {meal} | '
+               f'patient: {patient.full_name} | '
+               f'category: {category} | '
+               f'date: {date} | '
+               f'meal: {meal} | '
+               f'author: {author}')
+
+    return message
