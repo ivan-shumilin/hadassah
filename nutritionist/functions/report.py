@@ -387,6 +387,6 @@ def create_external_report_detailing(filtered_report: Report) -> Dict:
             for key3, value3 in report[key1][key2].items():
                 test = {}
                 for item in report[key1][key2][key3]:
-                    test[item.user_id.full_name] = (item.user_id.room_number, item.user_id.floor, item.user_id.department, item.type)[0]
+                    test[item.user_id.full_name] = (item.user_id.room_number, item.user_id.floor, item.user_id.department, item.type)
                 report[key1][key2][key3] = test
     return report
