@@ -4,6 +4,8 @@ import os
 
 from envparse import Env
 
+from hadassah.logging_formatters import CustomJsonFormatter
+
 env = Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -23,7 +25,7 @@ ALLOWED_HOSTS = [
         'petrushkagroup.ru',
         '158.160.15.85',
         '127.0.0.1',
-        'loclhost',
+        'localhost',
         'https://2a3d-178-89-129-243.ngrok-free.app',
         '2a3d-178-89-129-243.ngrok-free.app',
 ]
@@ -115,7 +117,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -137,8 +138,8 @@ AUTH_PASSWORD_VALIDATORS = [
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000
 
 # Celery settings
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
+# CELERY_BROKER_URL = "redis://localhost:6379"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -255,18 +256,36 @@ PWA_APP_SPLASH_SCREEN = [
 PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'en-US'
 
-# LOGGING = {
-#     'version': 1,
-#     'handlers': {
-#         'console': {'class': 'logging.StreamHandler'}
-#     },
-#     'loggers': {
-#         'django.db.backends': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG'
-#         }
-#     }
-# }
+
+# логгирование
+LOGGING = {
+    'version': 1,
+
+    'formatters': {
+        'main': {
+            'format': "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s - %(pathname)s"
+        },
+        'json_formatter': {
+            '()': CustomJsonFormatter,
+        }
+    },
+
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'formatter': 'main',
+            'filename': 'doctor/nutrition_logging.log'
+        }
+    },
+
+    'loggers': {
+        'main_logger': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True
+        }
+    }
+}
 
 ######################
 # CORS HEADERS

@@ -1138,7 +1138,9 @@ class CheckIsHavePatientAPIView(APIView):
             response = {'status': 'None'}
         return Response(response)
 
+
 class AddDishAPIView(APIView):
+    logger = logging.getLogger('main_logger')
     def post(self, request):
         serializer = AddDishSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -1147,6 +1149,8 @@ class AddDishAPIView(APIView):
         product_id: str = serializer.validated_data['product_id']
         category: str = serializer.validated_data['category']
         meal: str = serializer.validated_data['meal']
+
+        message = 'Add '
 
         changes: list = []  # список с меню в который надо внести изменения
 
@@ -1160,11 +1164,13 @@ class AddDishAPIView(APIView):
             menu = MenuByDayReadyOrder.objects.all()
             patient = UsersReadyOrder.objects.filter(user_id=id_user).first()
             changes.append((menu, patient))
+            message += ' with status: ' + order_status + ' '
         with transaction.atomic():
             for menu, id in changes:
                 try:
                     item_menu = menu.get(user_id=id, date=date, meal=meal)
                 except:
+                    self.logger.error(f'Menu not found with user id: {id}, date: {date}, meal: {meal}')
                     return Response({'status': 'Error'})
 
                 products = getattr(item_menu, category)
@@ -1176,11 +1182,16 @@ class AddDishAPIView(APIView):
                     products = ','.join(products)
                 setattr(item_menu, category, products)
                 item_menu.save()
+                self.logger.info(f'Save into menu products with ids: {products}')
             # добавить изменения в ModifiedDish
             user = CustomUser.objects.get(id=id_user)
             ModifiedDish(product_id=product_id, date=date, meal=meal, user_id=user, status="add").save()
+            message += (f' into table ModefiedDish product with id: {product_id}, user {user.full_name},'
+                        f' meal: {meal}, '
+                        f'category: {category}, date: {date}')
+            self.logger.info(message)
 
-        return Response({'status':'OK'})
+        return Response({'status': 'OK'})
 
 
 class ChangeDishAPIView(APIView):
