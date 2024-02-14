@@ -1084,6 +1084,7 @@ class DeleteDishAPIView(APIView):
         product_id: str = serializer.validated_data['product_id']
         category: str = serializer.validated_data['category']
         meal: str = serializer.validated_data['meal']
+        doctor: str = serializer.validated_data['doctor']
 
         changes: list = []  # список с меню в который надо внести изменения
         product_name = get_product_by_id(product_id)
@@ -1109,7 +1110,7 @@ class DeleteDishAPIView(APIView):
                 except:
                     message = logging_delete_dish_api('Cant find menu',
                                                       table, order_status, product_name, product_id,
-                                                      meal, patient, category, date, 'Anonymos'
+                                                      meal, patient, category, date, doctor
                                                       )
                     self.logger.error(message)
                     return Response({'status': 'Error'})
@@ -1122,7 +1123,7 @@ class DeleteDishAPIView(APIView):
                 item_menu.save()
                 message = logging_delete_dish_api('Save',
                                                   table, order_status, product_name, product_id,
-                                                  meal, patient, category, date, 'Anonymos'
+                                                  meal, patient, category, date, doctor
                                                   )
                 self.logger.info(message)
             # удалить из ModifiedDish если есть
@@ -1133,14 +1134,14 @@ class DeleteDishAPIView(APIView):
             except:
                 message = logging_delete_dish_api('Cant delete',
                                                   table, order_status, product_name, product_id,
-                                                  meal, patient, category, date, 'Anonymos'
+                                                  meal, patient, category, date, doctor
                                                   )
                 self.logger.error(message)
                 pass
 
             message = logging_delete_dish_api('Delete ',
                                               table, order_status, product_name, product_id,
-                                              meal, patient, category, date, 'Anonymos'
+                                              meal, patient, category, date, doctor
                                               )
             self.logger.info(message)
 
@@ -1193,10 +1194,10 @@ class AddDishAPIView(APIView):
         product_id: str = serializer.validated_data['product_id']
         category: str = serializer.validated_data['category']
         meal: str = serializer.validated_data['meal']
+        doctor : str = serializer.validated_data['doctor']
 
         product_name = get_product_by_id(product_id)
         changes: list = []  # список с меню в который надо внести изменения
-        message = ''
 
         # Проверка времани, если заказ уже сформирован (менее 2х часов до приема пищи)
         # вносить изменения в MenuByDayReadyOrder
@@ -1219,7 +1220,8 @@ class AddDishAPIView(APIView):
                 except:
                     message = logging_add_dish_api('Cant find menu',
                                                    table, order_status, product_name,
-                                                   product_id, meal, patient, category, date, "Anonym")
+                                                   product_id, meal, patient, category, date,
+                                                   doctor)
                     self.logger.error(message)
                     return Response({'status': 'Error'})
 
@@ -1236,17 +1238,16 @@ class AddDishAPIView(APIView):
                 message = logging_add_dish_api('Save ',
                                                table, order_status, product_name,
                                                product_id, meal, patient, category, date,
-                                               " Anonym")
+                                               doctor)
                 self.logger.info(message)
             # добавить изменения в ModifiedDish
             user = CustomUser.objects.get(id=id_user)
             ModifiedDish(product_id=product_id, date=date, meal=meal, user_id=user, status="add").save()
             table = "ModifiedDish"
-
             message = logging_add_dish_api('Save',
                                            table, order_status, product_name,
                                            product_id, meal, patient, category, date,
-                                           " Anonym")
+                                           doctor)
             self.logger.info(message)
         return Response({'status': 'OK'})
 
@@ -1264,6 +1265,7 @@ class ChangeDishAPIView(APIView):
         product_id_add: str = serializer.validated_data['product_id_add']
         product_id_del: str = serializer.validated_data['product_id_del']
         changes: list = []  # список с меню в который надо внести изменения
+        doctor: str = serializer.validated_data['doctor']
 
         message = ''
 
@@ -1313,7 +1315,7 @@ class ChangeDishAPIView(APIView):
                                                       product_name_add,
                                                       product_id_add, product_name_del, product_id_del, meal, patient,
                                                       category_add,
-                                                      category, date, 'Anonym')
+                                                      category, date, doctor)
                     self.logger.error(message)
 
                     return Response({'status': 'Error'})
@@ -1326,7 +1328,7 @@ class ChangeDishAPIView(APIView):
                 message = logging_change_dish_api('Cant delete', table, order_status, product_name_add,
                                                   product_id_add, product_name_del, product_id_del, meal, patient,
                                                   category_add,
-                                                  category, date, 'Anonym')
+                                                  category, date, doctor)
                 self.logger.error(message)
                 pass
             # добавить изменения в ModifiedDish
@@ -1337,7 +1339,7 @@ class ChangeDishAPIView(APIView):
             message = logging_change_dish_api('Save', table, order_status, product_name_add,
                                               product_id_add, product_name_del, product_id_del, meal, patient,
                                               category_add,
-                                              category, date, 'Anonym')
+                                              category, date, doctor)
             self.logger.info(message)
 
         return Response({'status': 'OK'})
@@ -1533,7 +1535,7 @@ def logging_add_dish_api(info, table, order_status, product_name, product_id,
                f'patient: {patient.full_name} | '
                f'category: {category} | '
                f'date: {date} | '
-               f'author: ')
+               f'author: {author}')
 
     return message
 
@@ -1553,7 +1555,7 @@ def logging_change_dish_api(info, table, order_status, product_name_add, product
                f'category add product: {category_add} | '
                f'category delete product: {category} | '
                f'date: {date} | '
-               f'author: ')
+               f'author: {author}')
 
     return message
 
@@ -1571,6 +1573,6 @@ def logging_delete_dish_api(info, table, order_status, product_name, product_id,
                f'category: {category} | '
                f'date: {date} | '
                f'meal: {meal} | '
-               f'author: ')
+               f'author: {author}')
 
     return message
