@@ -1094,7 +1094,6 @@ class DeleteDishAPIView(APIView):
         menu = MenuByDay.objects.all()
         changes.append((menu, id_user))
 
-        message = ''
         table = "MenuByDay"
         patient = CustomUser.objects.get(id=id_user)
 
@@ -1108,10 +1107,11 @@ class DeleteDishAPIView(APIView):
                 try:
                     item_menu = menu.get(user_id=id, date=date, meal=meal)
                 except:
-                    logging_delete_dish_api(self.logger, 'error', 'Cant find menu',
-                                            table, order_status, product_name, product_id,
-                                            meal, patient, category, date, 'Anonymos'
-                                            )
+                    message = logging_delete_dish_api('Cant find menu',
+                                                      table, order_status, product_name, product_id,
+                                                      meal, patient, category, date, 'Anonymos'
+                                                      )
+                    self.logger.error(message)
                     return Response({'status': 'Error'})
 
                 products = getattr(item_menu, category)
@@ -1120,23 +1120,29 @@ class DeleteDishAPIView(APIView):
                 products = ','.join(products)
                 setattr(item_menu, category, products)
                 item_menu.save()
-                self.logger.info(f'DELETE DISH | Save table: {table} products with ids: {products}')
+                message = logging_delete_dish_api('Save',
+                                                  table, order_status, product_name, product_id,
+                                                  meal, patient, category, date, 'Anonymos'
+                                                  )
+                self.logger.info(message)
             # удалить из ModifiedDish если есть
             patient = CustomUser.objects.filter(id=id_user).first()
             try:
                 ModifiedDish.objects \
                     .filter(product_id=product_id, date=date, meal=meal, user_id=patient).first().delete()
             except:
-                logging_delete_dish_api(self.logger, 'error', 'Cant delete',
-                                        table, order_status, product_name, product_id,
-                                        meal, patient, category, date, 'Anonymos'
-                                        )
+                message = logging_delete_dish_api('Cant delete',
+                                                  table, order_status, product_name, product_id,
+                                                  meal, patient, category, date, 'Anonymos'
+                                                  )
+                self.logger.error(message)
                 pass
 
-            logging_delete_dish_api(self.logger, 'info', 'Delete ',
-                                    table, order_status, product_name, product_id,
-                                    meal, patient, category, date, 'Anonymos'
-                                    )
+            message = logging_delete_dish_api('Delete ',
+                                              table, order_status, product_name, product_id,
+                                              meal, patient, category, date, 'Anonymos'
+                                              )
+            self.logger.info(message)
 
             return Response({'status': 'OK'})
 
@@ -1175,6 +1181,7 @@ def get_product_by_id(string_id: [str, int]) -> str:
         return Product.objects.get(id=id).name
     return ProductLp.objects.get(id=string_id).name
 
+
 class AddDishAPIView(APIView):
     logger = logging.getLogger('main_logger')
 
@@ -1210,9 +1217,10 @@ class AddDishAPIView(APIView):
                 try:
                     item_menu = menu.get(user_id=id, date=date, meal=meal)
                 except:
-                    logging_add_dish_api(self.logger, 'error', 'Cant find menu',
-                                         table, order_status, product_name,
-                                         product_id, meal, patient, category, date, " Anonym")
+                    message = logging_add_dish_api('Cant find menu',
+                                                   table, order_status, product_name,
+                                                   product_id, meal, patient, category, date, "Anonym")
+                    self.logger.error(message)
                     return Response({'status': 'Error'})
 
                 products = getattr(item_menu, category)
@@ -1225,20 +1233,21 @@ class AddDishAPIView(APIView):
                 setattr(item_menu, category, products)
                 item_menu.save()
 
-                logging_add_dish_api(self.logger, 'info', 'Save ',
-                                     table, order_status, product_name,
-                                     product_id, meal, patient, category, date,
-                                     " Anonym")
+                message = logging_add_dish_api('Save ',
+                                               table, order_status, product_name,
+                                               product_id, meal, patient, category, date,
+                                               " Anonym")
+                self.logger.info(message)
             # добавить изменения в ModifiedDish
             user = CustomUser.objects.get(id=id_user)
             ModifiedDish(product_id=product_id, date=date, meal=meal, user_id=user, status="add").save()
             table = "ModifiedDish"
 
-            logging_add_dish_api(self.logger, 'error', 'Save',
-                                 table, order_status, product_name,
-                                 product_id, meal, patient, category, date,
-                                 " Anonym")
-
+            message = logging_add_dish_api('Save',
+                                           table, order_status, product_name,
+                                           product_id, meal, patient, category, date,
+                                           " Anonym")
+            self.logger.info(message)
         return Response({'status': 'OK'})
 
 
@@ -1300,11 +1309,12 @@ class ChangeDishAPIView(APIView):
                         item_menu.save()
 
                 except:
-                    logging_change_dish_api(self.logger, 'error', 'Cant change dish', table, order_status,
-                                            product_name_add,
-                                            product_id_add, product_name_del, product_id_del, meal, patient,
-                                            category_add,
-                                            category, date, 'Anonym')
+                    message = logging_change_dish_api('Cant change dish', table, order_status,
+                                                      product_name_add,
+                                                      product_id_add, product_name_del, product_id_del, meal, patient,
+                                                      category_add,
+                                                      category, date, 'Anonym')
+                    self.logger.error(message)
 
                     return Response({'status': 'Error'})
             # удалить из ModifiedDish если есть
@@ -1313,18 +1323,22 @@ class ChangeDishAPIView(APIView):
                 ModifiedDish.objects \
                     .filter(product_id=product_id_del, date=date, meal=meal, user_id=patient).first().delete()
             except:
-                logging_change_dish_api(self.logger, 'error', 'Cant delete', table, order_status, product_name_add,
-                                        product_id_add, product_name_del, product_id_del, meal, patient, category_add,
-                                        category, date, 'Anonym')
+                message = logging_change_dish_api('Cant delete', table, order_status, product_name_add,
+                                                  product_id_add, product_name_del, product_id_del, meal, patient,
+                                                  category_add,
+                                                  category, date, 'Anonym')
+                self.logger.error(message)
                 pass
             # добавить изменения в ModifiedDish
             user = CustomUser.objects.get(id=id_user)
             ModifiedDish(product_id=product_id_add, date=date, meal=meal, user_id=user, status="change").save()
             table = "ModifiedDish"
 
-            logging_change_dish_api(self.logger, 'info', 'Cant Save', table, order_status, product_name_add,
-                                    product_id_add, product_name_del, product_id_del, meal, patient, category_add,
-                                    category, date, 'Anonym')
+            message = logging_change_dish_api('Save', table, order_status, product_name_add,
+                                              product_id_add, product_name_del, product_id_del, meal, patient,
+                                              category_add,
+                                              category, date, 'Anonym')
+            self.logger.info(message)
 
         return Response({'status': 'OK'})
 
@@ -1507,18 +1521,11 @@ class testAPIView(APIView):
         return Response({'status': 'OK'})
 
 
-def logger_send(logger, level, message):
-    if level == 'info':
-        logger.info(message)
-    elif level == 'error':
-        logger.error(message)
+def logging_add_dish_api(info, table, order_status, product_name, product_id,
+                         meal, patient, category, date, author) -> str:
+    """ Сообщение для логирования функции AddDishAPIView """
 
-
-def logging_add_dish_api(logger, level, info, table, order_status, product_name, product_id,
-                         meal, patient, category, date, author) -> None:
-    """ Логирование функции AddDishAPIView """
-
-    message = (f'DELETE DISH | {info} | '
+    message = (f'ADD DISH | {info} | '
                f'table: {table} | '
                f'status: {order_status} | '
                f'product: {product_name} (id: {product_id}) | '
@@ -1528,13 +1535,14 @@ def logging_add_dish_api(logger, level, info, table, order_status, product_name,
                f'date: {date} | '
                f'author: ')
 
-    logger_send(logger, level, message)
+    return message
 
 
-def logging_change_dish_api(logger, level, info, table, order_status, product_name_add, product_id_add,
+def logging_change_dish_api(info, table, order_status, product_name_add, product_id_add,
                             product_name_del, product_id_del, meal, patient, category_add,
-                            category, date, author) -> None:
-    """ Логирование функции ChangeDishAPIView """
+                            category, date, author) -> str:
+    """ Сообщение для логирования ChangeDishAPIView """
+
     message = (f'CHANGE DISH | {info} | '
                f'table: {table} | '
                f'status: {order_status} | '
@@ -1543,15 +1551,16 @@ def logging_change_dish_api(logger, level, info, table, order_status, product_na
                f'meal: {meal} | '
                f'patient: {patient.full_name} | '
                f'category add product: {category_add} | '
-               f'category delete product: {category}'
+               f'category delete product: {category} | '
                f'date: {date} | '
                f'author: ')
 
-    logger_send(logger, level, message)
+    return message
 
-def logging_delete_dish_api(logger, level, info, table, order_status, product_name, product_id,
-                         meal, patient, category, date, author) -> None:
-    """ Логирование функции DeleteDishAPIView """
+
+def logging_delete_dish_api(info, table, order_status, product_name, product_id,
+                            meal, patient, category, date, author) -> str:
+    """ Сообщение для логирования DeleteDishAPIView """
 
     message = (f'DELETE DISH | {info} | '
                f'table: {table} | '
@@ -1561,7 +1570,7 @@ def logging_delete_dish_api(logger, level, info, table, order_status, product_na
                f'patient: {patient.full_name} | '
                f'category: {category} | '
                f'date: {date} | '
-               f'meal: {meal} |'
+               f'meal: {meal} | '
                f'author: ')
 
-    logger_send(logger, level, message)
+    return message
