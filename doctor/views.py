@@ -1103,7 +1103,8 @@ class DeleteDishAPIView(APIView):
                     item_menu = menu.get(user_id=id, date=date, meal=meal)
                 except:
                     user = CustomUser.objects.get(id=id_user)
-                    self.logger.error(f'DELETE DISH | cant find menu | table : {table} | user: {user.full_name} | date: {date} | meal: {meal} ')
+                    self.logger.error(f'DELETE DISH | cant find menu | table : {table} | status: {order_status} | '
+                                      f'user: {user.full_name} | date: {date} | meal: {meal} ')
                     return Response({'status': 'Error'})
     
                 products = getattr(item_menu, category)
@@ -1153,6 +1154,13 @@ class CheckIsHavePatientAPIView(APIView):
         return Response(response)
 
 
+def get_product_by_id(string_id: [str, int]) -> str:
+    """ Возвращает название продукта по его id """
+    if 'cafe-cat' in string_id:
+        id = string_id.split('-')[-1]
+        return Product.objects.get(id=id).name
+    return ProductLp.objects.get(id=string_id).name
+
 class AddDishAPIView(APIView):
     logger = logging.getLogger('main_logger')
 
@@ -1165,18 +1173,20 @@ class AddDishAPIView(APIView):
         category: str = serializer.validated_data['category']
         meal: str = serializer.validated_data['meal']
 
-        message = 'ADD DISH | '
-
+        product_name = get_product_by_id(product_id)
+        list_of_products_name = []
         changes: list = []  # список с меню в который надо внести изменения
+        message = ''
 
         # Проверка времани, если заказ уже сформирован (менее 2х часов до приема пищи)
         # вносить изменения в MenuByDayReadyOrder
         # type_order = what_type_order()
         order_status: str = get_order_status(meal, date)
-        message += f' status: {order_status} | '
         menu = MenuByDay.objects.all()
         table = "MenuByDay"
         changes.append((menu, id_user))
+        patient = CustomUser.objects.get(id=id_user)
+
         if order_status == 'fix-order':
             menu = MenuByDayReadyOrder.objects.all()
             patient = UsersReadyOrder.objects.filter(user_id=id_user).first()
@@ -1187,11 +1197,20 @@ class AddDishAPIView(APIView):
                 try:
                     item_menu = menu.get(user_id=id, date=date, meal=meal)
                 except:
-                    user = CustomUser.objects.get(id=id_user)
-                    self.logger.error(f'ADD DISH | cant find menu | table: {table} | user: {user.full_name} | date: {date} | meal: {meal} ')
+                    self.logger.error(f'ADD DISH | cant find menu | '
+                                      f'table: {table} | '
+                                      f'status: {order_status} | '
+                                      f'product: {product_name} (id: {products}) | '
+                                      f'meal: {meal}'
+                                      f'patient: {patient.full_name} | '
+                                      f'category: {category} | '
+                                      f'date: {date} | '
+                                      f'meal: {meal} |'
+                                      f'author: ')
                     return Response({'status': 'Error'})
 
                 products = getattr(item_menu, category)
+                list_of_products_name.append(product_name)
                 if products == "":
                     products = product_id
                 else:
@@ -1200,15 +1219,27 @@ class AddDishAPIView(APIView):
                     products = ','.join(products)
                 setattr(item_menu, category, products)
                 item_menu.save()
-                self.logger.info(f'ADD DISH | Save table: {table} products with ids: {products}')
+                self.logger.info(f'ADD DISH | Save | '
+                                 f'table: {table} | '
+                                 f'status: {order_status} | '
+                                 f'product(s): {list_of_products_name} (id: {products}) | '
+                                 f'meal: {meal} | '
+                                 f'patient {patient.full_name}'
+                                 f'date: {date} | '
+                                 f'author:')
             # добавить изменения в ModifiedDish
             user = CustomUser.objects.get(id=id_user)
             ModifiedDish(product_id=product_id, date=date, meal=meal, user_id=user, status="add").save()
-
             table = "ModifiedDish"
-            message += (f' table: {table} | product"s id: {product_id} | '
-                        f'user: {user.full_name} | meal: {meal} | category: {category} | '
-                        f'date: {date} | author: ' )
+
+            message += (f'ADD DISH | Save | '
+                        f'table: {table} | '
+                        f'status: {order_status} | '
+                        f'product(s): {list_of_products_name} (id: {products}) | '
+                        f'meal: {meal} | '
+                        f'patient: {patient.full_name} | '
+                        f'category: {category} | '
+                        f'date: {date} | author:')
             self.logger.info(message)
 
         return Response({'status': 'OK'})
