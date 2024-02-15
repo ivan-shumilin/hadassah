@@ -201,6 +201,8 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
     font_dotted_border = wb.add_format(
         {
+            "font_name": "Arial",
+            "font_size": 12,
             "fg_color": "white",
             "align": "left",
             "bold": False,
@@ -211,6 +213,8 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
     font_total_format = wb.add_format(
         {
+            "font_name": "Arial",
+            "font_size": 12,
             "fg_color": "white",
             "bold": True,
             "align": "left",
@@ -222,12 +226,16 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
     )
 
     font_group_diet = wb.add_format({
+        "font_name": "Arial",
+        "font_size": 12,
         "fg_color": "white",
         "italic": True,
         "align": "left",
     })
 
     font_end_of_table = wb.add_format({
+        "font_name": "Arial",
+        "font_size": 12,
         "fg_color": "white",
         "italic": True,
         "bottom": 1,
@@ -349,7 +357,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
                         ws_detail.write(row, 1, 'Ужин', font_table_cell)
                     ws_detail.write(row, 2, diet, font_table_cell)
                     ws_detail.write(row, 3, patient, font_table_cell)
-                    ws_detail.write(row, 4, patient_info if patient_info != "Не выбрано" else "——", font_number_room)
+                    ws_detail.write(row, 4, patient_info[0] if patient_info[0] != "Не выбрано" else "——", font_number_room)
                     row += 1
 
     ws_detail.set_row(4, 35)
@@ -387,6 +395,6 @@ def create_external_report_detailing(filtered_report: Report) -> Dict:
             for key3, value3 in report[key1][key2].items():
                 test = {}
                 for item in report[key1][key2][key3]:
-                    test[item.user_id.full_name] = (item.user_id.room_number, item.user_id.floor, item.user_id.department, item.type)[0]
+                    test[item.user_id.full_name] = (item.user_id.room_number, item.user_id.floor, item.user_id.department, item.type)
                 report[key1][key2][key3] = test
     return report
