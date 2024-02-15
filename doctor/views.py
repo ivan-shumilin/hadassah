@@ -1194,7 +1194,7 @@ class AddDishAPIView(APIView):
         product_id: str = serializer.validated_data['product_id']
         category: str = serializer.validated_data['category']
         meal: str = serializer.validated_data['meal']
-        doctor : str = serializer.validated_data['doctor']
+        doctor: str = serializer.validated_data['doctor']
 
         product_name = get_product_by_id(product_id)
         changes: list = []  # список с меню в который надо внести изменения
@@ -1311,6 +1311,7 @@ class ChangeDishAPIView(APIView):
                         item_menu.save()
 
                 except:
+                    category_add = get_category_by_id(product_id_add)
                     message = logging_change_dish_api('Cant change dish', table, order_status,
                                                       product_name_add,
                                                       product_id_add, product_name_del, product_id_del, meal, patient,
