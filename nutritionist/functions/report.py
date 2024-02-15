@@ -349,7 +349,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
                         ws_detail.write(row, 1, 'Ужин', font_table_cell)
                     ws_detail.write(row, 2, diet, font_table_cell)
                     ws_detail.write(row, 3, patient, font_table_cell)
-                    ws_detail.write(row, 4, patient_info if patient_info != "Не выбрано" else "——", font_number_room)
+                    ws_detail.write(row, 4, patient_info[0] if patient_info[0] != "Не выбрано" else "——", font_number_room)
                     row += 1
 
     ws_detail.set_row(4, 35)
