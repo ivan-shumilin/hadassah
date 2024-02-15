@@ -14,7 +14,7 @@ class TestExternalReportCreate(unittest.TestCase):
         data_1 = {
             "user_id": user,
             "product_id": 299,
-            "date_create": datetime.date.today().isoformat(),
+            "date_create": '2024-02-15',
             "meal": "breakfast",
             "type_of_diet": "ОВД",
             "category": None,
