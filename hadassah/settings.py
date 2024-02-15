@@ -117,6 +117,7 @@ DATABASES = {
     }
 }
 
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -138,21 +139,23 @@ AUTH_PASSWORD_VALIDATORS = [
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000
 
 # Celery settings
-# CELERY_BROKER_URL = "redis://localhost:6379"
-# CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 
 TIME_ZONE = 'Europe/Moscow'
-# TIME_ZONE = 'Europe/Berlin' # минус 1 часа от московского
+# TIME_ZONE = 'Africa/Johannesburg' # минус 1 час от московского
+# TIME_ZONE = 'Europe/Berlin' # минус 2 часа от московского
 # TIME_ZONE  = 'Europe/London'  # минус 2 часа от московского
-
-# TIME_ZONE = 'America/Sao_Paulo'
+#
+# TIME_ZONE = 'America/Denver'
 # TIME_ZONE = 'America/Noronha' # минус 5 часа от московского
 # TIME_ZONE = 'America/Miquelon' # минус 6 часа от московского
 # TIME_ZONE = 'America/New_York' # минус 7 часа от московского
+# TIME_ZONE = 'America/Vancouver' # минус 8 часов от московского
 
 # TIME_ZONE = 'America/Los_Angeles' # минус 10 часа от московского
 # TIME_ZONE = 'Australia/Sydney'
