@@ -2,6 +2,7 @@ import re
 from itertools import chain
 
 from django.db.models.expressions import RawSQL
+
 from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId, \
     UsersToday, MenuByDayReadyOrder, UsersReadyOrder, ModifiedDish, Report
 from django.db import transaction
@@ -524,7 +525,6 @@ def get_order_status(meal, date_show):
             return 'fix-order'
         if datetime.today().time().hour >= 19:
             return 'done'
-
 # from datetime import datetime, date, time
 # from enum import Enum
 #

@@ -31,7 +31,7 @@ from rest_framework.views import APIView
 from django.core import management
 from django.contrib.auth.models import Group
 from doctor.functions.functions import counting_diets, \
-    create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features
+    create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features, get_user_name
 import random, datetime, logging, json
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
@@ -1508,7 +1508,7 @@ def printed_form_two_lp(request):
                      'БД', 'ВБД', 'НБД', 'НКД', 'БД день 1',
                      'БД день 2', 'Безйодовая', 'ПЭТ/КТ', 'Без ограничений']:
             users_with_diet = users.filter(type_of_diet=diet)
-            all_products = []  # стовляем список всех продуктов
+            all_products = [] # стовляем список всех продуктов
             comment_list = []
             for user in users_with_diet:
                 if type_order == 'flex-order':
@@ -1825,6 +1825,7 @@ def tk(request, id, count):
         weight = 0
         img = None
         error = "Нет данных"
+
 
     data = {
         'img': img,
@@ -2167,6 +2168,7 @@ class CheckIsBrakeryAPIView(APIView):
         return Response(response)
 
 
+
 def create_сatalog(is_public, meal, patient, day):
     """ Создание словаря этикеток. """
 
@@ -2336,7 +2338,7 @@ def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):
 
 def menu_lp_for_staff(request):
     try:
-        diet = request.GET['diet']
+        diet =request.GET['diet']
         day_of_the_week = request.GET['day']
         sing = request.GET.get('sing', 'none')
         if day_of_the_week == 'вся неделя':

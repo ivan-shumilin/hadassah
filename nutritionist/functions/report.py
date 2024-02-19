@@ -1,4 +1,3 @@
-import os
 from datetime import date, time, datetime
 from typing import Dict
 
@@ -259,8 +258,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
     ws.merge_range("A1:E1", "Отчет по лечебному питанию", font_first_title)
     ws.merge_range("A2:E2", "Круглосуточный стационар, Hadassah Medical Moscow", font_14_bold)
-    ws.merge_range("A3:E3",
-                   f'{date_start.day}.{date_start.month}.{date_start.year} - {date_finish.day}.{date_finish.month}.{date_finish.year}',
+    ws.merge_range("A3:E3", f'{date_start.day}.{date_start.month}.{date_start.year} - {date_finish.day}.{date_finish.month}.{date_finish.year}',
                    font_14_bold)
 
     row = 4
