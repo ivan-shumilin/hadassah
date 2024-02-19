@@ -18,12 +18,12 @@ from doctor.functions.download import get_tk, get_name_by_api, get_allergens, ge
     get_measure_unit
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal, \
     caching_ingredients
-from doctor.tasks import create_report_download
+from doctor.tasks import create_report_download, create_bakery_magazine_download
 from .functions.report import create_external_report, create_external_report_detailing
 from .functions.ttk import create_all_ttk, enumeration_semifinisheds, get_tree_ttk
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, UsersToday, UsersReadyOrder, \
     MenuByDayReadyOrder, Report, \
-    IsReportCreate, AllProductСache, Ingredient
+    IsReportCreate, AllProductСache, Ingredient, IsBrakeryMagazineCreate
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import DownloadReportSerializer
 from rest_framework.response import Response
@@ -31,7 +31,8 @@ from rest_framework.views import APIView
 from django.core import management
 from django.contrib.auth.models import Group
 from doctor.functions.functions import counting_diets, \
-    create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features, get_user_name
+    create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features, \
+    get_order_status, get_all_menu_by_meal
 import random, datetime, logging, json
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
@@ -923,17 +924,11 @@ def edit_photo(request, product_id, type):
     }
 
     return render(request, 'edit_photo.html', context=data)
-
-
-@login_required(login_url='login')
 def admin_foods(request):
     """Админ-панель для внесения изменений в приемы пищи пациента"""
     patient = CustomUser.objects.filter(status='patient').order_by('full_name').first()
 
-    user_name = get_user_name(request)
-
     data = {
-        'doctor': user_name,
         'full_name': patient.full_name,
         'diet': patient.type_of_diet,
         'comment': patient.comment,
@@ -1229,6 +1224,25 @@ def detailing(request, meal):
         'is_none_floor': is_none_floor,
     }
     return render(request, 'detaling.html', context=data)
+
+
+def brakery_magazine(request):
+    formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
+
+    meal, day = what_meal()
+    date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
+    current_meal = translate_meal(meal)
+
+    time_now = datetime.today().time().strftime("%H:%M")
+
+    data = {
+        'formatted_date': formatted_date_now,
+        'time_now': time_now,
+        'meal': current_meal,
+        'day': day,
+        'date_create': dateformat.format(date.fromisoformat(str(date_create)), 'd E')
+    }
+    return render(request, 'brakery_magazine.html', context=data)
 
 
 # def create_catalog_all_products_on_meal(users, meal, type_order, date_create, is_public):
@@ -1960,6 +1974,7 @@ def weight_meal(meal):
     }
     return MEALS[meal]
 
+
 # 888
 class DownloadReportAPIView(APIView):
     def post(self, request):
@@ -1967,8 +1982,6 @@ class DownloadReportAPIView(APIView):
         serializer.is_valid(raise_exception=True)
 
         data = serializer.validated_data
-        # date_start = data['start']
-        # date_finish = data['finish']
         date_start = data['start']
         date_finish = data['finish']
         logging.info(f'пользователь ({date_start})')
@@ -1995,6 +2008,42 @@ class CheckIsReportAPIView(APIView):
 
         response = json.dumps(response)
         return Response(response)
+
+
+class DownloadBrakeryAPIView(APIView):
+    def post(self, request):
+        logging.info(f'Начало формирования бракеражного отчета')
+        id = IsBrakeryMagazineCreate.objects.create(is_brakery_magazine_create=False).id
+
+        day = 'tomorrow' if datetime.now().time().hour >= 19 else 'today'
+        date_show = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
+        today_full = datetime.today() + timedelta(days=1) if day == 'tomorrow' else datetime.today()
+
+        meal, _ = what_meal()
+        order_status = get_order_status(meal, date_show)  # порядок именно такой!
+        menu = get_all_menu_by_meal(meal, order_status, date_show)
+
+        meal = translate_meal(meal)
+        create_bakery_magazine_download(meal, today_full, menu, id)
+        response = {"response": str(id)}
+        response = json.dumps(response)
+
+        return Response(response)
+
+
+class CheckIsBrakeryAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        id = data['id']['response']
+        response = {"response": 'no'}
+        item = IsBrakeryMagazineCreate.objects.filter(id=id)
+        if item.exists():
+            if item.first().is_brakery_magazine_create:
+                response = {"response": 'yes'}
+
+        response = json.dumps(response)
+        return Response(response)
+
 
 
 def create_сatalog(is_public, meal, patient, day):
@@ -2106,9 +2155,6 @@ def get_total_energy_value(day_of_the_week, translated_diet):
         except:
             energy += 0
     return f'Б - {round(fiber, 2)}, Ж - {round(fat, 2)}, У - {round(carbohydrate, 2)}, Ккал - {round(energy, 2)}'
-
-
-
 
 
 def get_energy_value(product):

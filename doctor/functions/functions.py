@@ -2,7 +2,6 @@ import re
 from itertools import chain
 
 from django.db.models.expressions import RawSQL
-
 from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product, BotChatId, \
     UsersToday, MenuByDayReadyOrder, UsersReadyOrder, ModifiedDish, Report
 from django.db import transaction
@@ -525,6 +524,7 @@ def get_order_status(meal, date_show):
             return 'fix-order'
         if datetime.today().time().hour >= 19:
             return 'done'
+
 # from datetime import datetime, date, time
 # from enum import Enum
 #
@@ -1161,15 +1161,15 @@ def edit_user(user_form, type, request):
         messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
         for change in changes:
             messang += f'- {change}\n'
-        if user.full_name != "Leslie William Nielsen":
-            messang += f'({user_name})'
-            my_job_send_messang_changes.delay(messang)
+        # if user.full_name != "Leslie William Nielsen":
+        #     messang += f'({user_name})'
+        #     my_job_send_messang_changes.delay(messang)
     if type == 'restore':
         messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
         messang += f'Комментарий: "{comment_new}"' if comment_new else ''
-        if user.full_name != "Leslie William Nielsen":
-            messang += f'({user_name})'
-            my_job_send_messang_changes.delay(messang)
+        # if user.full_name != "Leslie William Nielsen":
+        #     messang += f'({user_name})'
+        #     my_job_send_messang_changes.delay(messang)
     # return True
     return first_meal_user, f'{user.id}&{first_meal_user}', user.receipt_date, user.receipt_time, True, emergency_food
 # 222
@@ -1593,3 +1593,39 @@ def get_occupied_rooms(user_script):
         return occupied_rooms
 
 
+def add_names_product(product_id: dict, category: str, result: set) -> None:
+    ids = product_id[category].split(',')
+    for id in ids:
+        if id != '':
+            name = get_name_product_by_id(id)
+            result.add(name)
+
+
+def get_name_product_by_id(id_product):
+    if 'cafe' in id_product:
+        product_name = Product.objects.get(id=id_product.split('-')[2]).name
+    else:
+        product_name = ProductLp.objects.get(id=id_product).name
+    return product_name
+
+
+def get_all_menu_by_meal(meal: str, order_status: str, today: datetime) -> set:
+    result = set()
+
+    categories = ['salad', 'soup', 'bouillon', 'main',
+                  'garnish', 'porridge', 'dessert',
+                  'fruit', 'drink']
+
+    menu = MenuByDay.objects
+
+    if order_status == 'fix-order':
+        menu = MenuByDayReadyOrder.objects
+
+    for category in categories:
+        category_products = menu.values(category).filter(meal=meal, date=today).distinct(category)
+        for product_id in category_products:
+            add_names_product(product_id, category, result)
+    print('result: ', result)
+
+    sorted_result = sorted(result)
+    return sorted_result
