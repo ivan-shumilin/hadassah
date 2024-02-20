@@ -75,28 +75,13 @@ def create_analysis_2023_12():
 
     # (2) Два ряда данных по дням: число пациентов КС и число пациентов КС с комментарием - done
     dct_for_patient = {}
-
-    reports_for_patient = Report.objects.filter(
-        date_create__range=(date_start, datetime.date(2024, 1, 1))
-    ).values('meal', 'date_create', 'user_id_id')
-
     users = CustomUser.objects.values('id', 'receipt_time', 'receipt_date', 'comment').distinct('id')
 
     for day in range(1, 32):
         date = datetime.date(2023, 12, day)
-
-        # dct = Report.objects.filter(date_create=date).values('meal').annotate(
-        #     num_users=Count('user_id_id', distinct=True))
-
         dct_to_comments = Report.objects.filter(date_create=date).values('user_id_id').distinct('user_id_id')
 
-        total_patient_count_by_day = 0
-
-        # for meal in dct:
-        #     total_patient_count_by_day += meal['num_users']
-
         dct_for_patient.setdefault(date, [0, 0])
-        # dct_for_patient[date][0] += total_patient_count_by_day
 
         for patient in dct_to_comments:
             dct_for_patient[date][0] += 1
@@ -124,25 +109,6 @@ def create_analysis_2023_12():
             if user_info['comment'] != '':
                 dct_for_patient[date - timedelta(days=1)][1] += 1
 
-
-
-    # for report in reports_for_patient:
-    #
-    #     if report['date_create'] != datetime.date(2024, 1, 1):
-    #         dct_for_patient.setdefault(report['date_create'], [0, 0])  # total and with comments
-    #         dct_for_patient[report['date_create']][0] += 1
-    #
-    #     user_info = get_user_info(report['user_id_id'], users)
-    #
-    #     if user_info['comment'] != '':
-    #         dct_for_patient[report['date_create']][1] += 1
-    #
-    #     if report['date_create'] != datetime.date(2023, 12, 1):
-    #         if user_info['receipt_time'] >= time(19, 0, 0) and \
-    #                 (user_info['receipt_date'] == report['date_create'] - timedelta(days=1)):
-    #             dct_for_patient[report['date_create'] - timedelta(days=1)][0] += 1
-    #             if user_info['comment'] != '':
-    #                 dct_for_patient[report['date_create']][1] += 1
 
     ws.merge_range("A7:C7", "Число пациентов", font_title)
     ws.write(7, 0, 'Дата', font_table_cell)
