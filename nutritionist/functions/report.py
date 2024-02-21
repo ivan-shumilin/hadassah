@@ -123,16 +123,15 @@ def create_external_report(filtered_report: Report) -> Dict:
 
     return report
 
+def add_font_style(ws: Worksheet, style: str, text: str, row: int, *columns) -> None:
+    """ Печатает одинаковый текст с одинаковым стилем на выбранные столбцы определенной строчкoй """
+    for column in columns:
+        ws.write(row, column, text, style)
 
 def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date_finish: datetime) -> None:
     """ Создаёт excel файл с отчетом по блюдам """
 
     wb = xlsxwriter.Workbook("static/report.xlsx")
-
-    def add_font_style(style: str, text: str, row: int, *columns) -> None:
-        """ Печатает одинаковый текст с одинаковым стилем на выбранные столбцы определенной строчкoй """
-        for column in columns:
-            ws.write(row, column, text, style)
 
     def field_fill_white(ws: Worksheet, row_start: int, row_end: int, col_start: int, col_end: int) -> None:
         """ Заливает все поле на указанный квадрат листа белым """
@@ -201,6 +200,8 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
     font_dotted_border = wb.add_format(
         {
+            "font_name": "Arial",
+            "font_size": 12,
             "fg_color": "white",
             "align": "left",
             "bold": False,
@@ -211,6 +212,8 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
     font_total_format = wb.add_format(
         {
+            "font_name": "Arial",
+            "font_size": 12,
             "fg_color": "white",
             "bold": True,
             "align": "left",
@@ -222,17 +225,22 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
     )
 
     font_group_diet = wb.add_format({
+        "font_name": "Arial",
+        "font_size": 12,
         "fg_color": "white",
         "italic": True,
         "align": "left",
     })
 
     font_end_of_table = wb.add_format({
+        "font_name": "Arial",
+        "font_size": 12,
         "fg_color": "white",
         "italic": True,
         "bottom": 1,
         "bottom_color": "000000",
     })
+
 
     # -------------------------------------------------------------------
     #                       страница "Отчёт"
@@ -257,7 +265,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
             for meal, type_of_diet in meal_info.items():
                 first_row = row
                 if meal in ["Всего", "Всего за период"]:
-                    add_font_style(font_total_format, "", row, 0, 2)
+                    add_font_style(ws, font_total_format, "", row, 0, 2)
                     count, money = number_to_digit(type_of_diet["count"], type_of_diet["money"])
                     ws.write(row, 1, meal, font_total_format)
                     ws.write(row, 3, count, font_total_format)
@@ -281,7 +289,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
                                 style = font_dotted_border
                         # убирает границы для столбцов A B, если там не надо писать прием пищи
                         else:
-                            add_font_style(style, "", row, 0, 1)
+                            add_font_style(ws, style, "", row, 0, 1)
 
                         count, money = number_to_digit(diet_info["count"], diet_info["money"])
                         ws.write(row, 2, diet, style)
@@ -294,20 +302,20 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
     ws.write(row - 2, 1, "—Нулевая диета", font_group_diet)
     ws.write(row - 2, 3, f'{count}', font_group_diet)
     ws.write(row - 2, 4, f'{money}.00', font_group_diet)
-    add_font_style(font_group_diet, "", row - 2, 0, 2)
+    add_font_style(ws, font_group_diet, "", row - 2, 0, 2)
 
     count, money = number_to_digit(report["Итого"]["Всего за период"]["count"] - report["Нулевая диета"]["count"],
                                    report["Итого"]["Всего за период"]["money"] - report["Нулевая диета"]["money"])
     ws.write(row - 1, 1, "—Остальные диеты ", font_group_diet)
     ws.write(row - 1, 3, f'{count}', font_group_diet)
     ws.write(row - 1, 4, f'{money}.00', font_group_diet)
-    add_font_style(font_group_diet, "", row - 1, 0, 2)
+    add_font_style(ws, font_group_diet, "", row - 1, 0, 2)
 
     count, money = number_to_digit(report["Сухпаек"]["count"], report["Сухпаек"]["money"])
     ws.write(row, 1, "—Сухпаек", font_end_of_table)
     ws.write(row, 3, f'{count}', font_end_of_table)
     ws.write(row, 4, f'{money}.00', font_end_of_table)
-    add_font_style(font_end_of_table, "", row, 0, 2)
+    add_font_style(ws, font_end_of_table, "", row, 0, 2)
 
     ws.set_row(4, 35)
     ws.set_column("A:E", 19)  # 4.87 cm
@@ -390,3 +398,150 @@ def create_external_report_detailing(filtered_report: Report) -> Dict:
                     test[item.user_id.full_name] = (item.user_id.room_number, item.user_id.floor, item.user_id.department, item.type)
                 report[key1][key2][key3] = test
     return report
+
+
+def get_brakery_magazine(meal: str, today: datetime, menu: set) -> None:
+    """ Создает бракеражный журнал по приемам пищи """
+    wb = xlsxwriter.Workbook("static/brakery.xlsx")
+    ws = wb.add_worksheet("Бракераж")
+    font_first_title = wb.add_format(
+        {
+            "font_name": "Arial",
+            "font_size": 12,
+            "bold": True,
+            "align": "center",
+        }
+    )
+
+    font_title_centered_with_border = wb.add_format(
+        {
+            "font_name": "Arial",
+            "font_size": 8,
+            "align": "center",
+            'border': 1,
+            "valign": "vcenter",
+            'text_wrap': True
+        }
+    )
+
+    font_align_left_top = wb.add_format(
+        {
+            "font_name": "Arial",
+            "font_size": 8,
+            "align": "left",
+            'border': 1,
+            "valign": "top",
+            'text_wrap': True
+        }
+    )
+
+    font_align_center_top = wb.add_format(
+        {
+            "font_name": "Arial",
+            "font_size": 8,
+            "align": "center",
+            'border': 1,
+            "valign": "top",
+        }
+    )
+
+    font_for_comments = wb.add_format(
+        {
+            "font_name": "Arial",
+            "italic": True,
+            "font_size": 8,
+            "align": "center",
+            'border': 1,
+            "valign": "top",
+        }
+    )
+
+    font_cell_centered_without_border = wb.add_format(
+        {
+            "font_name": "Arial",
+            "font_size": 8,
+            "align": "center",
+        }
+    )
+
+    font_for_meal = wb.add_format(
+        {
+            "font_name": "Arial",
+            "font_size": 8,
+            "align": "left",
+            'bold': True
+        }
+    )
+
+    months_ru = {
+        1: "января",
+        2: "февраля",
+        3: "марта",
+        4: "апреля",
+        5: "мая",
+        6: "июня",
+        7: "июля",
+        8: "августа",
+        9: "сентября",
+        10: "октября",
+        11: "ноября",
+        12: "декабря"
+    }
+
+    if today > datetime.today():
+        today = datetime.today()
+
+    # Форматирование даты
+    formatted_date = "{0} {1} {2} г.".format(today.day, months_ru[today.month], today.year)
+
+    today_full_info = today.strftime("%d.%m.%Y %H:%M")
+    today_time = today.strftime("%H:%M")
+
+    ws.merge_range('H1:I1', 'СанПиН 2.3/2.4.3590-20', font_cell_centered_without_border)
+    ws.merge_range('A2:B2', 'ООО "Петрушка Ск"', font_cell_centered_without_border)
+
+    ws.merge_range('A3:B3', formatted_date, font_cell_centered_without_border)
+    ws.merge_range("A4:I4", "Журнал бракеража готовой кулинарной продукции", font_first_title)
+
+    cell_merge_for_title = ['A', 'B', 'C', 'D', 'E', 'H', 'I']
+    titles = ['Дата и час изготовления блюда', ' Время снятия бракеража', 'Наименование блюда, кулинарного изделия',
+              'Результаты органолептической оценки и степени готовности блюда, кулинарного изделия',
+              'Разрешение к реализации блюда, кулинарного изделия',
+              'Результаты взвешивания порционных блюд', 'Примечание*']
+
+    ws.merge_range('F6:G9', 'Подписи членов бракеражной комиссии', font_title_centered_with_border)
+
+    col = 0
+    number = 1
+    for cell_letter in range(len(titles)):
+        letter = cell_merge_for_title[cell_letter]
+        ws.merge_range(letter + '6' + ':' + letter + '9', titles[cell_letter], font_title_centered_with_border)
+        ws.write(9, col, number, font_title_centered_with_border)
+        col += 1 if letter != 'E' else 3
+        number += 1 if letter != 'E' else 2
+    ws.merge_range('F10:G10', 6, font_title_centered_with_border)
+
+    ws.set_column("A:A", 15)  # 4.87 cm
+    ws.set_column("B:B", 10)
+    ws.set_column("C:C", 19)
+    ws.set_column("D:D", 17)
+    ws.set_column("E:E", 14)
+    ws.set_column("F:G", 6)
+    ws.set_column("H:H", 12)
+    ws.set_column("I:I", 10)
+
+    ws.merge_range('A11:I11', meal, font_for_meal)
+
+    row = 11
+    for product in menu:
+        ws.write(row, 0, today_full_info, font_align_left_top)
+        ws.write(row, 1, today_time, font_align_center_top)
+        ws.write(row, 2, product, font_align_left_top)
+        ws.write(row, 3, 'Отлично', font_for_comments)
+        ws.write(row, 4, 'Разрешено', font_for_comments)
+        ws.write(row, 7, 'Соответствует', font_for_comments)
+        add_font_style(ws, font_for_comments, '', row, 5, 6, 8)
+        row += 1
+
+    wb.close()
+    return
