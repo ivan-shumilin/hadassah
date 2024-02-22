@@ -2017,7 +2017,7 @@ class DownloadBrakeryAPIView(APIView):
 
         day = 'tomorrow' if datetime.now().time().hour >= 19 else 'today'
         date_show = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
-        today_full = datetime.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
+        today_full = datetime.today() + timedelta(days=1) if day == 'tomorrow' else datetime.today()
 
         meal, _ = what_meal()
         order_status = get_order_status(meal, date_show)  # порядок именно такой!

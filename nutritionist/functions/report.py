@@ -509,30 +509,31 @@ def get_brakery_magazine(meal: str, today: datetime, menu: set) -> None:
               'Разрешение к реализации блюда, кулинарного изделия',
               'Результаты взвешивания порционных блюд', 'Примечание*']
 
-    ws.merge_range('F6:G9', 'Подписи членов бракеражной комиссии', font_title_centered_with_border)
+    ws.merge_range('F6:G10', 'Подписи членов бракеражной комиссии', font_title_centered_with_border)
 
     col = 0
     number = 1
     for cell_letter in range(len(titles)):
         letter = cell_merge_for_title[cell_letter]
-        ws.merge_range(letter + '6' + ':' + letter + '9', titles[cell_letter], font_title_centered_with_border)
-        ws.write(9, col, number, font_title_centered_with_border)
+        ws.merge_range(letter + '6' + ':' + letter + '10', titles[cell_letter], font_title_centered_with_border)
+        ws.write(10, col, number, font_title_centered_with_border)
         col += 1 if letter != 'E' else 3
         number += 1 if letter != 'E' else 2
-    ws.merge_range('F10:G10', 6, font_title_centered_with_border)
+    ws.merge_range('F11:G11', 6, font_title_centered_with_border)
 
-    ws.set_column("A:A", 15)  # 4.87 cm
-    ws.set_column("B:B", 10)
-    ws.set_column("C:C", 19)
-    ws.set_column("D:D", 17)
-    ws.set_column("E:E", 14)
-    ws.set_column("F:G", 6)
+    ws.set_column("A:A", 9)  # 4.87 cm
+    ws.set_column("B:B", 8)
+    ws.set_column("C:C", 12)
+    ws.set_column("D:D", 13)
+    ws.set_column("E:E", 9)
+    ws.set_column("F:G", 4)
     ws.set_column("H:H", 12)
-    ws.set_column("I:I", 10)
+    ws.set_column("I:I", 9)
+    ws.set_row(9, 30)
 
-    ws.merge_range('A11:I11', meal, font_for_meal)
+    ws.merge_range('A12:I12', meal, font_for_meal)
 
-    row = 11
+    row = 12
     for product in menu:
         ws.write(row, 0, today_full_info, font_align_left_top)
         ws.write(row, 1, today_time, font_align_center_top)
