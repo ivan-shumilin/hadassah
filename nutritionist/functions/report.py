@@ -371,6 +371,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
 
 def create_external_report_detailing(filtered_report: Report) -> Dict:
+    """ Создает детальный отчет """
     report = {}
     report_ = {}
     for index, item in enumerate(filtered_report):
