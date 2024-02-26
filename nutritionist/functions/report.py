@@ -272,7 +272,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
     row += 1
     count, money = number_to_digit(report["Нулевая диета"]["count"], report["Нулевая диета"]["money"])
-    ws.write(row, 1, "\tНулевая диета", font_group_diet)
+    ws.write(row, 1, "      Нулевая диета", font_group_diet)
     ws.write(row, 3, f'{count}', font_group_diet)
     ws.write(row, 4, f'{money}.00', font_group_diet)
     add_font_style(ws, font_group_diet, "", row, 0, 2)
@@ -280,7 +280,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
     row += 1
     count, money = number_to_digit(report["Итого"]["Всего за период"]["count"] - report["Нулевая диета"]["count"],
                                    report["Итого"]["Всего за период"]["money"] - report["Нулевая диета"]["money"])
-    ws.write(row, 1, "\tОстальные диеты", font_group_diet)
+    ws.write(row, 1, "      Остальные диеты", font_group_diet)
     ws.write(row, 3, f'{count}', font_group_diet)
     ws.write(row, 4, f'{money}.00', font_group_diet)
     add_font_style(ws, font_group_diet, "", row, 0, 2)
@@ -291,6 +291,13 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
     ws.write(row, 3, f'{count}', font_end_of_table)
     ws.write(row, 4, f'{money}.00', font_end_of_table)
     add_font_style(ws, font_end_of_table, "", row, 0, 2)
+
+    row += 1
+    count, money = number_to_digit(report["Итого"]["Всего за период"]["count"] + report["Сухпаек"]["count"],
+                                   report["Итого"]["Всего за период"]["money"] + report["Сухпаек"]["money"])
+    ws.write(row, 1, "Всего за период", font_total_format_header)
+    ws.write(row, 3, count, font_total_format_header)
+    ws.write(row, 4, f'{money}.00', font_total_format_header)
 
     row += 2
     headers = ["Учетный день", "Прием пищи", "Рацион", "Количество", "Сумма, руб."]
@@ -340,28 +347,9 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
                         row += 1
         row += 1
 
-    # count, money = number_to_digit(report["Нулевая диета"]["count"], report["Нулевая диета"]["money"])
-    # ws.write(row - 2, 1, "—Нулевая диета", font_group_diet)
-    # ws.write(row - 2, 3, f'{count}', font_group_diet)
-    # ws.write(row - 2, 4, f'{money}.00', font_group_diet)
-    # add_font_style(ws, font_group_diet, "", row - 2, 0, 2)
-    #
-    # count, money = number_to_digit(report["Итого"]["Всего за период"]["count"] - report["Нулевая диета"]["count"],
-    #                                report["Итого"]["Всего за период"]["money"] - report["Нулевая диета"]["money"])
-    # ws.write(row - 1, 1, "—Остальные диеты ", font_group_diet)
-    # ws.write(row - 1, 3, f'{count}', font_group_diet)
-    # ws.write(row - 1, 4, f'{money}.00', font_group_diet)
-    # add_font_style(ws, font_group_diet, "", row - 1, 0, 2)
-    #
-    # count, money = number_to_digit(report["Сухпаек"]["count"], report["Сухпаек"]["money"])
-    # ws.write(row, 1, "—Сухпаек", font_end_of_table)
-    # ws.write(row, 3, f'{count}', font_end_of_table)
-    # ws.write(row, 4, f'{money}.00', font_end_of_table)
-    # add_font_style(ws, font_end_of_table, "", row, 0, 2)
-
-    ws.set_column("A:E", 19)  # 4.87 cm
-    ws.set_column("B:B", 27)
-    ws.set_column("C:C", 27)
+    ws.set_column("A:E", 20)  # 4.87 cm
+    ws.set_column("B:B", 30)
+    ws.set_column("C:C", 30)
     ws.set_column("D:D", 19)
     ws.set_column("E:E", 19)
 
