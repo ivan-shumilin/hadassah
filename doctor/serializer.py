@@ -127,6 +127,7 @@ class AddDishSerializer(serializers.Serializer):
     product_id = serializers.CharField()
     category = serializers.CharField()
     meal = serializers.CharField()
+    doctor = serializers.CharField()
 
 
 class CheckIsHavePatientSerializer(serializers.Serializer):
@@ -145,6 +146,7 @@ class ChangeDishSerializer(serializers.Serializer):
     product_id_del = serializers.CharField()
     category = serializers.CharField()
     meal = serializers.CharField()
+    doctor = serializers.CharField()
 
 class CroppImageSerializer(serializers.Serializer):
     x = serializers.IntegerField()

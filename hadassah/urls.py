@@ -36,6 +36,7 @@ urlpatterns = [
     path('manager/detailing_reports/<meal>/<floor>', views.detailing_reports, name='detailing_reports'),
     path('manager/printed_form_one', views.printed_form_one, name='printed_form_one'),
     path('manager/printed_form_one_new', views.printed_form_one_new, name='printed_form_one_new'),
+    path('manager/brakery_magazine', views.brakery_magazine, name='brakery_magazine'),
     path('manager/printed_form_two_lp', views.printed_form_two_lp, name='printed_form_two'),
     path('manager/printed_form_two_lp_new', views.printed_form_two_lp_new, name='printed_form_two_lp_new'),
     path('manager/printed_form_two_cafe', views.printed_form_two_cafe, name='printed_form_cafe'),
@@ -52,6 +53,8 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path('api/v1/get/downloadreport', views.DownloadReportAPIView.as_view()),
     path('api/v1/get/check-is-report', views.CheckIsReportAPIView.as_view()),
+    path('api/v1/get/download_brakery', views.DownloadBrakeryAPIView.as_view()),
+    path('api/v1/get/check-is-brakery', views.CheckIsBrakeryAPIView.as_view()),
     path('manager/api/v1/get/downloadsstickers', views.CreateStickers.as_view(), name='create_stickers'),
 ]
 

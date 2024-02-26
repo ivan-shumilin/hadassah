@@ -101,6 +101,7 @@ function activSelect() {
 
 var userId = "{{ user_id }}"
 var date = "{{ date }}"
+var doctor = "{{ doctor }}" // человек, кроторый вносит изменения в рацион
 
 // ###################
 // Запросы по API   ##
@@ -165,6 +166,7 @@ const getMenuForPatient = async function(userId, date) {
 const addDishForPatient = async function(category, product_id, meal) {
     let url = '/doctor/api/v1/add-dish'
     let body = {
+        "doctor": doctor,
         "id_user": userId,
         "date": date,
         "product_id": product_id,
@@ -185,6 +187,7 @@ const addDishForPatient = async function(category, product_id, meal) {
 const deleteDishForPatient = async function(category, product_id, meal) {
     let url = '/doctor/api/v1/delete-dish'
     let body = {
+        "doctor": doctor,
         "id_user": userId,
         "date": date,
         "product_id": product_id,
@@ -205,6 +208,7 @@ const deleteDishForPatient = async function(category, product_id, meal) {
 const changeDishForPatient = async function(product_id_add, product_id_del, category, meal) {
     let url = '/doctor/api/v1/change-dish'
     let body = {
+        "doctor": doctor,
         "id_user": userId,
         "date": date,
         "product_id_add": product_id_add,

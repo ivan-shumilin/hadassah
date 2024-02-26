@@ -14,7 +14,7 @@ class TestExternalReportCreate(unittest.TestCase):
         data_1 = {
             "user_id": user,
             "product_id": 299,
-            "date_create": datetime.date.today().isoformat(),
+            "date_create": "2024-02-15",
             "meal": "breakfast",
             "type_of_diet": "ОВД",
             "category": None,
@@ -24,7 +24,7 @@ class TestExternalReportCreate(unittest.TestCase):
         data_2 = {
             "user_id": user,
             "product_id": 109,
-            "date_create": datetime.date.today().isoformat(),
+            "date_create": "2024-02-15",
             "meal": "dinner",
             "type_of_diet": "Нулевая диета",  # 150
             "category": None,
@@ -38,7 +38,7 @@ class TestExternalReportCreate(unittest.TestCase):
         query = Report.objects.all()
         response = create_external_report(query)
         check_dct = {
-            "2024-02-11": {
+            "2024-02-15": {
                 "afternoon": {},
                 "breakfast": {
                     "ОВД": {

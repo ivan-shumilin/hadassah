@@ -660,6 +660,12 @@ class IsReportCreate(models.Model):
     def __str__(self):
         return f'{self.id} - {self.is_report_create}'
 
+
+class IsBrakeryMagazineCreate(models.Model):
+    is_brakery_magazine_create = models.BooleanField(default=False)
+    def __str__(self):
+        return f'{self.id} - {self.is_brakery_magazine_create}'
+
 class TTK(models.Model):
     """
     Записываем тех. карту. В данном случае ингредиент так же является тех. картой.
