@@ -1,3 +1,4 @@
+import os
 from datetime import date, time, datetime
 from typing import Dict
 
@@ -81,7 +82,9 @@ def create_external_report(filtered_report: Report) -> Dict:
                     len(set([user.user_id for user in (report[date_key][meal_key][diet_key])
                                 if user.product_id in ['569', '568', '570']]))
 
-                if "нулевая диета" in diet_key.lower():
+                if "нулевая диета + экстренное питание" in diet_key.lower():
+                    price = PRICE_ALL
+                elif "нулевая диета" in diet_key.lower():
                     price = PRICE_JUST_WATHER
                     count_just_wather += count_items
                 elif diet_key == 'БД день 2' and meal_key == 'afternoon':
@@ -131,7 +134,10 @@ def add_font_style(ws: Worksheet, style: str, text: str, row: int, *columns) -> 
 def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date_finish: datetime) -> None:
     """ Создаёт excel файл с отчетом по блюдам """
 
-    wb = xlsxwriter.Workbook("static/report.xlsx")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Формируем путь к файлу внутри папки nutritionist/static
+    file_path = os.path.join(current_dir, '../static/report.xlsx')
+    wb = xlsxwriter.Workbook(file_path)
 
     def field_fill_white(ws: Worksheet, row_start: int, row_end: int, col_start: int, col_end: int) -> None:
         """ Заливает все поле на указанный квадрат листа белым """
@@ -172,7 +178,17 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
         }
     )
 
-    font_number_room = wb.add_format({"font_name": "Arial", "font_size": 12, "align": "center", "fg_color": "white",})
+    font_total_format_header = wb.add_format(
+        {
+            "font_name": "Arial",
+            "font_size": 12,
+            "bold": True,
+            "align": "left",
+            "fg_color": "white",
+        }
+    )
+
+    font_number_room = wb.add_format({"font_name": "Arial", "font_size": 12, "align": "center", "fg_color": "white", })
 
     font_title_format = wb.add_format(
         {
@@ -237,10 +253,7 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
         "font_size": 12,
         "fg_color": "white",
         "italic": True,
-        "bottom": 1,
-        "bottom_color": "000000",
     })
-
 
     # -------------------------------------------------------------------
     #                       страница "Отчёт"
@@ -250,27 +263,68 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
 
     ws.merge_range("A1:E1", "Отчет по лечебному питанию", font_first_title)
     ws.merge_range("A2:E2", "Круглосуточный стационар, Hadassah Medical Moscow", font_14_bold)
-    ws.merge_range("A3:E3", f'{date_start.day}.{date_start.month}.{date_start.year} - {date_finish.day}.{date_finish.month}.{date_finish.year}',
+    ws.merge_range("A3:E3",
+                   f'{date_start.day}.{date_start.month}.{date_start.year} - {date_finish.day}.{date_finish.month}.{date_finish.year}',
                    font_14_bold)
 
+    row = 4
+
+    count, money = number_to_digit(report["Итого"]["Всего за период"]["count"],
+                                   report["Итого"]["Всего за период"]["money"])
+    ws.write(row, 1, "Всего за период" + " (без учета экстренного питания)", font_total_format_header)
+    ws.write(row, 3, count, font_total_format_header)
+    ws.write(row, 4, f'{money}.00', font_total_format_header)
+
+    row += 1
+    count, money = number_to_digit(report["Нулевая диета"]["count"], report["Нулевая диета"]["money"])
+    ws.write(row, 1, "      Нулевая диета", font_group_diet)
+    ws.write(row, 3, f'{count}', font_group_diet)
+    ws.write(row, 4, f'{money}.00', font_group_diet)
+    add_font_style(ws, font_group_diet, "", row, 0, 2)
+
+    row += 1
+    count, money = number_to_digit(report["Итого"]["Всего за период"]["count"] - report["Нулевая диета"]["count"],
+                                   report["Итого"]["Всего за период"]["money"] - report["Нулевая диета"]["money"])
+    ws.write(row, 1, "      Остальные диеты", font_group_diet)
+    ws.write(row, 3, f'{count}', font_group_diet)
+    ws.write(row, 4, f'{money}.00', font_group_diet)
+    add_font_style(ws, font_group_diet, "", row, 0, 2)
+
+    row += 1
+    count, money = number_to_digit(report["Сухпаек"]["count"], report["Сухпаек"]["money"])
+    ws.write(row, 1, "+ Сухпаек (экстренное питание в нерабочие часы)", font_end_of_table)
+    ws.write(row, 3, f'{count}', font_end_of_table)
+    ws.write(row, 4, f'{money}.00', font_end_of_table)
+    add_font_style(ws, font_end_of_table, "", row, 0, 2)
+
+    row += 1
+    count, money = number_to_digit(report["Итого"]["Всего за период"]["count"] + report["Сухпаек"]["count"],
+                                   report["Итого"]["Всего за период"]["money"] + report["Сухпаек"]["money"])
+    ws.write(row, 1, "Всего за период", font_total_format_header)
+    ws.write(row, 3, count, font_total_format_header)
+    ws.write(row, 4, f'{money}.00', font_total_format_header)
+
+    row += 2
     headers = ["Учетный день", "Прием пищи", "Рацион", "Количество", "Сумма, руб."]
     for col, header in enumerate(headers):
-        ws.write(4, col, header, font_title_format)
+        ws.write(row, col, header, font_title_format)
 
-    row = 5
+    ws.set_row(row, 35)
+
+    row += 1
     for date, meal_info in report.items():
         if date.lower() != "нулевая диета" and date.lower() != "сухпаек":
             if date.lower() != "итого":
                 ws.write(row, 0, date, font_table_cell)
             for meal, type_of_diet in meal_info.items():
                 first_row = row
-                if meal in ["Всего", "Всего за период"]:
+                if meal == "Всего":
                     add_font_style(ws, font_total_format, "", row, 0, 2)
                     count, money = number_to_digit(type_of_diet["count"], type_of_diet["money"])
-                    ws.write(row, 1, meal, font_total_format)
+                    ws.write(row, 1, meal + ' ' + '(без учета экстренного питания)', font_total_format)
                     ws.write(row, 3, count, font_total_format)
                     ws.write(row, 4, f'{money}.00', font_total_format)
-                else:
+                elif meal != "Всего за период":
                     if meal == "breakfast":
                         ws.write(row, 1, "Завтрак", font_table_cell)
                     else:
@@ -298,27 +352,11 @@ def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date
                         row += 1
         row += 1
 
-    count, money = number_to_digit(report["Нулевая диета"]["count"], report["Нулевая диета"]["money"])
-    ws.write(row - 2, 1, "—Нулевая диета", font_group_diet)
-    ws.write(row - 2, 3, f'{count}', font_group_diet)
-    ws.write(row - 2, 4, f'{money}.00', font_group_diet)
-    add_font_style(ws, font_group_diet, "", row - 2, 0, 2)
-
-    count, money = number_to_digit(report["Итого"]["Всего за период"]["count"] - report["Нулевая диета"]["count"],
-                                   report["Итого"]["Всего за период"]["money"] - report["Нулевая диета"]["money"])
-    ws.write(row - 1, 1, "—Остальные диеты ", font_group_diet)
-    ws.write(row - 1, 3, f'{count}', font_group_diet)
-    ws.write(row - 1, 4, f'{money}.00', font_group_diet)
-    add_font_style(ws, font_group_diet, "", row - 1, 0, 2)
-
-    count, money = number_to_digit(report["Сухпаек"]["count"], report["Сухпаек"]["money"])
-    ws.write(row, 1, "—Сухпаек", font_end_of_table)
-    ws.write(row, 3, f'{count}', font_end_of_table)
-    ws.write(row, 4, f'{money}.00', font_end_of_table)
-    add_font_style(ws, font_end_of_table, "", row, 0, 2)
-
-    ws.set_row(4, 35)
-    ws.set_column("A:E", 19)  # 4.87 cm
+    ws.set_column("A:E", 20)  # 4.87 cm
+    ws.set_column("B:B", 30)
+    ws.set_column("C:C", 30)
+    ws.set_column("D:D", 19)
+    ws.set_column("E:E", 19)
 
     field_fill_white(ws, 0, row + 1, 5, 50)
     field_fill_white(ws, row + 1, row + 1 + 5, 0, 50)
@@ -403,7 +441,11 @@ def create_external_report_detailing(filtered_report: Report) -> Dict:
 
 def get_brakery_magazine(meal: str, today: datetime, menu: set) -> None:
     """ Создает бракеражный журнал по приемам пищи """
-    wb = xlsxwriter.Workbook("static/brakery.xlsx")
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, '../static/brakery.xlsx')
+    wb = xlsxwriter.Workbook(file_path)
+
     ws = wb.add_worksheet("Бракераж")
     font_first_title = wb.add_format(
         {

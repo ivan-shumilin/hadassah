@@ -1625,7 +1625,6 @@ def get_all_menu_by_meal(meal: str, order_status: str, today: datetime) -> set:
         category_products = menu.values(category).filter(meal=meal, date=today).distinct(category)
         for product_id in category_products:
             add_names_product(product_id, category, result)
-    print('result: ', result)
 
     sorted_result = sorted(result)
     return sorted_result
