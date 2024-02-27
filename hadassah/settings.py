@@ -4,8 +4,6 @@ import os
 
 from envparse import Env
 
-from hadassah.logging_formatters import CustomJsonFormatter
-
 env = Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -177,8 +175,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static/"),
     os.path.join(BASE_DIR, "doctor", "static"),
     os.path.join(BASE_DIR, "nutritionist", "static"),
+    os.path.join(BASE_DIR, 'doctor/static'),
 ]
-
 # Основной url для управления медиафайлами
 MEDIA_URL = '/media/'
 
@@ -226,11 +224,6 @@ EMAIL_HOST_USER = 'info@petrushkagroup.ru'
 EMAIL_HOST_PASSWORD = 'sswmlhpfnbooozkb'
 
 AUTH_USER_MODEL = 'nutritionist.CustomUser'
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'doctor/static'),
-]
-
 # PWA_APP_DEBUG_MODE = True
 
 PWA_APP_NAME = 'ЛК врача'
