@@ -437,10 +437,7 @@ def create_external_report_detailing(filtered_report: Report) -> Dict:
 
 def get_brakery_magazine(meal: str, today: datetime, menu: set) -> None:
     """ Создает бракеражный журнал по приемам пищи """
-
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(current_dir, '../static/brakery.xlsx')
-    wb = xlsxwriter.Workbook(file_path)
+    wb = xlsxwriter.Workbook('brakery.xlsx')
 
     ws = wb.add_worksheet("Бракераж")
     font_first_title = wb.add_format(
