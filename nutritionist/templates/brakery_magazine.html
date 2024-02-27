@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-report-page">
+    <head>
+        <meta charset="utf-8">
+        <title>Сводный отчет</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <!-- Add additional CSS in static file -->
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{% static 'doctor/select/css/select2.min.css' %}">
+        <script src="{% static 'doctor/select/js/select2.min.js' %}"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    </head>
+    <style>
+        @media screen {
+            .print {
+                display: none;
+            }
+        }
+
+        @media print{
+            .print {
+                display: block;
+            }
+            .screen {
+                display: none;
+            }
+        }
+
+        a {
+            color: var(--color-main);
+            text-decoration: none;
+        }
+        a:hover {
+            color: var(--color-main);
+            text-decoration: none;
+        }
+        .all-show {
+            border: 2px solid #a7bbc7 !important;
+            color: #a7bbc7 !important;
+            cursor: pointer;
+        }
+        .toast {
+            background: #0e7abc;
+            color: #f6f8f9;
+            font-size: 16px;
+        }
+        .button-order {
+            position: relative;
+            bottom: 2px;
+            margin-top: 10px !important;
+        }
+        .table input[type="radio"] {
+            display: none;
+        }
+        .links {
+            color: #1a1b1c;
+            font-family: Montserrat, Arial, sans-serif;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.62;
+            min-width: 320px;
+            padding: 0;
+        }
+        .download {
+            color: #fff;
+            background-color: #0e7abc;
+            border-color: #0e7abc;
+        }
+
+        .download:hover {
+            color: #fff;
+            background-color: #156a9f;
+            border-color: #2d556d;
+        }
+
+        .select2 .select2-selection .select2-selection__arrow {
+            background-image: none;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            font-size: 15px !important;
+        }
+
+        .select2-container {
+            z-index: 99999; /* Задайте достаточно большое значение для индекса слоя */
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .hidden-t {
+            display: none;
+        }
+
+        .filter {
+        margin-left: 20px;
+        display: inline-block;
+        color: #c9ced1;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: .72px;
+        padding: 12px 16px 12px 0;
+        vertical-align: middle;
+      }
+
+      .filter-item:hover {
+        color: #0e7abc;
+      }
+      @media screen and (max-width: 768px) {
+        .filter {
+          display: block;
+          margin-bottom: 0px;
+        }
+      }
+      .filter {
+        display: inline-block;
+        margin-right: 0px;
+        vertical-align: middle;
+      }
+      .order {
+        margin-top: 20px;
+      }
+      
+      .hidden {
+        display: none !important;
+      }
+    </style>
+<body>
+    <div>
+            <div class="toast-container position-fixed bottom-0 end-0 p-3 top-0">
+                <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div id="toast-text" class="toast-body">
+
+                       </div>
+                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+                      </div>
+                    </div>
+              </div>
+
+            <div class="report-header-block" style="margin-bottom: 5px;">
+                <div class="container inner">
+                    <h1>
+                        Бракеражный журнал
+                    </h1>
+
+                    <div class="item item-eat">
+                        <div class="text">{{ meal }} {% if day %}<span>(Заказ на завтра, {{ date_create }})</span> {% endif %}</div>
+                    </div>
+
+                    <div class="dot"></div>
+
+                    <div class="item item-date">
+                        <div class="text">{{ formatted_date }}</div>
+                    </div>
+
+                    <div class="item item-time">
+                        <div class="time">{{ time_now }}</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="py-3 container inner">
+                <button id="button" type="button" onclick="startBrakeryDownload()" class="btn btn-primary">
+                    <span id="span1" class="" role="status" aria-hidden="true"></span>
+                    <span id="span2">Сформировать журнал</span>
+                </button>
+            </div>
+    </div>
+
+
+<a id="link-download" class="hidden" href="{% static 'brakery.xlsx' %}"> Download </a>
+    
+<script>
+const downloadBrakery = async function() {
+    let url = '/api/v1/get/download_brakery'
+    let body = {};
+
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;',
+        },
+        body: JSON.stringify(body)
+    });
+    let result = await response.json();
+    return result;
+}
+
+
+
+const checkIsBrakeryCreate = async function(id) {
+    let url = '/api/v1/get/check-is-brakery'
+    let body = {'id': id};
+
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;',
+        },
+        body: JSON.stringify(body)
+    });
+    let result = await response.json();
+    return result;
+}
+
+function end() {
+    console.log('Ссылка на скачивание');
+    document.getElementById('link-download').click();
+
+    button.setAttribute('disabled', 'false');
+    span2.innerHTML = "Сейчас начнется скачивание";
+    setTimeout(testTimeout, 3000);
+    span1.classList.remove('spinner-border');
+    span1.classList.remove('spinner-border-sm');
+
+    function testTimeout() {
+        span2.innerHTML = "Сформировать отчет";
+        button.removeAttribute("disabled");
+    }
+}
+
+
+async function startBrakeryDownload() {
+    let button = document.getElementById('button');
+    let span2 = document.getElementById('span2');
+    let span1 = document.getElementById('span1');
+    span1.classList.add('spinner-border');
+    span1.classList.add('spinner-border-sm');
+    button.setAttribute('disabled', '');
+    span2.innerHTML = "Формируем журнал ...";
+    let res = await downloadBrakery();
+    console.log('Start downloadBrakery')
+    res = JSON.parse(res);
+    let response1 = 'no'
+
+    for (let i = 0; i < 100000; i++) {
+        console.log(i)
+        response1 = await checkIsBrakeryCreate(res);
+        response1 = JSON.parse(response1);
+        if (response1.response == 'yes') {
+            console.log('пришел ответ yes');
+            end(button, span2, span1);
+            break;
+        }
+
+        if (response1.response == 'no') {
+            console.log('пришел ответ no');
+        }
+    }
+}
+
+function removeError(idInput, idDivError) {
+    document.getElementById(idInput).classList.remove('error');
+    document.getElementById(idDivError).innerHTML = '';
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src="{% static 'doctor/js/moment.js' %}"></script>
+
+</body>
+</html>
