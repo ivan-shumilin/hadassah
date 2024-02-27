@@ -4,8 +4,6 @@ import os
 
 from envparse import Env
 
-from hadassah.logging_formatters import CustomJsonFormatter
-
 env = Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -177,6 +175,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "doctor", "static"),
     os.path.join(BASE_DIR, "nutritionist", "static"),
+    os.path.join(BASE_DIR, 'doctor/static'),
 ]
 # Основной url для управления медиафайлами
 MEDIA_URL = '/media/'
