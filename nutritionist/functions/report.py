@@ -437,7 +437,7 @@ def create_external_report_detailing(filtered_report: Report) -> Dict:
 
 def get_brakery_magazine(meal: str, today: datetime, menu: set) -> None:
     """ Создает бракеражный журнал по приемам пищи """
-    wb = xlsxwriter.Workbook('brakery.xlsx')
+    wb = xlsxwriter.Workbook('static/brakery.xlsx')
 
     ws = wb.add_worksheet("Бракераж")
     font_first_title = wb.add_format(
