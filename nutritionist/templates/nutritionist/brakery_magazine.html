@@ -237,7 +237,7 @@ async function startBrakeryDownload() {
     span1.classList.add('spinner-border');
     span1.classList.add('spinner-border-sm');
     button.setAttribute('disabled', '');
-    span2.innerHTML = "Формируем отчет ...";
+    span2.innerHTML = "Формируем журнал ...";
     let res = await downloadBrakery();
     console.log('Start downloadBrakery')
     res = JSON.parse(res);
