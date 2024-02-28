@@ -211,7 +211,9 @@
                     <li><a href="{% url 'detailing' 'breakfast'  %}">Детализация</a></li>
                     <li><a href="{% url 'brakery_magazine' %}">Бракеражный журнал</a></li>
                     <li class="mr-top-10"><a href="{% url 'menu_lp_for_staff'  %}">Меню на неделю</a></li>
-                    <li><a href="{% url 'admin_foods'  %}">Корректировка рациона пациента</a></li>
+                    {% if is_manager %}
+                        <li><a href="{% url 'admin_foods'  %}">Корректировка рациона пациента</a></li>
+                    {% endif %}
                     <li><a href="{% url 'order'  %}">Раскладка ингредиентов</a></li>
                 </ul>
  

@@ -18,12 +18,12 @@ from doctor.functions.download import get_tk, get_name_by_api, get_allergens, ge
     get_measure_unit
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal, \
     caching_ingredients
-from doctor.tasks import create_report_download
+from doctor.tasks import create_report_download, create_bakery_magazine_download
 from .functions.report import create_external_report, create_external_report_detailing
 from .functions.ttk import create_all_ttk, enumeration_semifinisheds, get_tree_ttk
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, UsersToday, UsersReadyOrder, \
     MenuByDayReadyOrder, Report, \
-    IsReportCreate, AllProductСache, Ingredient
+    IsReportCreate, AllProductСache, Ingredient, IsBrakeryMagazineCreate
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import DownloadReportSerializer
 from rest_framework.response import Response
@@ -31,7 +31,8 @@ from rest_framework.views import APIView
 from django.core import management
 from django.contrib.auth.models import Group
 from doctor.functions.functions import counting_diets, \
-    create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features, get_user_name
+    create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features, \
+    get_order_status, get_all_menu_by_meal
 import random, datetime, logging, json
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
@@ -927,10 +928,7 @@ def admin_foods(request):
     """Админ-панель для внесения изменений в приемы пищи пациента"""
     patient = CustomUser.objects.filter(status='patient').order_by('full_name').first()
 
-    user_name = get_user_name(request)
-
     data = {
-        'doctor': user_name,
         'full_name': patient.full_name,
         'diet': patient.type_of_diet,
         'comment': patient.comment,
@@ -2097,6 +2095,7 @@ def weight_meal(meal):
         'dinner': 3,
     }
     return MEALS[meal]
+
 
 # 888
 class DownloadReportAPIView(APIView):
