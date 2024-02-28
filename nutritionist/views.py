@@ -902,7 +902,8 @@ def password_reset(request):
 
 def manager(request):
     patients = CustomUser.objects.filter(status='patient').order_by('full_name').values('id', 'full_name')
-    return render(request, 'admin.html', context={'patients': patients})
+    is_manager = request.user.is_authenticated and request.user.groups.filter(name='manager').exists()
+    return render(request, 'admin.html', context={'patients': patients, 'is_manager': is_manager})
 
 
 def edit_photo(request, product_id, type):
@@ -924,6 +925,13 @@ def edit_photo(request, product_id, type):
     }
 
     return render(request, 'edit_photo.html', context=data)
+
+
+def is_manager(user):
+    return user.groups.filter(name='manager').exists()
+
+
+@user_passes_test(is_manager)
 def admin_foods(request):
     """Админ-панель для внесения изменений в приемы пищи пациента"""
     patient = CustomUser.objects.filter(status='patient').order_by('full_name').first()
