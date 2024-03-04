@@ -133,7 +133,7 @@ def add_font_style(ws: Worksheet, style: str, text: str, row: int, *columns) -> 
 
 def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date_finish: datetime) -> None:
     """ Создаёт excel файл с отчетом по блюдам """
-    wb = xlsxwriter.Workbook('static/report.xlsx')
+    wb = xlsxwriter.Workbook('nutritionist/static/report.xlsx')
 
     def field_fill_white(ws: Worksheet, row_start: int, row_end: int, col_start: int, col_end: int) -> None:
         """ Заливает все поле на указанный квадрат листа белым """
@@ -436,7 +436,7 @@ def create_external_report_detailing(filtered_report: Report) -> Dict:
 
 def get_brakery_magazine(meal: str, today: datetime, menu: set) -> None:
     """ Создает бракеражный журнал по приемам пищи """
-    wb = xlsxwriter.Workbook('static/brakery.xlsx')
+    wb = xlsxwriter.Workbook('nutritionist/static/brakery.xlsx')
 
     ws = wb.add_worksheet("Бракераж")
     font_first_title = wb.add_format(
