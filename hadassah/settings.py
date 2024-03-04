@@ -266,6 +266,33 @@ PWA_APP_LANG = 'en-US'
 #     }
 # }
 
+LOGGING = {
+    'version': 1,
+
+    'formatters': {
+        'main': {
+            'format': "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s - %(pathname)s"
+        },
+    },
+
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'formatter': 'main',
+            'filename': 'doctor/nutrition_logging.log',
+            'encoding': 'utf-8'
+        }
+    },
+
+    'loggers': {
+        'main_logger': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True
+        }
+    }
+}
+
 ######################
 # CORS HEADERS
 ######################
