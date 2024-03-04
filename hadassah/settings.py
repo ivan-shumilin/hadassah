@@ -115,6 +115,8 @@ DATABASES = {
     }
 }
 
+
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -176,6 +178,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "doctor", "static"),
     os.path.join(BASE_DIR, "nutritionist", "static"),
 ]
+
 # Основной url для управления медиафайлами
 MEDIA_URL = '/media/'
 
@@ -274,6 +277,33 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'formatter': 'main',
             'filename': 'doctor/nutrition_logging.log'
+        }
+    },
+
+    'loggers': {
+        'main_logger': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True
+        }
+    }
+}
+
+LOGGING = {
+    'version': 1,
+
+    'formatters': {
+        'main': {
+            'format': "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s - %(pathname)s"
+        },
+    },
+
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'formatter': 'main',
+            'filename': 'doctor/nutrition_logging.log',
+            'encoding': 'utf-8'
         }
     },
 
