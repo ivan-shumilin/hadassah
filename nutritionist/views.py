@@ -931,10 +931,17 @@ def is_manager(user):
     return user.groups.filter(name='manager').exists()
 
 
-@user_passes_test(is_manager)
+# @user_passes_test(is_manager)
 def admin_foods(request):
     """Админ-панель для внесения изменений в приемы пищи пациента"""
     patient = CustomUser.objects.filter(status='patient').order_by('full_name').first()
+
+    normal_kpfc = {}
+
+    normal_kpfc['p'] = (85, 90)
+    normal_kpfc['f'] = (70, 80)
+    normal_kpfc['c'] = (300, 330)
+    normal_kpfc['k'] = (2170, 2400)
 
     data = {
         'full_name': patient.full_name,
@@ -942,6 +949,7 @@ def admin_foods(request):
         'comment': patient.comment,
         'date': str(date.today()),
         'user_id': patient.id,
+        'normal_kpfc': normal_kpfc,
     }
     return render(request, 'foods.html', context=data)
 
