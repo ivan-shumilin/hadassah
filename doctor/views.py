@@ -1253,6 +1253,8 @@ class AddDishAPIView(APIView):
 
 
 class ChangeDishAPIView(APIView):
+    logger = logging.getLogger('main_logger')
+
     def put(self, request):
         serializer = ChangeDishSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -1263,17 +1265,27 @@ class ChangeDishAPIView(APIView):
         product_id_add: str = serializer.validated_data['product_id_add']
         product_id_del: str = serializer.validated_data['product_id_del']
         changes: list = []  # список с меню в который надо внести изменения
+        doctor: str = serializer.validated_data['doctor']
+
+        message = ''
 
         # Проверка времани, если заказ уже сформирован (менее 2х часов до приема пищи)
         # вносить изменения в MenuByDayReadyOrder
         order_status: str = get_order_status(meal, date)
         menu = MenuByDay.objects.all()
         changes.append((menu, id_user))
+
+        product_name_add = get_product_by_id(product_id_add)
+        product_name_del = get_product_by_id(product_id_del)
+
+        table = "MenuByDay"
         if order_status == 'fix-order':
             menu = MenuByDayReadyOrder.objects.all()
             patient = UsersReadyOrder.objects.filter(user_id=id_user).first()
             changes.append((menu, patient))
+            table = "MenuByDayReadyOrder"
         with transaction.atomic():
+            patient = CustomUser.objects.filter(id=id_user).first()
             for menu, id in changes:
                 try:
                     with transaction.atomic():
@@ -1299,17 +1311,38 @@ class ChangeDishAPIView(APIView):
                         item_menu.save()
 
                 except:
+                    category_add = get_category_by_id(product_id_add)
+                    message = logging_change_dish_api('Cant change dish', table, order_status,
+                                                      product_name_add,
+                                                      product_id_add, product_name_del, product_id_del, meal, patient,
+                                                      category_add,
+                                                      category, date, doctor)
+                    self.logger.error(message)
+
                     return Response({'status': 'Error'})
             # удалить из ModifiedDish если есть
             patient = CustomUser.objects.filter(id=id_user).first()
             try:
-                ModifiedDish.objects\
+                ModifiedDish.objects \
                     .filter(product_id=product_id_del, date=date, meal=meal, user_id=patient).first().delete()
             except:
+                message = logging_change_dish_api('Cant delete', table, order_status, product_name_add,
+                                                  product_id_add, product_name_del, product_id_del, meal, patient,
+                                                  category_add,
+                                                  category, date, doctor)
+                self.logger.error(message)
                 pass
             # добавить изменения в ModifiedDish
             user = CustomUser.objects.get(id=id_user)
             ModifiedDish(product_id=product_id_add, date=date, meal=meal, user_id=user, status="change").save()
+            table = "ModifiedDish"
+
+            message = logging_change_dish_api('Save', table, order_status, product_name_add,
+                                              product_id_add, product_name_del, product_id_del, meal, patient,
+                                              category_add,
+                                              category, date, doctor)
+            self.logger.info(message)
+
         return Response({'status': 'OK'})
 
 
