@@ -398,6 +398,7 @@ async function addKpfcDisplay(type, left, right, number) {
     let numberElement = document.createElement('div');
     let currentNumber = document.createElement('div');
     currentNumber.textContent = number.toLocaleString(undefined, {minimumFractionDigits: 1});
+    console.log(number);
     // попадает ли число number в диапазон от l до r
     if (number >= left && number <= right) {
         numberElement.classList.add('line', 'green-line');
@@ -411,8 +412,8 @@ async function addKpfcDisplay(type, left, right, number) {
                 currentNumber.style.left = 100 - shift + '%';
                 numberElement.style.left = 100 + '%';
             } else {
-                currentNumber.style.left = right - l + '%';
-                numberElement.style.left = right - l + '%';
+                currentNumber.style.left = ((number - l) * 100) / full_skale + '%';
+                numberElement.style.left = ((number - l) * 100) / full_skale + '%';
             }
         }
         else if (number <= left) {
@@ -421,8 +422,8 @@ async function addKpfcDisplay(type, left, right, number) {
                 numberElement.style.left = 0 + '%';
             }
             else {
-                currentNumber.style.left = left - l + '%';
-                numberElement.style.left = left - l + '%';
+                currentNumber.style.left = ((number - l) * 100) / full_skale + '%';
+                numberElement.style.left = ((number - l) * 100) / full_skale + '%';
             }
         }
         numberElement.classList.add('line', 'red-line');
