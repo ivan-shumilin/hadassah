@@ -32,7 +32,7 @@ from doctor.functions.functions import sorting_dishes, parsing, \
     creates_dict_with_menu_patients_on_day, delete_choices, create_user, edit_user, counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two, archiving_user, get_not_active_users_set, \
     get_occupied_rooms, creates_dict_with_menu_patients_on_day_test, what_type_order, get_order_status, get_user_name, \
-    translate_first_meal, add_features, next_meal
+    translate_first_meal, add_features, next_meal, get_normal_kpfc
 from doctor.functions.bot import check_change, do_messang_send, formatting_full_name
 from doctor.functions.for_print_forms import create_user_today, check_time, update_UsersToday, update_СhangesUsersToday, \
     applies_changes, create_user_tomorrow, create_ready_order, create_report, create_products_lp, add_products_lp, \
@@ -597,6 +597,12 @@ class GetPatientMenuDayTestAPIView(APIView):
         response = json.dumps(response)
         return Response(response)
 
+
+class GetNewKpfc(APIView):
+    def get(self, request):
+        type_of_diet = request.GET['type_of_diet']
+        normal_kpfc = get_normal_kpfc(type_of_diet)
+        return Response(normal_kpfc)
 
 # 333
 class SendPatientProductsAPIView(APIView):

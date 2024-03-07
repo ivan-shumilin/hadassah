@@ -11,7 +11,7 @@ from django.contrib.messages import get_messages
 from dateutil.parser import parse
 from django.db.models import Q, IntegerField, Value
 
-from typing import List
+from typing import List, Optional
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from django.db.models.functions import Lower, Cast, Replace
@@ -562,6 +562,55 @@ def get_order_status(meal, date_show):
 #     return get_date_status(date_show, meal)
 
 
+def get_normal_kpfc(input_type_of_diet: str) -> Optional[dict]:
+    """ создает словарь с допустимыми нормами кбжу по диетам """
+    # считаю норму по кбжу + 10% расширяю норму
+    deviation_end = (1 + 0.1)
+    deviation_start = (1 - 0.1)
+    normal_kpfc = {
+        'ОВД': {
+                'p': (int(85 * deviation_start), int(90 * deviation_end)),
+                'f': (int(70 * deviation_start), int(80 * deviation_end)),
+                'c': (int(300 * deviation_start), int(330 * deviation_end)),
+                'k': (int(2170 * deviation_start), int(2400 * deviation_end)),
+                },
+        'ЩД': {
+                'p': (int(85 * deviation_start), int(90 * deviation_end)),
+                'f': (int(70 * deviation_start), int(80 * deviation_end)),
+                'c': (int(300 * deviation_start), int(350 * deviation_end)),
+                'k': (int(2170 * deviation_start), int(2480 * deviation_end)),
+            },
+        'ВБД': {
+                'p': (int(110 * deviation_start), int(120 * deviation_end)),
+                'f': (int(80 * deviation_start), int(90 * deviation_end)),
+                'c': (int(250 * deviation_start), int(350 * deviation_end)),
+                'k': (int(2080 * deviation_start), int(2690 * deviation_end)),
+            },
+
+        'НБД': {
+                'p': (int(20 * deviation_start), int(60 * deviation_end)),
+                'f': (int(80 * deviation_start), int(90 * deviation_end)),
+                'c': (int(350 * deviation_start), int(400 * deviation_end)),
+                'k': (int(2120 * deviation_start), int(2650 * deviation_end)),
+            },
+        'НКД': {
+                'p': (int(79 * deviation_start), int(80 * deviation_end)),
+                'f': (int(60 * deviation_start), int(70 * deviation_end)),
+                'c': (int(130 * deviation_start), int(150 * deviation_end)),
+                'k': (int(1340 * deviation_start), int(1550 * deviation_end)),
+            },
+    }
+
+    if 'овд' in input_type_of_diet.lower():
+        type_of_diet = normal_kpfc['ОВД']
+    elif 'щд' in input_type_of_diet.lower():
+        type_of_diet = normal_kpfc['ЩД']
+    elif input_type_of_diet in normal_kpfc:
+        type_of_diet = normal_kpfc[input_type_of_diet]
+    else:
+        type_of_diet = None
+    # это для тех диет по которым нет норм
+    return type_of_diet
 
 def creates_dict_with_menu_patients_on_day_test(id, date_show):
     """Создаем меню на день для вывода в “Корректировка рациона пациента”."""
