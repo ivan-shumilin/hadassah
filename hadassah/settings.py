@@ -23,10 +23,9 @@ ALLOWED_HOSTS = [
         'petrushkagroup.ru',
         '158.160.15.85',
         '127.0.0.1',
-        'localhost',
+        'loclhost',
         'https://2a3d-178-89-129-243.ngrok-free.app',
         '2a3d-178-89-129-243.ngrok-free.app',
-        '130.193.55.25'
 ]
 
 
@@ -36,8 +35,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8000",
     "https://b467-146-120-93-183.eu.ngrok.io",
-    "http://130.193.55.25",
 ]
+
+
 
 
 # Application definition
@@ -174,6 +174,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "doctor", "static"),
     os.path.join(BASE_DIR, "nutritionist", "static"),
 ]
+
 # Основной url для управления медиафайлами
 MEDIA_URL = '/media/'
 

@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-    
+
 
     <!-- Add additional CSS in static file -->
     {% load static %}
@@ -18,9 +18,9 @@
     <link rel="stylesheet" href="{% static 'doctor/select/css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'doctor/css/foods.css' %}">
     <script src="{% static 'doctor/select/js/select2.min.js' %}"></script>
-    
+
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script> -->
-    
+
 
 </head>
 <body>
@@ -34,15 +34,16 @@
                 <p class="mr-top-bottom-0">Комментарий: <span class="comment" id="comment"></span></p>
 
                 <p class="mr-top-10">
-                    Выбор даты: 
+                    Выбор даты:
                     <input onchange="changeDate(this.value)" type="date" id="date" value="{{ date }}">
                 </p>
-                Выбор пациента: 
+                Выбор пациента:
                 <select onchange="changePatients(this.value)" id="patients-list" class="js-states form-control"></select>
             
             </div>
         </div>
     </div>
+
     <div class="div-order">
         <div class="order">
             <h1>Корректировка рациона пациента</h1>
@@ -50,6 +51,12 @@
     </div>
 </div>
 
+<div id="div_order">
+    <div id="kpfc_У"> </div>
+    <div id="kpfc_Ж"> </div>
+    <div id="kpfc_Б"> </div>
+    <div id="kpfc_К"> </div>
+</div>
 
 <table id='table2' width="100%">
     <tr>
@@ -58,7 +65,7 @@
     </tr>
     <tr>
         <td id='td_left'></td>
-        <td id='td_right' valign="top"></td>        
+        <td id='td_right' valign="top"></td>
     </tr>
 </table>
 
@@ -80,7 +87,6 @@
 
             </div>
         </div>
-    </div>
 </div>
 <button class="hidden" id="modal-start" type="button" data-bs-toggle="modal"data-bs-target="#modal-delet">hidden</button>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
@@ -96,12 +102,13 @@ function activSelect() {
     $('select.search').select2();
     $(".js-states-1").select2();
     // $('select').select2();
-    // $(".js-states").select2();    
+    // $(".js-states").select2();
 }
 
 var userId = "{{ user_id }}"
 var date = "{{ date }}"
 var doctor = "{{ doctor }}" // человек, кроторый вносит изменения в рацион
+var type_of_diet = "{{ diet }}"
 
 // ###################
 // Запросы по API   ##
@@ -162,6 +169,20 @@ const getMenuForPatient = async function(userId, date) {
     let result = await response.text();
     return result;
 }
+
+const getNewKpfc = async function(type_of_diet) {
+    const url = `/doctor/api/v1/get-new-kpfc?type_of_diet=${type_of_diet}`
+    const response = await fetch(url, {
+        method: 'GET',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+    });
+    let result = await response.text();
+    console.log("Result: ", result)
+    return result;
+}
+
 
 const addDishForPatient = async function(category, product_id, meal) {
     let url = '/doctor/api/v1/add-dish'
@@ -237,7 +258,7 @@ const getAllDishesByCategory = async function(cat, date, meal) {
     });
     let result = await response.text();
     return result;
-} 
+}
 
 const getPatients = async function(date) {
   const url = `/doctor/api/v1/get-patients?date=${date}&filter=full_name`;
@@ -276,17 +297,189 @@ async function displayInfoPatient() {
 // получаем информацию о пациенте
     let res0 = await getInfoPatient(id)
     addInfoPatient(res0);
+    window.type_of_diet = res0['type_of_diet']
+    var type_of_diet = window.type_of_diet
+    console.log("type of diet: ", type_of_diet)
 
 // получаем меню для пациента
     let res = await getMenuForPatient(id, date)
-    var obj = JSON.parse(res);
-    var obj = JSON.parse(obj);
+    var obj = JSON.parse(res)
+    var obj = JSON.parse(obj)
+    var current_diet_kpfc_info = await getNewKpfc(type_of_diet)
+
+    if (current_diet_kpfc_info != '') {
+        var current_diet_kpfc = JSON.parse(current_diet_kpfc_info)
+        addKpfc(obj, current_diet_kpfc);
+    } else {
+        emptyDisplay('К');
+        emptyDisplay('Б');
+        emptyDisplay('Ж');
+        emptyDisplay('У');
+    }
+
     addHtmlLeft(obj, res0);
+
 // плучить всех активных пациентов на это дату
     let res1 = await getPatients(date);
     addPatientForSearch(res1);
 // отчистить правую сторону
     delHtmlRight();
+}
+
+function addKpfc(obj, normal) {
+    console.log('normal', normal)
+    let totals = countKpfc(obj);
+
+    {#наоборот так как использую вставку сразу после id#}
+    addKpfcDisplay('У',  normal['c'][0],  normal['c'][1], totals.carbohydrate);
+    addKpfcDisplay('Ж',  normal['f'][0], normal['f'][1], totals.fat);
+    addKpfcDisplay('Б',  normal['p'][0], normal['p'][1], totals.fiber);
+    addKpfcDisplay('К', normal['k'][0], normal['k'][1], totals.energy);
+}
+
+async function emptyDisplay(type) {
+    let kpfcDisplayElement = document.getElementById(`kpfc_${type}`);
+    kpfcDisplayElement.innerHTML = '';
+    divOrder.insertAdjacentElement('afterbegin', kpfcDisplayElement);
+}
+
+async function addKpfcDisplay(type, left, right, number) {
+    let kpfcDisplayElement = document.getElementById(`kpfc_${type}`);
+    let divOrder = document.getElementById('div_order')
+
+    kpfcDisplayElement.classList.add('container', 'mx-0');
+
+    kpfcDisplayElement.innerHTML = `
+        <div class="row">
+            <div class="col-1 px-0">
+                <div class="blue-circle ms-2">${type}</div>
+            </div>
+            <div class="col-sm-11 px-0">
+            <div class="current_rectangle" id="num_rectangle"></div>
+                <div class="rectangle">
+                    <div class="dark-area"></div>
+                    <div class="line l-line"></div>
+                    <div class="line r-line"></div>
+                </div>
+                <div class="num_rectangle" id="num_rectangle"></div>
+            </div>
+        </div>
+    `;
+
+
+    let n = 10;
+    let n_procent =  ((right - left) * n) / 100;
+    let numRectangle = kpfcDisplayElement.querySelector('.num_rectangle');
+    let currentRectangle = kpfcDisplayElement.querySelector('.current_rectangle');
+    let l = left - n_procent;
+    let r = right + n_procent;
+    let full_skale = r - l;
+    let shift = 0.64;
+
+    let rectangle = kpfcDisplayElement.querySelector('.rectangle');
+
+    // Создаем темную область для диапазона от l до r
+    let darkArea = document.createElement('div');
+    darkArea.classList.add('dark-area');
+    darkArea.style.left = ((left - l) * 100) / full_skale + '%';
+    darkArea.style.width =  ((right - left) * 100) / full_skale + '%';
+    rectangle.appendChild(darkArea);
+
+    // Создаем линию для позиции l
+    let lLine = document.createElement('div');
+    lLine.classList.add('line', 'l-line');
+    rectangle.appendChild(lLine);
+
+    // Создаем линию для позиции r
+    let rLine = document.createElement('div');
+    rLine.classList.add('line', 'r-line');
+    rectangle.appendChild(rLine);
+
+    let numberElement = document.createElement('div');
+    let currentNumber = document.createElement('div');
+    currentNumber.textContent = number.toLocaleString(undefined, {minimumFractionDigits: 1});
+    // попадает ли число number в диапазон от l до r
+    if (number >= left && number <= right) {
+        numberElement.classList.add('line', 'green-line');
+        currentNumber.className = 'number_green'
+        currentNumber.style.left = ((number - l) * 100) / full_skale + '%';
+        numberElement.style.left = ((number - l) * 100) / full_skale + '%';
+    }
+    else{
+        if (number >= right) {
+            if (number >= r) {
+                currentNumber.style.left = 100 - shift + '%';
+                numberElement.style.left = 100 + '%';
+            } else {
+                currentNumber.style.left = right - l + '%';
+                numberElement.style.left = right - l + '%';
+            }
+        }
+        else if (number <= left) {
+            if (number <= l) {
+                currentNumber.style.left = 0 - shift + '%';
+                numberElement.style.left = 0 + '%';
+            }
+            else {
+                currentNumber.style.left = left - l + '%';
+                numberElement.style.left = left - l + '%';
+            }
+        }
+        numberElement.classList.add('line', 'red-line');
+        currentNumber.className = 'number_red'
+    }
+
+    rectangle.appendChild(numberElement);
+
+    // для чиселок
+    let lNumber = document.createElement('div');
+    lNumber.textContent = left.toLocaleString();
+    lNumber.className = 'number';
+    lNumber.style.left = ((left - l) * 100) / full_skale + '%';
+    numRectangle.appendChild(lNumber);
+
+    let rNumber = document.createElement('div');
+    rNumber.textContent = right.toLocaleString();
+    rNumber.className = 'number';
+    rNumber.style.left = ((right - l) * 100) / full_skale  + '%';
+    numRectangle.appendChild(rNumber);
+
+    currentRectangle.appendChild(currentNumber);
+
+    divOrder.insertAdjacentElement('afterbegin', kpfcDisplayElement);
+}
+
+
+// подсчет кбжу
+function countKpfc(mealData) {
+    let totals = {
+        fat: 0,
+        fiber: 0,
+        carbohydrate: 0,
+        energy: 0
+    };
+
+    for (let mealType in mealData) {
+        console.log(mealType)
+        if (mealData.hasOwnProperty(mealType)) {
+            let mealCategory = mealData[mealType];
+            for (let category in mealCategory) {
+                if (mealCategory.hasOwnProperty(category)) {
+                    let meals = mealCategory[category];
+                    for (let item of meals) {
+                        if (item) {
+                            totals.fat += item.fat || 0;
+                            totals.fiber += item.fiber || 0;
+                            totals.carbohydrate += item.carbohydrate || 0;
+                            totals.energy += item.energy || 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    console.log(totals)
+    return totals;
 }
 
 function addHtmlLeft(obj, obj1) {
@@ -296,32 +489,31 @@ function addHtmlLeft(obj, obj1) {
         tdLeft.removeChild(tdLeft.firstChild);
     }
     let meals = {
-        breakfast: "Завтрак", 
-        lunch: "Обед", 
-        afternoon: "Полдник", 
+        breakfast: "Завтрак",
+        lunch: "Обед",
+        afternoon: "Полдник",
         dinner: "Ужин"
     }
 
     let orderStatus = {
-        'done': "отдали", 
-        'fix-order': "заказ сформирован", 
-        'flex-order': "заказ еще формируется", 
+        'done': "отдали",
+        'fix-order': "заказ сформирован",
+        'flex-order': "заказ еще формируется",
 
     }
-
 
     let categorys = {
         salad: "Салаты",
         soup: "Первые блюда",
-        porridge: "Кашы", 
-        main: "Основные блюда", 
-        garnish: "Гарниры", 
-        dessert: "Десерты", 
-        fruit: "Фрукты", 
+        porridge: "Кашы",
+        main: "Основные блюда",
+        garnish: "Гарниры",
+        dessert: "Десерты",
+        fruit: "Фрукты",
         drink: "Напитки",
         products: "Товары",
         hidden: "Товары",
-        bouillon: "Бульон", 
+        bouillon: "Бульон",
     }
 
     let result = "";
@@ -352,7 +544,7 @@ function addHtmlLeft(obj, obj1) {
                     }
 
                 }
-            
+
             }
             result += `<tr><td><a onclick="addDish('${meal}')" class="pointer hover-a">Добавить блюдо`
             result += `<img class="icon" width="17" height="17" src="{% static "doctor/css/img/add.svg" %}" alt="">`
@@ -363,7 +555,7 @@ function addHtmlLeft(obj, obj1) {
             result += `</a></td></tr>`
         }
         result += '</tr>'
-        
+
     }
     result += '</table>'
 
@@ -394,9 +586,9 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
     }
 
     let meals = {
-        breakfast: "Завтрак", 
-        lunch: "Обед", 
-        afternoon: "Полдник", 
+        breakfast: "Завтрак",
+        lunch: "Обед",
+        afternoon: "Полдник",
         dinner: "Ужин"
     }
 
@@ -421,7 +613,7 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
     } else {
         result += `<img class="icon" width="17" height="17" title="Добавить блюдо" src="{% static "doctor/css/img/add.svg" %}" alt="Добавить блюдо">`
     }
-    result += `</a>`      
+    result += `</a>`
     result += `</td></tr>`
     for (var set in sets) {
         if (obj[set].length > 0) {
@@ -559,7 +751,7 @@ async function changeDishAPI(product_id_add, product_id_del, category, meal) {
 // ###################
 // Добавление блюда ##
 // ###################
- 
+
 function createModaladdDishModal(product_id, name, category, meal) {
     document.getElementById('modal-title').innerHTML = "Добавить блюдо";
     document.getElementById('modal-body').innerHTML = `Добавить блюдо <span class="bold">"${name}"</span>?`;
@@ -651,7 +843,7 @@ function createModalDelete(product_id, name, category, meal) {
     r += `Закрыть</button>`
 
     modalFooter.insertAdjacentHTML("afterbegin", r);
-    
+
     document.getElementById('modal-start').click()
 }
 
@@ -743,7 +935,7 @@ function createModalAddAllDish(meal, category, mode, product_id_del, name_del) {
     modalBody.insertAdjacentHTML("afterbegin", r);
 
     activSelect();
-    
+
 
     r = '';
     if (mode == 'change') {

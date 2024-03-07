@@ -137,6 +137,7 @@ def load_product():
 def redirect(request):
     return HttpResponseRedirect(reverse('login'))
 
+
 def get_modelformset():
     return modelformset_factory(Product,
                                           fields=(
@@ -180,6 +181,7 @@ def get_modelformset():
                                               'comment': Textarea(attrs={'class': "form-control", 'rows': "3"}),
                                           },
                                           extra=0, )
+
 
 def get_queryset(date_default):
     queryset: dict = {
@@ -323,6 +325,7 @@ def search(request):
         'error': error,
         }
     return render(request, 'search.html', context=data)
+
 
 def page_calc(page, count_prosucts):
     page = int(page)
@@ -754,7 +757,6 @@ def catalog_drinks(request, page):
     return render(request, 'drinks.html', context=data)
 
 
-
 class BaseAPIView(APIView):
     def post(self, request):
         data = request.data
@@ -779,7 +781,6 @@ class VerifyAPIView(APIView):
         except Exception:
             pass
         return Response('Yes')
-
 
 
 class DeactivateAPIView(APIView):
@@ -924,6 +925,7 @@ def edit_photo(request, product_id, type):
     }
 
     return render(request, 'edit_photo.html', context=data)
+
 def admin_foods(request):
     """Админ-панель для внесения изменений в приемы пищи пациента"""
     patient = CustomUser.objects.filter(status='patient').order_by('full_name').first()
@@ -983,13 +985,14 @@ def printed_form_one_new(request):
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     floors = {
-    'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-8', '2а-9', '2а-10', '2а-11', '2а-12', '2а-13',
-               '2а-14', '2а-15', '2а-16', '2а-17'],
-    'third': ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
-                    '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4',
-                    '3b-5', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
-    'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
-                      '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
+        'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-8', '2а-9', '2а-10', '2а-11', '2а-12',
+                   '2а-13',
+                   '2а-14', '2а-15', '2а-16', '2а-17'],
+        'third': ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
+                  '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4',
+                  '3b-5', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
+        'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
+                    '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
     }
     time_now = datetime.today().time().strftime("%H:%M")
     # какой прием пищи
@@ -1052,13 +1055,13 @@ def printed_form_one(request):
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     floors = {
-    'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-8', '2а-9', '2а-10', '2а-11', '2а-12',
-               '2а-13', '2а-14', '2а-15', '2а-16', '2а-17'],
-    'third': ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
-                    '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4',
-                    '3b-5', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
-    'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
-                      '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
+        'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-8', '2а-9', '2а-10', '2а-11', '2а-12',
+                   '2а-13', '2а-14', '2а-15', '2а-16', '2а-17'],
+        'third': ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
+                  '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4',
+                  '3b-5', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
+        'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
+                    '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
     }
     time_now = datetime.today().time().strftime("%H:%M")
     # какой прием пищи
@@ -1974,7 +1977,6 @@ def weight_meal(meal):
     }
     return MEALS[meal]
 
-
 # 888
 class DownloadReportAPIView(APIView):
     def post(self, request):
@@ -1982,6 +1984,8 @@ class DownloadReportAPIView(APIView):
         serializer.is_valid(raise_exception=True)
 
         data = serializer.validated_data
+        # date_start = data['start']
+        # date_finish = data['finish']
         date_start = data['start']
         date_finish = data['finish']
         logging.info(f'пользователь ({date_start})')
@@ -2155,6 +2159,9 @@ def get_total_energy_value(day_of_the_week, translated_diet):
         except:
             energy += 0
     return f'Б - {round(fiber, 2)}, Ж - {round(fat, 2)}, У - {round(carbohydrate, 2)}, Ккал - {round(energy, 2)}'
+
+
+
 
 
 def get_energy_value(product):
