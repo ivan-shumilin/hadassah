@@ -137,49 +137,51 @@ def load_product():
 def redirect(request):
     return HttpResponseRedirect(reverse('login'))
 
+
 def get_modelformset():
     return modelformset_factory(Product,
-                                          fields=(
-                                              'iditem', 'name', 'description', 'ovd', 'ovd_sugarless', 'shd', 'bd',
-                                              'vbd', 'nbd', 'nkd', 'ovd_vegan', 'shd_sugarless', 'iodine_free',
-                                              'vkd', 'not_suitable', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
-                                              'cooking_method', 'comment'),
-                                          widgets={'ovd': CheckboxInput(
-                                              attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'ovd_sugarless': CheckboxInput(
-                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'ovd_vegan': CheckboxInput(
-                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'shd': CheckboxInput(
-                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'shd_sugarless': CheckboxInput(
-                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'bd': CheckboxInput(
-                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'vbd': CheckboxInput(
-                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'nbd': CheckboxInput(
-                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'nkd': CheckboxInput(
-                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'vkd': CheckboxInput(
-                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'iodine_free': CheckboxInput(
-                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'not_suitable': CheckboxInput(
-                                                  attrs={'class': 'form-check-input', 'type': 'checkbox'}),
-                                              'name': Textarea(attrs={'style': "display: none;"}),
-                                              'description': Textarea(attrs={'style': "display: none;"}),
-                                              'carbohydrate': Textarea(attrs={'style': "display: none;"}),
-                                              'iditem': Textarea(attrs={'style': "display: none;"}),
-                                              'fat': Textarea(attrs={'style': "display: none;"}),
-                                              'fiber': Textarea(attrs={'style': "display: none;"}),
-                                              'energy': Textarea(attrs={'style': "display: none;"}),
-                                              'category': Textarea(attrs={'style': "display: none;"}),
-                                              'cooking_method': Textarea(attrs={'style': "display: none;"}),
-                                              'comment': Textarea(attrs={'class': "form-control", 'rows': "3"}),
-                                          },
-                                          extra=0, )
+                                fields=(
+                                    'iditem', 'name', 'description', 'ovd', 'ovd_sugarless', 'shd', 'bd',
+                                    'vbd', 'nbd', 'nkd', 'ovd_vegan', 'shd_sugarless', 'iodine_free',
+                                    'vkd', 'not_suitable', 'carbohydrate', 'fat', 'fiber', 'energy', 'category',
+                                    'cooking_method', 'comment'),
+                                widgets={'ovd': CheckboxInput(
+                                    attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'ovd_sugarless': CheckboxInput(
+                                        attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'ovd_vegan': CheckboxInput(
+                                        attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'shd': CheckboxInput(
+                                        attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'shd_sugarless': CheckboxInput(
+                                        attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'bd': CheckboxInput(
+                                        attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'vbd': CheckboxInput(
+                                        attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'nbd': CheckboxInput(
+                                        attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'nkd': CheckboxInput(
+                                        attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'vkd': CheckboxInput(
+                                        attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'iodine_free': CheckboxInput(
+                                        attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'not_suitable': CheckboxInput(
+                                        attrs={'class': 'form-check-input', 'type': 'checkbox'}),
+                                    'name': Textarea(attrs={'style': "display: none;"}),
+                                    'description': Textarea(attrs={'style': "display: none;"}),
+                                    'carbohydrate': Textarea(attrs={'style': "display: none;"}),
+                                    'iditem': Textarea(attrs={'style': "display: none;"}),
+                                    'fat': Textarea(attrs={'style': "display: none;"}),
+                                    'fiber': Textarea(attrs={'style': "display: none;"}),
+                                    'energy': Textarea(attrs={'style': "display: none;"}),
+                                    'category': Textarea(attrs={'style': "display: none;"}),
+                                    'cooking_method': Textarea(attrs={'style': "display: none;"}),
+                                    'comment': Textarea(attrs={'class': "form-control", 'rows': "3"}),
+                                },
+                                extra=0, )
+
 
 def get_queryset(date_default):
     queryset: dict = {
@@ -189,7 +191,7 @@ def get_queryset(date_default):
         'side_dishes': Product.objects.filter(timetable__datetime=date_default).filter(category='Гарниры'),
         'breakfast': Product.objects.filter(timetable__datetime=date_default).filter(category='Завтраки'),
         'porridge': Product.objects.filter(timetable__datetime=date_default).filter(category='Каши'),
-            }
+    }
     return queryset
 
 
@@ -198,11 +200,14 @@ def get_formset(queryset, ProductFormSet, request) -> dict:
         formset: dict = {
             'salad': ProductFormSet(request.POST, request.FILES, queryset=queryset['salad'], prefix='salad'),
             'soup': ProductFormSet(request.POST, request.FILES, queryset=queryset['soup'], prefix='soup'),
-            'main_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['main_dishes'], prefix='main_dishes'),
-            'side_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['side_dishes'], prefix='side_dishes'),
-            'breakfast': ProductFormSet(request.POST, request.FILES, queryset=queryset['breakfast'], prefix='breakfast'),
+            'main_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['main_dishes'],
+                                          prefix='main_dishes'),
+            'side_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['side_dishes'],
+                                          prefix='side_dishes'),
+            'breakfast': ProductFormSet(request.POST, request.FILES, queryset=queryset['breakfast'],
+                                        prefix='breakfast'),
             'porridge': ProductFormSet(request.POST, request.FILES, queryset=queryset['porridge'], prefix='porridge'),
-                }
+        }
     else:
         formset: dict = {
             'salad': ProductFormSet(queryset=queryset['salad'], prefix='salad'),
@@ -211,8 +216,9 @@ def get_formset(queryset, ProductFormSet, request) -> dict:
             'side_dishes': ProductFormSet(queryset=queryset['side_dishes'], prefix='side_dishes'),
             'breakfast': ProductFormSet(queryset=queryset['breakfast'], prefix='breakfast'),
             'porridge': ProductFormSet(queryset=queryset['porridge'], prefix='porridge'),
-                }
+        }
     return formset
+
 
 def get_stat_index():
     count_prosucts = len(Product.objects.filter(~Q(category='Блюда от шефа')))
@@ -254,7 +260,7 @@ def index(request):
                     'count_prosucts_not_labeled': count_prosucts_not_labeled,
                     'form_date': form_date,
                     'progress': progress,
-                           }
+                    }
             return render(request, 'index.html', context=data)
         else:
             for f in formset.values():
@@ -321,8 +327,9 @@ def search(request):
         'formset': formset,
         'products': products,
         'error': error,
-        }
+    }
     return render(request, 'search.html', context=data)
+
 
 def page_calc(page, count_prosucts):
     page = int(page)
@@ -754,7 +761,6 @@ def catalog_drinks(request, page):
     return render(request, 'drinks.html', context=data)
 
 
-
 class BaseAPIView(APIView):
     def post(self, request):
         data = request.data
@@ -779,7 +785,6 @@ class VerifyAPIView(APIView):
         except Exception:
             pass
         return Response('Yes')
-
 
 
 class DeactivateAPIView(APIView):
@@ -817,7 +822,7 @@ def user_login(request):
     else:
         user_form = UserloginForm()
     return render(request, 'nutritionist/registration/login.html', {'user_form': user_form,
-                                                       'errors': errors})
+                                                                    'errors': errors})
 
 
 def user_logout(request):
@@ -858,12 +863,12 @@ def register(request):
                     html_message=text_email,
                 )
 
-                return render(request, 'nutritionist/registration/register_done.html', {'user_form': user_form, 'errors': errors})
+                return render(request, 'nutritionist/registration/register_done.html',
+                              {'user_form': user_form, 'errors': errors})
             except Exception:
                 errors.append('Пользователь с такой почтой уже существует')
                 return render(request, 'nutritionist/registration/register.html',
                               {'user_form': user_form, 'errors': errors})
-
 
     user_form = UserRegistrationForm()
     return render(request, 'nutritionist/registration/register.html', {'user_form': user_form, 'errors': errors})
@@ -893,12 +898,15 @@ def password_reset(request):
                     fail_silently=False,
                     html_message=text_email,
                 )
-                return render(request, 'nutritionist/registration/password_reset_done.html', {'user_form': user_form, 'errors': errors})
+                return render(request, 'nutritionist/registration/password_reset_done.html',
+                              {'user_form': user_form, 'errors': errors})
             except Exception:
                 errors.append('Пользователь с такой почтой не зарегистророван')
     else:
         user_form = UserPasswordResetForm()
-    return render(request, 'nutritionist/registration/password_reset_email.html', {'user_form': user_form, 'errors': errors})
+    return render(request, 'nutritionist/registration/password_reset_email.html',
+                  {'user_form': user_form, 'errors': errors})
+
 
 def manager(request):
     patients = CustomUser.objects.filter(status='patient').order_by('full_name').values('id', 'full_name')
@@ -908,7 +916,6 @@ def manager(request):
 
 def edit_photo(request, product_id, type):
     """Редактировать фотографию блюда"""
-
 
     if request.method == "POST":
         product_id = request.POST['product_id']
@@ -936,20 +943,12 @@ def admin_foods(request):
     """Админ-панель для внесения изменений в приемы пищи пациента"""
     patient = CustomUser.objects.filter(status='patient').order_by('full_name').first()
 
-    normal_kpfc = {}
-
-    normal_kpfc['p'] = (85, 90)
-    normal_kpfc['f'] = (70, 80)
-    normal_kpfc['c'] = (300, 330)
-    normal_kpfc['k'] = (2170, 2400)
-
     data = {
         'full_name': patient.full_name,
         'diet': patient.type_of_diet,
         'comment': patient.comment,
         'date': str(date.today()),
         'user_id': patient.id,
-        'normal_kpfc': normal_kpfc,
     }
     return render(request, 'foods.html', context=data)
 
@@ -983,6 +982,7 @@ def admin_foods_new(request):
     }
     return render(request, 'foods-new.html', context=data)
 
+
 def photo_statistics(request):
     """Статистика по блюдам с фотографиями"""
     count_products = ProductLp.objects.filter(status=1).count()
@@ -995,21 +995,23 @@ def photo_statistics(request):
     }
     return render(request, 'photo_statistics.html', context=data)
 
+
 def printed_form_one_new(request):
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     floors = {
-    'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-8', '2а-9', '2а-10', '2а-11', '2а-12', '2а-13',
-               '2а-14', '2а-15', '2а-16', '2а-17'],
-    'third': ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
-                    '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4',
-                    '3b-5', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
-    'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
-                      '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
+        'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-8', '2а-9', '2а-10', '2а-11', '2а-12',
+                   '2а-13',
+                   '2а-14', '2а-15', '2а-16', '2а-17'],
+        'third': ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
+                  '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4',
+                  '3b-5', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
+        'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
+                    '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
     }
     time_now = datetime.today().time().strftime("%H:%M")
     # какой прием пищи
-    meal, day = what_meal() # после return 'breakfast', 'tomorrow'
+    meal, day = what_meal()  # после return 'breakfast', 'tomorrow'
     type_order = what_type_order()
     date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
     if type_order == 'flex-order':
@@ -1064,21 +1066,22 @@ def printed_form_one_new(request):
 
     return render(request, 'printed_form1_new.html', context=data)
 
+
 def printed_form_one(request):
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     floors = {
-    'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-8', '2а-9', '2а-10', '2а-11', '2а-12',
-               '2а-13', '2а-14', '2а-15', '2а-16', '2а-17'],
-    'third': ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
-                    '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4',
-                    '3b-5', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
-    'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
-                      '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
+        'second': ['2а-1', '2а-2', '2а-3', '2а-4', '2а-5', '2а-6', '2а-7', '2а-8', '2а-9', '2а-10', '2а-11', '2а-12',
+                   '2а-13', '2а-14', '2а-15', '2а-16', '2а-17'],
+        'third': ['3а-1', '3а-2', '3а-3', '3а-4', '3а-5', '3а-6', '3а-7', '3а-8', '3а-9', '3а-10', '3а-11',
+                  '3а-12', '3а-13', '3а-14', '3а-15', '3а-16', '3а-17', '3b-1', '3b-2', '3b-3', '3b-4',
+                  '3b-5', '3b-6', '3b-7', '3b-8', '3b-9', '3b-10'],
+        'fourtha': ['4а-1', '4а-2', '4а-3', '4а-4', '4а-5', '4а-6', '4а-7', '4а-8', '4а-9', '4а-10', '4а-11',
+                    '4а-12', '4а-13', '4а-14', '4а-15', '4а-16'],
     }
     time_now = datetime.today().time().strftime("%H:%M")
     # какой прием пищи
-    meal, day = what_meal() # после return 'breakfast', 'tomorrow'
+    meal, day = what_meal()  # после return 'breakfast', 'tomorrow'
     type_order = what_type_order()
     date_create = date.today() + timedelta(days=1) if day == 'tomorrow' else date.today()
     if type_order == 'flex-order':
@@ -1093,10 +1096,14 @@ def printed_form_one(request):
                'count_4nd_floor': len([user for user in users if user.room_number in floors['fourtha']]),
                'count_not_floor': len([user for user in users if user.room_number in ['Не выбрано']]),
                'count_diet': counting_diets(users, floors),
-               'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order, is_public),
-               'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order, is_public),
-               'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order, is_public),
-               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order, is_public),
+               'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order,
+                                                             is_public),
+               'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order,
+                                                             is_public),
+               'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order,
+                                                             is_public),
+               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order,
+                                                             is_public),
                }
     number = 0
     count_users_with_cafe_prod = 0
@@ -1135,7 +1142,6 @@ def printed_form_one(request):
 
 
 def create_detailing_report(date_start=date.today(), date_finish=date.today()):
-
     filtered_report = Report.objects.filter(date_create__gte=date_start,
         date_create__lte=date_finish,
     )
@@ -1173,7 +1179,7 @@ def detailing_reports(request, meal, floor):
                                 'full_name': name,
                                 'room': room[0],
                                 'type': room[3],
-                                })
+                            })
         else:
             for diet, items in reports.items():
                 for name, room in items.items():
@@ -1185,7 +1191,7 @@ def detailing_reports(request, meal, floor):
                             'full_name': name,
                             'room': room[0],
                             'type': room[3],
-                            })
+                        })
         try:
             result.sort(key=lambda x: int(x['room'].split('-')[1]))
         except:
@@ -1201,8 +1207,6 @@ def detailing_reports(request, meal, floor):
             del diets_count["Нулевая диета"]
 
         count_extr = len([item for item in result if item['type'] in ('emergency-night', 'emergency-day')])
-
-
 
         data = {
             'formatted_date_now': formatted_date_now,
@@ -1221,6 +1225,7 @@ def detailing_reports(request, meal, floor):
             'error': "Отчет еще не готов или нет пациентов"
         }
     return render(request, 'detailing-reports.html', context=data)
+
 
 def detailing(request, meal):
     """ Отчеты с детализацией. """
@@ -1405,7 +1410,7 @@ def printed_form_two_lp(request):
                      'БД', 'ВБД', 'НБД', 'НКД', 'БД день 1',
                      'БД день 2', 'Безйодовая', 'ПЭТ/КТ', 'Без ограничений']:
             users_with_diet = users.filter(type_of_diet=diet)
-            all_products = [] # стовляем список всех продуктов
+            all_products = []  # стовляем список всех продуктов
             comment_list = []
             for user in users_with_diet:
                 if type_order == 'flex-order':
@@ -1563,6 +1568,7 @@ def printed_form_two_cafe(request):
     }
     return render(request, 'printed_form2_cafe.html', context=data)
 
+
 def printed_form_two_cafe_new(request):
     """ Заявка по блюдам линии раздачи. """
     is_public = False  # выводим технические названия блюд, не публичные
@@ -1678,6 +1684,7 @@ def get_processed_tk(id: str, count: int):
 
     return result, error, weight
 
+
 #############################################
 #############################################
 """
@@ -1697,7 +1704,7 @@ def tk(request, id, count):
 
     # по апи
     # result, error, weight = get_processed_tk(id, count)
-    
+
     # из базы
     try:
         result, error = get_tree_ttk(id, count, [])
@@ -1722,7 +1729,6 @@ def tk(request, id, count):
         img = None
         error = "Нет данных"
 
-
     data = {
         'img': img,
         'result': result,
@@ -1740,6 +1746,7 @@ def custom_sort(ttk, filter):
             key=lambda x: x[1][filter['type']],
             reverse=False if filter['value'] == 'top' else True))
     return ttk
+
 
 def report(request):
     # from scripts.updata_ttk import update_ttk
@@ -1789,7 +1796,6 @@ def all_order_by_ingredients(request):
     else:
         start = datetime.now().strftime('%Y-%m-%d')
         end = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')
-
 
     if request.GET.get('alphabet', None) in values:
         filter['type'] = 'name'
@@ -1958,9 +1964,9 @@ def internal_report(request):
         'hidden': 'hidden',
         'Нет категории': 'Нет категории',
     }
-    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша', 'товар', 'hidden',]
+    category = ['гарнир', 'десерт', 'напиток', 'основной', 'салат', 'суп', 'фрукты', 'каша', 'товар', 'hidden', ]
     category += ['Завтраки', 'Каши', 'Салаты', 'Первые блюда', 'Блюда от шефа', 'Вторые блюда', 'Гарниры',
-                'Десерты',]
+                 'Десерты', ]
     intermediate_option = []
     report = []
     for cat in category:
@@ -1973,7 +1979,7 @@ def internal_report(request):
     for index, item in enumerate(report):
         item['category'] = category_translation.get(item['category'], 'нет названия')
         item['number'] = index + 1
-    add_try(report) # добавляем суточные пробы
+    add_try(report)  # добавляем суточные пробы
 
     date = {'report': report,
             'date_start': date_start,
@@ -2061,7 +2067,6 @@ class CheckIsBrakeryAPIView(APIView):
         return Response(response)
 
 
-
 def create_сatalog(is_public, meal, patient, day):
     """ Создание словаря этикеток. """
 
@@ -2118,17 +2123,19 @@ def create_сatalog(is_public, meal, patient, day):
         ).values('user_id').distinct('user_id')
         users = CustomUser.objects.filter(id__in=users)
 
-
-
     catalog = {'meal': translate_meal(meal),
                'users_not_floor': create_list_users_on_floor(users, 'Не выбрано', meal, date_create, type_order,
                                                              is_public, type_time),
-               'users_2nd_floor': create_list_users_on_floor(users, "2", meal, date_create, type_order, is_public, type_time),
-               'users_3nd_floor': create_list_users_on_floor(users, "3", meal, date_create, type_order, is_public, type_time),
-               'users_4nd_floor': create_list_users_on_floor(users, "4", meal, date_create, type_order, is_public, type_time),
+               'users_2nd_floor': create_list_users_on_floor(users, "2", meal, date_create, type_order, is_public,
+                                                             type_time),
+               'users_3nd_floor': create_list_users_on_floor(users, "3", meal, date_create, type_order, is_public,
+                                                             type_time),
+               'users_4nd_floor': create_list_users_on_floor(users, "4", meal, date_create, type_order, is_public,
+                                                             type_time),
                }
 
     return catalog
+
 
 class CreateStickers(APIView):
     def post(self, request):
@@ -2146,6 +2153,7 @@ class CreateStickers(APIView):
         response = {"response": "yes"}
         response = json.dumps(response)
         return Response(response)
+
 
 def get_total_energy_value(day_of_the_week, translated_diet):
     """Возвращает суммарное КБЖУ за день."""
@@ -2185,6 +2193,7 @@ def get_energy_value(product):
         energy_value = "Нет данных"
     return energy_value
 
+
 def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):
     if day_of_the_week == 'день 1':
         day_of_the_week = 'понедельник'
@@ -2194,33 +2203,40 @@ def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):
                                         Q(timetablelp__type_of_diet=translated_diet) &
                                         Q(timetablelp__meals=meal))
 
-    products_porridge = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
-                         for product in products.filter(category='каша')]
-    products_salad = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
-                         for product in products.filter(category='салат')]
-    products_soup = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
+    products_porridge = [
+        {'name': product.name, 'product_id': product.product_id, 'energy_value': get_energy_value(product)}
+        for product in products.filter(category='каша')]
+    products_salad = [
+        {'name': product.name, 'product_id': product.product_id, 'energy_value': get_energy_value(product)}
+        for product in products.filter(category='салат')]
+    products_soup = [{'name': product.name, 'product_id': product.product_id, 'energy_value': get_energy_value(product)}
                      for product in products.filter(category='суп')]
-    products_main = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
+    products_main = [{'name': product.name, 'product_id': product.product_id, 'energy_value': get_energy_value(product)}
                      for product in products.filter(category='основной')]
-    products_garnish = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
-                        for product in products.filter(category='гарнир')]
-    products_dessert = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
-                        for product in products.filter(category='десерт')]
-    products_fruit = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
-                      for product in products.filter(category='фрукты')]
-    products_drink = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
-                      for product in products.filter(category='напиток')]
-    products_product = [{'name': product.name, 'product_id': product.product_id, 'energy_value':get_energy_value(product)}
-                        for product in products.filter(category='товар')]
+    products_garnish = [
+        {'name': product.name, 'product_id': product.product_id, 'energy_value': get_energy_value(product)}
+        for product in products.filter(category='гарнир')]
+    products_dessert = [
+        {'name': product.name, 'product_id': product.product_id, 'energy_value': get_energy_value(product)}
+        for product in products.filter(category='десерт')]
+    products_fruit = [
+        {'name': product.name, 'product_id': product.product_id, 'energy_value': get_energy_value(product)}
+        for product in products.filter(category='фрукты')]
+    products_drink = [
+        {'name': product.name, 'product_id': product.product_id, 'energy_value': get_energy_value(product)}
+        for product in products.filter(category='напиток')]
+    products_product = [
+        {'name': product.name, 'product_id': product.product_id, 'energy_value': get_energy_value(product)}
+        for product in products.filter(category='товар')]
 
-    all_products = products_salad,\
-        products_soup,\
-        products_main,\
-        products_garnish,\
-        products_porridge,\
-        products_dessert,\
-        products_fruit,\
-        products_drink,\
+    all_products = products_salad, \
+        products_soup, \
+        products_main, \
+        products_garnish, \
+        products_porridge, \
+        products_dessert, \
+        products_fruit, \
+        products_drink, \
         products_product
     result = []
     for products in all_products:
@@ -2228,9 +2244,10 @@ def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):
             result.append(product)
     return result
 
+
 def menu_lp_for_staff(request):
     try:
-        diet =request.GET['diet']
+        diet = request.GET['diet']
         day_of_the_week = request.GET['day']
         sing = request.GET.get('sing', 'none')
         if day_of_the_week == 'вся неделя':

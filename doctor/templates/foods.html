@@ -107,6 +107,7 @@ function activSelect() {
 var userId = "{{ user_id }}"
 var date = "{{ date }}"
 var doctor = "{{ doctor }}" // человек, кроторый вносит изменения в рацион
+var type_of_diet = "{{ diet }}"
 
 // ###################
 // Запросы по API   ##
@@ -167,6 +168,20 @@ const getMenuForPatient = async function(userId, date) {
     let result = await response.text();
     return result;
 }
+
+const getNewKpfc = async function(type_of_diet) {
+    const url = `/doctor/api/v1/get-new-kpfc?type_of_diet=${type_of_diet}`
+    const response = await fetch(url, {
+        method: 'GET',
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+    });
+    let result = await response.text();
+    console.log("Result: ", result)
+    return result;
+}
+
 
 const addDishForPatient = async function(category, product_id, meal) {
     let url = '/doctor/api/v1/add-dish'
@@ -281,13 +296,26 @@ async function displayInfoPatient() {
 // получаем информацию о пациенте
     let res0 = await getInfoPatient(id)
     addInfoPatient(res0);
+    window.type_of_diet = res0['type_of_diet']
+    var type_of_diet = window.type_of_diet
+    console.log("type of diet: ", type_of_diet)
 
 // получаем меню для пациента
     let res = await getMenuForPatient(id, date)
-    var obj = JSON.parse(res);
-    var obj = JSON.parse(obj);
+    var obj = JSON.parse(res)
+    var obj = JSON.parse(obj)
+    var current_diet_kpfc_info = await getNewKpfc(type_of_diet)
 
-    addKpfc(obj);
+    if (current_diet_kpfc_info != '') {
+        var current_diet_kpfc = JSON.parse(current_diet_kpfc_info)
+        addKpfc(obj, current_diet_kpfc);
+    } else {
+        emptyDisplay('К');
+        emptyDisplay('Б');
+        emptyDisplay('Ж');
+        emptyDisplay('У');
+    }
+
     addHtmlLeft(obj, res0);
 
 // плучить всех активных пациентов на это дату
@@ -297,14 +325,21 @@ async function displayInfoPatient() {
     delHtmlRight();
 }
 
-function addKpfc(obj) {
+function addKpfc(obj, normal) {
+    console.log('normal', normal)
     let totals = countKpfc(obj);
 
     {#наоборот так как использую вставку сразу после id#}
-    addKpfcDisplay('У', {{ normal_kpfc.c.0 }}, {{ normal_kpfc.c.1 }}, totals.carbohydrate);
-    addKpfcDisplay('Ж', {{ normal_kpfc.f.0 }}, {{ normal_kpfc.f.1 }}, totals.fat);
-    addKpfcDisplay('Б', {{ normal_kpfc.p.0 }}, {{ normal_kpfc.p.1 }}, totals.fiber);
-    addKpfcDisplay('К', {{ normal_kpfc.k.0 }}, {{ normal_kpfc.k.1 }}, totals.energy);
+    addKpfcDisplay('У',  normal['c'][0],  normal['c'][1], totals.carbohydrate);
+    addKpfcDisplay('Ж',  normal['f'][0], normal['f'][1], totals.fat);
+    addKpfcDisplay('Б',  normal['p'][0], normal['p'][1], totals.fiber);
+    addKpfcDisplay('К', normal['k'][0], normal['k'][1], totals.energy);
+}
+
+async function emptyDisplay(type) {
+    let kpfcDisplayElement = document.getElementById(`kpfc_${type}`);
+    kpfcDisplayElement.innerHTML = '';
+    divOrder.insertAdjacentElement('afterbegin', kpfcDisplayElement);
 }
 
 async function addKpfcDisplay(type, left, right, number) {
@@ -331,7 +366,7 @@ async function addKpfcDisplay(type, left, right, number) {
     `;
 
 
-    let n = 20;
+    let n = 10;
     let n_procent =  ((right - left) * n) / 100;
     let numRectangle = kpfcDisplayElement.querySelector('.num_rectangle');
     let currentRectangle = kpfcDisplayElement.querySelector('.current_rectangle');
@@ -361,8 +396,7 @@ async function addKpfcDisplay(type, left, right, number) {
 
     let numberElement = document.createElement('div');
     let currentNumber = document.createElement('div');
-    currentNumber.textContent = number.toFixed(1);
-
+    currentNumber.textContent = number.toLocaleString(undefined, {minimumFractionDigits: 1});
     // попадает ли число number в диапазон от l до r
     if (number >= left && number <= right) {
         numberElement.classList.add('line', 'green-line');
@@ -377,7 +411,7 @@ async function addKpfcDisplay(type, left, right, number) {
                 numberElement.style.left = 100 + '%';
             } else {
                 currentNumber.style.left = right - l + '%';
-                numberElement.style.left = r - l + '%';
+                numberElement.style.left = right - l + '%';
             }
         }
         else if (number <= left) {
@@ -387,7 +421,7 @@ async function addKpfcDisplay(type, left, right, number) {
             }
             else {
                 currentNumber.style.left = left - l + '%';
-                numberElement.style.left = l + '%';
+                numberElement.style.left = left - l + '%';
             }
         }
         numberElement.classList.add('line', 'red-line');
@@ -398,13 +432,13 @@ async function addKpfcDisplay(type, left, right, number) {
 
     // для чиселок
     let lNumber = document.createElement('div');
-    lNumber.textContent = left;
+    lNumber.textContent = left.toLocaleString();
     lNumber.className = 'number';
     lNumber.style.left = ((left - l) * 100) / full_skale + '%';
     numRectangle.appendChild(lNumber);
 
     let rNumber = document.createElement('div');
-    rNumber.textContent = right;
+    rNumber.textContent = right.toLocaleString();
     rNumber.className = 'number';
     rNumber.style.left = ((right - l) * 100) / full_skale  + '%';
     numRectangle.appendChild(rNumber);
@@ -417,7 +451,6 @@ async function addKpfcDisplay(type, left, right, number) {
 
 // подсчет кбжу
 function countKpfc(mealData) {
-    console.log('count kpfc')
     let totals = {
         fat: 0,
         fiber: 0,
@@ -434,7 +467,6 @@ function countKpfc(mealData) {
                     let meals = mealCategory[category];
                     for (let item of meals) {
                         if (item) {
-                            console.log(item);
                             totals.fat += item.fat || 0;
                             totals.fiber += item.fiber || 0;
                             totals.carbohydrate += item.carbohydrate || 0;
