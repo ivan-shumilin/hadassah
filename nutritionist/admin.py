@@ -1,6 +1,7 @@
 # users/admin.py
 import random
 
+from django import forms
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
@@ -38,8 +39,31 @@ class TimetableAdmin(admin.TabularInline):
     model = Timetable
     list_per_page = 600
 
+
+CATEGORY_PRODUCT = [
+    ('Завтраки', 'Завтраки'),
+    ('Блюда от шефа', 'Блюда от шефа'),
+    ('Первые блюда', 'Первые блюда'),
+    ('Салаты', 'Салаты'),
+    ('Гарниры', 'Гарниры'),
+    ('ВОК, паста, ризотто', 'ВОК, паста, ризотто'),
+    ('Десерты', 'Десерты'),
+    ('Каши', 'Каши'),
+    ('Вторые блюда', 'Вторые блюда'),
+]
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = ProductLp
+        fields = '__all__'
+        widgets = {
+            'category': forms.Select(choices=CATEGORY_PRODUCT),
+        }
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    form = ProductForm
     list_display = ('name', 'public_name', 'with_garnish', 'ovd', 'ovd_vegan', 'ovd_sugarless', 'shd',
                     'shd_sugarless', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category', 'iodine_free',)
     fields = ('name', 'public_name', 'iditem', 'with_garnish', 'ovd', 'ovd_vegan', 'ovd_sugarless',\
@@ -49,8 +73,54 @@ class ProductAdmin(admin.ModelAdmin):
 
     inlines = [TimetableAdmin]
 
+
+CATEGORIES_PRODUCTLP = [
+    ('салат', 'салат'),
+    ('суп', 'суп'),
+    ('основной', 'основной'),
+    ('гарнир', 'гарнир'),
+    ('каша', 'каша'),
+    ('десерт', 'десерт'),
+    ('фрукты', 'фрукты'),
+    ('напиток', 'напиток'),
+    ('соус', 'соус'),
+    ('hidden', 'hidden'),
+    ('товар', 'товар')
+]
+
+
+class ProductLpForm(forms.ModelForm):
+    energy = forms.CharField(
+        label='Калории',
+        help_text='на 100 гр. продукта',
+    )
+    fat = forms.CharField(
+        label='Жиры',
+        help_text='на 100 гр. продукта',
+    )
+    fiber = forms.CharField(
+        label='Белки',
+        help_text='на 100 гр. продукта',
+    )
+    carbohydrate = forms.CharField(
+        label='Углеводы',
+        help_text='на 100 гр. продукта',
+    )
+    weight = forms.CharField(
+        label='Вес',
+        help_text='в кг.',
+    )
+
+    class Meta:
+        model = ProductLp
+        fields = '__all__'
+        widgets = {
+            'category': forms.Select(choices=CATEGORIES_PRODUCTLP),
+        }
+
 @admin.register(ProductLp)
 class ProductLpAdmin(admin.ModelAdmin):
+    form = ProductLpForm
     list_display = ('name', 'public_name', 'with_phote', 'with_garnish', 'category', 'description', 'status', 'product_id')
     fields = ('name', 'public_name', 'primary_key', 'image', 'preview', 'edit_photo', 'preview_min', 'edit_photo_min', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
               'energy', 'weight', 'description', 'comment', 'status')
