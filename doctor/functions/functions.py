@@ -1210,15 +1210,15 @@ def edit_user(user_form, type, request):
         messang += f'Отредактирован профиль пациента {formatting_full_name(user.full_name)}:\n\n'
         for change in changes:
             messang += f'- {change}\n'
-        # if user.full_name != "Leslie William Nielsen":
-        #     messang += f'({user_name})'
-        #     my_job_send_messang_changes.delay(messang)
+        if user.full_name != "Leslie William Nielsen":
+            messang += f'({user_name})'
+            my_job_send_messang_changes.delay(messang)
     if type == 'restore':
         messang += f'Поступил пациент {formatting_full_name(user.full_name)} ({user.type_of_diet})\n'
         messang += f'Комментарий: "{comment_new}"' if comment_new else ''
-        # if user.full_name != "Leslie William Nielsen":
-        #     messang += f'({user_name})'
-        #     my_job_send_messang_changes.delay(messang)
+        if user.full_name != "Leslie William Nielsen":
+            messang += f'({user_name})'
+            my_job_send_messang_changes.delay(messang)
     # return True
     return first_meal_user, f'{user.id}&{first_meal_user}', user.receipt_date, user.receipt_time, True, emergency_food
 # 222
