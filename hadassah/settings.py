@@ -23,7 +23,7 @@ ALLOWED_HOSTS = [
         'petrushkagroup.ru',
         '158.160.15.85',
         '127.0.0.1',
-        'localhost',
+        'loclhost',
         'https://2a3d-178-89-129-243.ngrok-free.app',
         '2a3d-178-89-129-243.ngrok-free.app',
 ]

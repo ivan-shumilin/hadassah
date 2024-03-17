@@ -32,7 +32,7 @@ from django.core import management
 from django.contrib.auth.models import Group
 from doctor.functions.functions import counting_diets, \
     create_list_users_on_floor, what_meal, translate_meal, check_value_two, what_type_order, add_features, \
-    get_order_status, get_all_menu_by_meal, get_user_name
+    get_order_status, get_all_menu_by_meal
 import random, datetime, logging, json
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
@@ -323,6 +323,7 @@ def search(request):
         'error': error,
         }
     return render(request, 'search.html', context=data)
+
 
 def page_calc(page, count_prosucts):
     page = int(page)
@@ -754,7 +755,6 @@ def catalog_drinks(request, page):
     return render(request, 'drinks.html', context=data)
 
 
-
 class BaseAPIView(APIView):
     def post(self, request):
         data = request.data
@@ -779,7 +779,6 @@ class VerifyAPIView(APIView):
         except Exception:
             pass
         return Response('Yes')
-
 
 
 class DeactivateAPIView(APIView):
@@ -902,8 +901,7 @@ def password_reset(request):
 
 def manager(request):
     patients = CustomUser.objects.filter(status='patient').order_by('full_name').values('id', 'full_name')
-    is_manager = request.user.is_authenticated and request.user.groups.filter(name='manager').exists()
-    return render(request, 'admin.html', context={'patients': patients, 'is_manager': is_manager})
+    return render(request, 'admin.html', context={'patients': patients})
 
 
 def edit_photo(request, product_id, type):
@@ -926,20 +924,11 @@ def edit_photo(request, product_id, type):
 
     return render(request, 'edit_photo.html', context=data)
 
-
-def is_manager(user):
-    return user.groups.filter(name='manager').exists()
-
-
-# @user_passes_test(is_manager)
 def admin_foods(request):
     """Админ-панель для внесения изменений в приемы пищи пациента"""
     patient = CustomUser.objects.filter(status='patient').order_by('full_name').first()
 
-    user_name = get_user_name(request)
-
     data = {
-        'doctor': user_name,
         'full_name': patient.full_name,
         'diet': patient.type_of_diet,
         'comment': patient.comment,
@@ -1984,7 +1973,6 @@ def weight_meal(meal):
         'dinner': 3,
     }
     return MEALS[meal]
-
 
 # 888
 class DownloadReportAPIView(APIView):

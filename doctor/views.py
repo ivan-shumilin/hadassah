@@ -51,6 +51,7 @@ from .functions.download import get_token, download, get_ingredients
 from .functions.helpers import formatting_full_name_mode_full
 from .logic.create_ingredient import create_ingredients
 
+
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
@@ -96,10 +97,10 @@ def load_nomenclature():
     Ingredient.objects.bulk_create(to_create)
 
 
+
+
 def group_doctors_check(user):
     return user.groups.filter(name='doctors').exists()
-
-
 def group_doctors_check_guest(user):
     return user.groups.filter(name='guest').exists() or user.groups.filter(name='doctors').exists()
 
@@ -134,7 +135,7 @@ def doctor(request):
                                                  'is_without_lactose': TextInput(attrs={'required': "True"}),
                                                  'extra_bouillon': TextInput(attrs={'required': "True"}),
                                              },
-                                             extra=0, )
+                                             extra=0,)
 
     not_active_users_set = get_not_active_users_set()
     CustomUserFormSet = delete_choices(CustomUserFormSet)
@@ -156,7 +157,7 @@ def doctor(request):
                 sorting = 'top'
         else:
             queryset = CustomUser.objects.filter(status='patient').order_by(filter_by)
-    # 11
+# 11
     if request.method == 'POST' and 'add_patient' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
         first_meal_user, data, patient_receipt_date, patient_receipt_time, meal_order = create_user(user_form, request)
@@ -279,13 +280,13 @@ def doctor(request):
 def archive(request):
     CustomUserFormSet = modelformset_factory(CustomUser,
                                              fields=(
-                                                 'full_name', 'birthdate', 'receipt_date', 'receipt_time', 'department',
+                                                 'full_name','birthdate', 'receipt_date', 'receipt_time', 'department',
                                                  'floor', 'room_number', 'bed', 'type_of_diet', 'comment', 'id'),
                                              widgets={
                                                  'full_name': TextInput(attrs={'class': 'form-control'}),
                                                  'birthdate': DateInput(format='%Y-%m-%d',
-                                                                        attrs={'class': 'form-control',
-                                                                               'type': 'date'}),
+                                                                           attrs={'class': 'form-control',
+                                                                                  'type': 'date'}),
                                                  'room_number': Select(attrs={'class': 'form-control'}),
                                                  'bed': Select(attrs={'class': 'form-control'}),
                                                  'department': Select(attrs={'class': 'form-control'}),
@@ -331,8 +332,7 @@ def archive(request):
 
     if request.method == 'POST' and 'archive' in request.POST:
         user_form = PatientRegistrationForm(request.POST)
-        first_meal_user, data, patient_receipt_date, patient_receipt_time, is_archive, emergency_food = edit_user(
-            user_form, 'restore', request)
+        first_meal_user, data, patient_receipt_date, patient_receipt_time, is_archive, emergency_food = edit_user(user_form, 'restore', request)
         if is_archive:
             # нерабочие часы
             time = datetime.today().time()
@@ -448,10 +448,10 @@ def menu(request):
     products_lp: tuple = creating_meal_menu_lp(day_of_the_week, diet, meal)
 
     products_main, products_garnish, products_salad, \
-        products_soup, products_porridge, products_dessert, \
-        products_fruit, products_drink = products_lp
+    products_soup, products_porridge, products_dessert, \
+    products_fruit, products_drink = products_lp
 
-    if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'БД', 'Безйодовая', 'ПЭТ/КТ'] \
+    if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'БД', 'Безйодовая', 'ПЭТ/КТ']\
             and diet == diet.replace(" (Э)", "").replace(" (П)", ""):
         # для поиска блюд раздачи нужна диета на лат-ом ("ovd", ..)
         translated_diet = translate_diet(diet)
@@ -459,7 +459,7 @@ def menu(request):
     else:
         products_cafe: tuple = ([], [], [], [], [], [])
     queryset_main_dishes, queryset_garnish, queryset_salad, \
-        queryset_soup, queryset_breakfast, queryset_porridge = products_cafe
+    queryset_soup, queryset_breakfast, queryset_porridge = products_cafe
 
     formatted_date = dateformat.format(date.fromisoformat(date_get), 'd E, l')
 
@@ -541,7 +541,6 @@ def menu(request):
             }
     return render(request, 'menu.html', context=data)
 
-
 class VerifyPasswordAPIView(APIView):
     def post(self, request):
         data = request.data
@@ -555,7 +554,6 @@ class VerifyPasswordAPIView(APIView):
 
 class GetPatientMenuAPIView(APIView):
     """Возвращает выбранные блюда пациента. ЛК врача, карточка пациента."""
-
     def post(self, request):
         data = request.data
         response = creates_dict_with_menu_patients(data['id_user'])
@@ -632,6 +630,7 @@ class SendPatientProductsAPIView(APIView):
         for product_name in products.strip('&?&').split('&?&'):
             messang += f'– {product_name}\n'
 
+
         messang += f'({user_name})'
         # send_messang_changes(messang, settings.BOT_ID_EMERGEBCY_FOOD)
         my_job_send_messang_changes.delay(messang, settings.BOT_ID_EMERGEBCY_FOOD)
@@ -675,6 +674,7 @@ class UpdateSearchAPIView(APIView):
                 'id_annotetion',
             ))
 
+
         if type_menu in ['cafe', 'all']:
             filter: Q = Q(category__in=get_category_cafe_2(category)) if category != 'all' else Q()
 
@@ -711,6 +711,7 @@ class UpdateSearchAPIView(APIView):
                 p['id'] = f'cafe-cat-{p["id"]}'
 
         products = product_lp + product_cafe
+
 
         serializer = ProductsSerializer(products, many=True)
         return Response(serializer.data)
@@ -761,6 +762,7 @@ class SendEmergencyFoodAPIView(APIView):
             else:
                 product_add.append(self.MENU['standard'])
 
+
             if not patient.is_probe and not patient.is_pureed_nutrition:
                 product_add.append(self.MENU['snack'])
 
@@ -776,8 +778,7 @@ class SendEmergencyFoodAPIView(APIView):
             meal = data_no_name
             # добавить прием пищи в MenuByDayReadyOrder и в MenuByDay
             date_today = str(date.today())
-            product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal,
-                                                                               extra_bouillon=False)
+            product_add: list = add_the_patient_emergency_food_to_the_database(patient, date_today, meal, extra_bouillon=False)
             date_create = patient.receipt_date
 
         # добавить в отчеты и отправить сообщение
@@ -790,6 +791,7 @@ class SendEmergencyFoodAPIView(APIView):
         messang += f'    \n'
         type_report = 'emergency-night' if data_no_name == 'no_working_hours' else 'emergency-day'
         first_meal = next_meal(first_meal) if type_report == 'emergency-day' else first_meal
+
 
         for product_id in product_add:
             messang += f'– {ProductLp.objects.get(id=product_id).name}\n'
@@ -826,7 +828,6 @@ def get_day_of_the_week(date):
     date = datetime.strptime(date, '%Y-%m-%d')
     return number_day_of_the_week[str(date.isoweekday())]
 
-
 def get_category(category):
     categorys = {
         'salad': ["салат"],
@@ -843,7 +844,6 @@ def get_category(category):
     }
     return categorys[category]
 
-
 def get_category_cafe_2(category):
     categorys = {
         "salad": ["Салаты"],
@@ -855,15 +855,12 @@ def get_category_cafe_2(category):
     }
     return categorys.get(category, [])
 
-
 def get_category_by_id(id_product):
     if 'cafe' in id_product:
         category_name = Product.objects.get(id=id_product.split('-')[2]).category
     else:
         category_name = ProductLp.objects.get(id=id_product).category
     return get_category_product(category_name)
-
-
 def get_category_product(category_name):
     category_mapping = {
         'salad': ["салат", "Салаты"],
@@ -919,7 +916,6 @@ class GetInfoPatientAPIView(APIView):
         serializer = InfoPatientSerializer(patient)
         return Response(serializer.data)
 
-
 class GetAllDishesByCategoryAPIView(APIView):
     def get(self, request):
         all_diet = {
@@ -949,17 +945,17 @@ class GetAllDishesByCategoryAPIView(APIView):
 
         # Другие приемы пищи по другим активным диетам
         dishes_all = TimetableLp.objects.filter(day_of_the_week=day_of_the_week,
-                                                item__category__in=category,
-                                                type_of_diet__in=active_diet
-                                                ).distinct('item__name')
+                                            item__category__in=category,
+                                            type_of_diet__in=active_diet
+                                            ).distinct('item__name')
 
         # Аналогичный прием пищи по другим активным диетам
         dishes_meal = dishes_all.filter(meals=meal)
 
         # Блюда линни раздачи
         dishes_cafe = Timetable.objects.filter(datetime=date,
-                                               item__category__in=get_category_cafe(category),
-                                               ).distinct('item__name')
+                                            item__category__in=get_category_cafe(category),
+                                            ).distinct('item__name')
 
         # Аналогичный прием пищи по неактивным диетам
         no_active_diet = all_diet - set(active_diet)
@@ -1002,8 +998,7 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('name', 'Митбол с кабачком 100 гр'),
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 563),
-                ('description',
-                 'Кабачки/цукини, масло  подсолнечное, фарш курица/говядина( говядина, курица, молоко3,2 % , хлеб, чеснок, соль)')
+                ('description', 'Кабачки/цукини, масло  подсолнечное, фарш курица/говядина( говядина, курица, молоко3,2 % , хлеб, чеснок, соль)')
             ]),
             OrderedDict([
                 ('name', 'Куриная грудка 200 гр.'),
@@ -1015,8 +1010,7 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('name', 'Котлета из трески 100 гр'),
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 566),
-                ('description',
-                 'Фарш рыбный ( филе трески , филе минтая, соль, перец, хлеб, яйцо куриное, зелень), мука пшеничная, масло подсолнечное.')
+                ('description', 'Фарш рыбный ( филе трески , филе минтая, соль, перец, хлеб, яйцо куриное, зелень), мука пшеничная, масло подсолнечное.')
             ]),
             OrderedDict([
                 ('name', 'Кабачки запеченные 150 гр.'),
@@ -1058,8 +1052,7 @@ class GetAllDishesByCategoryAPIView(APIView):
                 ('name', 'Блин 2 шт.'),
                 ('type_of_diet', 'Безйодовая'),
                 ('id', 579),
-                ('description',
-                 'Масло подсолнечное, тесто для блинов (молоко 3,2%, яйцо куриное, масло подсолнечное, сахар песок, соль, мука пшеничная)')
+                ('description', 'Масло подсолнечное, тесто для блинов (молоко 3,2%, яйцо куриное, масло подсолнечное, сахар песок, соль, мука пшеничная)')
             ]),
             OrderedDict([
                 ('name', 'Кефир 200 мл'),
@@ -1517,8 +1510,7 @@ class GetIngredientsAPIView(APIView):
         lst = string[1:-1].split(', ')
         filter['categories'] = lst
 
-        ingredients_all = IngredientСache.objects.filter(start=data['start'], end=data['end']).order_by(
-            'create_at').last().ingredient
+        ingredients_all = IngredientСache.objects.filter(start=data['start'], end=data['end']).order_by('create_at').last().ingredient
         ingredients: dict = {}
         is_reverse = False if filter['value'] == 'top' else True
         for key, value in ingredients_all.items():

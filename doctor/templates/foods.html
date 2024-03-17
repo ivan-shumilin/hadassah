@@ -34,15 +34,15 @@
                 <p class="mr-top-bottom-0">Комментарий: <span class="comment" id="comment"></span></p>
 
                 <p class="mr-top-10">
-                    Выбор даты:
+                    Выбор даты: 
                     <input onchange="changeDate(this.value)" type="date" id="date" value="{{ date }}">
                 </p>
-                Выбор пациента:
+                Выбор пациента: 
                 <select onchange="changePatients(this.value)" id="patients-list" class="js-states form-control"></select>
+            
             </div>
         </div>
     </div>
-
     <div class="div-order">
         <div class="order">
             <h1>Корректировка рациона пациента</h1>
@@ -64,7 +64,7 @@
     </tr>
     <tr>
         <td id='td_left'></td>
-        <td id='td_right' valign="top"></td>
+        <td id='td_right' valign="top"></td>        
     </tr>
 </table>
 
@@ -101,7 +101,7 @@ function activSelect() {
     $('select.search').select2();
     $(".js-states-1").select2();
     // $('select').select2();
-    // $(".js-states").select2();
+    // $(".js-states").select2();    
 }
 
 var userId = "{{ user_id }}"
@@ -257,7 +257,7 @@ const getAllDishesByCategory = async function(cat, date, meal) {
     });
     let result = await response.text();
     return result;
-}
+} 
 
 const getPatients = async function(date) {
   const url = `/doctor/api/v1/get-patients?date=${date}&filter=full_name`;
@@ -317,7 +317,6 @@ async function displayInfoPatient() {
     }
 
     addHtmlLeft(obj, res0);
-
 // плучить всех активных пациентов на это дату
     let res1 = await getPatients(date);
     addPatientForSearch(res1);
@@ -397,6 +396,7 @@ async function addKpfcDisplay(type, left, right, number) {
     let numberElement = document.createElement('div');
     let currentNumber = document.createElement('div');
     currentNumber.textContent = number.toLocaleString(undefined, {minimumFractionDigits: 1});
+    console.log(number);
     // попадает ли число number в диапазон от l до r
     if (number >= left && number <= right) {
         numberElement.classList.add('line', 'green-line');
@@ -410,8 +410,8 @@ async function addKpfcDisplay(type, left, right, number) {
                 currentNumber.style.left = 100 - shift + '%';
                 numberElement.style.left = 100 + '%';
             } else {
-                currentNumber.style.left = right - l + '%';
-                numberElement.style.left = right - l + '%';
+                currentNumber.style.left = ((number - l) * 100) / full_skale + '%';
+                numberElement.style.left = ((number - l) * 100) / full_skale + '%';
             }
         }
         else if (number <= left) {
@@ -420,8 +420,8 @@ async function addKpfcDisplay(type, left, right, number) {
                 numberElement.style.left = 0 + '%';
             }
             else {
-                currentNumber.style.left = left - l + '%';
-                numberElement.style.left = left - l + '%';
+                currentNumber.style.left = ((number - l) * 100) / full_skale + '%';
+                numberElement.style.left = ((number - l) * 100) / full_skale + '%';
             }
         }
         numberElement.classList.add('line', 'red-line');
@@ -488,31 +488,32 @@ function addHtmlLeft(obj, obj1) {
         tdLeft.removeChild(tdLeft.firstChild);
     }
     let meals = {
-        breakfast: "Завтрак",
-        lunch: "Обед",
-        afternoon: "Полдник",
+        breakfast: "Завтрак", 
+        lunch: "Обед", 
+        afternoon: "Полдник", 
         dinner: "Ужин"
     }
 
     let orderStatus = {
-        'done': "отдали",
-        'fix-order': "заказ сформирован",
-        'flex-order': "заказ еще формируется",
+        'done': "отдали", 
+        'fix-order': "заказ сформирован", 
+        'flex-order': "заказ еще формируется", 
 
     }
+
 
     let categorys = {
         salad: "Салаты",
         soup: "Первые блюда",
-        porridge: "Кашы",
-        main: "Основные блюда",
-        garnish: "Гарниры",
-        dessert: "Десерты",
-        fruit: "Фрукты",
+        porridge: "Кашы", 
+        main: "Основные блюда", 
+        garnish: "Гарниры", 
+        dessert: "Десерты", 
+        fruit: "Фрукты", 
         drink: "Напитки",
         products: "Товары",
         hidden: "Товары",
-        bouillon: "Бульон",
+        bouillon: "Бульон", 
     }
 
     let result = "";
@@ -543,7 +544,7 @@ function addHtmlLeft(obj, obj1) {
                     }
 
                 }
-
+            
             }
             result += `<tr><td><a onclick="addDish('${meal}')" class="pointer hover-a">Добавить блюдо`
             result += `<img class="icon" width="17" height="17" src="{% static "doctor/css/img/add.svg" %}" alt="">`
@@ -554,7 +555,7 @@ function addHtmlLeft(obj, obj1) {
             result += `</a></td></tr>`
         }
         result += '</tr>'
-
+        
     }
     result += '</table>'
 
@@ -585,9 +586,9 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
     }
 
     let meals = {
-        breakfast: "Завтрак",
-        lunch: "Обед",
-        afternoon: "Полдник",
+        breakfast: "Завтрак", 
+        lunch: "Обед", 
+        afternoon: "Полдник", 
         dinner: "Ужин"
     }
 
@@ -612,7 +613,7 @@ function addHtmlRight(obj, category, mode, meal, product_id_del, name_del) {
     } else {
         result += `<img class="icon" width="17" height="17" title="Добавить блюдо" src="{% static "doctor/css/img/add.svg" %}" alt="Добавить блюдо">`
     }
-    result += `</a>`
+    result += `</a>`      
     result += `</td></tr>`
     for (var set in sets) {
         if (obj[set].length > 0) {
@@ -750,7 +751,7 @@ async function changeDishAPI(product_id_add, product_id_del, category, meal) {
 // ###################
 // Добавление блюда ##
 // ###################
-
+ 
 function createModaladdDishModal(product_id, name, category, meal) {
     document.getElementById('modal-title').innerHTML = "Добавить блюдо";
     document.getElementById('modal-body').innerHTML = `Добавить блюдо <span class="bold">"${name}"</span>?`;
@@ -842,7 +843,7 @@ function createModalDelete(product_id, name, category, meal) {
     r += `Закрыть</button>`
 
     modalFooter.insertAdjacentHTML("afterbegin", r);
-
+    
     document.getElementById('modal-start').click()
 }
 
@@ -934,7 +935,7 @@ function createModalAddAllDish(meal, category, mode, product_id_del, name_del) {
     modalBody.insertAdjacentHTML("afterbegin", r);
 
     activSelect();
-
+    
 
     r = '';
     if (mode == 'change') {
