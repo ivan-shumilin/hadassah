@@ -1160,6 +1160,23 @@ class CheckIsHavePatientAPIView(APIView):
     Если есть, то в архиве или в активных пациентах.
     """
 
+    """
+       Проверяет, есть ли пациент с указаными ФИО и датой рожения.
+       Если есть, то в архиве или в активных пациентах.
+       """
+
+    def get(self, request):
+        full_name = request.GET['full_name']
+        full_name = formatting_full_name_mode_full(full_name)
+        qs = CustomUser.objects.filter(
+            full_name=full_name,
+        )
+        if qs.filter(status='patient').exists():
+            response = {'status': 'patient'}
+        else:
+            response = {'status': 'None'}
+        return Response(response)
+
     def post(self, request):
         serializer = CheckIsHavePatientSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

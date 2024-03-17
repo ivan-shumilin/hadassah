@@ -632,4 +632,51 @@ document.addEventListener("DOMContentLoaded", function(event) {
     } 
     }, 500);
 });
+
+const checkIsHavePatient = async function(full_name) {
+     // проверить, есть ли пациант с введнными ФИО и датой рождения
+
+     const url = `/doctor/api/v1/check-is-have-patient?full_name=${full_name}`
+
+     const response = await fetch(url, {
+       method: 'GET',
+       headers: {
+         'Content-Type': 'application/json;',
+       },
+     });
+     let result = await response.text();
+     console.log("Result: ", result)
+     return result;
+ }
+
+function addValidationDuplicate() {
+  let inputField = document.getElementById('full_name_add').querySelector('input[name="full_name"]');
+  
+  inputField.onblur = async function () {
+
+      let res = await checkIsHavePatient(inputField.value);
+      res = JSON.parse(res);
+      console.log("Res" + res)
+
+      if (res['status'] === 'patient') {
+          console.log('here')
+          inputField.classList.add('error');
+          document.getElementById('error_full_name').innerHTML = 'Пациент с таким ФИО уже существует. ';
+          document.getElementById('error_full_name').classList.add('error');
+          document.getElementById('full_name_add').classList.add('error');
+      }
+  };
+
+  inputField.onfocus = function() {
+    if (this.classList.contains('error')) {
+      document.getElementById('error_full_name').innerHTML = "";
+      document.getElementById('error_full_name').classList.remove('error');
+      document.getElementById('full_name_add').classList.remove('error');
+    }
+  };
+}
+
+// Вызываем функцию и передаем ей ID input и ID элемента для вывода ошибок
+addValidationDuplicate('full_name_id', 'error_full_name');
+
 </script>
