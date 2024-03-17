@@ -1160,25 +1160,38 @@ class CheckIsHavePatientAPIView(APIView):
     Если есть, то в архиве или в активных пациентах.
     """
 
-    def post(self, request):
-        serializer = CheckIsHavePatientSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        full_name: str = serializer.validated_data['full_name']
-        birthdate: datetime = serializer.validated_data['birthdate']
-
+    def get(self, request):
+        """ Проверяет если в базу данных пациент с ФИО """
+        full_name = request.GET['full_name']
         full_name = formatting_full_name_mode_full(full_name)
-        qs: Q = CustomUser.objects.filter(
+        qs = CustomUser.objects.filter(
             full_name=full_name,
-            birthdate=birthdate,
         )
-
-        if qs.filte(status='patient').exists():
+        if qs.filter(status='patient').exists():
             response = {'status': 'patient'}
-        elif qs.filte(status='patient_archive').exists():
-            response = {'status': 'patient_archive'}
         else:
             response = {'status': 'None'}
         return Response(response)
+
+    # def post(self, request):
+    #     serializer = CheckIsHavePatientSerializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     full_name: str = serializer.validated_data['full_name']
+    #     birthdate: datetime = serializer.validated_data['birthdate']
+    #
+    #     full_name = formatting_full_name_mode_full(full_name)
+    #     qs: Q = CustomUser.objects.filter(
+    #         full_name=full_name,
+    #         birthdate=birthdate,
+    #     )
+    #
+    #     if qs.filte(status='patient').exists():
+    #         response = {'status': 'patient'}
+    #     # elif qs.filte(status='patient_archive').exists():
+    #     #     response = {'status': 'patient_archive'}
+    #     else:
+    #         response = {'status': 'None'}
+    #     return Response(response)
 
 
 def get_product_by_id(string_id: [str, int]) -> str:
