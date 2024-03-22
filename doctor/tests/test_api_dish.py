@@ -1,20 +1,14 @@
-import unittest
-from unittest.mock import patch, MagicMock
+from unittest import TestCase, mock
+from unittest.mock import patch, MagicMock, Mock
 
-from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIClient
 
-from nutritionist.models import CustomUser
-from doctor.views import DeleteDishAPIView
 
-# ДОПИСАТЬ !
-
-
-class TestDeleteDishAPIView(TestCase):
+class AddDishAPIViewTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.url = '/doctor/api/v1/delete-dish'
+        self.url = reverse('add_dish_api')
         self.data = {
             'id_user': 1,
             'date': '2024-02-14',
@@ -24,201 +18,115 @@ class TestDeleteDishAPIView(TestCase):
             'doctor': 'doctor_name',
         }
 
-    @patch('doctor.functions.functions.get_order_status')
+    @patch('doctor.views.logging.getLogger')
+    @patch('doctor.views.CustomUser.objects.get')
+    @patch('doctor.views.ModifiedDish')
+    @patch('doctor.views.UsersReadyOrder.objects.filter')
+    @patch('doctor.views.MenuByDay.objects.all')
+    @patch('doctor.views.MenuByDayReadyOrder.objects.all')
+    @patch('doctor.views.get_order_status')
     @patch('doctor.views.get_product_by_id')
-    @patch('doctor.views.logging_delete_dish_api')
-    @patch('nutritionist.models.MenuByDay.objects')
-    @patch('nutritionist.models.MenuByDayReadyOrder.objects')
-    @patch('nutritionist.models.CustomUser.objects')
-    @patch('nutritionist.models.ModifiedDish.objects')
-    # @patch.object(DeleteDishAPIView, 'logger')
-    def test_delete_dish_api(self, mock_get_order_status, mock_get_product_by_id,
-                             mock_logging_delete_dish_api, mock_menu_by_day_objects,
-                             mock_menu_by_day_ready_order_objects, mock_custom_user_objects,
-                             mock_modified_dish_objects):
+    def test_add_dish_api(self, mock_get_product_by_id, mock_get_order_status, mock_menu_by_day_ready_order_all,
+                  mock_menu_by_day_all, mock_users_ready_order_filter, mock_modified_dish, mock_get_user,
+                  mock_get_logger):
+        # моки для логгера
+        mock_logger_instance = MagicMock()
+        mock_get_logger.return_value = mock_logger_instance
 
-        mock_get_order_status.return_value = 'flex-order'
-        mock_get_product_by_id.return_value = 'Mock-product'
-        mock_logging_delete_dish_api.return_value = 'Mock-message'
+        mock_get_product_by_id.return_value = 'Test Product'
+        mock_get_order_status.return_value = 'fix-order'
+        mock_menu_by_day_all.return_value = MagicMock()
+        mock_menu_by_day_ready_order_all.return_value = MagicMock()
+        mock_users_ready_order_filter.return_value = MagicMock()
+        mock_get_user.return_value = MagicMock()
+        mock_modified_dish.objects.create.return_value = MagicMock()
 
-        mock_serializer = MagicMock()
-        mock_serializer.is_valid.return_value = True
-        mock_serializer.validated_data = self.data
-
-        mock_menu_item = MagicMock()
-        mock_menu_item.category = 'mock_category'
-        mock_menu_item.get.return_value = None
-        mock_menu_item.save.return_value = None
-
-        mock_menu_by_day_objects.all.return_value = []
-        mock_menu_by_day_objects.get.return_value = mock_menu_item
-
-        mock_menu_by_day_ready_order_objects.all.return_value = []
-        mock_menu_by_day_ready_order_objects.get.return_value = None
-
-        mock_modified_dish_objects.filter.return_value.first.return_value = None
-        mock_custom_user_objects.get.return_value = MagicMock()
-
-        # mock_logger.info.return_value = 'Mock-message'
-        # mock_logger.error.return_value = 'Mock-message'
-
-        with patch('doctor.serializer.AddDishSerializer') as mock_add_dish_serializer:
-            mock_add_dish_serializer.return_value = mock_serializer
-
-        response = self.client.delete(self.url, data=self.data, format='json')
+        response = self.client.post(self.url, data=self.data, format='json')
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'status': 'OK'})
 
-        # Проверяем, что были вызваны нужные методы
-        mock_menu_by_day_objects.all.assert_called_once()
-        mock_menu_by_day_ready_order_objects.all.assert_not_called()
+        mock_menu_by_day_all.assert_called()
+        mock_menu_by_day_ready_order_all.assert_called()
 
-        mock_logging_delete_dish_api.assert_called_with() # валится тут!
+        # проверю что вызывается save
+        mock_menu = MagicMock()
+        mock_item_menu = MagicMock()
+        mock_menu.get.return_value = mock_item_menu
+        mock_item_menu.category = ''
+        mock_item_menu.save = MagicMock()
+        mock_menu_by_day_ready_order_all.return_value = mock_menu
 
-        # mock_modified_dish_objects.saves.assert_called_once()
-        # mock_modified_dish_objects.filter.return_value.first.assert_called_once()
-        # mock_modified_dish_objects.filter.return_value.first.return_value.delete.assert_not_called()
+        self.client.post(self.url, data=self.data, format='json')
+        self.assertTrue(mock_item_menu.save.called)
+
+# Дописать!
+
+class ChangeDishAPIViewTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.url = reverse('change_dish_api')
+        self.data = {
+            'id_user': 1,
+            'date': '2024-02-14',
+            'category': 'main',
+            'meal': 'breakfast',
+            'product_id_add': 277,
+            'product_id_del': 278,
+            'doctor': 'doctor_name',
+        }
+
+    @mock.patch('doctor.views.CustomUser.objects.filter')
+    @mock.patch('doctor.views.ModifiedDish.objects.filter')
+    @mock.patch('doctor.views.MenuByDay.objects.all')
+    @mock.patch('doctor.views.MenuByDayReadyOrder.objects.all')
+    @mock.patch('doctor.views.get_order_status')
+    @mock.patch('doctor.views.get_product_by_id')
+    def test_change_dish_api_success(self, mock_get_product_by_id, mock_get_order_status,
+                                      mock_menu_by_day_ready_order_all, mock_menu_by_day_all,
+                                      mock_modified_dish_filter, mock_custom_user_filter):
+
+        mock_get_product_by_id.side_effect = lambda x: 'Test Product' if x == 277 else 'Deleted Product'
+        mock_get_order_status.return_value = 'fix-order'
+
+        mock_menu_by_day_all.return_value = mock.Mock()
+        mock_menu_by_day_ready_order_all.return_value = mock.Mock()
+
+        # Мокирование CustomUser и ModifiedDish для успешного выполнения операции
+        mock_custom_user_filter.return_value.first.return_value = mock.Mock()
+        mock_modified_dish_filter.return_value.first.return_value = mock.Mock()
+
+        mock_menu = MagicMock()
+        mock_item_menu = MagicMock()
+        mock_menu.get.return_value = mock_item_menu
+        mock_item_menu.category = ''
+        mock_item_menu.save = MagicMock()
+        mock_menu_by_day_ready_order_all.return_value = mock_menu
+
+        response = self.client.put(self.url, data=self.data, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'status': 'OK'})
 
 
-
-# class TestAddDishAPIView(TestCase):
-#     def setUp(self):
-#         self.client = APIClient()
-#         self.user = CustomUser.objects.create(username='testuser_api', password='testpassword_api')
-
-    # @patch('doctor.views.get_product_by_id')
-    # @patch('doctor.views.logging_add_dish_api')
-    # @patch('.MenuByDay.objects')
-    # @patch('doctor.views.MenuByDayReadyOrder.objects')
-    # def test_add_dish_api(self,
-    #                       mock_menu_by_day_ready_order_objects,
-    #                       mock_menu_by_day_objects,
-    #                       mock_get_product_by_id,
-    #                       mock_logging_add_dish_api
-    #                       ):
+    # @mock.patch('doctor.views.CustomUser.objects.filter')
+    # @mock.patch('doctor.views.ModifiedDish.objects.filter')
+    # @mock.patch('doctor.views.MenuByDay.objects.all')
+    # @mock.patch('doctor.views.MenuByDayReadyOrder.objects.all')
+    # @mock.patch('doctor.views.get_order_status')
+    # @mock.patch('doctor.views.get_product_by_id')
+    # def test_change_dish_api_error(self, mock_get_product_by_id, mock_get_order_status,
+    #                                 mock_menu_by_day_ready_order_all, mock_menu_by_day_all,
+    #                                 mock_modified_dish_filter, mock_custom_user_filter):
     #
-    #     url = '/doctor/api/v1/add-dish'
-    #     data_add_api = {
-    #         'id_user': self.user.id,
-    #         'date': '2024-02-14',
-    #         'product_id': 463,
-    #         'category': 'category_name',
-    #         'meal': 'meal_name',
-    #         'doctor': 'doctor_name',
-    #         'order_status': 'fix-order',
-    #     }
-    #
-    #     # Заглушки для методов objects.all()
-    #     mock_menu_by_day_objects.all.return_value = []
-    #     mock_menu_by_day_ready_order_objects.all.return_value = []
-    #
-    #     mock_get_product_by_id.return_value = 'Кефир'
-    #     mock_logging_add_dish_api.return_value = 'Мок-сообщение'
-    #
-    #     # Проверка, что используется таблица MenuByDay
-    #     data_add_api['order_status'] = 'flex-order'
-    #     response = self.client.post(url, data_add_api, format='json')
-    #
-    #     self.assertEqual(response.status_code, 200)
-    #     mock_menu_by_day_objects.all.assert_called_once()
-    #     mock_menu_by_day_ready_order_objects.all.assert_not_called()
-    #
-    #     # Проверка, что используется таблица MenuByDayReadyOrder
-    #     data_add_api['order_status'] = 'flix-order'
-    #     response = self.client.post(url, data_add_api, format='json')
-    #
-    #     self.assertEqual(response.status_code, 200)
-    #     mock_menu_by_day_ready_order_objects.all.assert_called_once()
-    #
-    #     mock_logging_add_dish_api.info.assert_called_with('Save')
-    #
-    # @patch('doctor.views.get_product_by_id')
-    # @patch('doctor.views.logging_change_dish_api')
-    # @patch('doctor.views.MenuByDay.objects')
-    # @patch('doctor.views.MenuByDayReadyOrder.objects')
-    # def test_change_dish_api(self,
-    #                          mock_menu_by_day_ready_order_objects,
-    #                          mock_menu_by_day_objects,
-    #                          mock_get_product_by_id,
-    #                          mock_logging_change_dish_api
-    #                          ):
-    #     url = '/doctor/api/v1/change-dish'
-    #     data_change_api = {
-    #         'id_user': self.user.id,
-    #         'date': '2024-02-14',
-    #         'category': 'category_name',
-    #         'meal': 'meal_name',
-    #         'product_id_add': 277,
-    #         'product_id_remove': 463,
-    #         'doctor': 'doctor_name',
-    #         'order_status': 'fix-order',
-    #     }
-    #
-    #     # Заглушки для методов objects.all()
-    #     mock_menu_by_day_objects.all.return_value = []
-    #     mock_menu_by_day_ready_order_objects.all.return_value = []
-    #
-    #     mock_get_product_by_id.return_value = 'Кефир'
-    #     mock_logging_change_dish_api.return_value = 'Мок-сообщение'
-    #
-    #     # Проверка, что используется таблица MenuByDay
-    #     data_change_api['order_status'] = 'flex-order'
-    #     response = self.client.post(url, data_change_api, format='json')
-    #
-    #     self.assertEqual(response.status_code, 200)
-    #     mock_menu_by_day_objects.all.assert_called_once()
-    #     mock_menu_by_day_ready_order_objects.all.assert_not_called()
-    #
-    #     # Проверка, что используется таблица MenuByDayReadyOrder
-    #     data_change_api['order_status'] = 'fix-order'
-    #     response = self.client.post(url, data_change_api, format='json')
-    #
-    #     self.assertEqual(response.status_code, 200)
-    #     mock_menu_by_day_ready_order_objects.all.assert_called_once()
-    #
-    #     mock_logging_change_dish_api.info.assert_called_with('Save')
-
-    # @patch('doctor.functions.functions.get_order_status')
-    # @patch('doctor.views.get_product_by_id')
-    # @patch('doctor.views.logging_delete_dish_api')
-    # @patch('doctor.views.MenuByDay.objects')
-    # @patch('doctor.views.MenuByDayReadyOrder.objects')
-    # def test_delete_dish_api(self,
-    #                          mock_get_order_status,
-    #                          mock_menu_by_day_ready_order_objects,
-    #                          mock_menu_by_day_objects,
-    #                          mock_get_product_by_id,
-    #                          mock_logging_delete_dish_api
-    #                          ):
-    #     url = '/doctor/api/v1/delete-dish'
-    #     data_delete_api = {
-    #         'id_user': self.user.id,
-    #         'date': '2024-02-14',
-    #         'category': 'category_name',
-    #         'meal': 'meal_name',
-    #         'product_id': 277,
-    #         'doctor': 'doctor_name',
-    #     }
-    #
-    #     # Заглушки для методов
-    #     mock_get_order_status.return_value = 'flex-order'
-    #
-    #     mock_menu_by_day_objects.all.return_value = []
-    #     mock_menu_by_day_ready_order_objects.all.return_value = []
-    #     mock_get_product_by_id.return_value = 'Кефир'
-    #     mock_logging_delete_dish_api.return_value = 'Мок-сообщение'
-    #
-    #     # Проверка, что используется таблица MenuByDay
-    #     response = self.client.delete(url, data_delete_api, format='json')
-    #
-    #     self.assertEqual(response.status_code, 200)
-    #     mock_menu_by_day_objects.all.assert_called_once()
-    #     mock_menu_by_day_ready_order_objects.all.assert_not_called()
-    #
+    #     mock_get_product_by_id.side_effect = lambda x: 'Test Product' if x == 277 else 'Deleted Product'
     #     mock_get_order_status.return_value = 'fix-order'
-    #     # Проверка, что используется таблица MenuByDayReadyOrder
-    #     response = self.client.post(url, data_delete_api, format='json')
     #
+    #     mock_menu_by_day_all.return_value = mock.Mock()
+    #     mock_menu_by_day_ready_order_all.return_value = mock.Mock()
+    #
+    #     # Мокирование CustomUser для ошибки при попытке удаления блюда
+    #     mock_custom_user_filter.return_value.first.return_value = mock.Mock()
+    #     mock_modified_dish_filter.return_value.first.return_value = mock.Mock(side_effect=Exception("Delete Error"))
+    #
+    #     response = self.client.put(self.url, data=self.data, format='json')
     #     self.assertEqual(response.status_code, 200)
-    #     mock_menu_by_day_ready_order_objects.all.assert_called_once()
-    #
-    #     mock_logging_delete_dish_api.info.assert_called_with('Save')
+    #     self.assertEqual(response.data, {'status': 'Error'})

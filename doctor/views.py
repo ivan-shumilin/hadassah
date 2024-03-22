@@ -1274,7 +1274,7 @@ class ChangeDishAPIView(APIView):
     def put(self, request):
         serializer = ChangeDishSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        id_user: str = serializer.validated_data['id_user']
+        id_user: int = serializer.validated_data['id_user']
         date = serializer.validated_data['date']
         category: str = serializer.validated_data['category']
         meal: str = serializer.validated_data['meal']
