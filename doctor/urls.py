@@ -16,7 +16,7 @@ urlpatterns = [
     path('api/v1/add-dish', views.AddDishAPIView.as_view(), name='add_dish_api'),
     path('api/v1/change-dish', views.ChangeDishAPIView.as_view(), name='change_dish_api'),
     path('api/v1/get-patients', views.GetPatientsAPIView.as_view()),
-    path('api/v1/get-info-patient', views.GetInfoPatientAPIView.as_view()),
+    path('api/v1/get-info-patient', views.GetInfoPatientAPIView.as_view(), name='get_info_patient_api'),
     path('api/v1/menu-patient-one-day', views.GetPatientMenuDayTestAPIView.as_view()),
     path('api/v1/get-new-kpfc', views.GetNewKpfc.as_view(), name='get_new_kpfc'),
     path('api/v1/send_emergency_food', views.SendEmergencyFoodAPIView.as_view()),
