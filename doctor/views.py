@@ -729,7 +729,7 @@ class SendEmergencyFoodAPIView(APIView):
         data = request.data['data']
         data = data.split('&')
         patient_id = data[0]
-        first_meal = translate_first_meal(data[1])
+        meal = first_meal = translate_first_meal(data[1])
         # если нерабочие часы no_working_hours, если рабочии приходит прием пищи, который нужно добавить
         data_no_name = data[2]
         user_name = request.data['user_name']
