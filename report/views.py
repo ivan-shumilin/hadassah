@@ -10,6 +10,7 @@ from django.shortcuts import render
 
 from doctor.functions.functions import get_order_status, check_value_two, formatting_full_name, check_value_two_not_cafe
 from doctor.views import group_doctors_check
+from nutritionist.decorators import login_required_manager
 from nutritionist.models import UsersReadyOrder, MenuByDayReadyOrder, MenuByDay, UsersToday
 
 
@@ -128,6 +129,7 @@ def creates_dict_with_menu_patients_dish_assembly_report(date_show: datetime) ->
     return result
 
 
+@login_required_manager
 # @login_required(login_url='login')
 # @user_passes_test(group_doctors_check, login_url='login')
 def dish_assembly_report(request):

@@ -1,0 +1,31 @@
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show mb-0 d-flex justify-content-between align-items-center" role="alert">
+      <div class="d-flex align-items-center">
+        <i class="fas fa-info-circle me-2"></i>
+        {{ message }}
+      </div>
+      <button type="button" class="btn-custom-close" aria-label="Close">Закрыть</button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+<script>
+  var closeButtons = document.querySelectorAll('.btn-custom-close');
+
+  closeButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+      var alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+          alert.classList.remove('d-flex');
+        alert.style.display = 'none';
+      });
+    });
+  });
+</script>
+
+<style>
+  .btn-custom-close {
+    margin-left: 10px; /* Перемещение кнопки "Закрыть" вправо */
+  }
+</style>
