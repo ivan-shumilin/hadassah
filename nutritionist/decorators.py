@@ -22,7 +22,7 @@ def login_required_manager(func):
 
 def login_required_hadassah_report(func):
     def wrapper(request, *args, **kwargs):
-        if request.user.is_anonymous or not check_group_hadassah_report:
+        if request.user.is_anonymous or not check_group_hadassah_report(request.user):
             messages.info(request, "У вас недостаточно прав просматривать эту страницу!")
             return redirect("login")
         else:
