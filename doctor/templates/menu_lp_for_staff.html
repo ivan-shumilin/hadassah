@@ -63,12 +63,13 @@
                     </select>
                 </div>
             </div>
+            {% block report %}
             <div class="div-order" style="margin-top: 16px; margin-left: 30px;">
                 <div class="order">
                     <a href="{% url 'printed_form_one_new' %}">Сводный отчет</a>
                 </div>
             </div>
-            
+            {% endblock %}
         </div>
     </form>
 <table id='table2' style="margin-top: 10px;">
