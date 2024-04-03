@@ -2254,7 +2254,11 @@ def menu_lp_for_staff(request):
         'sing': sing,
     }
 
-    return render(request, 'menu_lp_for_staff.html', context=data)
+    template_name = 'menu_lp_for_staff.html'
+    if request.path == reverse('menu_lp_for_staff_without_report'):
+        template_name = 'menu_lp_for_staff_without_report.html'
+
+    return render(request, template_name, context=data)
 
 
 def catalog_all_products(request):
