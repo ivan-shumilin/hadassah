@@ -48,6 +48,7 @@ urlpatterns = [
     path('manager/edit-photo/<product_id>/<type>', views.edit_photo, name='edit_photo'),
     path('manager/photo_statistics', views.photo_statistics, name='photo_statistics'),
     path('manager/menu', views.menu_lp_for_staff, name='menu_lp_for_staff'),
+    path('manager/without_menu/for_epidemiologist', views.menu_lp_for_staff, name='menu_lp_for_staff_without_report'),
     path('manager/order', views.all_order_by_ingredients, name='order'),
     path('register/', views.register, name='register'),
     path('password_reset/', views.password_reset, name='reset_password'),
