@@ -206,6 +206,7 @@ def translate_first_meal(meal):
     }
     return MEALS[meal.lower()]
 
+
 def next_meal(meal):
     MEALS = {
         'breakfast': 'lunch',
