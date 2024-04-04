@@ -30,6 +30,13 @@ def change_str_in_date(date_str):
     return date(int(date_list[0]), int(date_list[1]), int(date_list[2]))
 
 
+def write_product_by_meal_for_user(message: str, report_user_set: list, report: dict, date_key: datetime, meal_key: str):
+    ''' Запись продуктов конкретного пользователя на прием пищи '''
+
+    for report_user in report_user_set:
+        report[date_key][meal_key].setdefault(f'{report_user.type_of_diet}' + message, []).append(report_user)
+
+
 def create_external_report(filtered_report: Report) -> Dict:
     """ Отчет для Hadassah. Создает словарь с отчетом по дням и диетам, в котором содержаться цена, сухпаек и кол-во """
     report = sort_by_date(filtered_report)
@@ -39,13 +46,13 @@ def create_external_report(filtered_report: Report) -> Dict:
     count_total = 0
     money_zero_diet_total = 0
     count_zero_diet_total = 0
-    money_emergency_food_total = 0
-    count_emergency_food_total = 0
+    money_emergency_food_total_day = money_emergency_food_total_night = 0
+    count_emergency_food_total_day = count_emergency_food_total_night = 0
 
     for date_key, one_day_report in report_.items():
         report[date_key] = {}
         count_all = 0 # все рационы кроме "Нулевой диеты"
-        count_emergency_food_all = 0
+        count_emergency_food_all_day = count_emergency_food_all_night = 0
         count_just_wather = 0
         count_bd_2 = 0
 
@@ -65,26 +72,41 @@ def create_external_report(filtered_report: Report) -> Dict:
                 # if len([report_item for report_item in report_user_set if report_item.product_id=='426']) > 0 and \
                 #         report_user_set[0].meal == 'dinner' and report_user_set[0].type_of_diet == 'БД день 2' or \
                 #         len([report_item for report_item in report_user_set if report_item.product_id == '426']) == 0:
-                if len([report_item for report_item in report_user_set if report_item.product_id in ['569', '568', '570']]) == 0:
-                    for report_user in report_user_set:
-                        report[date_key][meal_key].setdefault(str(report_user.type_of_diet), []).append(report_user)
+
+                # есть ли ночное/дневное экстренное питание
+                emergency_night: bool = False
+                emergency_day: bool = False
+
+                for report_item in report_user_set:
+                    if report_item.type == 'emergency-night':
+                        emergency_night = True
+                        break
+                    elif report_item.type == 'emergency-day':
+                        emergency_day = True
+                        break
+
+                if not emergency_night and not emergency_day:
+                    message = ''
+                elif emergency_day:
+                    message = ' + дневное экстренное питание'
                 else:
-                    for report_user in report_user_set:
-                        report[date_key][meal_key].setdefault(f'{report_user.type_of_diet} + экстренное питание', []).append(report_user)
+                    message = ' + сухпаек'
+
+                write_product_by_meal_for_user(message, report_user_set, report, date_key, meal_key)
 
             for diet_key, on_diet_report in report[date_key][meal_key].items():
+                # уникальные пациенты на [прием пищи] - [диета]
                 count_items = len(set([user.user_id for user in (report[date_key][meal_key][diet_key])]))
+
                 count_bouillon = \
                     len(set([user.user_id for user in (report[date_key][meal_key][diet_key])
                                 if user.product_id == '426' and\
                                 not (meal_key == 'dinner' and diet_key == 'БД день 2')]))
-                count_emergency_food = \
-                    len(set([user.user_id for user in (report[date_key][meal_key][diet_key])
-                                if user.product_id in ['569', '568', '570']]))
 
-                if "нулевая диета + экстренное питание" in diet_key.lower():
-                    price = PRICE_ALL
-                elif "нулевая диета" in diet_key.lower():
+                count_emergency_food_day = count_items if 'дневное экстренное питание' in diet_key.lower() else 0
+                count_emergency_food_night = count_items if 'сухпаек' in diet_key.lower() else 0
+
+                if "нулевая диета" in diet_key.lower():
                     price = PRICE_JUST_WATHER
                     count_just_wather += count_items
                 elif diet_key == 'БД день 2' and meal_key == 'afternoon':
@@ -94,42 +116,59 @@ def create_external_report(filtered_report: Report) -> Dict:
                     price = PRICE_ALL
 
                 count_all += count_items
-                count_emergency_food_all += count_emergency_food
+                count_emergency_food_all_day += count_emergency_food_day
+                count_emergency_food_all_night += count_emergency_food_night
 
                 report[date_key][meal_key][diet_key] =\
                     {'count': count_items,
                      'count_bouillon': count_bouillon,
-                     'count_emergency_food': count_emergency_food,
-                     'money': (count_items * price) + (count_bouillon * price_bouillon) + (count_emergency_food * PRICE_EMERGENCY_FOOD)}
+                     'count_emergency_food_day': count_emergency_food_day,
+                     'count_emergency_food_night': count_emergency_food_night,
+                     'money': (count_items * price) +
+                              (count_bouillon * price_bouillon) +
+                              (count_emergency_food_day * PRICE_EMERGENCY_FOOD_DAY) +
+                              (count_emergency_food_night * PRICE_EMERGENCY_FOOD_NIGHT)}
 
                 # считает отдельно цену и количество нулевых диет
                 if "нулевая диета" in diet_key.lower():
-                    money_zero_diet_total += (count_items * price) + (count_bouillon * price_bouillon) + (
-                            count_emergency_food * PRICE_EMERGENCY_FOOD)
+                    money_zero_diet_total += ((count_items * price) +
+                                              (count_bouillon * price_bouillon) +
+                                              (count_emergency_food_day * PRICE_EMERGENCY_FOOD_DAY) +
+                                              (count_emergency_food_night * PRICE_EMERGENCY_FOOD_NIGHT))
+
                     count_zero_diet_total += count_items
 
-        money = (count_all - count_just_wather - count_bd_2) * PRICE_ALL + \
-                (count_just_wather * PRICE_JUST_WATHER) + \
-                (count_bd_2 * PRICE_COUNT_BD_2) + \
-                (count_bouillon * price_bouillon) + \
-                (count_emergency_food_all * PRICE_EMERGENCY_FOOD)
+        money = ((count_all - count_just_wather - count_bd_2) * PRICE_ALL +
+                 (count_just_wather * PRICE_JUST_WATHER) +
+                 (count_bd_2 * PRICE_COUNT_BD_2) +
+                 (count_bouillon * price_bouillon) +
+                 (count_emergency_food_all_day * PRICE_EMERGENCY_FOOD_DAY) +
+                 (count_emergency_food_all_night * PRICE_EMERGENCY_FOOD_NIGHT))
+
         report[date_key]['Всего'] = {'count': count_all,
                                      'money': money}
         money_total += money
         count_total += count_all
-        count_emergency_food_total += count_emergency_food_all
-        money_emergency_food_total += count_emergency_food_all * PRICE_EMERGENCY_FOOD
+
+        count_emergency_food_total_day += count_emergency_food_all_day
+        count_emergency_food_total_night += count_emergency_food_all_night
+        money_emergency_food_total_day += count_emergency_food_all_day * PRICE_EMERGENCY_FOOD_DAY
+        money_emergency_food_total_night += count_emergency_food_all_night * PRICE_EMERGENCY_FOOD_NIGHT
+
+        # print(date_key, meal_key, count_total, count_emergency_food_total_night)
 
     report['Итого'] = {'Всего за период': {'count': count_total, 'money': money_total}}
     report['Нулевая диета'] = {'count': count_zero_diet_total, 'money': money_zero_diet_total}
-    report['Сухпаек'] = {'count': count_emergency_food_total, 'money': money_emergency_food_total}
+    report['Сухпаек'] = {'count': count_emergency_food_total_night, 'money': money_emergency_food_total_night}
 
     return report
+
 
 def add_font_style(ws: Worksheet, style: str, text: str, row: int, *columns) -> None:
     """ Печатает одинаковый текст с одинаковым стилем на выбранные столбцы определенной строчкoй """
     for column in columns:
         ws.write(row, column, text, style)
+
 
 def get_report(report: Dict, report_detailing: Dict,  date_start: datetime, date_finish: datetime) -> None:
     """ Создаёт excel файл с отчетом по блюдам """
@@ -425,7 +464,7 @@ def create_external_report_detailing(filtered_report: Report) -> Dict:
                 if item.type == 'emergency-night':
                     item.type_of_diet = 'Сухпаек'
                 elif item.type == 'emergency-day':
-                    item.type_of_diet += ' + экстренное питание'
+                    item.type_of_diet += ' + дневное экстренное питание'
                 report[key1][key2].setdefault(str(item.type_of_diet), []).append(item)
             for key3, value3 in report[key1][key2].items():
                 test = {}
