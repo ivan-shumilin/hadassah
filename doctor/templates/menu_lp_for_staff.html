@@ -102,7 +102,9 @@
                                         {% for product in meal %}
                                             <li>
                                                 {% if product.product_id %}
+                                                    {% block link %}
                                                     <a class="link" href="{% url 'tk' product.product_id '0' %}">{{ product.name }}</a>
+                                                    {% endblock %}
                                                 {% else %}
                                                     {{ product.name }}
                                                 {% endif %}                                                

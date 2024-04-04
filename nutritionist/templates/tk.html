@@ -22,9 +22,11 @@
         {% else %}
             <div class="card-header-block">
                 <div class="container inner">
+                    {% block return_menu %}
                     <div class="back">
                         <a href="{% url 'printed_form_two_lp_new' %}">Назад к заявке</a>
                     </div>
+                    {% endblock %}
                     <div class="name">{{ result.name }}</div>
                     <div class="fields">
                         <div class="portion field">
