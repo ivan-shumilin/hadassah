@@ -42,6 +42,7 @@ urlpatterns = [
     path('manager/printed_form_two_cafe', views.printed_form_two_cafe, name='printed_form_cafe'),
     path('manager/printed_form_two_cafe_new', views.printed_form_two_cafe_new, name='printed_form_cafe_new'),
     path('manager/tk/<id>/<count>', views.tk, name='tk'),
+    path('manager/without_menu/for_epidemiologist/tk/<id>/<count>', views.tk, name='tk_for_epidemiologist'),
     path('manager/admin-foods/', views.admin_foods, name='admin_foods'),
     path('manager/admin-foods-new/', views.admin_foods_new, name='admin_foods_new'),
     path('manager/edit-photo/<product_id>/<type>', views.edit_photo, name='edit_photo'),

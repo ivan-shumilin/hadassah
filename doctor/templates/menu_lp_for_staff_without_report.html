@@ -1,0 +1,8 @@
+{% extends 'menu_lp_for_staff.html' %}
+{% block report %}
+{% endblock %}
+
+{#для эпидермиолога#}
+{% block link %}
+    <a class="link" href="{% url 'tk_for_epidemiologist' product.product_id '0' %}">{{ product.name }}</a>
+{%  endblock %}

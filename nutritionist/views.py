@@ -1717,7 +1717,11 @@ def tk(request, id, count):
         'count': count,
         'weight': weight,
     }
-    return render(request, 'tk.html', context=data)
+
+    template_name = 'tk.html'
+    if request.path == reverse('tk_for_epidemiologist', args=[id, 0]):
+        template_name = 'tk_for_epidemiologist.html'
+    return render(request, template_name, context=data)
 
 
 def custom_sort(ttk, filter):
