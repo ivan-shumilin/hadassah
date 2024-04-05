@@ -52,9 +52,11 @@ def create_external_report(filtered_report: Report) -> Dict:
     for date_key, one_day_report in report_.items():
         report[date_key] = {}
         count_all = 0 # все рационы кроме "Нулевой диеты"
-        count_emergency_food_all_day = count_emergency_food_all_night = 0
+        count_emergency_food_all_day = count_emergency_food_all_night = count_water_and_bd_all = 0
+        count_water_and_bd_all = 0
         count_just_wather = 0
         count_bd_2 = 0
+        count_water_and_bd = 0
 
         if change_str_in_date(date_key) >= date(2023, 5, 1):
             price_bouillon = 0
@@ -103,21 +105,30 @@ def create_external_report(filtered_report: Report) -> Dict:
                                 if user.product_id == '426' and\
                                 not (meal_key == 'dinner' and diet_key == 'БД день 2')]))
 
-                count_emergency_food_day = count_items if 'дневное экстренное питание' in diet_key.lower() else 0
+                count_emergency_food_day = 0
                 count_emergency_food_night = count_items if 'сухпаек' in diet_key.lower() else 0
 
                 if "нулевая диета" in diet_key.lower():
                     price = PRICE_JUST_WATHER
                     count_just_wather += count_items
+                    if 'дневное экстренное питание' in diet_key.lower():
+                        count_water_and_bd = count_items
+
                 elif diet_key == 'БД день 2' and meal_key == 'afternoon':
                     price = PRICE_COUNT_BD_2
                     count_bd_2 += count_items
+                    if 'дневное экстренное питание' in diet_key.lower():
+                        count_water_and_bd = count_items
+
                 else:
                     price = PRICE_ALL
+                    if 'дневное экстренное питание' in diet_key.lower():
+                        count_emergency_food_day = count_items
 
                 count_all += count_items
                 count_emergency_food_all_day += count_emergency_food_day
                 count_emergency_food_all_night += count_emergency_food_night
+                count_water_and_bd_all += count_water_and_bd
 
                 report[date_key][meal_key][diet_key] =\
                     {'count': count_items,
@@ -127,14 +138,16 @@ def create_external_report(filtered_report: Report) -> Dict:
                      'money': (count_items * price) +
                               (count_bouillon * price_bouillon) +
                               (count_emergency_food_day * PRICE_EMERGENCY_FOOD_DAY) +
-                              (count_emergency_food_night * PRICE_EMERGENCY_FOOD_NIGHT)}
+                              (count_emergency_food_night * PRICE_EMERGENCY_FOOD_NIGHT) +
+                              (count_water_and_bd * PRICE_JUST_WATHER)}
 
                 # считает отдельно цену и количество нулевых диет
                 if "нулевая диета" in diet_key.lower():
                     money_zero_diet_total += ((count_items * price) +
                                               (count_bouillon * price_bouillon) +
                                               (count_emergency_food_day * PRICE_EMERGENCY_FOOD_DAY) +
-                                              (count_emergency_food_night * PRICE_EMERGENCY_FOOD_NIGHT))
+                                              (count_emergency_food_night * PRICE_EMERGENCY_FOOD_NIGHT) +
+                                              (count_water_and_bd * PRICE_JUST_WATHER))
 
                     count_zero_diet_total += count_items
 
@@ -143,7 +156,8 @@ def create_external_report(filtered_report: Report) -> Dict:
                  (count_bd_2 * PRICE_COUNT_BD_2) +
                  (count_bouillon * price_bouillon) +
                  (count_emergency_food_all_day * PRICE_EMERGENCY_FOOD_DAY) +
-                 (count_emergency_food_all_night * PRICE_EMERGENCY_FOOD_NIGHT))
+                 (count_emergency_food_all_night * PRICE_EMERGENCY_FOOD_NIGHT) +
+                 (count_water_and_bd_all * PRICE_JUST_WATHER))
 
         report[date_key]['Всего'] = {'count': count_all,
                                      'money': money}
