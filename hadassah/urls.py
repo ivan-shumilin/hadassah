@@ -8,6 +8,9 @@ from nutritionist.views import *
 from nutritionist import views
 from hadassah.spectacular.urls import urlpatterns as doc_urls
 
+handler403 = 'doctor.views.tr_handler403'
+handler404 = 'doctor.views.tr_handler404'
+handler500 = 'doctor.views.tr_handler500'
 
 urlpatterns = [
     path('admin/', admin.site.urls),

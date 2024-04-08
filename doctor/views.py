@@ -1600,3 +1600,28 @@ def logging_delete_dish_api(info, table, order_status, product_name, product_id,
                f'author: {author}')
 
     return message
+
+
+def tr_handler404(request, exception):
+    context = {
+        'title': 'Страница не найдена: 404',
+        'error_message': 'К сожалению такая страница была не найдена, или перемещена',
+        'status': 404
+    }
+    return render(request, 'errors/error_page.html', status=404, context=context)
+
+
+def tr_handler500(request):
+    return render(request=request, template_name='errors/error_page.html', status=500, context={
+        'title': 'Ошибка сервера: 500',
+        'error_message': 'Внутренняя ошибка сайта.',
+        'status': 500
+    })
+
+
+def tr_handler403(request, exception):
+    return render(request=request, template_name='errors/error_page.html', status=403, context={
+        'title': 'Ошибка доступа: 403',
+        'error_message': 'Доступ к этой странице ограничен',
+        'status': 403
+    })
