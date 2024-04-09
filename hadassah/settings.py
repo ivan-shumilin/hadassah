@@ -13,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'o3@)bpsxg1@wjt6jczcbl$v%4tkgfw+5h)x=#f%g@f9bx&bcr8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
         '.petrushkagroup.com',
@@ -28,7 +28,6 @@ ALLOWED_HOSTS = [
         '2a3d-178-89-129-243.ngrok-free.app',
 ]
 
-
 CORS_ALLOWED_ORIGINS = [
     "https://sk.petrushkagroup.com",
     "https://sk.petrushkagroup.ru",
@@ -36,9 +35,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "https://b467-146-120-93-183.eu.ngrok.io",
 ]
-
-
-
 
 # Application definition
 
@@ -93,12 +89,12 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            "builtins": ["doctor.templatetags.check_groups", ]
         },
     },
 ]
 
 WSGI_APPLICATION = 'hadassah.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -180,7 +176,6 @@ MEDIA_URL = '/media/'
 
 # Путь хранения картинок
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
