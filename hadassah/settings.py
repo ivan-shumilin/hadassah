@@ -39,7 +39,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://130.193.55.25",
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -144,15 +143,13 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
 
 TIME_ZONE = 'Europe/Moscow'
-# TIME_ZONE = 'Africa/Johannesburg' # минус 1 час от московского
-# TIME_ZONE = 'Europe/Berlin' # минус 2 часа от московского
+# TIME_ZONE = 'Europe/Berlin' # минус 1 часа от московского
 # TIME_ZONE  = 'Europe/London'  # минус 2 часа от московского
-#
-# TIME_ZONE = 'America/Denver'
+
+# TIME_ZONE = 'America/Sao_Paulo'
 # TIME_ZONE = 'America/Noronha' # минус 5 часа от московского
 # TIME_ZONE = 'America/Miquelon' # минус 6 часа от московского
 # TIME_ZONE = 'America/New_York' # минус 7 часа от московского
-# TIME_ZONE = 'America/Vancouver' # минус 8 часов от московского
 
 # TIME_ZONE = 'America/Los_Angeles' # минус 10 часа от московского
 # TIME_ZONE = 'Australia/Sydney'
@@ -257,36 +254,18 @@ PWA_APP_SPLASH_SCREEN = [
 PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'en-US'
 
-
-# логгирование
-LOGGING = {
-    'version': 1,
-
-    'formatters': {
-        'main': {
-            'format': "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s - %(pathname)s"
-        },
-        'json_formatter': {
-            '()': CustomJsonFormatter,
-        }
-    },
-
-    'handlers': {
-        'file': {
-            'class': 'logging.FileHandler',
-            'formatter': 'main',
-            'filename': 'doctor/nutrition_logging.log'
-        }
-    },
-
-    'loggers': {
-        'main_logger': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True
-        }
-    }
-}
+# LOGGING = {
+#     'version': 1,
+#     'handlers': {
+#         'console': {'class': 'logging.StreamHandler'}
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG'
+#         }
+#     }
+# }
 
 LOGGING = {
     'version': 1,
