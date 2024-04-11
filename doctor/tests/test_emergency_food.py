@@ -20,14 +20,30 @@ class TestSendEmergencyFoodAPIView(unittest.TestCase):
     @patch("doctor.views.CustomUser.objects.get")
     @patch("doctor.views.my_job_send_messang_changes.delay")
     @patch("doctor.views.Report")
+    @patch("doctor.views.ProductLp.objects.get")
     def test_send_emergency_food(
         self,
+        mock_product_lp_get,
         mock_report,
         mock_message_delay,
         mock_custom_user_get,
     ):
+        mock_product_lp_get = MagicMock()
 
-        # mock_custom_user_get.return_value = mock_patient
+        # Создаем MagicMock для объекта ProductLp
+        mock_product_lp = MagicMock()
+
+        # Устанавливаем значение атрибута name на "Зерно"
+        mock_product_lp.name = "Зерно"
+
+        # Устанавливаем возврат объекта mock_product_lp при вызове ProductLp.objects.get(id=product_id)
+        mock_product_lp_get.return_value = mock_product_lp
+
+        # product = MagicMock()
+        # product.name = "Nutrien Sugarless 200 мл"
+        #
+        # mock_product_lp_get = MagicMock()
+        # mock_product_lp_get.return_value = product
 
         mock_patient = MagicMock(name='mymock')
         mock_patient.full_name = "Тестов Тест Тестович"
@@ -56,11 +72,11 @@ class TestSendEmergencyFoodAPIView(unittest.TestCase):
 
         self.assertEqual(mock_message_delay.call_count, 2)
 
-        # expected_message = (
-        #     "<b>Доп. питание для экстренной госпитализации:</b>\n"
-        #     "    \nTest Patient, 101\nstandard, завтрак\n"
-        #     "    \n– Test Product\n(test doctor)"
-        # )
+        expected_message = (
+            "<b>Доп. питание для экстренной госпитализации:</b>\n"
+            "    \nTest Patient, 101\nstandard, завтрак\n"
+            "    \n– Test Product\n(test doctor)"
+        )
         expected_message1 = '&#8505; <b>Изменение с завтрака</b>\nЭкстренное питание для Тестов Т.Т. ОВД\n(Test D.)'
 
         expected_message2 = ('<b>Доп. питание для экстренной госпитализации:</b>\n'
@@ -90,7 +106,7 @@ class TestSendEmergencyFoodAPIView(unittest.TestCase):
         )
 
         # Проверка создания объектов отчета
-        # mock_product_lp_get.assert_called_once_with(id=569)
+        mock_product_lp_get.assert_called_once_with(id=569)
 
 
 if __name__ == "__main__":
