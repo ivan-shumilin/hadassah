@@ -1684,7 +1684,7 @@ def tk(request, id, count):
 
     # по апи
     # result, error, weight = get_processed_tk(id, count)
-    
+
     # из базы
     try:
         result, error = get_tree_ttk(id, count, [])
@@ -1718,6 +1718,7 @@ def tk(request, id, count):
         'weight': weight,
     }
 
+    print(request.path)
     template_name = 'tk.html'
     if request.path == reverse('tk_for_epidemiologist', args=[id, 0]):
         template_name = 'tk_for_epidemiologist.html'

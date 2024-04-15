@@ -1,14 +1,14 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from django.test import RequestFactory
+from django.test import TestCase, Client
 from django.urls import reverse
 
 from nutritionist.views import tk
 
 
-class TestTKView(unittest.TestCase):
+class TestTKView(TestCase):
     def setUp(self):
-        self.factory = RequestFactory()
+        self.client = Client()
 
     @patch('nutritionist.views.get_tree_ttk')
     @patch('nutritionist.views.ProductLp.objects.filter')
@@ -20,10 +20,12 @@ class TestTKView(unittest.TestCase):
         mock_ingredient_filter.return_value.first.return_value = MagicMock(weight=0.5, technologyDescription='Some description')
         mock_product_filter.return_value.first.return_value = MagicMock(image='some-image-url')
 
-        request = self.factory.get(reverse('tk', args=[id, 0]))
+        # проверю что прихожу со страницы для эпидемиолога
+        request = self.client.get(reverse('tk', args=[id, 0]))
+        request.path = reverse('tk', args=[id, 0])
         response = tk(request, id, count)
 
-        # self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         # self.assertIn('img', response.context)
         # self.assertIn('result', response.context)
         # self.assertIn('error', response.context)
@@ -35,10 +37,6 @@ class TestTKView(unittest.TestCase):
         mock_product_filter.assert_called_once_with(product_id=id)
 
         # Test if request.path == reverse('tk_for_epidemiologist', args=[id, 0])
-        request = self.factory.get(reverse('tk_for_epidemiologist', args=[id, 0]))
+        request = self.client.get(reverse('tk_for_epidemiologist', args=[id, 0]))
         response = tk(request, id, count)
-        self.assertEqual(response.template_name, 'tk_for_epidemiologist.html')
-
-
-if __name__ == '__main__':
-    unittest.main()
+        self.assertTemplateUsed(response, 'tk_for_epidemiologist.html')
