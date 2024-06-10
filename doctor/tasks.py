@@ -5,8 +5,9 @@ import telepot
 from datetime import datetime
 
 from nutritionist.functions.get_ingredients import caching_ingredients
-from nutritionist.functions.report import create_external_report, create_external_report_detailing, get_report
-from nutritionist.models import BotChatId, CustomUser, MenuByDay, Report, IsReportCreate
+from nutritionist.functions.report import create_external_report, create_external_report_detailing, get_report, \
+    get_brakery_magazine
+from nutritionist.models import BotChatId, CustomUser, MenuByDay, Report, IsReportCreate, IsBrakeryMagazineCreate
 from doctor.functions.diet_formation import add_menu_three_days_ahead, update_diet_bd
 from doctor.functions.for_print_forms import create_user_today, applies_changes, \
     create_ready_order, create_report, create_product_storage
@@ -169,6 +170,14 @@ def create_report_download(date_start, date_finish, id):
     item.is_report_create = True
     item.save()
 
+    return
+
+@shared_task()
+def create_bakery_magazine_download(meal: str, date: datetime, menu: dict, id: int) -> None:
+    get_brakery_magazine(meal, date, menu)
+    item = IsBrakeryMagazineCreate.objects.get(id=id)
+    item.is_brakery_magazine_create = True
+    item.save()
     return
 
 
