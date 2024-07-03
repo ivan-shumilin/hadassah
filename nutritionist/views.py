@@ -14,6 +14,7 @@ from django.core.mail import send_mail
 from django.db.models.functions import Lower
 from django.views.generic import TemplateView
 
+from doctor.functions.diet_formation import get_users_on_the_meal
 from doctor.functions.download import get_tk, get_name_by_api, get_allergens, get_weight_tk, \
     get_measure_unit
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal, \
@@ -1118,81 +1119,171 @@ def printed_form_one(request):
     return render(request, 'printed_form1.html', context=data)
 
 
-def create_detailing_report(date_start=date.today(), date_finish=date.today()):
+def add_user_for_detailing_by_floor(rus_meal, floor, source_user_info, source_diet_info, type=None, date_today=date.today()) -> dict:
+    '''
+    Создание единицы пользователей по этажам/реанимация в детализацию
+    '''
+    date_str = date_today.isoformat()
+    d = {}
 
-    filtered_report = Report.objects.filter(date_create__gte=date_start,
-        date_create__lte=date_finish,
-    )
-    report_detailing = create_external_report_detailing(filtered_report)
+    if (floor == source_user_info.room_number[0] or source_user_info.floor == floor) and source_user_info.department.lower() != "реанимация":
+        d = {
+            'date': date_str,
+            'diet': source_diet_info.type_of_diet,
+            'full_name': source_user_info.full_name,
+            'room': source_user_info.room_number,
+            'type': type,
+            'meal': rus_meal
+        }
+    elif floor == "resuscitation" and source_user_info.department.lower() == 'реанимация':
+        d = {
+            'date': date_str,
+            'diet': source_diet_info.type_of_diet,
+            'full_name': source_user_info.full_name,
+            'room': source_user_info.room_number,
+            'type': type,
+            'meal': rus_meal
+        }
+    return d
 
-    return report_detailing
+
+def create_detailing_report(meal, floor, date_start=date.today()) -> list:
+    """
+    Смотрим есть ли экстренное питание/смотрим в таблицу Report
+    """
+    filtered_report = Report.objects.filter(date_create=date_start, meal=meal)
+    result = []
+    rus_meal = translate_meal(meal)
+    user_set = set()
+
+    for report in filtered_report:
+        if report.user_id not in user_set:
+            d = add_user_for_detailing_by_floor(rus_meal, floor, report.user_id, report, report.type)
+            if len(d) != 0:
+                result.append(d)
+            user_set.add(report.user_id)
+
+    return result
+
+
+def get_users_info_by_meal_and_floor(meal: str, floor: str) -> list:
+    """
+    детализация для пользователей по каждому приему пищи
+    """
+    users = get_users_on_the_meal(meal)
+    result = []
+    rus_meal = translate_meal(meal)
+
+    for user in users:
+        d = add_user_for_detailing_by_floor(rus_meal, floor, user, user)
+        if len(d) != 0:
+            result.append(d)
+    return result
+
+
+def detailing_by_Menu_Ready_Order(meal, floor: str, date_start=date.today()):
+
+    menus = MenuByDayReadyOrder.objects.filter(date_create=date_start, meal=meal)
+
+    result = []
+    rus_meal = translate_meal(meal)
+    for menu in menus:
+            d = add_user_for_detailing_by_floor(rus_meal, floor, menu.user_id, menu)
+            if len(d) != 0:
+                result.append(d)
+    return result
 
 
 def detailing_reports(request, meal, floor):
+    """
+    Завтрак
+    Report    MenuByDayReadyOrder   Сейчас (смотрим в get_user_by_meal)
+    8: 40		8: 31		        8: 20
+
+    Обед
+    Report    MenuByDayReadyOrder
+    12: 03		12: 01		        12: 20
+
+    Полдник
+    Report    MenuByDayReadyOrder
+    15: 40		15: 31		        15: 00
+
+    Ужин
+    Report    MenuByDayReadyOrder
+    18: 05		18: 01		        17: 30
+    """
+    logger = logging.getLogger('main_logger')
+
     floor = 'Не выбрано' if floor == '0' else floor
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, Y')
-    date_start = date.today()
-    date_finish = date.today()
     rus_meal = translate_meal(meal)
 
     try:
-        reports = create_detailing_report(date_start, date_finish)
-    except:
-        reports = []
+        current_time = datetime.now()
 
-    data_str = date_start.isoformat()
-    # for reports, type in ((reports, 'standart'), (reports_extra, 'extra')):
-    reports = reports.get(date_start.isoformat(), {}).get(meal, None)
-    result = []
-    if reports:
-        if floor != "resuscitation":
-            for diet, items in reports.items():
-                for name, room in items.items():
-                    if floor == room[1]:
-                        if room[2].lower() != "реанимация":
-                            result.append({
-                                'date': data_str,
-                                'meal': rus_meal,
-                                'diet': diet,
-                                'full_name': name,
-                                'room': room[0],
-                                'type': room[3],
-                                })
+        # смотрим в get_user_by_meal - можно менять диеты и тд
+        if (
+                current_time.hour == 8 and (20 <= current_time.minute <= 31) or
+                current_time.hour == 15 and (0 <= current_time.minute <= 31) or
+                current_time.hour == 17 and (current_time.minute >= 30) or
+                current_time.hour == 18 and (current_time.minute <= 1)
+        ):
+            # смотрю на наличие emergency
+            result = create_detailing_report(meal, floor)
+            result += get_users_info_by_meal_and_floor(meal, floor)
+
+        # смотрим в MenuByDayReadyOrder - нужно чтобы диета была на момент того, когда сформируется эта таблица
+        elif (
+                current_time.hour == 8 and (31 < current_time.minute <= 40) or
+                current_time.hour == 15 and (31 < current_time.minute <= 40) or
+                current_time.hour == 18 and (1 < current_time.minute <= 5)
+        ):
+            # смотрю на наличие emergency
+            result = create_detailing_report(meal, floor)
+            result += detailing_by_Menu_Ready_Order(meal, floor)
+
+        elif (
+                current_time.hour == 12 and current_time.minute < 20 and meal == 'lunch'
+        ):
+            result = []
+
+        # в остальное время смотрим в Report
         else:
-            for diet, items in reports.items():
-                for name, room in items.items():
-                    if 'реанимация' == room[2].lower():
-                        result.append({
-                            'date': data_str,
-                            'meal': rus_meal,
-                            'diet': diet,
-                            'full_name': name,
-                            'room': room[0],
-                            'type': room[3],
-                            })
-        try:
-            result.sort(key=lambda x: int(x['room'].split('-')[1]))
-        except:
-            pass
-        count_patients = len(result)
-        count_diet_0 = len([p for p in result if 'нулевая диета'.lower() in p['diet'].lower()])
-        other_diet = count_patients - count_diet_0
-        diets = [item['diet'] for item in result]
-        diets_count = collections.Counter(diets)
-        diets_count = dict(diets_count)
-        diets_count = dict(sorted(diets_count.items(), key=lambda x: x[0]))
-        if "Нулевая диета" in diets_count:
-            del diets_count["Нулевая диета"]
+            result = create_detailing_report(meal, floor)
 
-        count_extr = len([item for item in result if item['type'] in ('emergency-night', 'emergency-day')])
+    except Exception as e:
+        logger.error(e)
+        result = []
 
+    # случай когда этаж 'Не выбрано'
+    try:
+        result.sort(key=lambda x: int(x['room'].split('-')[1]))
+    except:
+        pass
 
+    count_patients = len(result)
+    count_diet_0 = len([p for p in result if 'нулевая диета'.lower() in p['diet'].lower()])
+    other_diet = count_patients - count_diet_0
+    diets = [item['diet'] for item in result]
+    diets_count = collections.Counter(diets)
+    diets_count = dict(diets_count)
+    diets_count = dict(sorted(diets_count.items(), key=lambda x: x[0]))
 
+    if "Нулевая диета" in diets_count:
+        del diets_count["Нулевая диета"]
+
+    count_extr = len([item for item in result if item['type'] in ('emergency-night', 'emergency-day')])
+
+    if len(result) == 0:
+        data = {
+            'error': "Отчет еще не готов или нет пациентов"
+        }
+    else:
         data = {
             'formatted_date_now': formatted_date_now,
             'count_patients': count_patients,
             'count_diet_0': count_diet_0,
-            'count_extr': count_extr,
+            'count_extr':  count_extr,
             'other_diet': other_diet,
             'meal': rus_meal.lower(),
             'result': result,
@@ -1200,11 +1291,8 @@ def detailing_reports(request, meal, floor):
             'error': None,
             'diets_count': diets_count
         }
-    elif not reports:
-        data = {
-            'error': "Отчет еще не готов или нет пациентов"
-        }
     return render(request, 'detailing-reports.html', context=data)
+
 
 def detailing(request, meal):
     """ Отчеты с детализацией. """

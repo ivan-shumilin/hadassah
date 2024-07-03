@@ -93,6 +93,7 @@ def create_ready_order(meal):
             to_create.append(MenuByDayReadyOrder(user_id=UsersReadyOrder.objects.get(user_id=user.id),
                                     date_create=date.today(),
                                     date=menu[0].date,
+                                    type_of_diet=user.type_of_diet,
                                     meal=menu[0].meal,
                                     main=menu[0].main,
                                     garnish=menu[0].garnish,
