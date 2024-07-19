@@ -1223,10 +1223,10 @@ def detailing_reports(request, meal, floor):
 
         # смотрим в get_user_by_meal - можно менять диеты и тд
         if (
-                current_time.hour == 8 and (20 <= current_time.minute <= 31) or
-                current_time.hour == 15 and (0 <= current_time.minute <= 31) or
-                current_time.hour == 17 and (current_time.minute >= 30) or
-                current_time.hour == 18 and (current_time.minute <= 1)
+                current_time.hour == 8 and (20 <= current_time.minute <= 31) and meal == 'breakfast' or
+                current_time.hour == 15 and (0 <= current_time.minute <= 31) and meal == 'afternoon' or
+                current_time.hour == 17 and (current_time.minute >= 30) and meal == 'dinner' or
+                current_time.hour == 18 and (current_time.minute <= 1) and meal == 'dinner'
         ):
             # смотрю на наличие emergency
             result = create_detailing_report(meal, floor)
@@ -1234,9 +1234,9 @@ def detailing_reports(request, meal, floor):
 
         # смотрим в MenuByDayReadyOrder - нужно чтобы диета была на момент того, когда сформируется эта таблица
         elif (
-                current_time.hour == 8 and (31 < current_time.minute <= 40) or
-                current_time.hour == 15 and (31 < current_time.minute <= 40) or
-                current_time.hour == 18 and (1 < current_time.minute <= 5)
+                current_time.hour == 8 and (31 < current_time.minute <= 40) and meal == 'breakfast' or
+                current_time.hour == 15 and (31 < current_time.minute <= 40) and meal == 'afternoon' or
+                current_time.hour == 18 and (1 < current_time.minute <= 5) and meal == 'dinner'
         ):
             # смотрю на наличие emergency
             result = create_detailing_report(meal, floor)
