@@ -102,6 +102,12 @@ app.conf.beat_schedule = {
 #         'task': 'doctor.tasks.may_job_ping_db',
 #         'schedule': crontab(minute='*'),
 #     },
+
+    # каждодневный бэкап
+    'my_job_regular_backup': {
+        'task': 'doctor.tasks.regular_db_dump',
+        'schedule': crontab(minute=0, hour='5'),
+    },
 }
 app.conf.timezone = 'Europe/Moscow'
 app.autodiscover_tasks()

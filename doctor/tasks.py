@@ -1,8 +1,12 @@
+import logging
+
 import requests
 
 from celery import shared_task
 import telepot
 from datetime import datetime
+
+from django.core import management
 
 from nutritionist.functions.get_ingredients import caching_ingredients
 from nutritionist.functions.report import create_external_report, create_external_report_detailing, get_report, \
@@ -195,3 +199,14 @@ def may_job_ping_db() -> None:
     url = "https://hr.petrushkagroup.ru/user/?user_id=bcc9d80f-565e-4b51-ac19-6085eace0cd0"
 
     response = requests.get(url)
+
+
+@shared_task()
+def regular_db_dump() -> None:
+    logger = logging.getLogger('main_logger')
+    answer = []
+    try:
+        management.call_command('backup_db_ydisk', stdout=answer)
+    except Exception as e:
+        logger.error(e)
+        print(e)
