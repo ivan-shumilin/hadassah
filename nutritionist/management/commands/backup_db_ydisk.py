@@ -2,8 +2,6 @@ from django.core.management.base import BaseCommand
 import requests, calendar, datetime, os
 from datetime import datetime, date
 from django.core import management
-from django.core.management.commands import dumpdata
-
 
 URL = 'https://cloud-api.yandex.net/v1/disk/resources'
 TOKEN = 'y0_AQAEA7qkHGTtAADLWwAAAADLdv2Vzl_VDfyET4ekZCPJK_nQZ3UUrqY'
@@ -48,7 +46,10 @@ def create_folder(path):
     # headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'OAuth {TOKEN}'}
 
     """Создание папки. \n path: Путь к создаваемой папке."""
-    requests.put(f'{URL}?path={path}', headers=headers)
+    try:
+        requests.put(f'{URL}?path={path}', headers=headers)
+    except:
+        pass
 
 
 def upload_file(loadfile, savefile, replace=True):
@@ -68,11 +69,12 @@ def upload_file(loadfile, savefile, replace=True):
             print(res)
             return res
 
+    class Command(BaseCommand):  # https://docs.djangoproject.com/en/4.0/howto/custom-management-commands/
+        help = 'Dump database in yandex disk'
 
-class Command(BaseCommand):  # https://docs.djangoproject.com/en/4.0/howto/custom-management-commands/
-    help = 'Dump database in yandex disk'
-    def handle(self, *args, **options):
-        create_backup()
-        create_folder('backup' + '/' + str(date.today()))
-        answer = upload_file(str(date.today()) + '.json', 'backup' + '/' + str(date.today()) + '/' + str(date.today()) + '.json')
-        return answer
+        def handle(self, *args, **options):
+            create_backup()
+            create_folder('backup' + '/' + str(date.today()))
+            filename = str(date.today()) + '_' + str(datetime.now().hour) + '.json'
+            answer = upload_file(filename, 'backup' + '/' + str(date.today()) + '/' + filename)
+            return answer
