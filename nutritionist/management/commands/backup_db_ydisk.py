@@ -7,6 +7,7 @@ URL = 'https://cloud-api.yandex.net/v1/disk/resources'
 TOKEN = 'y0_AQAEA7qkHGTtAADLWwAAAADLdv2Vzl_VDfyET4ekZCPJK_nQZ3UUrqY'
 headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'OAuth {TOKEN}'}
 
+filename = str(date.today()) + '_' + str(datetime.now().hour) + '.json'
 
 # def create_backup():
 #     name = str(date.today()) + '.json'
@@ -18,9 +19,9 @@ headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Au
 #                                 'nutritionist.timetablelp',
 #                                 stdout=outfile)
 
+
 def create_backup():
-    name = str(date.today()) + '.json'
-    with open(name, 'w', encoding='utf-8') as outfile:
+    with open(filename, 'w', encoding='utf-8') as outfile:
         management.call_command('dumpdata',
                                 'nutritionist.product',
                                 'nutritionist.timetable',
@@ -69,12 +70,12 @@ def upload_file(loadfile, savefile, replace=True):
             print(res)
             return res
 
-    class Command(BaseCommand):  # https://docs.djangoproject.com/en/4.0/howto/custom-management-commands/
-        help = 'Dump database in yandex disk'
 
-        def handle(self, *args, **options):
-            create_backup()
-            create_folder('backup' + '/' + str(date.today()))
-            filename = str(date.today()) + '_' + str(datetime.now().hour) + '.json'
-            answer = upload_file(filename, 'backup' + '/' + str(date.today()) + '/' + filename)
-            return answer
+class Command(BaseCommand):  # https://docs.djangoproject.com/en/4.0/howto/custom-management-commands/
+    help = 'Dump database in yandex disk'
+
+    def handle(self, *args, **options):
+        create_backup()
+        create_folder('backup' + '/' + str(date.today()))
+        answer = upload_file(filename, 'backup' + '/' + str(date.today()) + '/' + filename)
+        return answer

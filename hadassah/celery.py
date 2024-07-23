@@ -103,7 +103,7 @@ app.conf.beat_schedule = {
 #         'schedule': crontab(minute='*'),
 #     },
 
-    # каждодневный бэкап
+    # бэкап каждый час в 0 минут (12:00, 13:00) и тд
     'my_job_regular_backup': {
         'task': 'doctor.tasks.regular_db_dump',
         'schedule': crontab(minute=0),
