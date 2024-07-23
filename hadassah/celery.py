@@ -106,7 +106,7 @@ app.conf.beat_schedule = {
     # каждодневный бэкап
     'my_job_regular_backup': {
         'task': 'doctor.tasks.regular_db_dump',
-        'schedule': crontab(minute=0, hour='5'),
+        'schedule': crontab(minute=0),
     },
 }
 app.conf.timezone = 'Europe/Moscow'
