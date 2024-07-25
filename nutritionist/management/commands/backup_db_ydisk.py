@@ -1,13 +1,17 @@
+import logging
+
 from django.core.management.base import BaseCommand
 import requests, calendar, datetime, os
 from datetime import datetime, date
 from django.core import management
 
+logger = logging.getLogger('main_logger')
+
+
 URL = 'https://cloud-api.yandex.net/v1/disk/resources'
 TOKEN = 'y0_AQAEA7qkHGTtAADLWwAAAADLdv2Vzl_VDfyET4ekZCPJK_nQZ3UUrqY'
 headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'OAuth {TOKEN}'}
 
-filename = str(date.today()) + '_' + str(datetime.now().hour) + '.json'
 
 # def create_backup():
 #     name = str(date.today()) + '.json'
@@ -21,6 +25,7 @@ filename = str(date.today()) + '_' + str(datetime.now().hour) + '.json'
 
 
 def create_backup():
+    filename = str(date.today()) + '_' + str(datetime.now().hour) + '.json'
     with open(filename, 'w', encoding='utf-8') as outfile:
         management.call_command('dumpdata',
                                 'nutritionist.product',
@@ -61,8 +66,10 @@ def upload_file(loadfile, savefile, replace=True):
     loadfile: Путь к загружаемому файлу
     savefile: Путь к файлу на Диске
     replace: true or false Замена файла на Диске"""
+    filename = str(date.today()) + '_' + str(datetime.now().hour) + '.json'
 
     res = requests.get(f'{URL}/upload?path={savefile}&overwrite={replace}', headers=headers).json()
+    logger.info(f'Upload file{filename}')
     with open(loadfile, 'rb') as f:
         try:
             requests.put(res['href'], files={'file': f})
@@ -75,7 +82,10 @@ class Command(BaseCommand):  # https://docs.djangoproject.com/en/4.0/howto/custo
     help = 'Dump database in yandex disk'
 
     def handle(self, *args, **options):
+        filename = str(date.today()) + '_' + str(datetime.now().hour) + '.json'
+        logger.info(f'Create backup. Time: {datetime.now()}')
         create_backup()
+        logger.info(f'Create folder {"backup" + "/" + str(date.today())}')
         create_folder('backup' + '/' + str(date.today()))
         answer = upload_file(filename, 'backup' + '/' + str(date.today()) + '/' + filename)
         return answer

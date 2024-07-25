@@ -1237,6 +1237,7 @@ def detailing_reports(request, meal, floor):
 
     try:
         current_time = datetime.now()
+        logger.info(f'Detailing request. Date: {current_time}. Meal: {meal},  floor: {floor}')
 
         # смотрим в get_user_by_meal - можно менять диеты и тд
         if (
@@ -1245,6 +1246,7 @@ def detailing_reports(request, meal, floor):
                 current_time.hour == 17 and (current_time.minute >= 30) and meal == 'dinner' or
                 current_time.hour == 18 and (current_time.minute <= 1) and meal == 'dinner'
         ):
+            logger.info('Saw in CurrentUsers')
             # смотрю на наличие emergency
             result = create_detailing_report(meal, floor)
             result += get_users_info_by_meal_and_floor(meal, floor)
@@ -1255,6 +1257,7 @@ def detailing_reports(request, meal, floor):
                 current_time.hour == 15 and (31 < current_time.minute <= 40) and meal == 'afternoon' or
                 current_time.hour == 18 and (1 < current_time.minute <= 5) and meal == 'dinner'
         ):
+            logger.info('Saw in MenuReadyOrder')
             # смотрю на наличие emergency
             result = create_detailing_report(meal, floor)
             result += detailing_by_Menu_Ready_Order(meal, floor)
@@ -1262,10 +1265,12 @@ def detailing_reports(request, meal, floor):
         elif (
                 current_time.hour == 12 and current_time.minute < 20 and meal == 'lunch'
         ):
+            logger.info('Lunch and < 12:20 -> []')
             result = []
 
         # в остальное время смотрим в Report
         else:
+            logger.info('Saw Report')
             result = create_detailing_report(meal, floor)
 
     except Exception as e:
@@ -1314,8 +1319,13 @@ def detailing_reports(request, meal, floor):
 def detailing(request, meal):
     """ Отчеты с детализацией. """
 
+    logger = logging.getLogger('main_logger')
+
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
     time_now = datetime.today().time().strftime("%H:%M")
+
+    logger.info(f'Main detalization: date {formatted_date_now} {time_now}')
+
     is_none_floor = Report.objects.filter(
         date_create=date.today(),
         meal=meal,
