@@ -1169,10 +1169,13 @@ def create_detailing_report(meal, floor, date_start=date.today()) -> list:
     """
     Смотрим есть ли экстренное питание/смотрим в таблицу Report
     """
+    logger = logging.getLogger('main_logger')
     filtered_report = Report.objects.filter(date_create=date_start, meal=meal)
     result = []
     rus_meal = translate_meal(meal)
     user_set = set()
+
+    logger.info('Date: ', date_start)
 
     for report in filtered_report:
         if report.user_id not in user_set:
@@ -1200,8 +1203,10 @@ def get_users_info_by_meal_and_floor(meal: str, floor: str) -> list:
 
 
 def detailing_by_Menu_Ready_Order(meal, floor: str, date_start=date.today()):
+    logger = logging.getLogger('main_logger')
     menus = MenuByDayReadyOrder.objects.filter(date_create=date_start, meal=meal)
 
+    logger.info('Date: ', date_start)
     result = []
     rus_meal = translate_meal(meal)
     for menu in menus:
@@ -1237,6 +1242,7 @@ def detailing_reports(request, meal, floor):
 
     try:
         current_time = datetime.now()
+        date_start = date.today()
         logger.info(f'Detailing request. Date: {current_time}. Meal: {meal},  floor: {floor}')
 
         # смотрим в get_user_by_meal - можно менять диеты и тд
@@ -1248,7 +1254,7 @@ def detailing_reports(request, meal, floor):
         ):
             logger.info('Saw in CurrentUsers')
             # смотрю на наличие emergency
-            result = create_detailing_report(meal, floor)
+            result = create_detailing_report(meal, floor, date_start)
             result += get_users_info_by_meal_and_floor(meal, floor)
 
         # смотрим в MenuByDayReadyOrder - нужно чтобы диета была на момент того, когда сформируется эта таблица
@@ -1259,8 +1265,8 @@ def detailing_reports(request, meal, floor):
         ):
             logger.info('Saw in MenuReadyOrder')
             # смотрю на наличие emergency
-            result = create_detailing_report(meal, floor)
-            result += detailing_by_Menu_Ready_Order(meal, floor)
+            result = create_detailing_report(meal, floor, date_start)
+            result += detailing_by_Menu_Ready_Order(meal, floor, date_start)
 
         elif (
                 current_time.hour == 12 and current_time.minute < 20 and meal == 'lunch'
@@ -1271,7 +1277,7 @@ def detailing_reports(request, meal, floor):
         # в остальное время смотрим в Report
         else:
             logger.info('Saw Report')
-            result = create_detailing_report(meal, floor)
+            result = create_detailing_report(meal, floor, date_start)
 
     except Exception as e:
         logger.error(e)
@@ -1297,10 +1303,12 @@ def detailing_reports(request, meal, floor):
     count_extr = len([item for item in result if item['type'] in ('emergency-night', 'emergency-day')])
 
     if len(result) == 0:
+        logger.info('Result: ', result)
         data = {
             'error': "Отчет еще не готов или нет пациентов"
         }
     else:
+        logger.info('Result: ', result[1])
         data = {
             'formatted_date_now': formatted_date_now,
             'count_patients': count_patients,
