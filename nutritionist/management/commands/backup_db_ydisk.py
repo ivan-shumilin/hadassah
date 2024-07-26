@@ -66,10 +66,9 @@ def upload_file(loadfile, savefile, replace=True):
     loadfile: Путь к загружаемому файлу
     savefile: Путь к файлу на Диске
     replace: true or false Замена файла на Диске"""
-    filename = str(date.today()) + '_' + str(datetime.now().hour) + '.json'
 
     res = requests.get(f'{URL}/upload?path={savefile}&overwrite={replace}', headers=headers).json()
-    logger.info(f'Upload file{filename}')
+    logger.info(f'Upload file: {loadfile}')
     with open(loadfile, 'rb') as f:
         try:
             requests.put(res['href'], files={'file': f})

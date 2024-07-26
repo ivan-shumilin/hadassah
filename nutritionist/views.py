@@ -1137,7 +1137,7 @@ def printed_form_one(request):
     return render(request, 'printed_form1.html', context=data)
 
 
-def add_user_for_detailing_by_floor(rus_meal, floor, source_user_info, source_diet_info, type=None, date_today=date.today()) -> dict:
+def add_user_for_detailing_by_floor(rus_meal, floor, source_user_info, source_diet_info, date_today, type=None) -> dict:
     '''
     Создание единицы пользователей по этажам/реанимация в детализацию
     '''
@@ -1165,7 +1165,7 @@ def add_user_for_detailing_by_floor(rus_meal, floor, source_user_info, source_di
     return users_info
 
 
-def create_detailing_report(meal, floor, date_start=date.today()) -> list:
+def create_detailing_report(meal, floor, date_start: date) -> list:
     """
     Смотрим есть ли экстренное питание/смотрим в таблицу Report
     """
@@ -1175,11 +1175,11 @@ def create_detailing_report(meal, floor, date_start=date.today()) -> list:
     rus_meal = translate_meal(meal)
     user_set = set()
 
-    logger.info('Date: ', date_start)
+    logger.info(f'Date: {date_start}')
 
     for report in filtered_report:
         if report.user_id not in user_set:
-            users_info = add_user_for_detailing_by_floor(rus_meal, floor, report.user_id, report, report.type)
+            users_info = add_user_for_detailing_by_floor(rus_meal, floor, report.user_id, report, date_start, report.type)
             if len(users_info) != 0:
                 result.append(users_info)
             user_set.add(report.user_id)
@@ -1187,7 +1187,7 @@ def create_detailing_report(meal, floor, date_start=date.today()) -> list:
     return result
 
 
-def get_users_info_by_meal_and_floor(meal: str, floor: str) -> list:
+def get_users_info_by_meal_and_floor(meal: str, floor: str, date_start: date) -> list:
     """
     детализация для пользователей по каждому приему пищи
     """
@@ -1196,21 +1196,21 @@ def get_users_info_by_meal_and_floor(meal: str, floor: str) -> list:
     rus_meal = translate_meal(meal)
 
     for user in users:
-        users_info = add_user_for_detailing_by_floor(rus_meal, floor, user, user)
+        users_info = add_user_for_detailing_by_floor(rus_meal, floor, user, user, date_start)
         if len(users_info) != 0:
             result.append(users_info)
     return result
 
 
-def detailing_by_Menu_Ready_Order(meal, floor: str, date_start=date.today()):
+def detailing_by_Menu_Ready_Order(meal, floor: str, date_start: date):
     logger = logging.getLogger('main_logger')
     menus = MenuByDayReadyOrder.objects.filter(date_create=date_start, meal=meal)
 
-    logger.info('Date: ', date_start)
+    logger.info(f'Date: {date_start}')
     result = []
     rus_meal = translate_meal(meal)
     for menu in menus:
-        users_info = add_user_for_detailing_by_floor(rus_meal, floor, menu.user_id, menu)
+        users_info = add_user_for_detailing_by_floor(rus_meal, floor, menu.user_id, menu, date_start)
         if len(users_info) != 0:
             result.append(users_info)
     return result
@@ -1255,7 +1255,7 @@ def detailing_reports(request, meal, floor):
             logger.info('Saw in CurrentUsers')
             # смотрю на наличие emergency
             result = create_detailing_report(meal, floor, date_start)
-            result += get_users_info_by_meal_and_floor(meal, floor)
+            result += get_users_info_by_meal_and_floor(meal, floor, date_start)
 
         # смотрим в MenuByDayReadyOrder - нужно чтобы диета была на момент того, когда сформируется эта таблица
         elif (
@@ -1303,12 +1303,12 @@ def detailing_reports(request, meal, floor):
     count_extr = len([item for item in result if item['type'] in ('emergency-night', 'emergency-day')])
 
     if len(result) == 0:
-        logger.info('Result: ', result)
+        logger.info(f'Result: {result}')
         data = {
             'error': "Отчет еще не готов или нет пациентов"
         }
     else:
-        logger.info('Result: ', result[1])
+        logger.info(f'Result: {result[1]}')
         data = {
             'formatted_date_now': formatted_date_now,
             'count_patients': count_patients,
