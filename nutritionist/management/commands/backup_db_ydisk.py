@@ -26,24 +26,27 @@ headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Au
 
 def create_backup():
     filename = str(date.today()) + '_' + str(datetime.now().hour) + '.json'
-    with open(filename, 'w', encoding='utf-8') as outfile:
-        management.call_command('dumpdata',
-                                'nutritionist.product',
-                                'nutritionist.timetable',
-                                'nutritionist.productlp',
-                                'nutritionist.timetablelp',
-                                'nutritionist.customuser',
-                                'nutritionist.userstoday',
-                                'nutritionist.menubyday',
-                                'nutritionist.usersreadyorder',
-                                'nutritionist.menubydayreadyorder',
-                                'nutritionist.commentproduct',
-                                'nutritionist.report',
-                                'nutritionist.productstorage',
-                                'nutritionist.ingredient',
-                                'nutritionist.ttk',
-                                'auth.group',
-                                stdout=outfile)
+    try:
+        with open(filename, 'w', encoding='utf-8') as outfile:
+            management.call_command('dumpdata',
+                                    'nutritionist.product',
+                                    'nutritionist.timetable',
+                                    'nutritionist.productlp',
+                                    'nutritionist.timetablelp',
+                                    'nutritionist.customuser',
+                                    'nutritionist.userstoday',
+                                    'nutritionist.menubyday',
+                                    'nutritionist.usersreadyorder',
+                                    'nutritionist.menubydayreadyorder',
+                                    'nutritionist.commentproduct',
+                                    'nutritionist.report',
+                                    'nutritionist.productstorage',
+                                    'nutritionist.ingredient',
+                                    'nutritionist.ttk',
+                                    'auth.group',
+                                    stdout=outfile)
+    except Exception as e:
+        logger.error(e)
 
 
 def create_folder(path):
@@ -77,6 +80,15 @@ def upload_file(loadfile, savefile, replace=True):
             return res
 
 
+def delete_file(filepath):
+    '''Удаляет файл из системы'''
+    if os.path.exists(filepath):
+        os.remove(filepath)
+        logger.info(f'File {filepath} has been deleted from the local system.')
+    else:
+        logger.warning(f'File {filepath} does not exist.')
+
+
 class Command(BaseCommand):  # https://docs.djangoproject.com/en/4.0/howto/custom-management-commands/
     help = 'Dump database in yandex disk'
 
@@ -87,4 +99,5 @@ class Command(BaseCommand):  # https://docs.djangoproject.com/en/4.0/howto/custo
         logger.info(f'Create folder {"backup" + "/" + str(date.today())}')
         create_folder('backup' + '/' + str(date.today()))
         answer = upload_file(filename, 'backup' + '/' + str(date.today()) + '/' + filename)
+        delete_file(filename)
         return answer
