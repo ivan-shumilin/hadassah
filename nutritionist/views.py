@@ -1165,7 +1165,7 @@ def add_user_for_detailing_by_floor(rus_meal, floor, source_user_info, source_di
     return users_info
 
 
-def create_detailing_report(meal, floor, date_start: date) -> list:
+def create_detailing_report(meal, floor, date_start: date, for_report=None) -> list:
     """
     Смотрим есть ли экстренное питание/смотрим в таблицу Report
     """
@@ -1178,11 +1178,21 @@ def create_detailing_report(meal, floor, date_start: date) -> list:
     logger.info(f'Date: {date_start}')
 
     for report in filtered_report:
-        if report.user_id not in user_set:
+        if report.user_id not in user_set and report.type is not None:
             users_info = add_user_for_detailing_by_floor(rus_meal, floor, report.user_id, report, date_start, report.type)
             if len(users_info) != 0:
                 result.append(users_info)
             user_set.add(report.user_id)
+
+    user_set = set()
+    # случай когда смотрим в Report чтобы корректно обрабатывать emergency
+    if for_report:
+        for report in filtered_report:
+            if report.user_id not in user_set:
+                users_info = add_user_for_detailing_by_floor(rus_meal, floor, report.user_id, report, date_start)
+                if len(users_info) != 0:
+                    result.append(users_info)
+                user_set.add(report.user_id)
 
     return result
 
@@ -1277,7 +1287,7 @@ def detailing_reports(request, meal, floor):
         # в остальное время смотрим в Report
         else:
             logger.info('Saw Report')
-            result = create_detailing_report(meal, floor, date_start)
+            result = create_detailing_report(meal, floor, date_start, for_report=True)
 
     except Exception as e:
         logger.error(e)
