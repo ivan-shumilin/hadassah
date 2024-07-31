@@ -14,8 +14,11 @@ from django.core.mail import send_mail
 from django.db.models.functions import Lower
 from django.views.generic import TemplateView
 
+from doctor.functions.diet_formation import get_users_on_the_meal
 from doctor.functions.download import get_tk, get_name_by_api, get_allergens, get_weight_tk, \
     get_measure_unit
+from .decorators import login_required_manager, login_required_hadassah_report, login_required_manager_and_kitchen, \
+    login_required_accountant
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal, \
     caching_ingredients
 from doctor.tasks import create_report_download, create_bakery_magazine_download
@@ -808,7 +811,7 @@ def user_login(request):
             if user.groups.filter(name='doctors').exists():
                 return HttpResponseRedirect(reverse('doctor'))
             if user.groups.filter(name='patients').exists():
-                return HttpResponseRedirect(reverse('patient'))
+                return HttpResponseRedirect(reverse('patient:patient', args=[user.id]))
             if user.groups.filter(name='kitchen').exists():
                 return HttpResponseRedirect(reverse('printed_form_one_new'))
             if user.groups.filter(name='guest').exists():
@@ -817,6 +820,8 @@ def user_login(request):
                 return HttpResponseRedirect(reverse('manager'))
             if user.groups.filter(name='hadassah_report').exists():
                 return HttpResponseRedirect(reverse('report'))
+            if user.groups.filter(name='accountant').exists():
+                return HttpResponseRedirect(reverse('internal_report'))
         else:
             errors = 'Пользователь с таким именем или паролем не существует'
     else:
@@ -906,13 +911,12 @@ def password_reset(request):
     return render(request, 'nutritionist/registration/password_reset_email.html', {'user_form': user_form, 'errors': errors})
 
 
-@login_required_manager
+@login_required_manager_and_kitchen
 def manager(request):
     patients = CustomUser.objects.filter(status='patient').order_by('full_name').values('id', 'full_name')
     return render(request, 'admin.html', context={'patients': patients})
 
 
-@login_required_manager
 def edit_photo(request, product_id, type):
     """Редактировать фотографию блюда"""
 
@@ -932,6 +936,7 @@ def edit_photo(request, product_id, type):
 
     return render(request, 'edit_photo.html', context=data)
 
+
 @login_required_manager
 def admin_foods(request):
     """Админ-панель для внесения изменений в приемы пищи пациента"""
@@ -947,7 +952,6 @@ def admin_foods(request):
     return render(request, 'foods.html', context=data)
 
 
-@login_required_manager
 def admin_foods_new(request):
     """Админ-панель для внесения изменений в приемы пищи пациента"""
     patient = CustomUser.objects.filter(status='patient').order_by('full_name').first()
@@ -978,7 +982,6 @@ def admin_foods_new(request):
     return render(request, 'foods-new.html', context=data)
 
 
-@login_required_manager
 def photo_statistics(request):
     """Статистика по блюдам с фотографиями"""
     count_products = ProductLp.objects.filter(status=1).count()
@@ -992,7 +995,7 @@ def photo_statistics(request):
     return render(request, 'photo_statistics.html', context=data)
 
 
-@login_required_manager
+@login_required_manager_and_kitchen
 def printed_form_one_new(request):
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
@@ -1064,7 +1067,6 @@ def printed_form_one_new(request):
     return render(request, 'printed_form1_new.html', context=data)
 
 
-@login_required_manager
 def printed_form_one(request):
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
@@ -1224,7 +1226,7 @@ def detailing_by_Menu_Ready_Order(meal, floor: str, date_start: date):
     return result
 
 
-@login_required_manager
+@login_required_manager_and_kitchen
 def detailing_reports(request, meal, floor):
     """
     Завтрак
@@ -1332,7 +1334,8 @@ def detailing_reports(request, meal, floor):
         }
     return render(request, 'detailing-reports.html', context=data)
 
-@login_required_manager
+
+@login_required_manager_and_kitchen
 def detailing(request, meal):
     """ Отчеты с детализацией. """
 
@@ -1358,7 +1361,7 @@ def detailing(request, meal):
     return render(request, 'detaling.html', context=data)
 
 
-@login_required_manager
+@login_required_manager_and_kitchen
 def brakery_magazine(request):
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
 
@@ -1498,7 +1501,7 @@ def brakery_magazine(request):
 #     return catalog
 
 
-@login_required_manager
+@login_required_manager_and_kitchen
 def printed_form_two_lp(request):
     is_public = False  # выводим технические названия блюд, не публичные
     formatted_date_now = dateformat.format(date.fromisoformat(str(date.today())), 'd E, l')
@@ -1618,7 +1621,7 @@ def printed_form_two_lp(request):
     return render(request, 'printed_form2_lp.html', context=data)
 
 
-@login_required_manager
+@login_required_manager_and_kitchen
 def printed_form_two_lp_new(request):
     """ Отчет для цеха лечебного питания.  """
     is_public = False  # выводим технические названия блюд, не публичные
@@ -1653,7 +1656,6 @@ def printed_form_two_lp_new(request):
     return render(request, 'printed_form2_lp_new.html', context=data)
 
 
-@login_required_manager
 def printed_form_two_cafe(request):
     """ Заявка по блюдам линии раздачи. """
     is_public = False  # выводим технические названия блюд, не публичные
@@ -1685,7 +1687,7 @@ def printed_form_two_cafe(request):
     return render(request, 'printed_form2_cafe.html', context=data)
 
 
-@login_required_manager
+@login_required_manager_and_kitchen
 def printed_form_two_cafe_new(request):
     """ Заявка по блюдам линии раздачи. """
     is_public = False  # выводим технические названия блюд, не публичные
@@ -1812,6 +1814,7 @@ def get_processed_tk(id: str, count: int):
 """
 
 
+@login_required_manager_and_kitchen
 def tk(request, id, count):
     """
     Отображение тех. карты для блюда.
@@ -1883,7 +1886,7 @@ def check_by_categories(semifinished, filter):
     return False
 
 
-@login_required_manager
+@login_required_manager_and_kitchen
 def all_order_by_ingredients(request):
     """
     Выводим весь заказ на завтра по ингредиетам, для проверки наличия продуктов.
@@ -2011,7 +2014,7 @@ def all_order_by_ingredients(request):
     return render(request, 'all_order_semifinished.html', context=data)
 
 
-@login_required_hadassah_report
+@login_required_accountant
 def internal_report(request):
     if request.method == 'GET' and request.GET != {}:
         date_start = parse(request.GET['start'])
@@ -2358,7 +2361,6 @@ def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):
     return result
 
 
-@login_required_manager
 def menu_lp_for_staff(request):
     try:
         diet =request.GET['diet']
