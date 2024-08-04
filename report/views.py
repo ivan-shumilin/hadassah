@@ -3,14 +3,11 @@ from datetime import datetime, date, timedelta
 from django.utils import dateformat
 import random
 
-
-
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
 
 from doctor.functions.functions import get_order_status, check_value_two, formatting_full_name, check_value_two_not_cafe
 from doctor.views import group_doctors_check
-from nutritionist.decorators import login_required_manager
+from nutritionist.decorators import login_required_manager, login_required_manager_and_kitchen
 from nutritionist.models import UsersReadyOrder, MenuByDayReadyOrder, MenuByDay, UsersToday
 
 
@@ -59,7 +56,7 @@ def get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status, ty
 def combine_result(res: dict, intermediate_result: dict, patient) -> dict:
     """Обьединяет полученный результат (промежуточный) с основным."""
     floor = '0' if patient.floor == 'Не выбрано' else patient.floor
-    CATEGOTYS = ['salad', 'soup', 'bouillon', 'main', 'garnish', 'porridge', 'dessert', 'fruit', 'drink', 'products',]
+    CATEGOTYS = ['salad', 'soup', 'bouillon', 'main', 'garnish', 'porridge', 'dessert', 'fruit', 'drink', 'products', ]
     patient_data = f'{formatting_full_name(patient.full_name)}, {patient.type_of_diet}, {patient.floor} этаж'
     for cat in CATEGOTYS:
         for product in intermediate_result[cat]:
@@ -81,6 +78,7 @@ def combine_result(res: dict, intermediate_result: dict, patient) -> dict:
 
     return res
 
+
 def creates_dict_with_menu_patients_dish_assembly_report(date_show: datetime) -> dict:
     """"""
     menu: dict = {}
@@ -98,38 +96,38 @@ def creates_dict_with_menu_patients_dish_assembly_report(date_show: datetime) ->
             result[meal]['with_cafe'][cat] = {}
             result[meal]['without_cafe'][cat] = {}
 
-    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:        
-            menu[meal] = {}
-            order_status: str = get_order_status(meal, date_show)
+    for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
+        menu[meal] = {}
+        order_status: str = get_order_status(meal, date_show)
 
-            for type in ('with_cafe', 'without_cafe'):
+        for type in ('with_cafe', 'without_cafe'):
 
-                if order_status == 'fix-order':
-                    menu_qs = MenuByDayReadyOrder.objects.all()
-                    users_qs = UsersReadyOrder.objects.all()
-    
-                    for user in users_qs:
-                        key = user.user_id
-                        menu[meal][key] = {}
-                        menu_all = menu_qs.filter(user_id=user)
-                        menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status, type)
-                        result[meal][type] = combine_result(result[meal][type], menu[meal][key], user)
-    
-                if order_status in ['flex-order', 'done']:
-                    menu_qs = MenuByDay.objects.all()
-                    users_qs = UsersToday.objects.all()
-    
-                    for user in users_qs:
-                        key = user.user_id
-                        menu[meal][key] = {}
-                        menu_all = menu_qs.filter(user_id=user.user_id)
-                        menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status, type)
-                        result[meal][type] = combine_result(result[meal][type], menu[meal][key], user)
+            if order_status == 'fix-order':
+                menu_qs = MenuByDayReadyOrder.objects.all()
+                users_qs = UsersReadyOrder.objects.all()
+
+                for user in users_qs:
+                    key = user.user_id
+                    menu[meal][key] = {}
+                    menu_all = menu_qs.filter(user_id=user)
+                    menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status, type)
+                    result[meal][type] = combine_result(result[meal][type], menu[meal][key], user)
+
+            if order_status in ['flex-order', 'done']:
+                menu_qs = MenuByDay.objects.all()
+                users_qs = UsersToday.objects.all()
+
+                for user in users_qs:
+                    key = user.user_id
+                    menu[meal][key] = {}
+                    menu_all = menu_qs.filter(user_id=user.user_id)
+                    menu[meal][key] = get_menu_for_patient_on_meal(menu_all, date_show, meal, id, order_status, type)
+                    result[meal][type] = combine_result(result[meal][type], menu[meal][key], user)
 
     return result
 
 
-@login_required_manager
+@login_required_manager_and_kitchen
 # @login_required(login_url='login')
 # @user_passes_test(group_doctors_check, login_url='login')
 def dish_assembly_report(request):

@@ -808,6 +808,8 @@ def user_login(request):
             login(request, user)
             if user.groups.filter(name='nutritionists').exists():
                 return HttpResponseRedirect(reverse('index'))
+            if user.groups.filter(name='manager').exists():
+                return HttpResponseRedirect(reverse('manager'))
             if user.groups.filter(name='doctors').exists():
                 return HttpResponseRedirect(reverse('doctor'))
             if user.groups.filter(name='patients').exists():
@@ -816,8 +818,6 @@ def user_login(request):
                 return HttpResponseRedirect(reverse('printed_form_one_new'))
             if user.groups.filter(name='guest').exists():
                 return HttpResponseRedirect(reverse('menu'))
-            if user.groups.filter(name='manager').exists():
-                return HttpResponseRedirect(reverse('manager'))
             if user.groups.filter(name='hadassah_report').exists():
                 return HttpResponseRedirect(reverse('report'))
             if user.groups.filter(name='accountant').exists():
