@@ -275,6 +275,8 @@
                                     <div class="tags">
                                         {% if diet.name == "Нулевая диета" %}
                                             <div class="tag green">{{ diet.name }}</div>
+                                        {% elif diet.name == "Индивидуальная диета" %}
+                                            <div class="tag green">{{ diet.name }}</div>
                                         {% elif diet.name == "БД день 1" or diet.name == "БД день 2" %}
                                             <div class="tag pink">{{ diet.name }}</div>
                                         {% elif diet.name == "ОВД" %}
@@ -422,6 +424,8 @@
                                             <div class="tag red">НКД</div>
                                         {% elif user.diet == "ВКД" %}
                                             <div class="tag purple">ВКД</div>
+                                        {% elif user.diet == "Индивидуальная диета" %}
+                                            <div class="tag green">Индивидуальная диета</div>
                                         {% else %}
                                             <div class="tag green">{{ user.diet }}</div>
                                         {% endif %}
@@ -522,6 +526,8 @@
                                             <div class="tag red">НКД</div>
                                         {% elif user.diet == "ВКД" %}
                                             <div class="tag purple">ВКД</div>
+                                        {% elif user.diet == "Индивидуальная диета" %}
+                                            <div class="tag green">Индивидуальная диета</div>
                                         {% else %}
                                             <div class="tag pink">{{ user.diet }}</div>
                                         {% endif %}
@@ -623,6 +629,8 @@
                                             <div class="tag red">НКД</div>
                                         {% elif user.diet == "ВКД" %}
                                             <div class="tag purple">ВКД</div>
+                                        {% elif user.diet == "Индивидуальная диета" %}
+                                            <div class="tag green">Индивидуальная диета</div>
                                         {% else %}
                                             <div class="tag green">{{ user.diet }}</div>
                                         {% endif %}

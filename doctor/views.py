@@ -451,7 +451,7 @@ def menu(request):
         products_soup, products_porridge, products_dessert, \
         products_fruit, products_drink = products_lp
 
-    if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'БД', 'Безйодовая', 'ПЭТ/КТ'] \
+    if diet not in ['ОВД веган (пост) без глютена', 'Нулевая диета', 'Индивидуальная диета', 'БД', 'Безйодовая', 'ПЭТ/КТ'] \
             and diet == diet.replace(" (Э)", "").replace(" (П)", ""):
         # для поиска блюд раздачи нужна диета на лат-ом ("ovd", ..)
         translated_diet = translate_diet(diet)
@@ -931,7 +931,8 @@ class GetAllDishesByCategoryAPIView(APIView):
             'НКД',
             'Безйодовая',
             'ПЭТ/КТ',
-            'Без ограничений'
+            'Без ограничений',
+            'Индивидуальная диета'
         }
         category = request.GET['category']
         date = request.GET['date']
