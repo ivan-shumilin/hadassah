@@ -1312,13 +1312,13 @@ def detailing_reports(request, meal, floor):
 
     count_extr = len([item for item in result if item['type'] in ('emergency-night', 'emergency-day')])
 
+    logger.info(f'Result: {result}')
+
     if len(result) == 0:
-        logger.info(f'Result: {result}')
         data = {
             'error': "Отчет еще не готов или нет пациентов"
         }
     else:
-        logger.info(f'Result: {result[1]}')
         data = {
             'formatted_date_now': formatted_date_now,
             'count_patients': count_patients,
