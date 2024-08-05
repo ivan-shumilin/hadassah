@@ -17,7 +17,8 @@ from django.views.generic import TemplateView
 from doctor.functions.diet_formation import get_users_on_the_meal
 from doctor.functions.download import get_tk, get_name_by_api, get_allergens, get_weight_tk, \
     get_measure_unit
-from .decorators import login_required_manager_and_kitchen, login_required_hadassah_report, login_required_accountant
+from .decorators import login_required_manager_and_kitchen, login_required_hadassah_report, login_required_accountant, \
+    login_required_manager
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal, \
     caching_ingredients
 from doctor.tasks import create_report_download, create_bakery_magazine_download
