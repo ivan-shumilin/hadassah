@@ -388,5 +388,4 @@ def get_meal_emergency_food(r_date=datetime.today().date(), r_time=datetime.toda
         if (time.hour == 15 and time.minute >= 30) or (time.hour == 16 and time.minute <= 30):
             if r_time.hour == 15 and r_time.minute >= 30 or (r_time.hour == 16 and r_time.minute <= 30):
                 return 'afternoon'
-    return 'breakfast'
     return False
