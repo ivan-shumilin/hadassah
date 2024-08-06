@@ -551,6 +551,7 @@
                 <option value="Безйодовая">Безйодовая</option>
                 <option value="ПЭТ/КТ">ПЭТ/КТ</option>
                 <option value="Без ограничений">Без ограничений</option>
+                <option value='Индивидуальная диета'>Индивидуальная диета</option>
             </select>
         </div>
         <div class="form-group checkbox">
@@ -635,6 +636,10 @@ if (item1.innerHTML == 'ОВД') {
         }
         if (item1.innerHTML == 'Нулевая диета') {
             item1.innerHTML = 'Нулевая диета'
+            item1.classList.add('green')
+        }
+        if (item1.innerHTML == 'Индивидуальная диета') {
+            item1.innerHTML = 'Индивидуальная диета'
             item1.classList.add('green')
         }
         if (item1.innerHTML == 'ЩД') {

@@ -213,6 +213,7 @@
                                             <option value="Безйодовая">Безйодовая</option>
                                             <option value="ПЭТ/КТ">ПЭТ/КТ</option>
                                             <option value="Без ограничений">Без ограничений</option>
+                                            <option value="Индивидуальная диета">Индивидуальная диета</option>
                                          </select>
                                         <div id ='error_type_of_diet' class="error-field"></div>
                                     </div>
@@ -1326,6 +1327,10 @@ const list1 = document.querySelectorAll('.tag')
         }
         if (item1.innerHTML == 'Нулевая диета') {
             item1.innerHTML = 'Нулевая диета'
+            item1.classList.add('green')
+        }
+       if (item1.innerHTML == 'Индивидуальная диета') {
+            item1.innerHTML = 'Индивидуальная диета'
             item1.classList.add('green')
         }
         if (item1.innerHTML == 'ЩД') {
