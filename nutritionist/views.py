@@ -1148,6 +1148,9 @@ def add_user_for_detailing_by_floor(rus_meal, floor, source_user_info, source_di
     date_str = date_today.isoformat()
     users_info = {}
 
+    # когда у пациента индивидуальная диета, то мы не должны включать его в детализацию
+    if source_user_info.type_of_diet.lower() == 'индивидуальная диета':
+        return users_info
     if (floor == source_user_info.room_number[0] or source_user_info.floor == floor) and source_user_info.department.lower() != "реанимация":
         users_info = {
             'date': date_str,
