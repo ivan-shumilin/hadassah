@@ -197,11 +197,11 @@ def doctor(request):
                 # нерабочие часы
                 time = datetime.today().time()
 
-                if time.hour >= 18 or time.hour <= 8:
+                if time.hour >= 18 or time.hour < 8 or time.hour == 8 and time.minute < 30:
                     need_emergency_food = '&no_working_hours'
                 else:
                     # если рабочие часы
-                    meal_emergency_food = get_meal_emergency_food()
+                    meal_emergency_food = get_meal_emergency_food(datetime.today().date(), datetime.today().time())
                     if meal_emergency_food:
                         need_emergency_food = f'&{meal_emergency_food}'
                 if need_emergency_food:
