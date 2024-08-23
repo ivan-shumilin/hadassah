@@ -55,7 +55,7 @@ def patient(request, id):
     user = CustomUser.objects.get(id=id)
 
     if user.type_of_diet in ['Нулевая диета'] or user.is_probe or user.is_pureed_nutrition:
-        is_have = 'BD'  # выводим сообщение об ошибке
+        is_have = 'BD'  # выводим сообщение об ошибке (раньше было про БД диету)
         return render(
             request,
             'patient.html',
@@ -69,6 +69,7 @@ def patient(request, id):
         'day_after_tomorrow': str(date.today() + timedelta(days=2)),
     }
 
+    # по БД через день одинаковое питание
     if user.type_of_diet == "БД день 1":
         day_of_the_week_bd = {
             str(date.today()): "понедельник",
@@ -90,17 +91,12 @@ def patient(request, id):
     diet = translate_diet(user.type_of_diet)
     translated_diet = user.type_of_diet
 
-
-
-
     if user.type_of_diet in ['БД день 1', 'БД день 2']:
         day_of_the_week = day_of_the_week_bd[date_get]
         diet = "bd"
         translated_diet = "БД"
     else:
         day_of_the_week = get_day_of_the_week(date_get)
-
-    meal = 'lunch'
 
     http_referer = request.META.get('HTTP_REFERER', False)
     if http_referer:
@@ -113,6 +109,8 @@ def patient(request, id):
         is_have = 'date'  # выводим сообщение об ошибке
 
     menu_for_lk_patient, fix_dishes = creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, user)
+
+    meal = 'lunch'
 
     products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
                                         Q(timetablelp__type_of_diet=translated_diet) &

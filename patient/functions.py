@@ -1,11 +1,15 @@
+from collections import defaultdict
+
 from nutritionist.models import ProductLp, CustomUser, MenuByDay, Product
 from typing import List
 from datetime import datetime, date, timedelta
 from django.utils import dateformat
 from django.db.models.functions import Lower
-from doctor.functions.functions import creating_meal_menu_cafe
+from doctor.functions.functions import creating_meal_menu_cafe, get_image_url, get_image_full_url
 from dateutil.parser import parse
 from django.db.models import Q
+
+from patient.constants import CATEGORY_FOR_PATIENT, MEALS, NOT_SHOWN_IDS, TYPES_PRODUCT
 
 
 def formation_menu(products):
@@ -34,36 +38,6 @@ def formation_menu(products):
     dinner['products_drink'] = list(products.filter(category='напиток'))
 
     return breakfast, afternoon, lunch, dinner
-
-
-def creates_dict_with_menu_patients_for_patient(user):
-    menu_lp = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
-                                        Q(timetablelp__type_of_diet=translated_diet) &
-                                        Q(timetablelp__meals=meal))
-    menu_cafe = Product.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
-                                        Q(timetablelp__type_of_diet=translated_diet) &
-                                        Q(timetablelp__meals=meal))
-    menu = {}
-    # day_date = {
-    #     'today': str(date.today()),
-    #     'tomorrow': str(date.today() + timedelta(days=1)),
-    #     'day_after_tomorrow': str(date.today() + timedelta(days=2)),
-    # }
-    # for day, date_str in day_date.items():
-    #     menu[day] = {}
-    #     for meal in ['breakfast', 'lunch', 'afternoon', 'dinner']:
-    #         menu[day][meal] = {
-    #             'main': check_value_two(menu_all, date_str, meal, "main"),
-    #             'garnish': check_value_two(menu_all, date_str, meal, "garnish"),
-    #             'porridge': check_value_two(menu_all, date_str, meal, "porridge"),
-    #             'soup': check_value_two(menu_all, date_str, meal, "soup"),
-    #             'dessert': check_value_two(menu_all, date_str, meal, "dessert"),
-    #             'fruit': check_value_two(menu_all, date_str, meal, "fruit"),
-    #             'drink': check_value_two(menu_all, date_str, meal, "drink"),
-    #             'salad': check_value_two(menu_all, date_str, meal, "salad"),
-    #         }
-    #     menu[day]['date_human_style'] = dateformat.format(date.fromisoformat(date_str), 'd E, l')
-    return menu
 
 
 def create_dict_products_lp(products_lp_category):
@@ -195,10 +169,10 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
                 menu_cafe[cat] = []
 
         menu[meal] = {'cafe': {
-                    'main': list(set(products_cafe[0] + menu_cafe.get('main', []))),
-                    'garnish': list(set(products_cafe[1] + menu_cafe.get('garnish', []))),
                     'salad': list(set(products_cafe[2] + menu_cafe.get('salad', []))),
                     'soup': list(set(products_cafe[3] + menu_cafe.get('soup', []))),
+                    'main': list(set(products_cafe[0] + menu_cafe.get('main', []))),
+                    'garnish': list(set(products_cafe[1] + menu_cafe.get('garnish', []))),
                     'porridge': list(set(products_cafe[5] + menu_cafe.get('porridge', []))),
                 }}
 
@@ -206,11 +180,11 @@ def creating_menu_for_patient(date_get, diet, day_of_the_week, translated_diet, 
             menu[meal]['cafe']['main'] = list(set(products_cafe[4] + menu_cafe.get('main', [])))
 
         menu[meal].update({'lp': {
-            'porridge': create_dict_products_lp(list(products_lp.filter(category='каша'))),
             'salad': create_dict_products_lp(list(products_lp.filter(category='салат'))),
             'soup': create_dict_products_lp(list(products_lp.filter(category='суп'))),
             'main': create_dict_products_lp(list(products_lp.filter(category='основной'))),
             'garnish': create_dict_products_lp(list(products_lp.filter(category='гарнир'))),
+            'porridge': create_dict_products_lp(list(products_lp.filter(category='каша'))),
             'dessert': create_dict_products_lp(list(products_lp.filter(category='десерт'))),
             'fruit': create_dict_products_lp(list(products_lp.filter(category='фрукты'))),
             'drink': create_dict_products_lp(list(products_lp.filter(category='напиток')))
@@ -409,6 +383,9 @@ def date_menu_history(id, user):
     return days_history
 
 def check_is_comment(patient):
+    '''
+    отвечает за показывание плашки -> блюда могут отличаться
+    '''
     if len(patient.comment) >= 2 or \
         patient.is_probe or \
         patient.is_without_salt or \
@@ -448,3 +425,94 @@ def del_if_not_product_without_garnish(menu_for_lk_patient):
         if count_product_without_garnish == 0 and count_product_main > 0:
             menu_for_lk_patient[meal]['cafe']['garnish'] = []
     return menu_for_lk_patient
+
+
+def create_menu_patient_for_the_day(show_date, user_id) -> dict:
+    """ Возвращает историю блюд пациента на все приемы пищи в день show_date"""
+
+    # получили все меню определенного паицента на определенную дату
+    menu = MenuByDay.objects.filter(user_id=user_id, date=show_date)
+    dishes_for_meal = {}
+
+    for meal in MEALS:
+
+        # запиываем сюда какие блюда были у пациента на прием пищи
+        dishes_for_category = defaultdict(list)
+
+        try:
+            menu_by_meals = menu.get(meal=meal)
+        # случай когда у пациента не было блюд в приеме пищи (например Нулевая диета)
+        except MenuByDay.DoesNotExist:
+            dishes_for_meal[meal] = dishes_for_category
+            continue
+        except MenuByDay.MultipleObjectsReturned:
+            dishes_for_meal[meal] = dishes_for_category
+            continue
+
+        for category in CATEGORY_FOR_PATIENT:
+            # получаем id продукта
+            product_ids = getattr(menu_by_meals, category, '')
+
+            # не нашлрсь блюд в категории
+            if product_ids == '':
+                continue
+
+            product_ids = product_ids.split(',')
+
+            # для каждого id смотрим показатели продукта (кбжу, название, картинку и тд)
+            for product_id in product_ids:
+                if product_id not in NOT_SHOWN_IDS:
+                    if 'cafe' in product_id:
+                        product = Product.objects.get(id=product_id.split('-')[2])
+                        type = 'cafe'
+                    else:
+                        product = ProductLp.objects.get(id=product_id)
+                        type = 'lp'
+
+                    product_data = {
+                        'id': product_id,
+                        'name': product.public_name if product.public_name else product.name,
+                        'carbohydrate': round(float(0 if product.carbohydrate is None else product.carbohydrate), 1),
+                        'fat': round(float(0 if product.fat is None else product.fat), 1),
+                        'fiber': round(float(0 if product.fiber is None else product.fiber), 1),
+                        'energy': round(float(0 if product.energy is None else product.energy), 1),
+                        'type': type,
+                        'with_garnish': product.with_garnish,
+                        'image': get_image_url(product),
+                        'image_full': get_image_full_url(product),
+                        'description': product.description,
+                        'category': product.category,
+                    }
+
+                    dishes_for_category[category].append(product_data)
+
+        dishes_for_meal[meal] = dishes_for_category
+
+    return dishes_for_meal
+
+
+def ready_menu_for_dump(menu: dict) -> dict:
+    ''' подготовливает меню к дампу '''
+    for meal in MEALS:
+        for type_product in TYPES_PRODUCT:
+            for category, dish_by_category in menu[meal][type_product].items():
+
+                # когда есть продукты в категории и типе продукта
+                if len(dish_by_category) != 0:
+                    for product_id in range(len(dish_by_category)):
+                        product = dish_by_category[product_id]
+                        product_info = {
+                            'id': product.id,
+                            'name': product.public_name if product.public_name else product.name,
+                            'carbohydrate': round(float(0 if product.carbohydrate is None else product.carbohydrate), 1),
+                            'fat': round(float(0 if product.fat is None else product.fat), 1),
+                            'fiber': round(float(0 if product.fiber is None else product.fiber), 1),
+                            'energy': round(float(0 if product.energy is None else product.energy), 1),
+                            'with_garnish': product.with_garnish,
+                            'image': get_image_url(product),
+                            'image_full': get_image_full_url(product),
+                            'description': product.description,
+                            'category': product.category,
+                        }
+                        dish_by_category[product_id] = product_info
+

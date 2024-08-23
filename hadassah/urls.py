@@ -2,6 +2,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 
 from django.urls import path, include, re_path
+from drf_spectacular.views import SpectacularSwaggerView
 
 from hadassah import settings
 from nutritionist.views import *
@@ -14,6 +15,7 @@ handler500 = 'doctor.views.tr_handler500'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('docs/', login_required(SpectacularSwaggerView.as_view(url_name="schema")), name="swagger-ui"),
     path('nutritionist/', include('nutritionist.urls')),
     path('doctor/', include('doctor.urls')),
     path('patient/', include('patient.urls')),

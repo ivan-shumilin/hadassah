@@ -1201,7 +1201,7 @@ class CheckIsHavePatientAPIView(APIView):
 
 def get_product_by_id(string_id: [str, int]) -> str:
     """ Возвращает название продукта по его id """
-    if 'cafe-cat' in string_id:
+    if 'cafe' in string_id:
         id = string_id.split('-')[-1]
         return Product.objects.get(id=id).name
     return ProductLp.objects.get(id=string_id).name
