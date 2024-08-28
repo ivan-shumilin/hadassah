@@ -123,7 +123,7 @@ class PatientHistory(APIView):
             messange += f"Оценка {rating} из 5\n"
             messange += f"{text}\n"
 
-            # my_job_send_messang_changes.delay(messange)
+            my_job_send_messang_changes.delay(messange)
 
             return JsonResponse(
                 {
