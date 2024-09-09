@@ -167,6 +167,37 @@ const downloadReport = async function(start, finish) {
     return result;
 }
 
+const checkIsReportCreate = async function(id) {
+    let url = '/api/v1/get/check-is-report'
+    let body = {'id': id};
+
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;',
+        },
+        body: JSON.stringify(body)
+    });
+    let result = await response.json();
+    return result;
+}
+
+function end() {
+    console.log('Ссылка на скачивание');
+    document.getElementById('link-download').click();
+
+    button.setAttribute('disabled', 'false');
+    span2.innerHTML = "Сейчас начнется скачивание";
+    setTimeout(testTimeout, 3000);
+    span1.classList.remove('spinner-border');
+    span1.classList.remove('spinner-border-sm');
+
+    function testTimeout() {
+        span2.innerHTML = "Сформировать отчет";
+        button.removeAttribute("disabled");
+    }
+}
+
 
 async function checkFormDownload() {
     let start = document.getElementById('data-start-download');
@@ -219,15 +250,21 @@ async function checkFormDownload() {
         span2.innerHTML = "Формируем отчет ..."
         let res = await downloadReport(start.value, finish.value);
         res = JSON.parse(res);
-        if (res.response == 'yes') {
-            console.log('yes')
-            document.getElementById('link-download').click()
+        let response1 = 'no'
+
+        for (let i = 0; i < 100000; i++) {
+            console.log(i)
+            response1 = await checkIsReportCreate(res);
+            response1 = JSON.parse(response1);
+            if (response1.response === 'yes') {
+                console.log('пришел ответ yes');
+                end(button, span2, span1);
+                break;
+            }
+            if (response1.response === 'no') {
+                console.log('пришел ответ no');
+            }
         }
-        button.setAttribute('disabled', 'false')
-        span2.innerHTML = "Сейчас начнется скачивание"
-        setTimeout(testTimeout, 3000);
-        span1.classList.remove('spinner-border')
-        span1.classList.remove('spinner-border-sm')
 
     }
 }
