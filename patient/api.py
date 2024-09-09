@@ -1,10 +1,15 @@
+import logging
 from datetime import date, timedelta
 
 from django.http import JsonResponse
 from drf_spectacular.utils import OpenApiParameter, extend_schema
+from jwt import ExpiredSignatureError
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from doctor.functions.bot import formatting_full_name
 from doctor.functions.translator import translate_diet, get_day_of_the_week
@@ -12,37 +17,111 @@ from nutritionist.models import CustomUser, CommentProduct
 from patient.functions import (
     create_menu_patient_for_the_day,
     creating_menu_for_patient,
-    create_patient_select,
     del_if_not_garnish,
     del_if_not_product_without_garnish,
     ready_menu_for_dump,
 )
-from patient.serializers import CommentSerializer
+from patient.permissions import get_permission_class
+from patient.serializers import (
+    CommentSerializer,
+    PatientLoginSerializer,
+    RefreshTokenSerializer,
+)
 from doctor.tasks import my_job_send_messang_changes
+
+logging = logging.getLogger('main_logger')
+
+
+######################
+# API для SimpleJWT #
+######################
+
+
+class PatientLoginAPI(APIView):
+    permission_classes = [AllowAny]
+
+    @extend_schema(request=PatientLoginSerializer)
+    def post(self, request):
+        """ Осуществляет авторизацию пользователя, возращает access_token и refresh_token """
+        serializer = PatientLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            logging.info(f'Пациент с id {serializer.validated_data["user_id"]}'
+                         f' {request.data["last_name"]} {request.data["name"]} вошел/ла в ЛК пациента')
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        logging.error(f'Возникла ошибка при попытке входа в ЛК пациента: {serializer.errors}')
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RefreshTokenAPI(APIView):
+    permission_classes = [AllowAny]
+
+    @extend_schema(request=RefreshTokenSerializer)
+    def post(self, request):
+        """Обновляет access token и возвращает новую пару access token и refresh token """
+        serializer = RefreshTokenSerializer(data=request.data)
+        logging.info('Обновление access token')
+
+        if serializer.is_valid():
+            refresh_token = serializer.validated_data["refresh"]
+            # Проверка токена на годность
+            try:
+                # Если refresh token не истек
+                refresh = RefreshToken(refresh_token)
+                access_token = refresh.access_token
+                logging.info('Токен успешно обновлен при помощи refresh token')
+                return Response(
+                    {"access": str(access_token)}, status=status.HTTP_200_OK
+                )
+
+            except ExpiredSignatureError:
+                logging.info('У refresh token истек срок хранения - необходимо вновь авторизоваться')
+                # Если refresh token истек, просим пользователя снова авторизоавться в системе
+                return Response(
+                    {"detail": "Refresh token has expired. Please log in again."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+            except TokenError as e:
+                logging.error(str(e))
+                return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        logging.error(f'Ошибка передачи данных: {serializer.errors}')
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProtectedView(APIView):
+    permission_classes = [get_permission_class("patients")]
+
+    def get(self, request):
+        return Response(
+            {"message": f"Hello, {request.user.username}!"}, status=status.HTTP_200_OK
+        )
 
 
 class PatientDetail(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request, user_id):
-        ''' Возращает инфрмацию о пользователе: комментарий, ФИО, отделение, диету'''
+        """ Возращает инфрмацию о пользователе: комментарий, ФИО, отделение, диету"""
+        logging.info(f'Запрос информации о пациенте с id {user_id}')
         try:
-            user = CustomUser.objects.get(id=user_id)
+            user = CustomUser.objects.get(id=user_id, status='patient')
         except CustomUser.DoesNotExist:
+            logging.error(f"Пациента с id {user_id} не существует или его статус не patient")
             return Response(
-                {"error": f"Пациента с id {user_id} не существует",},
+                {"detail": f"Пациента с id {user_id} не существует или его статус не patient"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return Response(
+                {"detail": e},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        if user.status != "patient":
-            return Response(
-                {
-                    "error": f"Пациент не имеет статус 'patient'. Его статус {user.status}",
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
         comment = user.comment
         full_name = user.full_name
         department = user.department
         diet = user.type_of_diet
+        logging.info(f'Получены данные: {full_name}, {comment}, {department}, {diet}')
 
         data = {
             "comment": comment,
@@ -55,6 +134,8 @@ class PatientDetail(APIView):
 
 
 class PatientHistory(APIView):
+    permission_classes = [get_permission_class("patients")]
+
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -67,39 +148,48 @@ class PatientHistory(APIView):
         responses=JsonResponse,
     )
     def get(self, request, user_id):
-        ''' возращает историю блюд пациента на опредленный день '''
+        """ возращает историю блюд пациента на опредленный день """
         show_date = request.GET.get("date", date.today().isoformat())
+        logging.info(f'Запрос на получение истории блюд пациента {user_id} на дату {show_date}')
         try:
             menu_on_show_date: dict = create_menu_patient_for_the_day(
                 show_date, user_id
             )
         except Exception as e:
+            logging.error(str(e))
             return JsonResponse(
-                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
+        logging.info(f'Данные получены.')
         return JsonResponse(menu_on_show_date, status=status.HTTP_200_OK)
 
     @extend_schema(request=CommentSerializer)
     def post(self, request, user_id):
-        ''' Проставляет оценку на продукт '''
+        """ Проставляет оценку на продукт """
         serializer = CommentSerializer(data=request.data)
+        logging.info(f'Запрос на проставление оценки блюду от пациента {user_id}')
+
         if serializer.is_valid():
             product_id = serializer.validated_data.get("product_id")
             rating = serializer.validated_data.get("rating")
             text = serializer.validated_data.get("text")
             get_date = serializer.validated_data.get("date")
             product_name = serializer.validated_data.get("product_name")
+
+            logging.info(f'Информация о продукте с id {product_id}: {product_name}, оценка {rating}/5,'
+                         f'комментарий {text}, блюдо от даты {get_date}')
             try:
-                user = CustomUser.objects.get(id=user_id)
+                user = CustomUser.objects.get(id=user_id, status='patient')
             except CustomUser.DoesNotExist:
+                logging.error(f"Пациента с id {user_id} не существует или его статус не patient")
                 return JsonResponse(
-                    {"error": f"CustomUser with id {user_id} does not exist"},
+                    {"detail": f"CustomUser with id {user_id} does not exist"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
             except Exception as e:
+                logging.error(str(e))
                 return JsonResponse(
-                    {"error with get user from database": str(e)},
+                    {"detail": str(e)},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
 
@@ -112,8 +202,9 @@ class PatientHistory(APIView):
                 comment.save()
 
             except Exception as e:
+                logging.error(str(e))
                 return JsonResponse(
-                    {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    {"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
 
             check_mark = "&#9989;"
@@ -124,20 +215,24 @@ class PatientHistory(APIView):
             messange += f"{text}\n"
 
             my_job_send_messang_changes.delay(messange)
+            logging.info(f'Оценка успешно проставлена от пациента {user.full_name}')
 
             return JsonResponse(
                 {
-                    "comment": comment.comment,
+                    "user_id": user_id,
                     "text": text,
                     "rating": rating,
                     "product": product_name,
                 },
                 status=status.HTTP_201_CREATED,
             )
+        logging.error(serializer.errors)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PatientMenuDetail(APIView):
+    permission_classes = [get_permission_class("patients")]
+
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -153,11 +248,16 @@ class PatientMenuDetail(APIView):
         """ Возращает меню пацента на запрашиваемый день """
 
         date_get = request.GET.get("date", date.today().isoformat())
+        logging.info(f'Запрос на получение меню пациента {user_id} на дату {date_get}')
 
         try:
             user = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
-            return JsonResponse({"error": "User not found"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logging.error(f'Пациент не найден')
+            return JsonResponse(
+                {"error": "User not found"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
         # если у пользователя Нулевая диета или протертное питание или энтеральное питание, то выбор блюд не доступен
         if (
@@ -165,10 +265,11 @@ class PatientMenuDetail(APIView):
             or user.is_probe
             or user.is_pureed_nutrition
         ):
+            logging.info(f'Для диеты {user.type_of_diet} выбор блюд недоступен')
             return JsonResponse(
                 {
                     "detail": "Invalid diet type.",
-                    "error_message": f"Для диеты {user.type_of_diet} выбор блюд недоступен",
+                    "error": f"Для диеты {user.type_of_diet} выбор блюд недоступен",
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -177,19 +278,19 @@ class PatientMenuDetail(APIView):
             user, date_get
         )
 
+        logging.info(f'Создание меню для пациента {user.full_name}')
         try:
             menu_for_lk_patient, fix_dishes = creating_menu_for_patient(
                 date_get, diet, day_of_the_week, translated_diet, user
             )
         except Exception as e:
+            logging.error(str(e))
             return JsonResponse(
                 {"error": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         try:
-            patient_select: dict = create_menu_patient_for_the_day(
-                date_get, user_id
-            )
+            patient_select: dict = create_menu_patient_for_the_day(date_get, user_id)
         except Exception as e:
             return JsonResponse(
                 {"error": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -210,15 +311,18 @@ class PatientMenuDetail(APIView):
             # если пациент выбрал сразу 2 блюда, то их надо вместе отобразить
             fix_dishes = ",".join(fix_dishes)
         except Exception as e:
+            logging.error(str(e))
             return JsonResponse(
                 {"errors": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+        logging.info('Запрос успешно выполнен')
         return JsonResponse(
-            {"possible_choice_of_dishes_by_the_patient": menu_for_lk_patient,
-             "current_patient_choice": patient_select,
-             "fix_dishes": fix_dishes
-             },
+            {
+                "possible_choice_of_dishes_by_the_patient": menu_for_lk_patient,
+                "current_patient_choice": patient_select,
+                "fix_dishes": fix_dishes,
+            },
             status=status.HTTP_200_OK,
         )
 

@@ -1,34 +1,35 @@
 """ Django settings for hadassah project. """
 
 import os
+from datetime import timedelta
 
 from envparse import Env
 
 env = Env()
+env.read_envfile()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'o3@)bpsxg1@wjt6jczcbl$v%4tkgfw+5h)x=#f%g@f9bx&bcr8'
+SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = [
-        '.petrushkagroup.com',
-        'petrushkagroup.com',
-        'lk-doctor.petrushkagroup.com',
-        '.petrushkagroup.ru',
-        'petrushkagroup.ru',
-        '158.160.15.85',
-        '127.0.0.1',
-        'localhost',
-        'https://2a3d-178-89-129-243.ngrok-free.app',
-        '2a3d-178-89-129-243.ngrok-free.app',
-        '130.193.55.25'
+    '.petrushkagroup.com',
+    'petrushkagroup.com',
+    'lk-doctor.petrushkagroup.com',
+    '.petrushkagroup.ru',
+    'petrushkagroup.ru',
+    '158.160.15.85',
+    '127.0.0.1',
+    'localhost',
+    'https://2a3d-178-89-129-243.ngrok-free.app',
+    '2a3d-178-89-129-243.ngrok-free.app',
+    '130.193.55.25'
 ]
-
 
 CORS_ALLOWED_ORIGINS = [
     "https://sk.petrushkagroup.com",
@@ -98,7 +99,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hadassah.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -113,6 +113,7 @@ DATABASES = {
         'PORT': '',
     }
 }
+
 
 
 # Password validation
@@ -190,16 +191,40 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
-    ],
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     # 'rest_framework.authentication.TokenAuthentication',
+    #     # 'rest_framework.authentication.BasicAuthentication',
+    #     # 'rest_framework.authentication.SessionAuthentication',
+    # ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ]
+    # Настройка для использования SimpleJWT
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.AllowAny',
+    # ),
+}
+
+# SimpleJWT settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ROTATE_REFRESH_TOKENS': False,  # для замены refresh token при каждом обращении смены access токена
+    'BLACKLIST_AFTER_ROTATION': False,  # черный список для замененных refresh token
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
 }
 
 SPECTACULAR_SETTINGS = {

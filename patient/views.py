@@ -16,8 +16,9 @@ from dateutil.parser import parse
 from django.db.models.functions import Lower
 from doctor.functions.functions import sorting_dishes, parsing, creating_meal_menu_cafe,\
     creating_meal_menu_lp, creates_dict_with_menu_patients_on_day
-from patient.functions import formation_menu, creating_menu_for_patient, create_category, create_patient_select,\
-    date_menu_history, check_is_comment, del_if_not_garnish, del_if_not_product_without_garnish
+from patient.functions import formation_menu, creating_menu_for_patient, create_category, create_patient_select, \
+    date_menu_history, check_is_comment, del_if_not_garnish, del_if_not_product_without_garnish, \
+    formating_name_for_login_patient
 from doctor.functions.translator import get_day_of_the_week, translate_diet
 from django.db.models import Q
 from rest_framework.views import APIView
@@ -313,9 +314,6 @@ def user_login(request):
             errors = 'Пользователя с такими данными не существует'
     return render(request, 'login_patient.html', {'errors': errors})
 
-def formating_name_for_login_patient(name, lastname, patronymic):
-    name = f'{lastname.strip().capitalize()} {name.strip().capitalize()} {patronymic.strip().capitalize()}'
-    return name.strip()
 
 class loginDataValidationAPIView(APIView):
     def post(self, request):

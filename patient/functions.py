@@ -516,3 +516,7 @@ def ready_menu_for_dump(menu: dict) -> dict:
                         }
                         dish_by_category[product_id] = product_info
 
+
+def formating_name_for_login_patient(name, lastname, patronymic):
+    name = f'{lastname.strip().capitalize()} {name.strip().capitalize()} {patronymic.strip().capitalize()}'
+    return name.strip()
