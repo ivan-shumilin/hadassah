@@ -66,7 +66,6 @@ def create_ingredients(by_api=True):
     time.sleep(3)
     try:
         for i, product in enumerate(nomenclature['products']):
-            print("Осталось ", count_ingredient - i + 1)
             to_create.append(Ingredient(
                 product_id=product["id"],
                 name=product["name"],

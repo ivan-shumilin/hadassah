@@ -2,7 +2,7 @@ import collections
 import math, operator
 from dateutil.parser import parse
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.forms import modelformset_factory
 from django.urls import reverse
 from django.db import transaction
@@ -17,6 +17,7 @@ from django.views.generic import TemplateView
 from doctor.functions.diet_formation import get_users_on_the_meal
 from doctor.functions.download import get_tk, get_name_by_api, get_allergens, get_weight_tk, \
     get_measure_unit
+from scripts.updata_ttk import update_ttk
 from .decorators import login_required_manager_and_kitchen, login_required_hadassah_report, login_required_accountant, \
     login_required_manager
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal, \
@@ -203,9 +204,12 @@ def get_formset(queryset, ProductFormSet, request) -> dict:
         formset: dict = {
             'salad': ProductFormSet(request.POST, request.FILES, queryset=queryset['salad'], prefix='salad'),
             'soup': ProductFormSet(request.POST, request.FILES, queryset=queryset['soup'], prefix='soup'),
-            'main_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['main_dishes'], prefix='main_dishes'),
-            'side_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['side_dishes'], prefix='side_dishes'),
-            'breakfast': ProductFormSet(request.POST, request.FILES, queryset=queryset['breakfast'], prefix='breakfast'),
+            'main_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['main_dishes'],
+                                          prefix='main_dishes'),
+            'side_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['side_dishes'],
+                                          prefix='side_dishes'),
+            'breakfast': ProductFormSet(request.POST, request.FILES, queryset=queryset['breakfast'],
+                                        prefix='breakfast'),
             'porridge': ProductFormSet(request.POST, request.FILES, queryset=queryset['porridge'], prefix='porridge'),
         }
     else:
@@ -1100,10 +1104,14 @@ def printed_form_one(request):
                'count_4nd_floor': len([user for user in users if user.room_number in floors['fourtha']]),
                'count_not_floor': len([user for user in users if user.room_number in ['Не выбрано']]),
                'count_diet': counting_diets(users, floors),
-               'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order, is_public),
-               'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order, is_public),
-               'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order, is_public),
-               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order, is_public),
+               'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order,
+                                                             is_public),
+               'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order,
+                                                             is_public),
+               'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order,
+                                                             is_public),
+               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order,
+                                                             is_public),
                }
     number = 0
     count_users_with_cafe_prod = 0
@@ -1186,7 +1194,8 @@ def create_detailing_report(meal, floor, date_start: date, for_report=None) -> l
 
     for report in filtered_report:
         if report.user_id not in user_set and report.type is not None:
-            users_info = add_user_for_detailing_by_floor(rus_meal, floor, report.user_id, report, date_start, report.type)
+            users_info = add_user_for_detailing_by_floor(rus_meal, floor, report.user_id, report, date_start,
+                                                         report.type)
             if len(users_info) != 0:
                 result.append(users_info)
             user_set.add(report.user_id)
@@ -1824,6 +1833,14 @@ def get_processed_tk(id: str, count: int):
 """
 
 
+def update_ttk_manually(request):
+    try:
+        update_ttk()
+        return HttpResponse("OK!", content_type="text/html")
+    except Exception as e:
+        return HttpResponse(f"Error: {str(e)}", content_type="text/html")
+
+
 @login_required_manager_and_kitchen
 def tk(request, id, count):
     """
@@ -1869,7 +1886,13 @@ def tk(request, id, count):
     template_name = 'tk.html'
     if request.path == reverse('tk_for_epidemiologist', args=[id, 0]):
         template_name = 'tk_for_epidemiologist.html'
+    elif request.path == reverse('tk_for_cafe', args=[id, 0]):
+        template_name = 'tk_for_cafe.html'
     return render(request, template_name, context=data)
+
+
+def product_storage(request):
+    return render(request, "product_storage_for_cafe.html")
 
 
 def custom_sort(ttk, filter):
@@ -2201,6 +2224,24 @@ class CheckIsBrakeryAPIView(APIView):
 
         response = json.dumps(response)
         return Response(response)
+
+
+class FetchAllProductsFromIIKOAPIView(APIView):
+
+    def post(self, request):
+        query = request.data.get('query', '').lower()
+        dishes = Ingredient.objects.filter(name__icontains=query, type="Dish")
+        dishes = [
+            {
+                "name": dish.name,
+                "description": dish.description,
+                "product_id": dish.product_id
+            }
+            for dish in dishes]
+
+        # safe=False: Если параметр safe установлен в False,
+        # то Django позволяет передавать любые данные, не проверяя, являются ли они словарем
+        return JsonResponse(dishes, safe=False)
 
 
 def create_сatalog(is_public, meal, patient, day):

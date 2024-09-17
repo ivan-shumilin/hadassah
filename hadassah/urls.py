@@ -47,6 +47,8 @@ urlpatterns = [
     path('manager/printed_form_two_cafe', views.printed_form_two_cafe, name='printed_form_cafe'),
     path('manager/printed_form_two_cafe_new', views.printed_form_two_cafe_new, name='printed_form_cafe_new'),
     path('manager/tk/<id>/<count>', views.tk, name='tk'),
+    path('manager/tk_for_cafe/<id>/<count>', views.tk, name='tk_for_cafe'),
+    path('manager/product_storage/', views.product_storage, name='product_storage'),
     path('manager/without_menu/for_epidemiologist/tk/<id>/<count>', views.tk, name='tk_for_epidemiologist'),
     path('manager/admin-foods/', views.admin_foods, name='admin_foods'),
     path('manager/admin-foods-new/', views.admin_foods_new, name='admin_foods_new'),
@@ -62,12 +64,10 @@ urlpatterns = [
     path('api/v1/get/check-is-report', views.CheckIsReportAPIView.as_view()),
     path('api/v1/get/download_brakery', views.DownloadBrakeryAPIView.as_view()),
     path('api/v1/get/check-is-brakery', views.CheckIsBrakeryAPIView.as_view()),
+    path('api/v1/get_all_dishes_from_iiko', views.FetchAllProductsFromIIKOAPIView.as_view()),
     path('manager/api/v1/get/downloadsstickers', views.CreateStickers.as_view(), name='create_stickers'),
 ]
 
-urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
-
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += doc_urls
-

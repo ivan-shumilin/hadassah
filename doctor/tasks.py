@@ -186,7 +186,7 @@ def create_bakery_magazine_download(meal: str, date: datetime, menu: dict, id: i
 
 
 @shared_task()
-def my_job_updata_ttk():
+def my_job_update_ttk():
     update_ttk()
 
 @shared_task()

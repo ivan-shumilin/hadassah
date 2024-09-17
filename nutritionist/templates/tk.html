@@ -16,7 +16,9 @@
 
         {% if result == "Нет данных" %}
             <div class="back mr-top-10 mr-left-10">
+            {% block back_to_application %}
                 <a href="{% url 'printed_form_two_lp_new' %}">Назад к заявке</a>
+            {% endblock %}
             </div>
             <div class="mr-top-30 mr-left-10">Нет данных</div>
         {% else %}

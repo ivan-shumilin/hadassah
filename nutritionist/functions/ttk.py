@@ -88,12 +88,12 @@ def create_all_ttk(id: str, count=1):
             _, measure_unit = get_name_and_measure_unit(item_1['productId'])
             item_1['measure_unit'] = measure_unit
             parent1_ttk = create_ttk(item_1, 'productId', parent_ttk)
-            print(
-                f"1-{item_1['name']}|",
-                f"Б в ед. изм. - {item_1['amountIn']}",
-                f"Вес б, {item_1['amountMiddle']}",
-                f"Вес н {item_1['amountOut']}"
-            )
+            # print(
+            #     f"1-{item_1['name']}|",
+            #     f"Б в ед. изм. - {item_1['amountIn']}",
+            #     f"Вес б, {item_1['amountMiddle']}",
+            #     f"Вес н {item_1['amountOut']}"
+            # )
             item_1 = [] if item_1.get('items') is None else item_1.get('items')
 
             # 2-ой уровень
@@ -103,12 +103,12 @@ def create_all_ttk(id: str, count=1):
                 parent2_ttk = create_ttk(item_2, 'productId', parent1_ttk)
                 parent1_ttk.status = 'pf'
                 parent1_ttk.save(update_fields=['status'])
-                print(
-                    f"2--{item_2['name']}|",
-                    f"Б ед. изм. - {item_2['amountIn']}",
-                    f"Вес б, {item_2['amountMiddle']}",
-                    f"Вес н, {item_2['amountOut']}"
-                )
+                # print(
+                #     f"2--{item_2['name']}|",
+                #     f"Б ед. изм. - {item_2['amountIn']}",
+                #     f"Вес б, {item_2['amountMiddle']}",
+                #     f"Вес н, {item_2['amountOut']}"
+                # )
                 # задержка для обращения к api, если не делать сервер iiko добавляет в ЧС
                 time.sleep(1)
                 # Получаем ТК 2-ого уровня
@@ -171,12 +171,12 @@ def create_all_ttk(id: str, count=1):
                         parent3_ttk = create_ttk(item_3, 'productId',  parent2_ttk)
                         parent2_ttk.status = 'pf'
                         parent2_ttk.save(update_fields=['status'])
-                        print(
-                            f"3---{item_3['name']}",
-                            f"Б в ед. изм {weight_pf_local_2['amountIn']}",
-                            f"Вес б {weight_pf_local_2['amountMiddle']}",
-                            f"Вес н {weight_pf_local_2['amountOut']}"
-                        )
+                        # print(
+                        #     f"3---{item_3['name']}",
+                        #     f"Б в ед. изм {weight_pf_local_2['amountIn']}",
+                        #     f"Вес б {weight_pf_local_2['amountMiddle']}",
+                        #     f"Вес н {weight_pf_local_2['amountOut']}"
+                        # )
 
                         # вес закладки в ТТК в гр. или мл.
                         try:
@@ -225,21 +225,21 @@ def create_all_ttk(id: str, count=1):
                                         parent4_ttk = create_ttk(item_4, 'productId',  parent3_ttk)
                                         parent3_ttk.status = 'pf'
                                         parent3_ttk.save(update_fields=['status'])
-                                        print(
-                                            f"4----{item_4['name']}|",
-                                            f"Б в ед. изм {item_4['amountIn']}",
-                                            f"Вес б {item_4['amountMiddle']}",
-                                            f"Вес н {item_4['amountOut']}"
-                                        )
+                                        # print(
+                                        #     f"4----{item_4['name']}|",
+                                        #     f"Б в ед. изм {item_4['amountIn']}",
+                                        #     f"Вес б {item_4['amountMiddle']}",
+                                        #     f"Вес н {item_4['amountOut']}"
+                                        # )
                                         item_3['items'].append(item_4)
                             except:
                                 pass
     except:
-        print('Ошибка', id)
+        # print('Ошибка', id)
         return None
     # проставить всем ингредиетам статус: блюдо, пф, ингредиент
     add_status()
-    print('Успешно', id)
+    # print('Успешно', id)
     return result, error, weight
 
 
@@ -527,7 +527,8 @@ def get_tree_ttk(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77', count=1, cat
     ttk_main = TTK.objects.filter(product_id=product_id).first()
     if not ttk_main:
         print(f'Для продукта с product_id {product_id} не существует TTK')
-        return None, categories_all
+        raise TypeError
+        # return None, categories_all
 
     ttk_child = TTK.objects.filter(parent_ttk=ttk_main)
 
@@ -611,14 +612,15 @@ def write_ttk_in_bd():
     write_ttk_in_bd()
     """
     TTK.objects.all().delete()
-    category = 'салат'
-    products = ProductLp.objects.all()
+    # так как в таблице Ingrigient хранятся и составные части продуктов, в ттк нам нужно хранить только сами блюда
+    products = Ingredient.objects.filter(type='Dish')
     count = products.count()
     for i, product in enumerate(products):
-        print(f'блюдо {i+1}, из {count}, {product.name}, {product.product_id}')
+        # print(f'блюдо {i+1}, из {count}, {product.name}, {product.product_id}')
         if product.product_id:
             create_all_ttk(product.product_id)
         else:
-            print('Ошибка', product.product_id)
-
+            # print('Ошибка', product.product_id)
+            pass
+    print('Все ТТК обновлены!')
     add_status()
