@@ -1,13 +1,21 @@
 import os
 from celery import Celery
 from celery.schedules import crontab
-
+from kombu import Queue
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hadassah.settings")
 app = Celery("hadassah")
 
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
+app.conf.task_queues = (
+    Queue('default', routing_key='task.#'),
+    Queue('long_task_queue', routing_key='long_task.#'),  # это очередь для долгих задач - обновление ттк
+)
+
+app.conf.task_routes = {
+    'doctor.tasks.my_job_update_ttk': {'queue': 'long_task_queue'},  # маршрут для долгой задачи обновления ттк
+}
 
 app.conf.beat_schedule = {
     # создаем Menubyday на три дня вперед
@@ -88,10 +96,11 @@ app.conf.beat_schedule = {
         'schedule': crontab(minute=5, hour='18'),
     },
 # Обновление ТТК
-#     'my_job_updata_ttk': {
-#         'task': 'doctor.tasks.my_job_updata_ttk',
-#         'schedule': crontab(minute=1, hour='1'),
-#     },
+    'my_job_update_ttk': {
+        'task': 'doctor.tasks.my_job_update_ttk',
+        'schedule': crontab(minute=50, hour=14, day_of_week='thursday'),
+        'options': {'queue': 'long_task_queue'},
+    },
 # кеширеум ингредиеты и ттк
     'may_job_updata_cache': {
         'task': 'doctor.tasks.may_job_updata_cache',

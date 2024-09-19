@@ -1835,8 +1835,9 @@ def get_processed_tk(id: str, count: int):
 
 def update_ttk_manually(request):
     try:
+        start = datetime.now()
         update_ttk()
-        return HttpResponse("OK!", content_type="text/html")
+        return HttpResponse(f"OK! {str(datetime.now() - start)}", content_type="text/html")
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", content_type="text/html")
 

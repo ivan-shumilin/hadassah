@@ -1,3 +1,4 @@
+import logging
 import operator, time
 
 from nutritionist.functions.functions import get_name_and_measure_unit, get_coefficient, create_ttk
@@ -520,7 +521,7 @@ def enumeration_semifinisheds(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77',
     return semifinisheds, categories_all
 
 
-def get_tree_ttk(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77', count=1, categories_all=[]):
+def get_tree_ttk(product_id, count=1, categories_all=[]):
     """
     Проходим по всем уровням ТТК
     """
@@ -611,6 +612,7 @@ def write_ttk_in_bd():
     from nutritionist.functions.ttk import write_ttk_in_bd
     write_ttk_in_bd()
     """
+    logger = logging.getLogger('main_logger')
     TTK.objects.all().delete()
     # так как в таблице Ingrigient хранятся и составные части продуктов, в ттк нам нужно хранить только сами блюда
     products = Ingredient.objects.filter(type='Dish')
@@ -622,5 +624,5 @@ def write_ttk_in_bd():
         else:
             # print('Ошибка', product.product_id)
             pass
-    print('Все ТТК обновлены!')
+    logger.info('Все ТТК обновлены!')
     add_status()
