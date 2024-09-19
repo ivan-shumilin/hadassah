@@ -17,6 +17,8 @@ app.conf.task_routes = {
     'doctor.tasks.my_job_update_ttk': {'queue': 'long_task_queue'},  # маршрут для долгой задачи обновления ттк
 }
 
+app.conf.worker_prefetch_multiplier = 1
+
 app.conf.beat_schedule = {
     # создаем Menubyday на три дня вперед
     'my_job_add_menu_three_days_ahead': {
@@ -98,7 +100,7 @@ app.conf.beat_schedule = {
 # Обновление ТТК
     'my_job_update_ttk': {
         'task': 'doctor.tasks.my_job_update_ttk',
-        'schedule': crontab(minute=50, hour=14, day_of_week='thursday'),
+        'schedule': crontab(minute=0, hour=0, day_of_week='friday'),
         'options': {'queue': 'long_task_queue'},
     },
 # кеширеум ингредиеты и ттк
@@ -113,10 +115,10 @@ app.conf.beat_schedule = {
 #     },
 
     # бэкап каждый час в 0 минут (12:07, 13:07) и тд
-    'my_job_regular_backup': {
-        'task': 'doctor.tasks.regular_db_dump',
-        'schedule': crontab(minute=7),
-    },
+    # 'my_job_regular_backup': {
+    #     'task': 'doctor.tasks.regular_db_dump',
+    #     'schedule': crontab(minute=7),
+    # },
 }
 app.conf.timezone = 'Europe/Moscow'
 app.autodiscover_tasks()
