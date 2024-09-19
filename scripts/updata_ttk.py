@@ -8,10 +8,19 @@ logging = logging.getLogger('main_logger')
 
 def update_ttk():
     logging.info('Start updating ttk')
-    create_ingredients()
+    try:
+        create_ingredients()
+    except Exception as e:
+        logging.error(e)
     logging.info('Successfully updated ttk')
-    write_ttk_in_bd()
+    try:
+        write_ttk_in_bd()
+    except Exception as e:
+        logging.error(e)
     logging.info('Writing ttk in bd')
-    add_ingredient_in_tkk()
+    try:
+        add_ingredient_in_tkk()
+    except Exception as e:
+        logging.error(e)
     logging.info('Add ttk in bd')
 
