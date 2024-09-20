@@ -527,6 +527,7 @@ def get_tree_ttk(product_id='15918a36-734e-4f59-820c-1cd6a33d4e77', count=1, cat
     ttk_main = TTK.objects.filter(product_id=product_id).first()
     if not ttk_main:
         print(f'Для продукта с product_id {product_id} не существует TTK')
+        raise TypeError
         return None, categories_all
 
     ttk_child = TTK.objects.filter(parent_ttk=ttk_main)

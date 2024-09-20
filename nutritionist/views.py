@@ -2,7 +2,7 @@ import collections
 import math, operator
 from dateutil.parser import parse
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.forms import modelformset_factory
 from django.urls import reverse
 from django.db import transaction
@@ -21,7 +21,7 @@ from .decorators import login_required_manager_and_kitchen, login_required_hadas
     login_required_manager
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal, \
     caching_ingredients
-from doctor.tasks import create_report_download, create_bakery_magazine_download
+from doctor.tasks import create_report_download, create_bakery_magazine_download, manually_update_ttk_task
 from .functions.report import create_external_report, create_external_report_detailing
 from .functions.ttk import create_all_ttk, enumeration_semifinisheds, get_tree_ttk
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, UsersToday, UsersReadyOrder, \
@@ -203,9 +203,12 @@ def get_formset(queryset, ProductFormSet, request) -> dict:
         formset: dict = {
             'salad': ProductFormSet(request.POST, request.FILES, queryset=queryset['salad'], prefix='salad'),
             'soup': ProductFormSet(request.POST, request.FILES, queryset=queryset['soup'], prefix='soup'),
-            'main_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['main_dishes'], prefix='main_dishes'),
-            'side_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['side_dishes'], prefix='side_dishes'),
-            'breakfast': ProductFormSet(request.POST, request.FILES, queryset=queryset['breakfast'], prefix='breakfast'),
+            'main_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['main_dishes'],
+                                          prefix='main_dishes'),
+            'side_dishes': ProductFormSet(request.POST, request.FILES, queryset=queryset['side_dishes'],
+                                          prefix='side_dishes'),
+            'breakfast': ProductFormSet(request.POST, request.FILES, queryset=queryset['breakfast'],
+                                        prefix='breakfast'),
             'porridge': ProductFormSet(request.POST, request.FILES, queryset=queryset['porridge'], prefix='porridge'),
         }
     else:
@@ -1100,10 +1103,14 @@ def printed_form_one(request):
                'count_4nd_floor': len([user for user in users if user.room_number in floors['fourtha']]),
                'count_not_floor': len([user for user in users if user.room_number in ['Не выбрано']]),
                'count_diet': counting_diets(users, floors),
-               'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order, is_public),
-               'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order, is_public),
-               'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order, is_public),
-               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order, is_public),
+               'users_2nd_floor': create_list_users_on_floor(users, floors['second'], meal, date_create, type_order,
+                                                             is_public),
+               'users_3nd_floor': create_list_users_on_floor(users, floors['third'], meal, date_create, type_order,
+                                                             is_public),
+               'users_4nd_floor': create_list_users_on_floor(users, floors['fourtha'], meal, date_create, type_order,
+                                                             is_public),
+               'users_not_floor': create_list_users_on_floor(users, ['Не выбрано'], meal, date_create, type_order,
+                                                             is_public),
                }
     number = 0
     count_users_with_cafe_prod = 0
@@ -1151,7 +1158,8 @@ def add_user_for_detailing_by_floor(rus_meal, floor, source_user_info, source_di
     # когда у пациента индивидуальная диета, то мы не должны включать его в детализацию
     if source_user_info.type_of_diet.lower() == 'индивидуальная диета':
         return users_info
-    if (floor == source_user_info.room_number[0] or source_user_info.floor == floor) and source_user_info.department.lower() != "реанимация":
+    if (floor == source_user_info.room_number[
+        0] or source_user_info.floor == floor) and source_user_info.department.lower() != "реанимация":
         users_info = {
             'date': date_str,
             'diet': source_diet_info.type_of_diet,
@@ -1186,7 +1194,8 @@ def create_detailing_report(meal, floor, date_start: date, for_report=None) -> l
 
     for report in filtered_report:
         if report.user_id not in user_set and report.type is not None:
-            users_info = add_user_for_detailing_by_floor(rus_meal, floor, report.user_id, report, date_start, report.type)
+            users_info = add_user_for_detailing_by_floor(rus_meal, floor, report.user_id, report, date_start,
+                                                         report.type)
             if len(users_info) != 0:
                 result.append(users_info)
             user_set.add(report.user_id)
@@ -2437,3 +2446,11 @@ def catalog_all_products(request):
 
     data = {}
     return render(request, 'catalog_all_products.html', context=data)
+
+
+def manually_update_ttk(request):
+    try:
+        manually_update_ttk_task.delay()
+    except Exception as e:
+        return HttpResponse(e)
+    return HttpResponse('ok')

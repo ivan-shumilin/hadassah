@@ -17,6 +17,7 @@ from doctor.functions.for_print_forms import create_user_today, applies_changes,
     create_ready_order, create_report, create_product_storage
 from scripts.updata_ttk import update_ttk
 
+logger = logging.getLogger('main_logger')
 
 def send_messang(messang):
     TOKEN = '5533289712:AAEENvPBVrfXJH1xotRzoCCi24xFcoH9NY8'
@@ -210,3 +211,13 @@ def regular_db_dump() -> None:
     except Exception as e:
         logger.error(e)
         print(e)
+
+
+@shared_task()
+def manually_update_ttk_task():
+    logger.info("Начало обновления")
+    try:
+        update_ttk()
+    except Exception as e:
+        logger.error(e)
+    logger.info('Обновлено успешно!')

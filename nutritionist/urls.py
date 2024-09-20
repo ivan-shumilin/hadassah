@@ -14,4 +14,5 @@ urlpatterns = [
     path('catalog/breakfast/<page>', views.catalog_breakfast, name='breakfast'),
     path('backup/', views.backup, name='backup'),
     path('catalog/', views.catalog_all_products, name='catalog_all_products'),
+    path('manually_update_ttk/', views.manually_update_ttk, name='manually_update_ttk')
 ]
