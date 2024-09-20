@@ -51,111 +51,111 @@ def delete_menu_by_arhived_users():
     for user in users:
         MenuByDay.objects.filter(user_id=user.id).delete()
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_add_menu_three_days_ahead():
     add_menu_three_days_ahead()
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_applies_changes_():
     applies_changes()
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_applies_changes_breakfast():
     delete_menu_by_arhived_users()
     create_user_today('breakfast')
 
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_applies_changes_lunch():
     delete_menu_by_arhived_users()
     create_user_today('lunch')
 
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_applies_changes_afternoon():
     delete_menu_by_arhived_users()
     create_user_today('afternoon')
 
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_applies_changes_dinner():
     delete_menu_by_arhived_users()
     create_user_today('dinner')
 
 
 # создание готовой заявки на прием пищи
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_ready_order_breakfast():
     create_ready_order('breakfast')
 
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_ready_order_lunch():
     create_ready_order('lunch')
 
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_ready_order_afternoon():
     create_ready_order('afternoon')
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_ready_order_dinner():
     create_ready_order('dinner')
 
 # создание записей для отчета
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_report_breakfast():
     create_report('breakfast')
 
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_report_lunch():
     create_report('lunch')
 
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_report_afternoon():
     create_report('afternoon')
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_report_dinner():
     create_report('dinner')
 
 
 # создаем таблицу с пользователями на сегодня
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_user_today():
     create_user_today()  # создаем таблицу с пользователями на сегодня
 
 # создаем таблицу с пользователями на завтра
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_user_tomorrow():
     """Создаем таблицу с пользователями на завтра."""
     delete_menu_by_arhived_users()
     create_user_today('tomorrow')
 
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_send_messang_changes(messang, only_chat_id=None):
     return f'попытка - {send_messang_changes(messang, only_chat_id)}'
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_product_storage_breakfast():
     create_product_storage('breakfast')
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_product_storage_lunch():
     create_product_storage('lunch')
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_create_product_storage_dinner():
     create_product_storage('dinner')
 
-@shared_task()
+@shared_task(queue='default')
 def my_job_update_diet_bd():
     update_diet_bd()
 
-@shared_task()
+@shared_task(queue='default')
 def create_report_download(date_start, date_finish, id):
 
     filtered_report = Report.objects.filter(date_create__gte=date_start,
@@ -176,7 +176,7 @@ def create_report_download(date_start, date_finish, id):
 
     return
 
-@shared_task()
+@shared_task(queue='default')
 def create_bakery_magazine_download(meal: str, date: datetime, menu: dict, id: int) -> None:
     get_brakery_magazine(meal, date, menu)
     item = IsBrakeryMagazineCreate.objects.get(id=id)
@@ -189,19 +189,19 @@ def create_bakery_magazine_download(meal: str, date: datetime, menu: dict, id: i
 def my_job_update_ttk():
     update_ttk()
 
-@shared_task()
+@shared_task(queue='default')
 def may_job_updata_cache():
     caching_ingredients()
 
 
-@shared_task()
+@shared_task(queue='default')
 def may_job_ping_db() -> None:
     url = "https://hr.petrushkagroup.ru/user/?user_id=bcc9d80f-565e-4b51-ac19-6085eace0cd0"
 
     response = requests.get(url)
 
 
-@shared_task()
+@shared_task(queue='default')
 def regular_db_dump() -> None:
     logger = logging.getLogger('main_logger')
     answer = []

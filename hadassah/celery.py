@@ -100,7 +100,7 @@ app.conf.beat_schedule = {
 # Обновление ТТК
     'my_job_update_ttk': {
         'task': 'doctor.tasks.my_job_update_ttk',
-        'schedule': crontab(minute=20, hour=0, day_of_week='friday'),
+        'schedule': crontab(minute=20, hour='0', day_of_week='friday'),
         'options': {'queue': 'long_task_queue'},
     },
 # кеширеум ингредиеты и ттк
