@@ -1892,8 +1892,40 @@ def tk(request, id, count):
     return render(request, template_name, context=data)
 
 
-def product_storage(request):
-    return render(request, "product_storage_for_cafe.html")
+def product_storage_hadassah(request):
+    day_of_the_week = request.GET.get('day', date.today())
+    str_day_of_the_week = str(day_of_the_week)
+    menu = creating_meal_menu_cafe_new(day_of_the_week)
+
+    data = {
+        'menu': menu,
+        'day_of_the_week': str_day_of_the_week,
+        'default_date': date.today()
+    }
+    return render(request, "product_storage_for_cafe.html", context=data)
+
+
+def product_storage_alcon(request):
+    day_of_the_week = request.GET.get('day', date.today())
+    str_day_of_the_week = str(day_of_the_week)
+    menu = creating_meal_menu_cafe_new(day_of_the_week)
+
+    data = {
+        'menu': menu,
+        'day_of_the_week': str_day_of_the_week,
+    }
+    return render(request, "product_storage_for_cafe.html", context=data)
+
+
+def get_all_product_for_hadassah(request):
+    if request.method == 'POST':
+        date_get = json.loads(request.body).get('date')
+
+        products = Product.objects.filter(timetable__datetime=date_get).order_by('name')
+        return render(request, 'include/menu_table.html', {
+            'menu': products,
+            'day_of_the_week': str(date_get),
+        })
 
 
 def custom_sort(ttk, filter):
@@ -2231,7 +2263,16 @@ class FetchAllProductsFromIIKOAPIView(APIView):
 
     def post(self, request):
         query = request.data.get('query', '').lower()
-        dishes = Ingredient.objects.filter(name__icontains=query, type="Dish")
+        entire_database = request.data.get('entireDatabase', False)
+        date_get = request.data.get('date_get')
+        if date_get == '':
+            date_get = date.today()
+
+        if entire_database:
+            dishes = Ingredient.objects.filter(name__icontains=query, type="Dish")
+        else:
+            dishes = Product.objects.filter(name__icontains=query, timetable__datetime=date_get)
+
         dishes = [
             {
                 "name": dish.name,
@@ -2333,6 +2374,31 @@ class CreateStickers(APIView):
         return Response(response)
 
 
+def get_total_energy_value_for_cafe(day_of_the_week):
+    """Возвращает суммарное КБЖУ за день."""
+    products = Product.objects.filter(timetable__datetime=day_of_the_week)
+
+    carbohydrate, fat, fiber, energy = 0, 0, 0, 0
+    for product in products:
+        try:
+            carbohydrate += round((float(product.carbohydrate) * float(product.weight) * 10), 2)
+        except:
+            carbohydrate += 0
+        try:
+            fat += round((float(product.fat) * float(product.weight) * 10), 2)
+        except:
+            fat += 0
+        try:
+            fiber += round((float(product.fiber) * float(product.weight) * 10), 2)
+        except:
+            fiber += 0
+        try:
+            energy += round((float(product.energy) * float(product.weight) * 10), 2)
+        except:
+            energy += 0
+    return f'Б - {round(fiber, 2)}, Ж - {round(fat, 2)}, У - {round(carbohydrate, 2)}, Ккал - {round(energy, 2)}'
+
+
 def get_total_energy_value(day_of_the_week, translated_diet):
     """Возвращает суммарное КБЖУ за день."""
     products = ProductLp.objects.filter(Q(timetablelp__day_of_the_week=day_of_the_week) &
@@ -2370,6 +2436,14 @@ def get_energy_value(product):
     except:
         energy_value = "Нет данных"
     return energy_value
+
+
+def creating_meal_menu_cafe_new(day_of_the_week):
+    products = Product.objects.filter(timetable__datetime=day_of_the_week).order_by('name')
+    result = []
+    for product in products:
+        result.append(product)
+    return result
 
 
 def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):

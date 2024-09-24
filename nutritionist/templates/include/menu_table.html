@@ -1,0 +1,36 @@
+    <div class='table-menu' style="">
+        <form id="form" action="{% url 'menu_lp_for_staff' %}" method="get" novalidate>
+            <div class="container-flex">
+                <div class="div-order">
+                    <div class="order"></div>
+                </div>
+            </div>
+        </form>
+
+        <table id='table2' style="margin-top: 10px; width: 100%">
+            <tr>
+                <td class="pd-left-right">Дата</td>  <!-- Столбец для даты -->
+                <td>Название блюда</td>
+            </tr>
+
+            {% for product in menu %}
+                <tr>
+                    {% if forloop.first %}
+                        <td class="pd-left-right">{{ day_of_the_week }}</td>  <!-- Выводим дату только в первой строке -->
+                    {% else %}
+                        <td></td>  <!-- Оставляем пустым для остальных строк -->
+                    {% endif %}
+
+                    <td class="pd-left-right">
+                        {% if product.product_id %}
+                            <a class="link" href="{% url 'tk' product.product_id '0' %}"> {{ product.name }}</a>
+                        {% else %}
+                            {{ product.name }}
+                        {% endif %}
+                        <span class="font-weight-normal">(Kкал - {{ product.energy|floatformat:2 }}, Б. -{{ product.fiber|floatformat:2 }},
+                            Ж. - {{ product.fat|floatformat:2  }}, У. - {{ product.carbohydrate|floatformat:2  }})</span>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>

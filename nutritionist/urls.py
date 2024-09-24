@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import path, re_path, include
 from . import views
 
@@ -14,5 +15,5 @@ urlpatterns = [
     path('catalog/breakfast/<page>', views.catalog_breakfast, name='breakfast'),
     path('backup/', views.backup, name='backup'),
     path('catalog/', views.catalog_all_products, name='catalog_all_products'),
-    path('update_ttk/', views.update_ttk_manually, name='update_ttk_manually')
+    path('manually_update_ttk/', login_required(views.update_ttk_manually), name='manually_update_ttk')
 ]

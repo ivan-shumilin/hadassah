@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <title>База продуктов Alcon</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Поиск продуктов по базе</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Add additional CSS in static file -->
     {% load static %}
-    <link rel="stylesheet" href="{% static 'doctor/css/all.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'doctor/css/print_forms.css' %}">
     <style>
 
         /* Add hover and cursor style */
@@ -25,34 +30,31 @@
         }
     </style>
 </head>
-<body>
+<body class="table-menu">
     <div class="report-header-block" style="margin-bottom: 5px;">
         <div class="container inner">
             <h1>
                 Поиск продуктов по базе
             </h1>
 
-            <div class="item item-time">
-                <span class="container bold-text"> Время на данный момент:</span>
-                <div class="time" id="time-now"> </div>
-            </div>
-
         </div>
     </div>
 
     <div class="container mt-3">
 
+        <label for="date-picker">Выберите дату:</label>
+        <input type="date" id="date-picker" class="form-control mb-2" style="width: 169px;" value="{{ default_date }}">
+
         <!-- Кнопка для открытия модального окна -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productSearchModal">
-            Искать
+            Поиск продуктов
         </button>
 
-        <!-- Место для отображения выбранного продукта -->
-        <div id="selected-product-info" class="mt-3 alert alert-info" style="display:none;">
-            <h4 id="selected-product-name">Название: </h4>
-            <p id="selected-product-description"></p>
-            <p class="bold-text" id="selected-product-ttk"> Посмотреть ТТК</p>
+        <!-- Место для меню на определенную дату -->
+         <div id="menu-table">
+            {% include 'include/menu_table.html' %}
         </div>
+
     </div>
 
     <!-- Модальное окно для поиска продуктов -->
@@ -66,6 +68,14 @@
                 <div class="modal-body">
                     <!-- Поле поиска -->
                     <input type="text" id="search-input" class="form-control" placeholder="Введите название продукта">
+
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="search-entire-database">
+                        <label class="form-check-label mt-0" for="search-entire-database">
+                            Поиск по всей базе
+                        </label>
+                    </div>
+
                     <!-- Результаты поиска -->
                     <ul id="search-results" class="list-group mt-3"></ul>
                 </div>
@@ -77,13 +87,15 @@
     <script>
         document.getElementById('search-input').addEventListener('input', function() {
             const query = this.value.trim().toLowerCase();
+            const searchEntireDatabase = document.getElementById('search-entire-database').checked;
+            const date_send = document.getElementById('date-picker').value;
 
             if (query) {
                 // Отправляем запрос на сервер
                 fetch('/api/v1/get_all_dishes_from_iiko', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: query })
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                    body: JSON.stringify({ query: query, entireDatabase: searchEntireDatabase, date_get: date_send})
                 })
                 .then(response => response.json())
                 .then(products => {
@@ -114,41 +126,45 @@
 
         // Функция для выбора продукта
         function selectProduct(product) {
-            // Обновляем информацию о выбранном продукте
-            document.getElementById('selected-product-name').textContent = product.name;
-            document.getElementById('selected-product-description').textContent = product.description;
-
-            const url = `/manager/tk_for_cafe/${product.product_id}/0`;
-            {#const url = `/manager/tk/${product.product_id}/0`;#}
-            document.getElementById('selected-product-ttk').innerHTML = `<a href="${url}">Посмотреть ТТК</a>`
-
-            // Показываем информацию о продукте
-            document.getElementById('selected-product-info').style.display = 'block';
-
-            // Закрываем модальное окно
-            const modal = bootstrap.Modal.getInstance(document.getElementById('productSearchModal'));
-            modal.hide();
+            // Выполняем переход на сформированный URL
+            window.location.href = `/manager/tk_for_cafe/${product.product_id}/0`;
         }
 
-        function updateTime() {
-            const timeElement = document.getElementById('time-now');
-            const now = new Date();
-
-            // Форматирование времени
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-
-            // Отображение времени на странице
-            timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+        function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
         }
+        return cookieValue;
+    }
 
-        // Обновляем время каждые 1 секунду
-        setInterval(updateTime, 1000);
+    document.getElementById('date-picker').addEventListener('change', function() {
+        const selectedDate = this.value;
+        const csrftoken = getCookie('csrftoken');
+        if (selectedDate) {
+            fetch(`/api/v1/get_products_for_product_storage_hadassah`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken},
+                body: JSON.stringify({ date: selectedDate })
+            })
+            .then(response => response.text())
+            .then(html => {
+                // Update the menu table with the response HTML
+                document.getElementById('menu-table').innerHTML = html;
+            })
+            .catch(error => console.error('Ошибка получения продуктов:', error));
+        }
+    });
 
-        // Вызываем сразу для установки времени при загрузке
-        updateTime();
     </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 </body>
 </html>
