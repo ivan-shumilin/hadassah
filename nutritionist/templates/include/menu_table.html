@@ -23,7 +23,7 @@
 
                     <td class="pd-left-right">
                         {% if product.product_id %}
-                            <a class="link" href="{% url 'tk' product.product_id '0' %}"> {{ product.name }}</a>
+                            <a class="link" href="{% url 'tk_for_cafe' product.product_id '0' %}"> {{ product.name }}</a>
                         {% else %}
                             {{ product.name }}
                         {% endif %}
