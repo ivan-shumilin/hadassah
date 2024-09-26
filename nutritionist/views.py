@@ -1922,8 +1922,16 @@ def get_all_product_for_hadassah(request):
         date_get = json.loads(request.body).get('date')
 
         products = Product.objects.filter(timetable__datetime=date_get).order_by('name')
+
+        result = []
+        for product in products:
+            with_product_id = Ingredient.objects.filter(name=product.name).first()
+            if with_product_id is None:
+                result.append(product)
+            else:
+                result.append(with_product_id)
         return render(request, 'include/menu_table.html', {
-            'menu': products,
+            'menu': result,
             'day_of_the_week': str(date_get),
         })
 
@@ -2442,7 +2450,11 @@ def creating_meal_menu_cafe_new(day_of_the_week):
     products = Product.objects.filter(timetable__datetime=day_of_the_week).order_by('name')
     result = []
     for product in products:
-        result.append(product)
+        with_product_id = Ingredient.objects.filter(name=product.name).first()
+        if with_product_id is None:
+            result.append(product)
+        else:
+            result.append(with_product_id)
     return result
 
 
