@@ -51,7 +51,7 @@ def get_category_from_iiko() -> dict:
     Получаем все категории по API и создаем словарь где:
     key - id категории, value - имя категории
     """
-    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/group/list?includeDeleted=false'
+    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/group/list'
 
     for attempt in [1, 2]:
         token = get_token(attempt)
@@ -114,7 +114,7 @@ def get_tk(product_id):
 
 def get_name_by_api(product_id):
     """ Получаем элемент номенклатуры. """
-    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list?includeDeleted=false'
+    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list'
 
     params = {'ids': product_id}
     for attempt in [1, 2]:
@@ -136,7 +136,7 @@ def get_name_by_api(product_id):
 
 def get_measure_unit(product_id):
     """ Получаем элемент номенклатуры. """
-    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list?includeDeleted=false'
+    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list'
     params = {'ids': product_id}
 
     CODE_MAIN_UNIT = {
@@ -166,7 +166,7 @@ def get_measure_unit(product_id):
 def get_allergens(product_id):
     """ Получаем аллергены продукта. """
 
-    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list?includeDeleted=false'
+    url = 'https://petrushka-grupp-skolkovo.iiko.it:443/resto/api/v2/entities/products/list'
 
     params = {'ids': product_id}
     for attempt in [1, 2]:
