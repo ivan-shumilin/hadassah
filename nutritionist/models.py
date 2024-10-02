@@ -28,7 +28,6 @@ class CustomUser(AbstractUser):
         default='200',
         help_text='Выбор номера палаты')
 
-
     bed = models.CharField(
         max_length=100,
         choices=BED,
@@ -154,22 +153,22 @@ class UsersToday(models.Model):
         default='',
         help_text='Выбор диеты')
 
-    is_accompanying =  models.BooleanField(
+    is_accompanying = models.BooleanField(
         blank=True,
         default=False,
         help_text='Cопровождающий?')
 
-    is_probe =  models.BooleanField(
+    is_probe = models.BooleanField(
         blank=True,
         default=False,
         help_text='Питание через зонд')
 
-    is_without_salt =  models.BooleanField(
+    is_without_salt = models.BooleanField(
         blank=True,
         default=False,
         help_text='Без соли')
 
-    is_without_lactose =  models.BooleanField(
+    is_without_lactose = models.BooleanField(
         blank=True,
         default=False,
         help_text='Без лактозы')
@@ -178,7 +177,7 @@ class UsersToday(models.Model):
         blank=True,
         default=False,
         help_text='Протертое питание')
-    
+
     type_pay = models.CharField(
         max_length=100,
         choices=TYPE_PAY,
@@ -195,11 +194,11 @@ class СhangesUsersToday(models.Model):
     user_id = models.CharField(max_length=200, null=True)
     date_create = models.DateField(default=date.today)
     time_change = models.CharField(
-            max_length=100,
-            choices=MEALS,
-            blank=True,
-            default='',
-        )
+        max_length=100,
+        choices=MEALS,
+        blank=True,
+        default='',
+    )
     full_name = models.CharField(max_length=200, null=True)
     receipt_date = models.DateField(null=True)
     receipt_time = models.TimeField(null=True)
@@ -307,19 +306,76 @@ class Timetable(models.Model):
     datetime = models.DateField()
     item = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
     date_create = models.DateField(default=date.today, null=True)
+
     def __str__(self):
         return f'{self.item}'
+
+
+class TimetableAlcon(models.Model):
+    datetime = models.DateField()
+    item = models.ForeignKey('ProductAlcon', on_delete=models.SET_NULL, null=True)
+    date_create = models.DateField(default=date.today, null=True)
+
+    def __str__(self):
+        return f'{self.item}'
+
+
+class ProductAlcon(models.Model):
+    date_create = models.DateField(default=date.today, null=True, blank=True)
+    iditem = models.IntegerField(null=True)
+    product_id = models.CharField(max_length=100, null=True, blank=True)
+    public_name = models.CharField(max_length=200, null=True, blank=True)
+    name = models.CharField(max_length=200, null=True)
+    price = models.IntegerField(null=True)
+    carbohydrate = models.CharField(max_length=200, null=True)
+    fat = models.CharField(max_length=200, null=True)
+    fiber = models.CharField(max_length=200, null=True)
+    energy = models.CharField(max_length=200, null=True)
+    weight = models.CharField(verbose_name="Вес", max_length=5000, null=True, blank=True)
+    image = models.CharField(max_length=2000, null=True)
+    vegan = models.BooleanField(null=True)
+    allergens = models.BooleanField(null=True)
+    lactose_free = models.BooleanField(null=True)
+    sugarless = models.BooleanField(null=True)
+    gluten_free = models.BooleanField(null=True)
+    description = models.CharField(max_length=1000, null=True, blank=True)
+    ovd = models.BooleanField(null=True)
+    ovd_sugarless = models.BooleanField(null=True)
+    ovd_vegan = models.BooleanField(null=True)
+    shd = models.BooleanField(null=True)
+    shd_sugarless = models.BooleanField(null=True)
+    bd = models.BooleanField(null=True)
+    vbd = models.BooleanField(null=True)
+    nbd = models.BooleanField(null=True)
+    nkd = models.BooleanField(null=True)
+    vkd = models.BooleanField(null=True)
+    iodine_free = models.BooleanField(null=True)
+    not_suitable = models.BooleanField(null=True)
+    category = models.CharField(max_length=2000, null=True, blank=True)
+    cooking_method = models.CharField(max_length=7000, null=True, blank=True)
+    comment = models.CharField(max_length=5000, null=True, blank=True)
+    with_garnish = models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Блюдо уже с гарниром?')
+
+    class Meta:
+        verbose_name = "Блюда линии раздачи (Сокол)"
+        verbose_name_plural = "Блюда линии раздачи (Сокол)"
+
+    def __str__(self):
+        return f'{self.name}, {self.category}'
 
 
 class MenuByDay(models.Model):
     user_id = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True)
     date = models.DateField()
     meal = models.CharField(
-            max_length=100,
-            choices=MEALS,
-            blank=True,
-            default='',
-        )
+        max_length=100,
+        choices=MEALS,
+        blank=True,
+        default='',
+    )
     type_of_diet = models.CharField(
         max_length=100,
         choices=TYPE_DIET,
@@ -394,17 +450,17 @@ class UsersReadyOrder(models.Model):
         default=False,
         help_text='Cопровождающий?')
 
-    is_probe =  models.BooleanField(
+    is_probe = models.BooleanField(
         blank=True,
         default=False,
         help_text='Питание через зонд')
 
-    is_without_salt =  models.BooleanField(
+    is_without_salt = models.BooleanField(
         blank=True,
         default=False,
         help_text='Без соли')
 
-    is_without_lactose =  models.BooleanField(
+    is_without_lactose = models.BooleanField(
         blank=True,
         default=False,
         help_text='Без лактозы')
@@ -413,7 +469,7 @@ class UsersReadyOrder(models.Model):
         blank=True,
         default=False,
         help_text='Протертое питание')
-    
+
     type_pay = models.CharField(
         max_length=100,
         choices=TYPE_PAY,
@@ -430,11 +486,11 @@ class MenuByDayReadyOrder(models.Model):
     date_create = models.DateField(default=date.today)
     date = models.DateField()
     meal = models.CharField(
-            max_length=100,
-            choices=MEALS,
-            blank=True,
-            default='',
-        )
+        max_length=100,
+        choices=MEALS,
+        blank=True,
+        default='',
+    )
     type_of_diet = models.CharField(
         max_length=100,
         choices=TYPE_DIET,
@@ -475,15 +531,15 @@ class ProductLp(models.Model):
     weight = models.CharField(verbose_name="Вес", max_length=5000, null=True, blank=True)
     number_tk = models.CharField(verbose_name="Номер ТТК", max_length=5000, null=True, blank=True)
     # у новых блюд статус равен 1
-    status = models.CharField(verbose_name="Статус", max_length=500, null=True, default='1',)
+    status = models.CharField(verbose_name="Статус", max_length=500, null=True, default='1', )
     with_garnish = models.BooleanField(verbose_name="Блюдо с гарниром",
-        blank=True,
-        default=False,
-        help_text='Блюдо уже с гарниром?')
+                                       blank=True,
+                                       default=False,
+                                       help_text='Блюдо уже с гарниром?')
     with_phote = models.BooleanField(verbose_name="Есть фото",
-        blank=True,
-        default=False,
-        help_text='Есть фото?')
+                                     blank=True,
+                                     default=False,
+                                     help_text='Есть фото?')
 
     class Meta:
         verbose_name = "Блюда лечебного питания"
@@ -513,6 +569,7 @@ class TimetableLp(models.Model):
         blank=True,
         default='',
         help_text='Выбор диеты')
+
     def __str__(self):
         return f'{self.item}'
 
@@ -523,7 +580,8 @@ class Barcodes(models.Model):
         max_length=10,
         choices=STATUS_BARCODES,
         default='active',
-       )
+    )
+
     def __str__(self):
         return f'{self.number}'
 
@@ -554,11 +612,11 @@ class Report(models.Model):
     product_id = models.CharField(max_length=200, null=True)
     date_create = models.DateField(default=date.today)
     meal = models.CharField(
-            max_length=100,
-            choices=MEALS,
-            blank=True,
-            default='',
-        )
+        max_length=100,
+        choices=MEALS,
+        blank=True,
+        default='',
+    )
     type_of_diet = models.CharField(
         max_length=100,
         choices=TYPE_DIET,
@@ -577,8 +635,6 @@ class Report(models.Model):
         null=True,
         help_text='Тип: экстренное питание, стандартное')
 
-
-
     def __str__(self):
         return f'{self.user_id} {self.date_create} {self.meal}'
 
@@ -595,13 +651,13 @@ class ProductStorage(models.Model):
         blank=True,
         help_text='Тип диеты')
     meal = models.CharField(
-            max_length=100,
-            choices=MEALS,
-            blank=True,
-            default='',
-        )
+        max_length=100,
+        choices=MEALS,
+        blank=True,
+        default='',
+    )
     category = models.CharField(max_length=200, null=True, blank=True)
-    products_id =models.CharField(max_length=200, null=True, blank=True)
+    products_id = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return f'{self.date_create} {self.meal} {self.category} {self.products_id}'
@@ -632,39 +688,45 @@ class Ingredient(models.Model):
     def __str__(self):
         return f'name: {self.name}, product_id: {self.product_id}'
 
+
 class Token(models.Model):
     iiko_server = models.CharField(max_length=64, null=True, blank=True)
 
     def __str__(self):
         return f'iikoServer: {self.iiko_server}'
 
+
 # записываем блюда, которые были изменены
 class ModifiedDish(models.Model):
     product_id = models.CharField(max_length=30)
     meal = models.CharField(
-            max_length=100,
-            choices=MEALS,
-        )
+        max_length=100,
+        choices=MEALS,
+    )
     date = models.DateField()
     user_id = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True)
     status = models.CharField(max_length=30,
                               choices=MOD_STATUS,
                               blank=True,
-                              default='',)
+                              default='', )
+
     def __str__(self):
         return f'{self.product_id} - {self.date}'
 
 
 class IsReportCreate(models.Model):
     is_report_create = models.BooleanField(default=False)
+
     def __str__(self):
         return f'{self.id} - {self.is_report_create}'
 
 
 class IsBrakeryMagazineCreate(models.Model):
     is_brakery_magazine_create = models.BooleanField(default=False)
+
     def __str__(self):
         return f'{self.id} - {self.is_brakery_magazine_create}'
+
 
 class TTK(models.Model):
     """
@@ -694,9 +756,9 @@ class IngredientСache(models.Model):
     ingredient = models.JSONField()
     create_at = models.DateTimeField(auto_now_add=True, blank=True)
     day = models.CharField(max_length=30,
-                              choices=DAYS,
-                              blank=True,
-                              default='',)
+                           choices=DAYS,
+                           blank=True,
+                           default='', )
     # дополнительно укажим дату стратка и финиша
     start = models.DateField(blank=True, null=True)
     end = models.DateField(blank=True, null=True)
@@ -709,9 +771,9 @@ class AllProductСache(models.Model):
     all_product = models.JSONField()
     create_at = models.DateTimeField(auto_now_add=True, blank=True)
     day = models.CharField(max_length=31,
-                              choices=DAYS,
-                              blank=True,
-                              default='',)
+                           choices=DAYS,
+                           blank=True,
+                           default='', )
     # дополнительно укажим дату стратка и финиша
     start = models.DateField(blank=True, null=True)
     end = models.DateField(blank=True, null=True)

@@ -27,7 +27,7 @@ from .functions.report import create_external_report, create_external_report_det
 from .functions.ttk import create_all_ttk, enumeration_semifinisheds, get_tree_ttk
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, UsersToday, UsersReadyOrder, \
     MenuByDayReadyOrder, Report, \
-    IsReportCreate, AllProductСache, Ingredient, IsBrakeryMagazineCreate
+    IsReportCreate, AllProductСache, Ingredient, IsBrakeryMagazineCreate, ProductAlcon, TimetableAlcon
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import DownloadReportSerializer
 from rest_framework.response import Response
@@ -61,7 +61,7 @@ def backup(request):
 
 
 @transaction.atomic
-def load_menu(dict_tests, dict_tk):
+def load_menu(dict_tests, dict_tk, table=Product):
     menu_items = dict_tests['menu']['items']
     to_create = []
     for menu_item in menu_items:
@@ -74,9 +74,9 @@ def load_menu(dict_tests, dict_tk):
         if key == None:
             key = "Отсутствует"
 
-        if (len(Product.objects.filter(iditem=menu_item['product']['id'])) == 0) and (
+        if (len(table.objects.filter(iditem=menu_item['product']['id'])) == 0) and (
                 len([item for item in to_create if item.iditem == menu_item['product']['id']]) == 0):
-            to_create.append(Product(
+            to_create.append(table(
                 iditem=menu_item['product']['id'],
                 name=menu_item['product']['name'],
                 public_name=menu_item['product']['name'],
@@ -95,11 +95,11 @@ def load_menu(dict_tests, dict_tk):
                 category=menu_item['category']['name'],
                 cooking_method=key
             ))
-    Product.objects.bulk_create(to_create)
+    table.objects.bulk_create(to_create)
 
 
 @transaction.atomic
-def load_timetable(dict_tests):
+def load_timetable(dict_tests, table_product=Product, table_timetable=Timetable):
     # Product.objects.all().delete()
     # dict_tests = {'menu': {'id': 682, 'date': '24.06.2022', 'status': 'completed', 'completed_at': '22.06.2022 17:52:31', 'created_at': '17.06.2022 10:26:17', 'combo_price': 350, 'location': {'id': 4, 'name': 'hadassah', 'subdomain': 'hadassah'}, 'items': [{'id': 13276, 'combo': False, 'product': {'id': 251, 'name': 'Говядина по-азиатски 75/75 гр.', 'price': 239, 'carbohydrate': '0.57539', 'fat': '11.42332', 'fiber': '21.60205', 'energy': '191.51808', 'image': 'a8faed5c-fd3e-40cf-bb93-6d86240a268e.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав: говядина, масло подсолнечное, соус соевый, крахмал, соус терияки, перец чили, масло кунжутное, кунжут, корень имбиря, перец болгарский, лук репчатый.'}, 'category': {'id': 6, 'name': 'Вторые блюда'}}, {'id': 13277, 'combo': False, 'product': {'id': 337, 'name': 'Куриная ватрушка с грибным жульеном 120 гр.', 'price': 159, 'carbohydrate': '23.04720', 'fat': '17.42760', 'fiber': '20.17560', 'energy': '329.73120', 'image': '66366171-300e-469f-8692-de7da76785f4.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав : Состав : фарш из курицы ( филе курицы, хлеб, соль, перекц , лук репчатый), масло подсолнечное, сыр Гауда, жульен грибной ( грибы шампиньоны, лук репчатый, масло подсолнечное, молоко 3,2%, сливки 33%, перец черный молотый, соль).'}, 'category': {'id': 6, 'name': 'Вторые блюда'}}, {'id': 13278, 'combo': False, 'product': {'id': 396, 'name': 'Перец фаршированный овощами, грибами и кус-кусом 200/50', 'price': 239, 'carbohydrate': '25.70250', 'fat': '8.97750', 'fiber': '4.95250', 'energy': '203.40750', 'image': '7bba3000-acb3-4b5d-aecd-aa0b7be477e5.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав: перец болгарский, грибы шампиньоны, кускус, морковь, перец болгарский, томатный соус ( томатная паста, лук репчатый, морковь, перец черный молотый, соль, прованские травы),'}, 'category': {'id': 6, 'name': 'Вторые блюда'}}, {'id': 13279, 'combo': True, 'product': {'id': 1817, 'name': 'Суп-крем овощной 250 гр.', 'price': 99, 'carbohydrate': '21.50694', 'fat': '5.40708', 'fiber': '2.86319', 'energy': '146.14958', 'image': 'fb998852-3579-4a9a-bba7-abe5cccb8f32.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав: капуста брокколи, капуста цветная , лук репчатый, картофель, морковь, зхелень, сельдерей, перец, соль, масло оливковое, сливки 33 % .'}, 'category': {'id': 17, 'name': 'Первые блюда'}}, {'id': 13280, 'combo': False, 'product': {'id': 1255, 'name': 'Тайский суп с лапшой и говядиной 250 гр.', 'price': 169, 'carbohydrate': '17.91500', 'fat': '14.48250', 'fiber': '15.07500', 'energy': '262.29000', 'image': '76113578-d361-41f9-9bad-31a37e26c856.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав: шпинат, говядина, чеснок, имбирь, лук репчатый, морковь, масло подсолнечное, грибы шампиньоны, лапша гречневая, соевый соус, соль, перец.'}, 'category': {'id': 17, 'name': 'Первые блюда'}}, {'id': 13281, 'combo': False, 'product': {'id': 434, 'name': 'Стейк из бедра индейки с томатной сальсой 100/50 гр.', 'price': 239, 'carbohydrate': '3.64950', 'fat': '16.14150', 'fiber': '21.92400', 'energy': '247.57050', 'image': 'df5fb311-1b7f-4373-bc4d-2ca869c8b3e7.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав : филе индейки, соевый соус, тимьян, мед, масло подсолнечное, томатная сальса( помидор, лук репчатый, чеснок, кинза, соль, перец, масло оливковое).'}, 'category': {'id': 6, 'name': 'Вторые блюда'}}, {'id': 13282, 'combo': True, 'product': {'id': 446, 'name': 'Тефтели куриные с зеленым горошком в сметанном соусе 100/50гр.', 'price': 139, 'carbohydrate': '16.39800', 'fat': '12.20250', 'fiber': '14.38200', 'energy': '232.92450', 'image': '1b066181-48e5-4739-b847-6819afa21f54.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав: фарш куриный (курица, соль, перец, лук, хлеб),горек зеленый, сметана, мука пшеничная, соль,перец черный молотый.'}, 'category': {'id': 6, 'name': 'Вторые блюда'}}, {'id': 13283, 'combo': False, 'product': {'id': 514, 'name': 'Брокколи на пару с болгарским перцем 150 гр.', 'price': 119, 'carbohydrate': '7.41150', 'fat': '5.26650', 'fiber': '3.73650', 'energy': '91.98150', 'image': '0f3a5af0-8454-4441-a5f6-c53655b1b2b3.jpg', 'vegan': 1, 'allergens': 0, 'lactose_free': None, 'sugarless': None, 'gluten_free': None, 'description': 'Состав:Капуста брокколи с/м, перец болгарский, масло подсолнечное'}, 'category': {'id': 9, 'name': 'Гарниры'}}, {'id': 13284, 'combo': True, 'product': {'id': 617, 'name': 'Спагетти отварные 150 гр.', 'price': 69, 'carbohydrate': '35.74950', 'fat': '7.15650', 'fiber': '4.68000', 'energy': '226.12350', 'image': '66149542-2a5f-426e-9e58-bf327a581b76.jpg', 'vegan': 1, 'allergens': 0, 'lactose_free': None, 'sugarless': None, 'gluten_free': None, 'description': 'Состав Спагетти, масло подс.,соль.'}, 'category': {'id': 9, 'name': 'Гарниры'}}, {'id': 13285, 'combo': False, 'product': {'id': 359, 'name': 'Лазанья грибная 200 гр.', 'price': 199, 'carbohydrate': '56.29400', 'fat': '14.49800', 'fiber': '19.03600', 'energy': '431.79400', 'image': 'f82d609c-7824-4492-b297-a0616726f9cb.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав : грибы шампиньоны, лук репчатый, масло подсолнечное, паста для лазаньи, перец черный молотый, соль, сыр гауда, соус бешамель ( масло сливочное, молоко 3,2%, мускатный орех, мука пшеничная, соль, перец черный молотый.)'}, 'category': {'id': 6, 'name': 'Вторые блюда'}}, {'id': 13286, 'combo': False, 'product': {'id': 1218, 'name': 'Суп рисовый с куриными фрикадельками 250 гр.', 'price': 89, 'carbohydrate': '10.14000', 'fat': '4.60750', 'fiber': '6.47750', 'energy': '107.94000', 'image': 'dd6bbb7a-d17c-4725-b8b8-2da02e2012db.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав Бульон куриный, фрикадельки из куриного фарша,рис, морковь, лук репчатый,соль , перец'}, 'category': {'id': 17, 'name': 'Первые блюда'}}, {'id': 13287, 'combo': False, 'product': {'id': 508, 'name': ' Картофельное пюре со шпинатом150 гр.', 'price': 89, 'carbohydrate': '26.91450', 'fat': '7.95750', 'fiber': '4.05450', 'energy': '195.50250', 'image': 'ee560f38-5b7b-41f8-8275-a4a2b3e7f8b1.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав: Картофель,молоко,масло сливочное,шпинат с/м.,соль'}, 'category': {'id': 9, 'name': 'Гарниры'}}, {'id': 13288, 'combo': False, 'product': {'id': 1642, 'name': 'Рис с укропом150 гр.', 'price': 69, 'carbohydrate': '47.23619', 'fat': '4.42347', 'fiber': '3.91797', 'energy': '241.06339', 'image': 'fb9a613c-3095-4a6b-a194-5a695b628b90.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Cостав:Рис,шпинат,масло раст.,специи'}, 'category': {'id': 9, 'name': 'Гарниры'}}, {'id': 13289, 'combo': False, 'product': {'id': 927, 'name': 'Салат "Столичный" с курицей 100 гр.', 'price': 89, 'carbohydrate': '5.98515', 'fat': '9.44750', 'fiber': '6.03912', 'energy': '133.12458', 'image': '298406ab-7fd7-4b54-8c47-ac94ea3ac828.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав: картофель, морковь, филе куриное, огурцы маринованные, огурцы свежие, горошек консерв, яйцо куриное отварное, майонез, зелень, соль.'}, 'category': {'id': 15, 'name': 'Салаты'}}, {'id': 13290, 'combo': False, 'product': {'id': 947, 'name': 'Салат из крабовых палочек 100 гр.', 'price': 89, 'carbohydrate': '5.40000', 'fat': '9.16500', 'fiber': '2.91000', 'energy': '115.72500', 'image': '606430d1-cf3b-4d6d-ac82-050ed6bf6bd0.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав: Огурцы свежие, капуста пекинская, крабовые палочки,масйонез, кукуруза консервированная.'}, 'category': {'id': 15, 'name': 'Салаты'}}, {'id': 13291, 'combo': False, 'product': {'id': 992, 'name': 'Салат из томатов с редисом 100 гр.', 'price': 109, 'carbohydrate': '3.58000', 'fat': '5.16000', 'fiber': '0.80500', 'energy': '63.98000', 'image': '1c25edbd-0443-4865-a7e0-ba0c9417e44f.jpg', 'vegan': 0, 'allergens': 0, 'lactose_free': 0, 'sugarless': 0, 'gluten_free': 0, 'description': 'Состав:Помидоры свежие, редис, укроп, масло раст., соль.'}, 'category': {'id': 15, 'name': 'Салаты'}}, {'id': 13292, 'combo': True, 'product': {'id': 976, 'name': 'Салат из свежей капусты с зеленым горошком 100 гр.', 'price': 79, 'carbohydrate': '4.82248', 'fat': '7.27273', 'fiber': '2.26123', 'energy': '93.78938', 'image': '5f3ea239-a7b2-47e8-9de5-3ca456a6e175.jpg', 'vegan': 1, 'allergens': 0, 'lactose_free': None, 'sugarless': None, 'gluten_free': None, 'description': 'Состав:Капуста белокачанная, горошек консерв., зелень, масло раст., соль.'}, 'category': {'id': 15, 'name': 'Салаты'}}, {'id': 13293, 'combo': False, 'product': {'id': 958, 'name': 'Салат из огурцов с укропом 100 гр.', 'price': 89, 'carbohydrate': '2.87000', 'fat': '2.12600', 'fiber': '0.86200', 'energy': '34.06200', 'image': 'cc924895-5a6e-49d3-b344-13173340541a.jpg', 'vegan': 1, 'allergens': None, 'lactose_free': None, 'sugarless': None, 'gluten_free': None, 'description': 'Cостав:Огурцы свежие, укроп,масло раст.,соль'}, 'category': {'id': 15, 'name': 'Салаты'}}]}}
 
@@ -107,13 +107,13 @@ def load_timetable(dict_tests):
     to_create = []
     for menu_item in menu_items:
         menu_item_date = datetime.strptime(dict_tests['menu']['date'], "%d.%m.%Y").strftime("%Y-%m-%d")
-        if len(Timetable.objects.filter(datetime=menu_item_date).filter(
-                item=Product.objects.get(iditem=menu_item['product']['id']))) == 0:
-            to_create.append(Timetable(
+        if len(table_timetable.objects.filter(datetime=menu_item_date).filter(
+                item=table_product.objects.get(iditem=menu_item['product']['id']))) == 0:
+            to_create.append(table_timetable(
                 datetime=menu_item_date,
-                item=Product.objects.get(iditem=menu_item['product']['id'])
+                item=table_product.objects.get(iditem=menu_item['product']['id'])
             ))
-    Timetable.objects.bulk_create(to_create)
+    table_timetable.objects.bulk_create(to_create)
 
 
 # загрузка блюд из json в БД после парсинга
@@ -771,11 +771,16 @@ class BaseAPIView(APIView):
         data_str = str(data)
         Base.objects.create(base=data_str)
         data_dict = dict(data)
-        js = open("cooking_method.json").read()
+        with open("cooking_method.json", encoding="utf-8") as file:
+            js = file.read()
         dict_tk = json.loads(js)
         if data_dict['menu']['location']['name'] == 'hadassah':
-            load_menu(data_dict, dict_tk)
-            load_timetable(data_dict)
+            load_menu(data_dict, dict_tk, Product)
+            load_timetable(data_dict, Product, Timetable)
+            Base.objects.create(base=data_str)
+        elif data_dict['menu']['location']['name'] == 'sokol':
+            load_menu(data_dict, dict_tk, ProductAlcon)
+            load_timetable(data_dict, ProductAlcon, TimetableAlcon)
             Base.objects.create(base=data_str)
         return Response(data)
 
@@ -1889,6 +1894,8 @@ def tk(request, id, count):
         template_name = 'tk_for_epidemiologist.html'
     elif request.path == reverse('tk_for_cafe', args=[id, 0]):
         template_name = 'tk_for_cafe.html'
+    elif request.path == reverse('tk_for_cafe_alkon', args=[id, 0]):
+        template_name = 'tk_for_cafe_alcon.html'
     return render(request, template_name, context=data)
 
 
@@ -1900,7 +1907,8 @@ def product_storage_hadassah(request):
     data = {
         'menu': menu,
         'day_of_the_week': str_day_of_the_week,
-        'default_date': date.today()
+        'default_date': date.today(),
+        'institution': 'hadassah'
     }
     return render(request, "product_storage_for_cafe.html", context=data)
 
@@ -1908,11 +1916,13 @@ def product_storage_hadassah(request):
 def product_storage_alcon(request):
     day_of_the_week = request.GET.get('day', date.today())
     str_day_of_the_week = str(day_of_the_week)
-    menu = creating_meal_menu_cafe_new(day_of_the_week)
+    menu = creating_meal_menu_cafe_new(day_of_the_week, alcon=True)
 
     data = {
         'menu': menu,
         'day_of_the_week': str_day_of_the_week,
+        'default_date': date.today(),
+        'institution': 'alcon'
     }
     return render(request, "product_storage_for_cafe.html", context=data)
 
@@ -1920,8 +1930,12 @@ def product_storage_alcon(request):
 def get_all_product_for_hadassah(request):
     if request.method == 'POST':
         date_get = json.loads(request.body).get('date')
+        institution = json.loads(request.body).get('institution')
 
-        products = Product.objects.filter(timetable__datetime=date_get).order_by('name')
+        if institution == 'alcon':
+            products = ProductAlcon.objects.filter(timetablealcon__datetime=date_get).order_by('name')
+        else:
+            products = Product.objects.filter(timetable__datetime=date_get).order_by('name')
 
         result = []
         for product in products:
@@ -1933,6 +1947,7 @@ def get_all_product_for_hadassah(request):
         return render(request, 'include/menu_table.html', {
             'menu': result,
             'day_of_the_week': str(date_get),
+            'institution': institution
         })
 
 
@@ -2273,13 +2288,16 @@ class FetchAllProductsFromIIKOAPIView(APIView):
         query = request.data.get('query', '').lower()
         entire_database = request.data.get('entireDatabase', False)
         date_get = request.data.get('date_get')
+        institution = request.data.get('institution', 'hadassah')
         if date_get == '':
             date_get = date.today()
 
         if entire_database:
             dishes = Ingredient.objects.filter(name__icontains=query, type="Dish")
-        else:
+        elif institution == 'hadassah':
             dishes = Product.objects.filter(name__icontains=query, timetable__datetime=date_get)
+        elif institution == 'alcon':
+            dishes = ProductAlcon.objects.filter(name__icontains=query, timetablealcon__datetime=date_get)
 
         dishes = [
             {
@@ -2292,6 +2310,10 @@ class FetchAllProductsFromIIKOAPIView(APIView):
         # safe=False: Если параметр safe установлен в False,
         # то Django позволяет передавать любые данные, не проверяя, являются ли они словарем
         return JsonResponse(dishes, safe=False)
+
+
+def start_page_product_storage(request):
+    return render(request, 'start_page_product_storage.html')
 
 
 def create_сatalog(is_public, meal, patient, day):
@@ -2446,8 +2468,11 @@ def get_energy_value(product):
     return energy_value
 
 
-def creating_meal_menu_cafe_new(day_of_the_week):
-    products = Product.objects.filter(timetable__datetime=day_of_the_week).order_by('name')
+def creating_meal_menu_cafe_new(day_of_the_week, alcon=False):
+    if alcon:
+        products = ProductAlcon.objects.filter(timetablealcon__datetime=day_of_the_week).order_by('name')
+    else:
+        products = Product.objects.filter(timetable__datetime=day_of_the_week).order_by('name')
     result = []
     for product in products:
         with_product_id = Ingredient.objects.filter(name=product.name).first()
