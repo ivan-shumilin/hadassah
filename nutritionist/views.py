@@ -1932,18 +1932,7 @@ def get_all_product_for_hadassah(request):
         date_get = json.loads(request.body).get('date')
         institution = json.loads(request.body).get('institution')
 
-        if institution == 'alcon':
-            products = ProductAlcon.objects.filter(timetablealcon__datetime=date_get).order_by('name')
-        else:
-            products = Product.objects.filter(timetable__datetime=date_get).order_by('name')
-
-        result = []
-        for product in products:
-            with_product_id = Ingredient.objects.filter(name=product.name).first()
-            if with_product_id is None:
-                result.append(product)
-            else:
-                result.append(with_product_id)
+        result = creating_meal_menu_cafe_new(date_get, alcon=(institution == 'alcon'))
         return render(request, 'include/menu_table.html', {
             'menu': result,
             'day_of_the_week': str(date_get),
@@ -2468,19 +2457,27 @@ def get_energy_value(product):
     return energy_value
 
 
-def creating_meal_menu_cafe_new(day_of_the_week, alcon=False):
+def creating_meal_menu_cafe_new(day_of_the_week, alcon=False) -> dict:
     if alcon:
         products = ProductAlcon.objects.filter(timetablealcon__datetime=day_of_the_week).order_by('name')
     else:
         products = Product.objects.filter(timetable__datetime=day_of_the_week).order_by('name')
-    result = []
+    # result = []
+    # for product in products:
+    #     with_product_id = Ingredient.objects.filter(name=product.name).first()
+    #     if with_product_id is None:
+    #         result.append(product)
+    #     else:
+    #         result.append(with_product_id)
+    result = collections.defaultdict(list)
     for product in products:
         with_product_id = Ingredient.objects.filter(name=product.name).first()
         if with_product_id is None:
-            result.append(product)
+            result[product.category].append(product)
         else:
-            result.append(with_product_id)
-    return result
+            result[product.category].append(with_product_id)
+
+    return dict(result)
 
 
 def creating_meal_menu_lp_new(day_of_the_week, translated_diet, meal):

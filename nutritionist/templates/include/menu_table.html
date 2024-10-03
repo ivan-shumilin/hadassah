@@ -7,34 +7,47 @@
             </div>
         </form>
 
-        <table id='table2' style="margin-top: 10px; width: 100%">
+        <table id='table2' style="margin-top: 10px; width: 70%">
             <tr>
-                <td class="pd-left-right">Дата</td>  <!-- Столбец для даты -->
+                <td class="pd-left-right">Категория</td>  <!-- Столбец для категории-->
                 <td>Название блюда</td>
             </tr>
-
-            {% for product in menu %}
-                <tr>
-                    {% if forloop.first %}
-                        <td class="pd-left-right">{{ day_of_the_week }}</td>  <!-- Выводим дату только в первой строке -->
+            {% for category, products in menu.items %}
+                    {% for product in products %}
+                    {% if forloop.last %}
+                        <tr class="solid">
                     {% else %}
-                        <td></td>  <!-- Оставляем пустым для остальных строк -->
+                        <tr>
                     {% endif %}
-
-                    <td class="pd-left-right">
-                        {% if product.product_id %}
-                            {% if institution == "hadassah" %}
-                                <a class="link" href="{% url 'tk_for_cafe' product.product_id '0' %}"> {{ product.name }}</a>
-                            {% elif institution == "alcon" %}
-                                <a class="link" href="{% url 'tk_for_cafe_alkon' product.product_id '0' %}"> {{ product.name }}</a>
-                            {% endif %}
-                        {% else %}
-                            {{ product.name }}
+                         {% if forloop.first %}
+                            <td class="pd-left-right">{{ category }}</td> <!-- Выводим категорию только для первого продукта -->
+                         {% else %}
+                            <td></td> <!-- Оставляем ячейку пустой для остальных продуктов -->
                         {% endif %}
-                        <span class="font-weight-normal">(Kкал - {{ product.energy|floatformat:2 }}, Б. -{{ product.fiber|floatformat:2 }},
-                            Ж. - {{ product.fat|floatformat:2  }}, У. - {{ product.carbohydrate|floatformat:2  }})</span>
-                    </td>
-                </tr>
+
+                        <td class="pd-left-right">
+                            {% if product.product_id %}
+                                {% if institution == "hadassah" %}
+                                    <a class="link" href="{% url 'tk_for_cafe' product.product_id '0' %}"> {{ product.name }}</a>
+                                {% elif institution == "alcon" %}
+                                    <a class="link" href="{% url 'tk_for_cafe_alkon' product.product_id '0' %}"> {{ product.name }}</a>
+                                {% endif %}
+                            {% else %}
+                                {{ product.name }}
+                            {% endif %}
+
+    {#                        <span class="font-weight-normal">#}
+    {#                            {% if product.fiber %}#}
+    {#                                (Kкал - {{ product.energy|floatformat:2 }}, Б. - {{ product.fiber|floatformat:2 }},#}
+    {#                                 Ж. - {{ product.fat|floatformat:2 }}, У. - {{ product.carbohydrate|floatformat:2 }})#}
+    {#                            {% else %}#}
+    {#                                (Kкал - {{ product.energyFullAmount|floatformat:2 }}, Б. - {{ product.proteinsFullAmount|floatformat:2 }},#}
+    {#                                 Ж. - {{ product.fatFullAmount|floatformat:2 }}, У. - {{ product.carbohydratesFullAmount|floatformat:2 }})#}
+    {#                            {% endif %}#}
+    {#                        </span>#}
+                        </td>
+                    </tr>
             {% endfor %}
+        {% endfor %}
         </table>
     </div>
