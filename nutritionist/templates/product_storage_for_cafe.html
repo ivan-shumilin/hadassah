@@ -33,8 +33,8 @@
 <body class="table-menu">
     <div class="report-header-block" style="margin-bottom: 5px;">
         <div class="container inner">
-            <h1>
-                Поиск ТТК блюд по базе
+            <h1 id="menu-header">
+                Меню на {{ default_date }}
             </h1>
 
         </div>
@@ -42,13 +42,17 @@
 
     <div class="container mt-3">
 
-        <label for="date-picker">Выберите дату:</label>
-        <input type="date" id="date-picker" class="form-control mb-2" style="width: 169px;" value="{{ default_date }}">
-
-        <!-- Кнопка для открытия модального окна -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productSearchModal">
-            Поиск ТТК блюд
-        </button>
+        <div class="container row align-items-center">
+            <div class="col-6">
+                <label for="date-picker">Выберите дату:</label>
+                <input type="date" id="date-picker" class="form-control mb-2" style="width: 169px;" value="{{ default_date }}">
+            </div>
+            <div class="col-6 mt-3">
+                <!-- Кнопка для открытия модального окна -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productSearchModal">
+                    Поиск ТТК блюд
+                </button>
+            </div>
 
         <!-- Место для меню на определенную дату -->
          <div id="menu-table">
@@ -151,8 +155,28 @@
         return cookieValue;
     }
 
+    function formatDateISO(date) {
+        let day = String(date.getDate()).padStart(2, '0');
+        let month = String(date.getMonth() + 1).padStart(2, '0');
+        let year = date.getFullYear();
+        return `${year}-${month}-${day}`;
+    }
+
     document.getElementById('date-picker').addEventListener('change', function() {
         const selectedDate = this.value;
+        const dateObj = new Date(selectedDate);
+
+        // Получаем сокращенное название дня недели
+        const weekdayOptions = { weekday: 'short' };
+        const shortWeekday = new Intl.DateTimeFormat('ru-RU', weekdayOptions).format(dateObj);
+
+        // Получаем день и месяц
+        const dayMonthOptions = { day: 'numeric', month: 'long' };
+        const dayMonth = new Intl.DateTimeFormat('ru-RU', dayMonthOptions).format(dateObj);
+
+        // Обновляем заголовок
+        document.getElementById('menu-header').textContent = `Меню на ${dayMonth}, ${shortWeekday}`;
+
         const csrftoken = getCookie('csrftoken');
         if (selectedDate) {
             fetch(`/api/v1/get_products_for_product_storage_hadassah`, {

@@ -1,4 +1,5 @@
 import collections
+import locale
 import math, operator
 from dateutil.parser import parse
 from django.shortcuts import render
@@ -1904,10 +1905,21 @@ def product_storage_hadassah(request):
     str_day_of_the_week = str(day_of_the_week)
     menu = creating_meal_menu_cafe_new(day_of_the_week)
 
+    now = datetime.now()
+    locale.setlocale(locale.LC_TIME, "ru_RU")
+
+    # Форматируем дату
+    formatted_date = now.strftime('%d')
+    month = now.strftime('%B').lower()
+    short_weekday = now.strftime('%a').lower()
+
+    # Получаем сокращенное название дня недели
+    header = f"{int(formatted_date)} {month}, {short_weekday}"
+
     data = {
         'menu': menu,
         'day_of_the_week': str_day_of_the_week,
-        'default_date': date.today(),
+        'default_date': header,
         'institution': 'hadassah'
     }
     return render(request, "product_storage_for_cafe.html", context=data)
@@ -1918,11 +1930,22 @@ def product_storage_alcon(request):
     str_day_of_the_week = str(day_of_the_week)
     menu = creating_meal_menu_cafe_new(day_of_the_week, alcon=True)
 
+    now = datetime.now()
+    locale.setlocale(locale.LC_TIME, "ru_RU")
+
+    # Форматируем дату
+    formatted_date = now.strftime('%d')
+    month = now.strftime('%B').lower()
+    short_weekday = now.strftime('%a').lower()
+
+    # Получаем сокращенное название дня недели
+    header = f"{int(formatted_date)} {month}, {short_weekday}"
+
     data = {
         'menu': menu,
         'day_of_the_week': str_day_of_the_week,
-        'default_date': date.today(),
-        'institution': 'alcon'
+        'default_date':  header,
+        'institution': 'alcon',
     }
     return render(request, "product_storage_for_cafe.html", context=data)
 
@@ -1936,7 +1959,8 @@ def get_all_product_for_hadassah(request):
         return render(request, 'include/menu_table.html', {
             'menu': result,
             'day_of_the_week': str(date_get),
-            'institution': institution
+            'institution': institution,
+            'default_date': date_get
         })
 
 
