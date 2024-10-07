@@ -1906,7 +1906,7 @@ def product_storage_hadassah(request):
     menu = creating_meal_menu_cafe_new(day_of_the_week)
 
     now = datetime.now()
-    locale.setlocale(locale.LC_TIME, "ru_RU")
+    locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
 
     # Форматируем дату
     formatted_date = now.strftime('%d')
@@ -1931,7 +1931,7 @@ def product_storage_alcon(request):
     menu = creating_meal_menu_cafe_new(day_of_the_week, alcon=True)
 
     now = datetime.now()
-    locale.setlocale(locale.LC_TIME, "ru_RU")
+    locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
 
     # Форматируем дату
     formatted_date = now.strftime('%d')
