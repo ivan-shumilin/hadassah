@@ -259,6 +259,7 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
+    search_fields = ["full_name"]
     # fields = ['full_name', 'comment', 'email', 'username']
     list_display = ['username', 'email', 'full_name', 'comment']
 
