@@ -69,6 +69,7 @@ class ProductAdmin(admin.ModelAdmin):
     fields = ('name', 'public_name', 'iditem', 'with_garnish', 'ovd', 'ovd_vegan', 'ovd_sugarless',\
               'shd', 'shd_sugarless', 'iodine_free', 'bd', 'vbd', 'nbd', 'nkd', 'vkd', 'category', 'description',)
     list_filter = ('category', 'with_garnish', 'ovd', 'shd', 'bd', 'vbd', 'nbd', 'nkd', 'vkd',)
+    search_fields = ('name', 'public_name')
     list_per_page = 500
 
     inlines = [TimetableAdmin]
@@ -125,6 +126,7 @@ class ProductLpAdmin(admin.ModelAdmin):
     fields = ('name', 'public_name', 'primary_key', 'image', 'preview', 'edit_photo', 'preview_min', 'edit_photo_min', 'product_id', 'with_garnish', 'number_tk', 'category', 'carbohydrate', 'fat', 'fiber',
               'energy', 'weight', 'description', 'comment', 'status')
     list_filter = ('with_phote', 'category')
+    search_fields = ('name', 'public_name')
     list_per_page = 1000
     readonly_fields = ["preview", "preview_min", "edit_photo", "edit_photo_min", "primary_key"]
 
