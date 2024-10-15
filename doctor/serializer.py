@@ -10,6 +10,7 @@ class DishesSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
+
     class Meta:
         model = TimetableLp
         fields = ('name', 'type_of_diet', 'id', 'description')
@@ -24,6 +25,7 @@ class DishesSerializer(serializers.ModelSerializer):
         if self.context.get('type') == "cafe":
             return f'cafe-cat-{instance.item.id}'
         return instance.item.id
+
 
 class PatientsSerializer(serializers.ModelSerializer):
     # DIETS_COLORS_NAME = {
@@ -63,7 +65,7 @@ class PatientsSerializer(serializers.ModelSerializer):
                   'comment',
                   'extra_bouillon',
                   # 'color'
-                )
+                  )
 
     # def get_type_of_diet(self, instance):
     #     return self.DIETS_COLORS_NAME[instance.type_of_diet]['name']
@@ -84,7 +86,7 @@ class InfoPatientSerializer(serializers.ModelSerializer):
                                instance.is_probe,
                                instance.is_without_salt,
                                instance.is_without_lactose,
-                               instance.is_pureed_nutrition,)
+                               instance.is_pureed_nutrition, )
         return comment
 
 
@@ -120,7 +122,6 @@ class ProductsSerializer(serializers.Serializer):
     id_annotetion = serializers.CharField()
 
 
-
 class AddDishSerializer(serializers.Serializer):
     id_user = serializers.CharField()
     date = serializers.DateField()
@@ -148,6 +149,7 @@ class ChangeDishSerializer(serializers.Serializer):
     meal = serializers.CharField()
     doctor = serializers.CharField(allow_blank=True)
 
+
 class CroppImageSerializer(serializers.Serializer):
     x = serializers.IntegerField()
     y = serializers.IntegerField()
@@ -155,3 +157,9 @@ class CroppImageSerializer(serializers.Serializer):
     height = serializers.IntegerField()
     url = serializers.CharField()
     type = serializers.CharField()
+
+
+class PatientMenuSerializer(serializers.Serializer):
+    full_name = serializers.CharField(max_length=255, required=True)
+    type = serializers.CharField(max_length=255, required=True)
+    extra_bouillon = serializers.CharField(max_length=255, required=False)

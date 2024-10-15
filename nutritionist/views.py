@@ -19,6 +19,7 @@ from doctor.functions.diet_formation import get_users_on_the_meal
 from doctor.functions.download import get_tk, get_name_by_api, get_allergens, get_weight_tk, \
     get_measure_unit
 from scripts.updata_ttk import update_ttk
+from .constants import MONTH_TTK, SHORT_WEEKDAY_TTK
 from .decorators import login_required_manager_and_kitchen, login_required_hadassah_report, login_required_accountant, \
     login_required_manager
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal, \
@@ -1909,8 +1910,8 @@ def product_storage_hadassah(request):
 
     # Форматируем дату
     formatted_date = now.strftime('%d')
-    month = now.strftime('%B').lower()
-    short_weekday = now.strftime('%a').lower()
+    month = MONTH_TTK[now.strftime('%B').lower()]
+    short_weekday = SHORT_WEEKDAY_TTK[now.strftime('%a').lower()]
 
     # Получаем сокращенное название дня недели
     header = f"{int(formatted_date)} {month}, {short_weekday}"
@@ -1933,8 +1934,8 @@ def product_storage_alcon(request):
 
     # Форматируем дату
     formatted_date = now.strftime('%d')
-    month = now.strftime('%B').lower()
-    short_weekday = now.strftime('%a').lower()
+    month = MONTH_TTK[now.strftime('%B').lower()]
+    short_weekday = SHORT_WEEKDAY_TTK[now.strftime('%a').lower()]
 
     # Получаем сокращенное название дня недели
     header = f"{int(formatted_date)} {month}, {short_weekday}"

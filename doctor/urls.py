@@ -26,4 +26,5 @@ urlpatterns = [
     path('api/v1/cropp_image', views.CroppImageAPIView.as_view()),
     path('api/v1/check-is-have-patient', views.CheckIsHavePatientAPIView.as_view()),
     path('api/v1/test', views.testAPIView.as_view()),
+    path('api/v1/add-patient-new-menu/', views.AddPatientMenuView.as_view())
 ]

@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
 from django.forms import Textarea, TextInput, Select, DateInput, TimeInput, CheckboxInput
 from drf_spectacular.utils import extend_schema_view, extend_schema
+from rest_framework import status
 
 from nutritionist.functions.get_ingredients import get_semifinished, get_semifinished_level_1, get_ingredients_for_ttk, \
     caching_ingredients
@@ -38,7 +39,7 @@ from doctor.functions.for_print_forms import create_user_today, check_time, upda
     applies_changes, create_user_tomorrow, create_ready_order, create_report, create_products_lp, add_products_lp, \
     add_products_lp, create_product_storage
 from doctor.functions.diet_formation import add_menu_three_days_ahead, update_diet_bd, \
-    add_the_patient_emergency_food_to_the_database, get_meal_emergency_food
+    add_the_patient_emergency_food_to_the_database, get_meal_emergency_food, add_the_patient_menu
 from doctor.functions.translator import get_day_of_the_week, translate_diet
 from django.db.models import Q, F, Case, When, Value
 from rest_framework.views import APIView
@@ -56,7 +57,7 @@ from django.views.generic import TemplateView
 
 from .serializer import DishesSerializer, PatientsSerializer, InfoPatientSerializer, InputDataSerializer, \
     AddDishSerializer, ChangeDishSerializer, CroppImageSerializer, SendPatientProductsAPIViewSerializer, \
-    UpdateSearchAPIViewSerializer, ProductsSerializer, CheckIsHavePatientSerializer
+    UpdateSearchAPIViewSerializer, ProductsSerializer, CheckIsHavePatientSerializer, PatientMenuSerializer
 
 
 class ServiceWorkerView(TemplateView):
@@ -1546,6 +1547,22 @@ class testAPIView(APIView):
     def get(self, request):
         caching_ingredients()
         return Response({'status': 'OK'})
+
+
+class AddPatientMenuView(APIView):
+    def post(self, request):
+        serializer = PatientMenuSerializer(data=request.data)
+        if serializer.is_valid():
+            full_name = serializer.validated_data['full_name']
+            type = serializer.validated_data['type']
+            extra_bouillon = serializer.validated_data.get('extra_bouillon', '')
+            try:
+                user = CustomUser.objects.get(full_name=full_name, status='patient')
+                add_the_patient_menu(user, type, extra_bouillon)
+                return Response({"message": "Patient menu added successfully!"}, status=status.HTTP_201_CREATED)
+            except CustomUser.DoesNotExist:
+                return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def logging_add_dish_api(info, table, order_status, product_name, product_id,
