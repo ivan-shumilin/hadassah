@@ -49,9 +49,11 @@ urlpatterns = [
     path('manager/tk/<id>/<count>', views.tk, name='tk'),
     path('manager/tk_for_cafe/<id>/<count>', views.tk, name='tk_for_cafe'),
     path('manager/tk_for_cafe_alcon/<id>/<count>', views.tk, name='tk_for_cafe_alkon'),
-    path('manager/product_storage_hadassah/', views.product_storage_hadassah, name='product_storage_hadassah'),
-    path('manager/product_storage_alcon/', views.product_storage_alcon, name='product_storage_alcon'),
-    path('manager/start_page_product_storage', views.start_page_product_storage, name='start_page_product_storage'),
+    path('manager/tk_for_cafe_renova/<id>/<count>', views.tk, name='tk_for_cafe_renova'),
+    path('hadassah/ttk-tool/', views.product_storage_hadassah, name='product_storage_hadassah'),
+    path('alcon/ttk-tool/', views.product_storage_alcon, name='product_storage_alcon'),
+    path('renova/ttk-tool/', views.product_storage_renova, name='product_storage_renova'),
+    path('start_page_product_storage/', views.start_page_product_storage, name='start_page_product_storage'),
     path('manager/without_menu/for_epidemiologist/tk/<id>/<count>', views.tk, name='tk_for_epidemiologist'),
     path('manager/admin-foods/', views.admin_foods, name='admin_foods'),
     path('manager/admin-foods-new/', views.admin_foods_new, name='admin_foods_new'),
@@ -68,7 +70,7 @@ urlpatterns = [
     path('api/v1/get/download_brakery', views.DownloadBrakeryAPIView.as_view()),
     path('api/v1/get/check-is-brakery', views.CheckIsBrakeryAPIView.as_view()),
     path('api/v1/get_all_dishes_from_iiko', views.FetchAllProductsFromIIKOAPIView.as_view()),
-    path('api/v1/get_products_for_product_storage_hadassah', views.get_all_product_for_hadassah),
+    path('api/v1/get_products_for_product_storage', views.get_all_product),
     path('manager/api/v1/get/downloadsstickers', views.CreateStickers.as_view(), name='create_stickers'),
 ]
 

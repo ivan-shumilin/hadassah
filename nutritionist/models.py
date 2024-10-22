@@ -367,6 +367,62 @@ class ProductAlcon(models.Model):
         return f'{self.name}, {self.category}'
 
 
+class TimetableRenova(models.Model):
+    datetime = models.DateField()
+    item = models.ForeignKey('ProductRenova', on_delete=models.SET_NULL, null=True)
+    date_create = models.DateField(default=date.today, null=True)
+
+    def __str__(self):
+        return f'{self.item}'
+
+
+class ProductRenova(models.Model):
+    date_create = models.DateField(default=date.today, null=True, blank=True)
+    iditem = models.IntegerField(null=True)
+    product_id = models.CharField(max_length=100, null=True, blank=True)
+    public_name = models.CharField(max_length=200, null=True, blank=True)
+    name = models.CharField(max_length=200, null=True)
+    price = models.IntegerField(null=True)
+    carbohydrate = models.CharField(max_length=200, null=True)
+    fat = models.CharField(max_length=200, null=True)
+    fiber = models.CharField(max_length=200, null=True)
+    energy = models.CharField(max_length=200, null=True)
+    weight = models.CharField(verbose_name="Вес", max_length=5000, null=True, blank=True)
+    image = models.CharField(max_length=2000, null=True)
+    vegan = models.BooleanField(null=True)
+    allergens = models.BooleanField(null=True)
+    lactose_free = models.BooleanField(null=True)
+    sugarless = models.BooleanField(null=True)
+    gluten_free = models.BooleanField(null=True)
+    description = models.CharField(max_length=1000, null=True, blank=True)
+    ovd = models.BooleanField(null=True)
+    ovd_sugarless = models.BooleanField(null=True)
+    ovd_vegan = models.BooleanField(null=True)
+    shd = models.BooleanField(null=True)
+    shd_sugarless = models.BooleanField(null=True)
+    bd = models.BooleanField(null=True)
+    vbd = models.BooleanField(null=True)
+    nbd = models.BooleanField(null=True)
+    nkd = models.BooleanField(null=True)
+    vkd = models.BooleanField(null=True)
+    iodine_free = models.BooleanField(null=True)
+    not_suitable = models.BooleanField(null=True)
+    category = models.CharField(max_length=2000, null=True, blank=True)
+    cooking_method = models.CharField(max_length=7000, null=True, blank=True)
+    comment = models.CharField(max_length=5000, null=True, blank=True)
+    with_garnish = models.BooleanField(
+        blank=True,
+        default=False,
+        help_text='Блюдо уже с гарниром?')
+
+    class Meta:
+        verbose_name = "Блюда линии раздачи (Сокол)"
+        verbose_name_plural = "Блюда линии раздачи (Сокол)"
+
+    def __str__(self):
+        return f'{self.name}, {self.category}'
+
+
 class MenuByDay(models.Model):
     user_id = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True)
     date = models.DateField()

@@ -1,5 +1,4 @@
 import collections
-import locale
 import math, operator
 from dateutil.parser import parse
 from django.shortcuts import render
@@ -21,7 +20,7 @@ from doctor.functions.download import get_tk, get_name_by_api, get_allergens, ge
 from scripts.updata_ttk import update_ttk
 from .constants import MONTH_TTK, SHORT_WEEKDAY_TTK
 from .decorators import login_required_manager_and_kitchen, login_required_hadassah_report, login_required_accountant, \
-    login_required_manager
+    login_required_manager, login_required_cafe_and_kitchen_and_manager
 from .functions.get_ingredients import get_semifinished, get_semifinished_level_1, create_catalog_all_products_on_meal, \
     caching_ingredients
 from doctor.tasks import create_report_download, create_bakery_magazine_download
@@ -29,7 +28,8 @@ from .functions.report import create_external_report, create_external_report_det
 from .functions.ttk import create_all_ttk, enumeration_semifinisheds, get_tree_ttk
 from .models import Base, Product, Timetable, CustomUser, Barcodes, ProductLp, MenuByDay, UsersToday, UsersReadyOrder, \
     MenuByDayReadyOrder, Report, \
-    IsReportCreate, AllProductСache, Ingredient, IsBrakeryMagazineCreate, ProductAlcon, TimetableAlcon
+    IsReportCreate, AllProductСache, Ingredient, IsBrakeryMagazineCreate, ProductAlcon, TimetableAlcon, ProductRenova, \
+    TimetableRenova
 from .forms import UserRegistrationForm, UserloginForm, TimetableForm, UserPasswordResetForm
 from .serializers import DownloadReportSerializer
 from rest_framework.response import Response
@@ -784,6 +784,11 @@ class BaseAPIView(APIView):
             load_menu(data_dict, dict_tk, ProductAlcon)
             load_timetable(data_dict, ProductAlcon, TimetableAlcon)
             Base.objects.create(base=data_str)
+        elif data_dict['menu']['location']['name'] == 'renova':
+            load_menu(data_dict, dict_tk, ProductRenova)
+            load_timetable(data_dict, ProductRenova, TimetableRenova)
+            Base.objects.create(base=data_str)
+
         return Response(data)
 
 
@@ -820,6 +825,8 @@ def user_login(request):
             login(request, user)
             if user.groups.filter(name='nutritionists').exists():
                 return HttpResponseRedirect(reverse('index'))
+            if user.groups.filter(name='cafe').exists():
+                return HttpResponseRedirect(reverse('start_page_product_storage'))
             if user.groups.filter(name='manager').exists():
                 return HttpResponseRedirect(reverse('manager'))
             if user.groups.filter(name='doctors').exists():
@@ -1849,7 +1856,7 @@ def update_ttk_manually(request):
         return HttpResponse(f"Error: {str(e)}", content_type="text/html")
 
 
-@login_required_manager_and_kitchen
+@login_required_cafe_and_kitchen_and_manager
 def tk(request, id, count):
     """
     Отображение тех. карты для блюда.
@@ -1898,13 +1905,16 @@ def tk(request, id, count):
         template_name = 'tk_for_cafe.html'
     elif request.path == reverse('tk_for_cafe_alkon', args=[id, 0]):
         template_name = 'tk_for_cafe_alcon.html'
+    elif request.path == reverse('tk_for_cafe_renova', args=[id, 0]):
+        template_name = 'tk_for_cafe_renova.html'
     return render(request, template_name, context=data)
 
 
+@login_required_cafe_and_kitchen_and_manager
 def product_storage_hadassah(request):
     day_of_the_week = request.GET.get('day', date.today())
     str_day_of_the_week = str(day_of_the_week)
-    menu = creating_meal_menu_cafe_new(day_of_the_week)
+    menu = creating_meal_menu_cafe_new(day_of_the_week, institution="hadassah")
 
     now = datetime.now()
 
@@ -1925,10 +1935,11 @@ def product_storage_hadassah(request):
     return render(request, "product_storage_for_cafe.html", context=data)
 
 
+@login_required_cafe_and_kitchen_and_manager
 def product_storage_alcon(request):
     day_of_the_week = request.GET.get('day', date.today())
     str_day_of_the_week = str(day_of_the_week)
-    menu = creating_meal_menu_cafe_new(day_of_the_week, alcon=True)
+    menu = creating_meal_menu_cafe_new(day_of_the_week, institution="alcon")
 
     now = datetime.now()
 
@@ -1949,12 +1960,37 @@ def product_storage_alcon(request):
     return render(request, "product_storage_for_cafe.html", context=data)
 
 
-def get_all_product_for_hadassah(request):
+@login_required_cafe_and_kitchen_and_manager
+def product_storage_renova(request):
+    day_of_the_week = request.GET.get('day', date.today())
+    str_day_of_the_week = str(day_of_the_week)
+    menu = creating_meal_menu_cafe_new(day_of_the_week, institution="renova")
+
+    now = datetime.now()
+
+    # Форматируем дату
+    formatted_date = now.strftime('%d')
+    month = MONTH_TTK[now.strftime('%B').lower()]
+    short_weekday = SHORT_WEEKDAY_TTK[now.strftime('%a').lower()]
+
+    # Получаем сокращенное название дня недели
+    header = f"{int(formatted_date)} {month}, {short_weekday}"
+
+    data = {
+        'menu': menu,
+        'day_of_the_week': str_day_of_the_week,
+        'default_date':  header,
+        'institution': 'renova',
+    }
+    return render(request, "product_storage_for_cafe.html", context=data)
+
+
+def get_all_product(request):
     if request.method == 'POST':
         date_get = json.loads(request.body).get('date')
         institution = json.loads(request.body).get('institution')
 
-        result = creating_meal_menu_cafe_new(date_get, alcon=(institution == 'alcon'))
+        result = creating_meal_menu_cafe_new(date_get, institution=institution)
         return render(request, 'include/menu_table.html', {
             'menu': result,
             'day_of_the_week': str(date_get),
@@ -2301,6 +2337,7 @@ class FetchAllProductsFromIIKOAPIView(APIView):
         entire_database = request.data.get('entireDatabase', False)
         date_get = request.data.get('date_get')
         institution = request.data.get('institution', 'hadassah')
+        dishes = []
         if date_get == '':
             date_get = date.today()
 
@@ -2310,6 +2347,8 @@ class FetchAllProductsFromIIKOAPIView(APIView):
             dishes = Product.objects.filter(name__icontains=query, timetable__datetime=date_get)
         elif institution == 'alcon':
             dishes = ProductAlcon.objects.filter(name__icontains=query, timetablealcon__datetime=date_get)
+        elif institution == 'renova':
+            dishes = ProductRenova.objects.filter(name__icontains=query, timetablerenova__datetime=date_get)
 
         dishes = [
             {
@@ -2324,6 +2363,7 @@ class FetchAllProductsFromIIKOAPIView(APIView):
         return JsonResponse(dishes, safe=False)
 
 
+@login_required_cafe_and_kitchen_and_manager
 def start_page_product_storage(request):
     return render(request, 'start_page_product_storage.html')
 
@@ -2480,18 +2520,14 @@ def get_energy_value(product):
     return energy_value
 
 
-def creating_meal_menu_cafe_new(day_of_the_week, alcon=False) -> dict:
-    if alcon:
+def creating_meal_menu_cafe_new(day_of_the_week, institution="alcon") -> dict:
+    products = []
+    if institution == "alcon":
         products = ProductAlcon.objects.filter(timetablealcon__datetime=day_of_the_week).order_by('name')
-    else:
+    elif institution == "hadassah":
         products = Product.objects.filter(timetable__datetime=day_of_the_week).order_by('name')
-    # result = []
-    # for product in products:
-    #     with_product_id = Ingredient.objects.filter(name=product.name).first()
-    #     if with_product_id is None:
-    #         result.append(product)
-    #     else:
-    #         result.append(with_product_id)
+    elif institution == "renova":
+        products = ProductRenova.objects.filter(timetablerenova__datetime=day_of_the_week).order_by('name')
     result = collections.defaultdict(list)
     for product in products:
         with_product_id = Ingredient.objects.filter(name=product.name).first()

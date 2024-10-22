@@ -31,7 +31,9 @@
                                     <a class="link" href="{% url 'tk_for_cafe' product.product_id '0' %}"> {{ product.name }}</a>
                                 {% elif institution == "alcon" %}
                                     <a class="link" href="{% url 'tk_for_cafe_alkon' product.product_id '0' %}"> {{ product.name }}</a>
-                                {% endif %}
+                                {% elif institution == "renova" %}
+                                    <a class="link" href="{% url 'tk_for_cafe_renova' product.product_id '0' %}"> {{ product.name }}</a>
+                            {% endif %}
                             {% else %}
                                 {{ product.name }}
                             {% endif %}

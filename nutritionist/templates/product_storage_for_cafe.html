@@ -135,8 +135,11 @@
             if ("{{ institution }}" === "hadassah") {
                 window.location.href = `/manager/tk_for_cafe/${product.product_id}/0`;
             }
-            else {
+            else if ("{{ institution }}" === "alcon") {
                 window.location.href = `/manager/tk_for_cafe_alcon/${product.product_id}/0`;
+            }
+            else {
+                window.location.href = `/manager/tk_for_cafe_renova/${product.product_id}/0`;
             }
         }
 
@@ -179,7 +182,7 @@
 
         const csrftoken = getCookie('csrftoken');
         if (selectedDate) {
-            fetch(`/api/v1/get_products_for_product_storage_hadassah`, {
+            fetch(`/api/v1/get_products_for_product_storage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken},
                 body: JSON.stringify({ date: selectedDate, institution: "{{ institution }}" })
